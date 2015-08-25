@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- +=============================================== -->
+    <!-- | Section 1:  Project information                -->
+    <!-- +=============================================== -->
+    <parent>
+        <groupId>se.mithlond.codestyle.poms</groupId>
+        <artifactId>mithlond-codestyle-api-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>se.mithlond.services.shared.spi.algorithms</groupId>
+    <artifactId>mithlond-services-shared-spi-algorithms</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+    <description>Mithlond Service: Shared (SPI, version ${project.version})</description>
+    <url>${site.top.url}/${path.in.reactor}</url>
+
+    <properties>
+        <!--
+            Define the name and type of this reactor
+        -->
+        <path.in.reactor>shared/shared-spi</path.in.reactor>
+        <reactor.name>mithlond-services</reactor.name>
+
+        <!-- Reduce coverage requirements -->
+        <breakOnFailure.enforcer>true</breakOnFailure.enforcer>
+        <breakOnFailure.cobertura>false</breakOnFailure.cobertura>
+
+        <!-- Build-controlling properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss.sssZ</maven.build.timestamp.format>
+    </properties>
+
+    <!-- +=============================================== -->
+    <!-- | Section 2:  Dependency (management) settings   -->
+    <!-- +=============================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- +=============================================== -->
+    <!-- | Section 3:  Build settings                     -->
+    <!-- +=============================================== -->
+    <!-- build>
+        <plugins>
+        </plugins>
+    </build -->
+
+    <!-- +=============================================== -->
+    <!-- | Section 4:  External systems                   -->
+    <!-- +=============================================== -->
+
+    <!--
+        Compensate for Maven standard variable extrapolation.
+        Git requires steady URLs (... but Subversion requires path extrapolation, hence the problem).
+     -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>${distroManagement.url}</url>
+        </site>
+    </distributionManagement>
+
+    <scm>
+        <connection>${scm.connection.url}</connection>
+        <developerConnection>${scm.devConnection.url}</developerConnection>
+        <url>${scm.url}</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- +=============================================== -->
+    <!-- | Section 5:  Profiles                           -->
+    <!-- +=============================================== -->
+    <profiles>
+        <profile>
+            <id>wildfly9_jee7</id>
+            <activation>
+                <property>
+                    <name>!jee.container</name>
+                </property>
+            </activation>
+
+            <!-- dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.spec</groupId>
+                        <artifactId>jboss-javaee-7.0</artifactId>
+                        <version>${version.jboss.spec.javaee.7.0}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement -->
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.spec.javax.ejb</groupId>
+                    <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
+                    <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

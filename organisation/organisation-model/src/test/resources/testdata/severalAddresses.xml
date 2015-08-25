@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-organisation-model
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<organisation:addresses xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <addresses>
+        <address>
+            <careOfLine>careOfLine_0</careOfLine>
+            <departmentName>departmentName_0</departmentName>
+            <street>street_0</street>
+            <number>number_0</number>
+            <city>city_0</city>
+            <zipCode>zipCode_0</zipCode>
+            <country>country_0</country>
+            <description>description_0</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_1</careOfLine>
+            <departmentName>departmentName_1</departmentName>
+            <street>street_1</street>
+            <number>number_1</number>
+            <city>city_1</city>
+            <zipCode>zipCode_1</zipCode>
+            <country>country_1</country>
+            <description>description_1</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_2</careOfLine>
+            <departmentName>departmentName_2</departmentName>
+            <street>street_2</street>
+            <number>number_2</number>
+            <city>city_2</city>
+            <zipCode>zipCode_2</zipCode>
+            <country>country_2</country>
+            <description>description_2</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_3</careOfLine>
+            <departmentName>departmentName_3</departmentName>
+            <street>street_3</street>
+            <number>number_3</number>
+            <city>city_3</city>
+            <zipCode>zipCode_3</zipCode>
+            <country>country_3</country>
+            <description>description_3</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_4</careOfLine>
+            <departmentName>departmentName_4</departmentName>
+            <street>street_4</street>
+            <number>number_4</number>
+            <city>city_4</city>
+            <zipCode>zipCode_4</zipCode>
+            <country>country_4</country>
+            <description>description_4</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_5</careOfLine>
+            <departmentName>departmentName_5</departmentName>
+            <street>street_5</street>
+            <number>number_5</number>
+            <city>city_5</city>
+            <zipCode>zipCode_5</zipCode>
+            <country>country_5</country>
+            <description>description_5</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_6</careOfLine>
+            <departmentName>departmentName_6</departmentName>
+            <street>street_6</street>
+            <number>number_6</number>
+            <city>city_6</city>
+            <zipCode>zipCode_6</zipCode>
+            <country>country_6</country>
+            <description>description_6</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_7</careOfLine>
+            <departmentName>departmentName_7</departmentName>
+            <street>street_7</street>
+            <number>number_7</number>
+            <city>city_7</city>
+            <zipCode>zipCode_7</zipCode>
+            <country>country_7</country>
+            <description>description_7</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_8</careOfLine>
+            <departmentName>departmentName_8</departmentName>
+            <street>street_8</street>
+            <number>number_8</number>
+            <city>city_8</city>
+            <zipCode>zipCode_8</zipCode>
+            <country>country_8</country>
+            <description>description_8</description>
+        </address>
+        <address>
+            <careOfLine>careOfLine_9</careOfLine>
+            <departmentName>departmentName_9</departmentName>
+            <street>street_9</street>
+            <number>number_9</number>
+            <city>city_9</city>
+            <zipCode>zipCode_9</zipCode>
+            <country>country_9</country>
+            <description>description_9</description>
+        </address>
+    </addresses>
+</organisation:addresses>
