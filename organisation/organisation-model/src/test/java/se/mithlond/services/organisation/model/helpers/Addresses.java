@@ -46,12 +46,14 @@ public class Addresses {
     private List<Address> addresses;
 
     public Addresses() {
-        addresses = new ArrayList<>();
+        this((Address) null);
     }
 
-    public Addresses(final Address ... addresses) {
-        this();
-        Collections.addAll(this.addresses, addresses);
+    public Addresses(final Address... addresses) {
+        this.addresses = new ArrayList<>();
+        if (addresses != null) {
+            Collections.addAll(this.addresses, addresses);
+        }
     }
 
     public List<Address> getAddresses() {

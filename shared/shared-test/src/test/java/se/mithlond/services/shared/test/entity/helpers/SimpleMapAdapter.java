@@ -24,15 +24,18 @@ package se.mithlond.services.shared.test.entity.helpers;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@XmlTransient
 public class SimpleMapAdapter extends XmlAdapter<SimpleMapAdapter.ListMap, Map<Beverage, Integer>> {
 
     public static class ListMap {
@@ -62,7 +65,7 @@ public class SimpleMapAdapter extends XmlAdapter<SimpleMapAdapter.ListMap, Map<B
      */
     @Override
     public Map<Beverage, Integer> unmarshal(final ListMap toUnmarshal) throws Exception {
-        final Map<Beverage, Integer> toReturn = new HashMap<>();
+        final Map<Beverage, Integer> toReturn = new TreeMap<>();
 
         if(toUnmarshal != null) {
             for(ConsumptionEntry current : toUnmarshal.consumptionRecords) {

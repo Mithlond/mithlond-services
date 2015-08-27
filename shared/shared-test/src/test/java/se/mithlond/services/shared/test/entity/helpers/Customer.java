@@ -24,6 +24,7 @@ package se.mithlond.services.shared.test.entity.helpers;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -39,9 +40,11 @@ public class Customer implements Comparable<Customer> {
     private Map<Beverage, Integer> consumption;
 
     public Customer() {
+        this.consumption = new TreeMap<>();
     }
 
     public Customer(final String name, final Map<Beverage, Integer> consumption) {
+        this();
         this.name = name;
         this.consumption = consumption;
     }

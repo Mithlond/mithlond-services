@@ -83,12 +83,10 @@ public class PlainJaxbContextRuleTest {
         final String result = unitUnderTest.marshal(getClass().getClassLoader(), barRound);
 
         // Assert
-        /*
         System.out.println("Got: " + result);
         final Diff diff = XmlTestUtils.compareXmlIgnoringWhitespace(expected, result);
         final SortedMap<String, List<Difference>> diffMap = XmlTestUtils.getXPathLocationToDifferenceMap(diff);
         System.out.println("Got: " + diffMap);
-        */
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
     }
 

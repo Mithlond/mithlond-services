@@ -46,12 +46,14 @@ public class Organisations {
     private List<Organisation> organisations;
 
     public Organisations() {
-        organisations = new ArrayList<>();
+        this((Organisation) null);
     }
 
-    public Organisations(final Organisation ... orgs) {
-        this();
-        Collections.addAll(organisations, orgs);
+    public Organisations(final Organisation... orgs) {
+        organisations = new ArrayList<>();
+        if (orgs != null) {
+            Collections.addAll(organisations, orgs);
+        }
     }
 
     public List<Organisation> getOrganisations() {

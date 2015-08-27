@@ -12,7 +12,7 @@
     </parent>
 
     <groupId>se.mithlond.services.shared</groupId>
-    <artifactId>mithlond-servies-shared-reactor</artifactId>
+    <artifactId>mithlond-services-shared-reactor</artifactId>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>pom</packaging>
