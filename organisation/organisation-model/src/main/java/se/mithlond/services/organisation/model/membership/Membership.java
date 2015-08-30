@@ -1,19 +1,43 @@
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-organisation-model
+ * %%
+ * Copyright (C) 2015 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package se.mithlond.services.organisation.model.membership;
 
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
+import se.mithlond.services.organisation.model.membership.order.OrderLevel;
+import se.mithlond.services.organisation.model.membership.order.OrderLevelGrant;
+import se.mithlond.services.organisation.model.user.User;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -26,19 +50,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Realization of a Membership, associating a Member with an Organisation.
- * Holds things like login permitted for the member within the Organisation,
- * and the Organisation's email alias for the member.
+ * Holds things like login permitted for the user within the Organisation,
+ * and the Organisation's email alias for the user.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "getAllMemberships", query = "select a from Membership a order by a.id"),
-        @NamedQuery(name = "getMembershipByLoginAndOrganisation",
+        @NamedQuery(name = "Membership.getByAliasAndOrganisation",
                 query = "select a from Membership a "
                         + "where a.member.login = ?1 and "
                         + "a.organisation.organisationName = ?2 order by a.id"),
@@ -58,10 +85,10 @@ import javax.xml.bind.annotation.XmlType;
                         + "and a.loginPermitted = ?2 order by a.member.alias")
 })
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(name = "memberAndOrganisationIsUnique",
-        columnNames = {"member_id", "organisation_id"})})
-@XmlType(propOrder = {"emailAlias", "loginPermitted", "member",
-        "guildMemberships", "groups", "orderLevelGrants", "organisation"})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "aliasAndOrganisationIsUnique",
+        columnNames = {"alias", "organisation_id"})})
+@XmlType(propOrder = {"emailAlias", "loginPermitted", "user",
+        "guildMemberships", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Membership extends NazgulEntity implements Comparable<Membership> {
 
@@ -72,45 +99,56 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     private static final long serialVersionUID = 8829990028L;
 
     // Internal state
-    @Basic(optional = true) @Column(nullable = true, length = 64)
+    @Basic(optional = false)
+    @Column(nullable = false, length = 64)
+    @XmlElement(required = true, nillable = false)
+    private String alias;
+
+    @Basic(optional = true)
+    @Column(nullable = true, length = 1024)
+    @XmlElement(nillable = true, required = false)
+    private String subAlias;
+
+    @Basic(optional = true)
+    @Column(nullable = true, length = 64)
     @XmlElement(required = false, nillable = true)
     private String emailAlias;
 
-    @Basic @Column(nullable = false)
+    @Basic
+    @Column(nullable = false)
     @XmlAttribute(required = true)
-    private boolean loginPermitted = true;
+    private boolean loginPermitted;
 
     @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @XmlIDREF
-    private Member member;
+    private User user;
 
     @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @XmlIDREF
     private Organisation organisation;
 
-    @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @XmlElementWrapper(name = "guildMemberships", nillable = true, required = false)
-    @XmlElement(name = "guildMembership")
-    private Set<GuildMembership> guildMemberships = new HashSet<GuildMembership>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @XmlElementWrapper(name = "memberships", nillable = true, required = false)
+    @XmlElements(value = {
+            @XmlElement(name = "groupMembership", type = GroupMembership.class),
+            @XmlElement(name = "guildMembership", type = GuildMembership.class)
+    })
+    private SortedSet<GroupMembership> groupMemberships;
 
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @XmlElementWrapper(name = "orderLevelGrants", nillable = true, required = false)
     @XmlElement(name = "orderLevelGrant")
-    private Set<OrderLevelGrant> orderLevelGrants = new TreeSet<OrderLevelGrant>();
-
-    @XmlIDREF
-    @XmlElementWrapper(name = "groups", nillable = true, required = false)
-    @XmlElement(name = "group")
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinTable(name = "membership_groups",
-            joinColumns = @JoinColumn(name = "membership_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"))
-    private Set<Group> groups = new HashSet<Group>();
+    private SortedSet<OrderLevelGrant> orderLevelGrants;
 
     /**
      * JPA/JAXB-friendly constructor.
      */
     public Membership() {
+
+        // Create internal state
+        this.loginPermitted = true;
+        this.orderLevelGrants = new TreeSet<>();
+        this.groupMemberships = new TreeSet<>();
     }
 
     /**
@@ -119,47 +157,83 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
      * @param emailAlias       The emailAlias of this alias.
      * @param loginPermitted   Set to <code>true</code> to indicate that
      *                         login is permitted, and false otherwise.
-     * @param member           The member of this Membership.
-     * @param organisation     The organisation of this Membership, i.e. where the member belongs.
+     * @param user             The user of this Membership.
+     * @param organisation     The organisation of this Membership, i.e. where the user belongs.
      * @param orderLevelGrants The OrderLevels granted to this Membership.
-     * @param groups           The groups within the Organisation to which the
-     *                         member of this membership belongs.
+     * @param groupMemberships The groupMemberships within the Organisation to which the
+     *                         user of this membership belongs.
      */
-    public Membership(final String emailAlias,
+    public Membership(final String alias,
+                      final String subAlias,
+                      final String emailAlias,
                       final boolean loginPermitted,
-                      final Member member,
+                      final User user,
                       final Organisation organisation,
                       final Set<OrderLevelGrant> orderLevelGrants,
-                      final Set<Group> groups) {
+                      final Set<GroupMembership> groupMemberships) {
 
+        this();
+
+        // Add internal state
+        this.alias = alias;
+        this.subAlias = subAlias;
         this.emailAlias = emailAlias;
         this.loginPermitted = loginPermitted;
-        this.member = member;
+        this.user = user;
         this.organisation = organisation;
-        this.orderLevelGrants = orderLevelGrants;
-        this.groups = groups;
+
+        // Add any supplied collection elements to our internal state
+        if (orderLevelGrants != null) {
+            this.orderLevelGrants.addAll(orderLevelGrants);
+        }
+        if (groupMemberships != null) {
+            this.groupMemberships.addAll(groupMemberships);
+        }
     }
 
     /**
-     * @return The email alias for this Membership, normally being
-     * on the form [login@organisation.se] or [login@organisation.org].
+     * Retrieves the alias of this Membership. Aliases must be unique within an Organisation.
+     *
+     * @return The alias of this Membership.
+     */
+    public String getAlias() {
+        return alias;
+    }
+
+    /**
+     * @return The optional sub-alias of this Membership.
+     */
+    public String getSubAlias() {
+        return subAlias;
+    }
+
+    /**
+     * Retrieves the email alias for this Membership. The email aliases are normally synthesized on
+     * the form {@code alias@organisationEmailSuffix}. However, if special characters such as dashes. apostrophes
+     * etc. are present within the alias, this email alias can be a modified version of the alias.
+     *
+     * @return The email alias for this Membership, exclusive of the email suffix.
+     * (I.e. everything before the {@code @} sign in an email address).
      */
     public String getEmailAlias() {
         return emailAlias;
     }
 
     /**
-     * Assigns the email alias for this Membership, normally being
-     * on the form [login@organisation.se] or [login@organisation.org].
+     * Assigns the email alias for this Membership. The email alias should contain everything before the {@code @}
+     * sign in an email address
      *
-     * @param emailAlias The email alias for this Membership, normally being
-     *                   on the form [login@organisation.se] or
-     *                   [login@organisation.org].
+     * @param emailAlias Assigns the email alias of this Membership. (I.e. everything before the {@code @} sign
+     *                   in an email address).
      */
     public void setEmailAlias(final String emailAlias) {
+
+        // Check sanity
+        Validate.notEmpty(emailAlias, "emailAlias");
+
+        // Assign internal state
         this.emailAlias = emailAlias;
     }
-
 
     /**
      * @return true if this Membership permits login, and false otherwise.
@@ -178,19 +252,24 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     }
 
     /**
-     * @return The Member of this Membership.
+     * @return The User of this Membership.
      */
-    public Member getMember() {
-        return member;
+    public User getUser() {
+        return user;
     }
 
     /**
-     * Assigns the Member of this Membership.
+     * Assigns the User of this Membership.
      *
-     * @param member The Member of this Membership.
+     * @param user The User of this Membership.
      */
-    public void setMember(final Member member) {
-        this.member = member;
+    public void setUser(final User user) {
+
+        // Check sanity
+        Validate.notNull(user, "user");
+
+        // Assign internal state
+        this.user = user;
     }
 
     /**
@@ -208,6 +287,11 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
      * @param organisation The Organisation of this Membership.
      */
     public void setOrganisation(final Organisation organisation) {
+
+        // Check sanity
+        Validate.notNull(organisation, "organisation");
+
+        // Assign internal state
         this.organisation = organisation;
     }
 
@@ -221,41 +305,69 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     }
 
     /**
-     * All groups to which this member belongs.
+     * All GroupMemberships held by this Membership, implying all Groups and Guilds in which this Membership is a part.
      *
-     * @return The Groups relation of this Member
+     * @return The GroupMemberships held by this Membership, implying all Groups and Guilds in which
+     * this Membership is a part.
      */
-    public Set<Group> getGroups() {
-        return groups;
+    public Set<GroupMembership> getGroupMemberships() {
+        return groupMemberships;
     }
 
     /**
-     * Assigns the groups of this Member.
-     * All groups to which this member belongs.
+     * Assigns the Group (or Guild) memberships of this Membership, replacing existing memberships.
      *
-     * @param groups The groups relation of this Member
+     * @param groupMemberships The groupMemberships relation of this Membership.
      */
-    public void setGroups(final Set<Group> groups) {
+    public void setGroupMemberships(final SortedSet<GroupMembership> groupMemberships) {
+
+        // Check sanity
+        Validate.notNull(groupMemberships, "groupMemberships");
+
         // Assign the relation to our internal state
-        this.groups = groups;
+        this.groupMemberships.clear();
+        this.groupMemberships.addAll(groupMemberships);
     }
 
     /**
-     * @return The GuildMemberships of this Membership, implying a listing of all Guilds to
-     * which this Membership belongs.
+     * Adds or retrieves a GroupMembership wrapping the supplied data.
+     * <strong>Note!</strong> This method cannot create or update {@code GuildMemerships}.
+     * Use the {@code #addOrUpdateGuildMembership} method for that.
+     *
+     * @param group The Group in which this Membership should be a GroupMember.
+     * @return The newly created or updated GroupMembership.
+     * @see #addOrUpdateGuildMembership(Guild, boolean, boolean, boolean)
      */
-    public Set<GuildMembership> getGuildMemberships() {
-        return guildMemberships;
+    public GroupMembership addOrGetGroupMembership(final Group group) {
+
+        // Check sanity
+        Validate.notNull(group, "group");
+        Validate.isTrue(!(group instanceof Guild), "Cannot handle Guild groups.");
+
+        //
+        for (GroupMembership current : groupMemberships) {
+            if (current.getGroup().equals(group)) {
+                return current;
+            }
+        }
+
+        // The GroupMembership was not found.
+        final GroupMembership toReturn = new GroupMembership(group, this);
+        groupMemberships.add(toReturn);
+        return toReturn;
     }
 
     /**
      * Adds or updates a GuildMembership wrapping the supplied data.
+     * <strong>Note!</strong> This method should not be used to acquire or update GroupMemberships.
+     * Use the {@code #addOrGetGroupMembership} method for that.
      *
      * @param guild             The Guild in which this Membership should be a GuildMember.
      * @param guildMaster       {@code true} if this Membership is a guild master for the given Guild.
      * @param deputyGuildMaster {@code true} if this Membership is a deputy guild master for the given Guild.
      * @param auditor           {@code true} if this Membership is an auditor for the given Guild.
      * @return The newly created or updated GuildMembership.
+     * @see #addOrGetGroupMembership(Group)
      */
     public GuildMembership addOrUpdateGuildMembership(final Guild guild,
                                                       final boolean guildMaster,
@@ -266,24 +378,27 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
         Validate.notNull(guild, "Cannot handle null guild argument.");
 
         // Update existing GuildMembership?
-        for (GuildMembership current : guildMemberships) {
+        for (GroupMembership current : groupMemberships) {
 
-            Guild currentGuild = current.getGuild();
-            if (currentGuild.equals(guild)) {
+            if (current instanceof GuildMembership) {
+                final GuildMembership currentGuildMembership = (GuildMembership) current;
 
-                // Update this GuildMembership
-                current.setGuildMaster(guildMaster);
-                current.setDeputyGuildMaster(deputyGuildMaster);
-                current.setAuditor(auditor);
+                if (guild.equals(currentGuildMembership.getGuild())) {
 
-                // All done.
-                return current;
+                    // Update this GuildMembership
+                    currentGuildMembership.setGuildMaster(guildMaster);
+                    currentGuildMembership.setDeputyGuildMaster(deputyGuildMaster);
+                    currentGuildMembership.setAuditor(auditor);
+
+                    // All Done.
+                    return currentGuildMembership;
+                }
             }
         }
 
-        // Create a new GuildMembership
+        // This Membership did not have a GuildMembership with the given Guild.
         final GuildMembership toReturn = new GuildMembership(guild, this, guildMaster, deputyGuildMaster, auditor);
-        guildMemberships.add(toReturn);
+        this.groupMemberships.add(toReturn);
         return toReturn;
     }
 
@@ -351,7 +466,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
 
         // Delegate
         final Membership that = (Membership) o;
-        if (!member.getLogin().equals(that.member.getLogin())) {
+        if (!user.getLogin().equals(that.user.getLogin())) {
             return false;
         }
         if (!organisation.getOrganisationName().equals(that.organisation.getOrganisationName())) {
@@ -371,16 +486,16 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     @Override
     @SuppressWarnings("all")
     public int hashCode() {
-        return member.getLogin().hashCode()
+        return user.getLogin().hashCode()
                 + organisation.getOrganisationName().hashCode();
     }
 
     /**
-     * @return The member login and organisationName of this Membership.
+     * @return The user login and organisationName of this Membership.
      */
     @Override
     public String toString() {
-        return "Membership [" + getMember().getLogin() + " -> " + getOrganisation().getOrganisationName() + "]";
+        return "Membership [" + getUser().getLogin() + " -> " + getOrganisation().getOrganisationName() + "]";
     }
 
     /**
@@ -414,16 +529,16 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
 
         // Ensure that the reference is fully loaded.
         // Workaround for the https://hibernate.atlassian.net/browse/HHH-8839 bug.
-        for (Group current : getGroups()) {
+        for (Group current : getGroupMemberships()) {
             current.getGroupName();
         }
 
         InternalStateValidationException.create()
-                .notNull(member, "member")
+                .notNull(user, "user")
                 .notNull(organisation, "organisation")
                 .notNull(guildMemberships, "guildMemberships")
                 .notNull(orderLevelGrants, "orderLevelGrants")
-                .notNull(groups, "groups")
+                .notNull(groupMemberships, "groupMemberships")
                 .endExpressionAndValidate();
     }
 }

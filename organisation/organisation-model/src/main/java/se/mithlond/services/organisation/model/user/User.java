@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-organisation-model
+ * %%
+ * Copyright (C) 2015 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package se.mithlond.services.organisation.model.user;
 
 import org.slf4j.Logger;
@@ -10,25 +31,33 @@ import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * <p>Entity storing Users of Mithlond services. All calls to Mithlond
@@ -41,7 +70,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@MappedSuperclass
+@Entity
 @XmlType(propOrder = {"firstName", "lastName", "birthday", "personalNumberLast4Digits", "homeAddress"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User extends NazgulEntity {
@@ -79,6 +108,11 @@ public class User extends NazgulEntity {
     @XmlElement(required = true, nillable = false)
     private Address homeAddress;
 
+    @XmlElementWrapper(name = "memberships", nillable = false, required = true)
+    @XmlElement(name = "membership")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Membership> memberships;
+
     //
     // Quoting the EclipseLink documentation:
     //
@@ -108,11 +142,62 @@ public class User extends NazgulEntity {
     // targetClass property of @ElementCollection to
     // define value type.
     //
+    @CollectionTable(name = "user_contactdetails")
     @Column(name = "address_or_number")
     @MapKeyColumn(name = "contact_type")
     @ElementCollection
-    @CollectionTable(name = "user_contactdetails")
     private Map<String, String> contactDetails;
+
+    /**
+     * Syntetic XML ID for this User, generated immediately before Marshalling.
+     * The method ensures that whitespace is weeded not found in the xmlID as per the XML specification.
+     */
+    @XmlID
+    @Transient
+    @SuppressWarnings("all")
+    private String xmlID;
+
+    /**
+     * JAXB/JPA-friendly constructor.
+     */
+    public User() {
+
+        // Assign internal state
+        contactDetails = new TreeMap<>();
+        memberships = new ArrayList<>();
+    }
+
+    /**
+     * Compound constructor, creating a User wrapping the supplied data.
+     *
+     * @param firstName                 The first name of this User.
+     * @param lastName                  The last name of this User.
+     * @param birthday                  The birthday of this User.
+     * @param personalNumberLast4Digits The last 4 digits in the User's personal number.
+     * @param homeAddress               The home address of this User.
+     * @param contactDetails            The contact details of this User.
+     */
+    public User(final String firstName,
+                final String lastName,
+                final LocalDate birthday,
+                final short personalNumberLast4Digits,
+                final Address homeAddress,
+                final List<Membership> memberships,
+                final Map<String, String> contactDetails) {
+
+        // Check sanity
+        Validate.notNull(birthday, "birthday");
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.personalNumberLast4Digits = personalNumberLast4Digits;
+        this.homeAddress = homeAddress;
+        this.memberships = memberships;
+        this.contactDetails = contactDetails;
+
+        // Convert the birthday to a Calendar
+        this.birthday = GregorianCalendar.from(birthday.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));
+    }
 
     /**
      * @return The 4 last digits of the personal number.
@@ -163,7 +248,7 @@ public class User extends NazgulEntity {
     }
 
     /**
-     * Assigns the Memberships of this Member.
+     * Assigns the Memberships of this User.
      *
      * @param memberships the Memberships of this AbstractUser.
      */
@@ -175,21 +260,21 @@ public class User extends NazgulEntity {
         // Handle reverse relationship
         this.memberships = memberships;
         for (Membership current : memberships) {
-            current.setMember(this);
+            current.setUser(this);
         }
     }
 
     /**
-     * @return The HomeAddress relation of this Member.
+     * @return The HomeAddress relation of this User.
      */
     public Address getHomeAddress() {
         return homeAddress;
     }
 
     /**
-     * Assigns the homeAddress of this Member.
+     * Assigns the homeAddress of this User.
      *
-     * @param homeAddress The homeAddress relation of this Member
+     * @param homeAddress The homeAddress relation of this User
      */
     public void setHomeAddress(final Address homeAddress) {
 
@@ -201,7 +286,7 @@ public class User extends NazgulEntity {
     }
 
     /**
-     * @return The known contact details of this member.
+     * @return The known contact details of this User.
      */
     public Map<String, String> getContactDetails() {
         return contactDetails;
@@ -252,9 +337,9 @@ public class User extends NazgulEntity {
     }
 
     /**
-     * Creates a debug printout of this Member.
+     * Creates a debug printout of this User.
      *
-     * @return a debug printout of this Member.
+     * @return a debug printout of this User.
      */
     @Override
     public String toString() {
@@ -270,7 +355,7 @@ public class User extends NazgulEntity {
         }
 
         // All done.
-        return "User [" + getId() + ": " + getFirstName() + " " + getLastName() + "\n"
+        return "User " + getIdAndName() + "\n"
                 + "Contact Details: " + contactDetailsBuffer + "\n"
                 + "Home Address: " + getHomeAddress().toString();
     }
@@ -285,10 +370,8 @@ public class User extends NazgulEntity {
         // Workaround for the https://hibernate.atlassian.net/browse/HHH-8839 bug.
         if (contactDetails != null) {
 
-            final String nameAndId = getId() + " [" +
-
             if (log.isDebugEnabled()) {
-                log.debug("Found [" + contactDetails.size() + "] contact details for [" + getId() + " ("]");
+                log.debug("Found [" + contactDetails.size() + "] contact details for " + getIdAndName());
             }
 
             for (Map.Entry<String, String> current : contactDetails.entrySet()) {
@@ -297,19 +380,18 @@ public class User extends NazgulEntity {
                 final String currentValue = current.getValue();
 
                 if (log.isDebugEnabled()) {
-                    log.debug(" Member [" + getAlias() + "] contactDetails [" + currentKey + "]: " + currentValue);
+                    log.debug(" User " + getIdAndName() + " contactDetails [" + currentKey + "]: " + currentValue);
                 }
             }
         }
 
         final int numMemberships = memberships.size();
         if (log.isDebugEnabled()) {
-            log.debug("Member [" + getAlias() + "] has [" + numMemberships + "] memberships.");
+            log.debug("User " + getIdAndName() + " has [" + numMemberships + "] memberships.");
         }
 
         // Validate internal state
         InternalStateValidationException.create()
-                .notNullOrEmpty(alias, "alias")
                 .notNullOrEmpty(firstName, "firstName")
                 .notNullOrEmpty(lastName, "lastName")
                 .notNull(birthday, "birthday")
@@ -319,7 +401,25 @@ public class User extends NazgulEntity {
                 .endExpressionAndValidate();
     }
 
+    //
+    // Private helpers
+    //
+
     private String getIdAndName() {
         return "[" + getId() + "]: " + getFirstName() + " " + getLastName();
+    }
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * immediately before this object is Marshalled.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    private void beforeMarshal(final Marshaller marshaller) {
+        final String hopefullyUniqueString = getId()
+                + "_" + getFirstName()
+                + "_" + getLastName()
+                + "_" + TimeFormat.YEAR_MONTH_DATE.print(getBirthday());
+        this.xmlID = hopefullyUniqueString.replaceAll("\\s+", "_");
     }
 }

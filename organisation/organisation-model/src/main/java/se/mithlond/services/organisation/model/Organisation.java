@@ -31,7 +31,11 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
@@ -45,41 +49,74 @@ import javax.xml.bind.annotation.XmlType;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
 @XmlType(propOrder = {"organisationName", "suffix", "phone", "bankAccountInfo",
         "postAccountInfo", "emailSuffix", "visitingAddress"})
-public class Organisation extends NazgulEntity {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Organisation extends NazgulEntity implements Comparable<Organisation> {
 
     // Constants
     private static final long serialVersionUID = 8829990020L;
 
     // Internal state
-    @XmlID
+    /**
+     * The name of this Organisation, such as "Forodrim".
+     * Each organisationName must be unique among all other organisation names.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     @XmlElement(required = true, nillable = false)
     private String organisationName;
 
+    /**
+     * Syntetic XML ID for this Organisation, generated immediately before Marshalling.
+     * Since whitespace is not permitted in an XML ID, the beforeMarshal listener method generates this field from
+     * the organisation name while replacing all whitespace with underscore.
+     */
+    @XmlID
+    @Transient
+    @SuppressWarnings("all")
+    private String xmlID;
+
+    /**
+     * The suffix of this organisation, such as "Stockholms Tolkiensällskap".
+     */
     @Basic
     @Column(length = 1024)
     @XmlElement(required = false, nillable = true)
     private String suffix;
 
+    /**
+     * The official phone number to the Organisation.
+     */
     @Basic
     @Column(length = 64)
     @XmlElement(required = false, nillable = true)
     private String phone;
 
+    /**
+     * The bank account number of this organisation.
+     */
     @Basic
     @XmlElement(required = false, nillable = true)
     private String bankAccountInfo;
 
+    /**
+     * The postal account number of this organisation.
+     */
     @Basic
     @XmlElement(required = false, nillable = true)
     private String postAccountInfo;
 
+    /**
+     * The email suffix of this organisation, appended to the alias of each membership to receive a
+     * non-personal electronic mail address. For example, given the emailSuffix "mithlond.se" and the
+     */
     @Basic(optional = false)
     @Column(length = 64)
     @XmlElement(required = true, nillable = false)
     private String emailSuffix;
 
+    /**
+     * The visiting address of this organisation.
+     */
     @Embedded
     @XmlElement(required = true, nillable = false)
     private Address visitingAddress;
@@ -214,6 +251,14 @@ public class Organisation extends NazgulEntity {
      * {@inheritDoc}
      */
     @Override
+    public int compareTo(final Organisation that) {
+        return that == null ? -1 : organisationName.compareTo(that.organisationName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void validateEntityState() throws InternalStateValidationException {
 
         InternalStateValidationException.create()
@@ -222,5 +267,19 @@ public class Organisation extends NazgulEntity {
                 .notNullOrEmpty(emailSuffix, "emailSuffix")
                 .notNullOrEmpty(visitingAddress, "visitingAddress")
                 .endExpressionAndValidate();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * immediately before this object is Marshalled.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    private void beforeMarshal(final Marshaller marshaller) {
+        this.xmlID = this.organisationName.replaceAll("\\s+", "_");
     }
 }
