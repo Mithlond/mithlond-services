@@ -21,8 +21,6 @@
  */
 package se.mithlond.services.shared.test.entity;
 
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.Difference;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +32,6 @@ import se.mithlond.services.shared.test.entity.helpers.Customer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.SortedMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -60,8 +57,8 @@ public class PlainJaxbContextRuleTest {
         rootBeer = new Beverage("Root Beer", "Ödeshögs Bryggeri");
         dipa = new Beverage("DIPA", "Poppels");
 
-        lennart.getConsumption().put(rootBeer, 2);
         lennart.getConsumption().put(dipa, 1);
+        lennart.getConsumption().put(rootBeer, 2);
         malin.getConsumption().put(rootBeer, 1);
         malin.getConsumption().put(dipa, 2);
 
@@ -83,10 +80,21 @@ public class PlainJaxbContextRuleTest {
         final String result = unitUnderTest.marshal(getClass().getClassLoader(), barRound);
 
         // Assert
-        System.out.println("Got: " + result);
+        /*
         final Diff diff = XmlTestUtils.compareXmlIgnoringWhitespace(expected, result);
         final SortedMap<String, List<Difference>> diffMap = XmlTestUtils.getXPathLocationToDifferenceMap(diff);
-        System.out.println("Got: " + diffMap);
+
+        int i = 0;
+        for(Map.Entry<String, List<Difference>> current : diffMap.entrySet()) {
+            System.out.println(" [" + i++ + "]: " + current.getKey());
+            for(Difference currentDiff : current.getValue()) {
+                System.out.println("     Test Node : " + currentDiff.getTestNodeDetail().getXpathLocation());
+                System.out.println("     Test Value: " + currentDiff.getTestNodeDetail().getValue());
+                System.out.println("     Ctrl Node : " + currentDiff.getControlNodeDetail().getXpathLocation());
+                System.out.println("     Ctrl Value: " + currentDiff.getControlNodeDetail().getValue());
+            }
+        }
+        */
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
     }
 
