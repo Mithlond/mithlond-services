@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.model;
+package se.mithlond.services.organisation.model.address;
 
 import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.Entities;

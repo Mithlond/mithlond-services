@@ -21,9 +21,10 @@
  */
 package se.mithlond.services.organisation.model;
 
-import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -109,8 +110,8 @@ public class Organisation extends NazgulEntity {
                         final String emailSuffix) {
 
         // Check sanity
-        Validate.notEmpty(organisationName, "Cannot handle null or empty name argument.");
-        Validate.notNull(visitingAddress, "Cannot handle null or empty visitingAddress argument.");
+        Validate.notEmpty(organisationName, "organisationName");
+        Validate.notNull(visitingAddress, "visitingAddress");
 
         // Assign internal state
         this.organisationName = organisationName;

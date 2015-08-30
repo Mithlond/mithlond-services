@@ -21,11 +21,9 @@
  */
 package se.mithlond.services.organisation.model.helpers;
 
-import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,26 +35,22 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlAccessorType(XmlAccessType.FIELD)
-public class Addresses {
+public class WellKnownAddressTypes {
 
     // Internal state
     @XmlElementWrapper(required = true, nillable = false)
-    @XmlElement(nillable = true, required = false, name = "address")
-    private List<Address> addresses;
+    @XmlElement(nillable = true, required = false, name = "addressType")
+    private List<WellKnownAddressType> addressTypes;
 
-    public Addresses() {
-        this((Address) null);
+    public WellKnownAddressTypes() {
+        addressTypes = new ArrayList<>();
     }
 
-    public Addresses(final Address... addresses) {
-        this.addresses = new ArrayList<>();
-        if (addresses != null) {
-            Collections.addAll(this.addresses, addresses);
-        }
+    public void add(WellKnownAddressType ... addressTypes) {
+        Collections.addAll(this.addressTypes, addressTypes);
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
+    public List<WellKnownAddressType> getAddressTypes() {
+        return addressTypes;
     }
 }

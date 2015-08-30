@@ -20,7 +20,11 @@
  * #L%
  */
 /**
- * Package holding entity classes defining Organisations in the context of the mithlond reactor.
+ * Package defining addresses and categorization of them.
+ * Since most people, organisations or other legal entities can have more than 1
+ * address, we need to ensure that addresses can be categorized in a simple way.
+ * Moreover, all categorizations should be available with consistent and high
+ * performance for JPA operations.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -33,7 +37,9 @@
         }
 )
 @XmlAccessorType(XmlAccessType.FIELD)
-package se.mithlond.services.organisation.model;
+package se.mithlond.services.organisation.model.address;
+
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

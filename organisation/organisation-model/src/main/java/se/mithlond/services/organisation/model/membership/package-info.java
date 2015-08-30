@@ -20,7 +20,7 @@
  * #L%
  */
 /**
- * Package holding entity classes defining Organisations in the context of the mithlond reactor.
+ * Package containing Memberships and related entities. Memberships relate personal information (i.e. Member)
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -33,7 +33,9 @@
         }
 )
 @XmlAccessorType(XmlAccessType.FIELD)
-package se.mithlond.services.organisation.model;
+package se.mithlond.services.organisation.model.membership;
+
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

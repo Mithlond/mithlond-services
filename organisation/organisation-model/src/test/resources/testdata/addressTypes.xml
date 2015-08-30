@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-organisation-model
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<organisation:wellKnownAddressTypes xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <addressTypes>
+        <addressType>HOME</addressType>
+        <addressType>VISITING</addressType>
+        <addressType>DELIVERY</addressType>
+        <addressType>PUB_RESTAURANT</addressType>
+        <addressType>SHOP</addressType>
+        <addressType>OUTDOORS</addressType>
+        <addressType>CAFE</addressType>
+        <addressType>SITE</addressType>
+    </addressTypes>
+</organisation:wellKnownAddressTypes>

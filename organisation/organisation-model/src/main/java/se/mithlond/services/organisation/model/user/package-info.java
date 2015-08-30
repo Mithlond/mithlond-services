@@ -20,7 +20,11 @@
  * #L%
  */
 /**
- * Package holding entity classes defining Organisations in the context of the mithlond reactor.
+ * <p>Package containing User types, corresponding to basic information related to users.
+ * Note that <strong>credentials</strong> (certificates, password hashes, etc) are not handled by the types within
+ * this package. Instead, the assumption is that another system (typically and IDM) will manage users and credentials
+ * to perform authentication. Authorization, however, is more closely related to the service model, and will hence be
+ * managed by the Mithlond Services project.</p>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -33,7 +37,9 @@
         }
 )
 @XmlAccessorType(XmlAccessType.FIELD)
-package se.mithlond.services.organisation.model;
+package se.mithlond.services.organisation.model.user;
+
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

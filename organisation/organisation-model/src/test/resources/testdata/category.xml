@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<core:entityTransporter xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <entityClasses>
+        <entityClass>org.aspectj.runtime.reflect.JoinPointImpl$StaticPartImpl</entityClass>
+        <entityClass>se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter</entityClass>
+        <entityClass>se.mithlond.services.organisation.model.Category</entityClass>
+    </entityClasses>
+    <items>
+        <item xsi:type="category" jpaId="0" version="0">
+            <classification>classification</classification>
+            <categoryID>category</categoryID>
+            <description>description</description>
+        </item>
+    </items>
+</core:entityTransporter>

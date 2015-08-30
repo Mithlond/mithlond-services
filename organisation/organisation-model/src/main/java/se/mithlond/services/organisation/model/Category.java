@@ -1,0 +1,217 @@
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-organisation-model
+ * %%
+ * Copyright (C) 2015 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package se.mithlond.services.organisation.model;
+
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
+import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ * Definition of a Category, sporting CategoryID, Classification and a trivial Description.
+ *
+ * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
+ */
+@NamedQueries({
+        @NamedQuery(name = "Category.getByClassification",
+                query = "select a from Category a where a.classification like :classification order by a.name"),
+        @NamedQuery(name = "Category.getByIdAndClassification",
+                query = "select a from Category a where a.categoryID like :categoryID " +
+                        "and a.classification like :classification order by a.name")
+})
+@Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                name = "categoryIdAndClassificationIsUnique",
+                columnNames = {"category", "classification"})})
+@XmlType(propOrder = {"classification", "categoryID", "description"})
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
+
+    // Constants
+    private static final long serialVersionUID = 8829990031L;
+
+    // Internal state
+    @Basic(optional = false)
+    @Column(nullable = false, length = 255, name = "category")
+    private String categoryID;
+
+    @Basic(optional = false)
+    @Column(nullable = false, length = 255)
+    private String classification;
+
+    @Basic(optional = false)
+    @Column(nullable = false, length = 2048)
+    private String description;
+
+    /**
+     * JPA/JAXB-friendly constructor.
+     */
+    public Category() {
+    }
+
+    /**
+     * Creates a new Category wrapping the supplied data.
+     *
+     * @param categoryID     The category id - comparable to a short description or single word.
+     *                       Cannot be null or empty.
+     * @param classification A classification of this category, such as "Restaurant". This is intended to simplify
+     *                       separating a type of Categories from others.
+     * @param description    The (fuller/richer) description of this Category. Cannot be null or empty.
+     */
+    public Category(final String categoryID,
+                    final String classification,
+                    final String description) {
+
+        super();
+
+        // Assign internal state
+        this.categoryID = categoryID;
+        this.description = description;
+        this.classification = classification;
+    }
+
+    /**
+     * @return The name of this Category.
+     */
+    public String getCategoryID() {
+        return categoryID;
+    }
+
+    /**
+     * @return The description (full desc) of this Category.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @return The classification (metadata group) of this Category.
+     */
+    public String getClassification() {
+        return classification;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Category getCategory() {
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Category createCategoryWithDescription(final String description) {
+        return new Category(this.categoryID, this.classification, description);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return getCategoryID().hashCode()
+                + getDescription().hashCode()
+                + getClassification().hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object that) {
+
+        // Check sanity
+        if (this == that) {
+            return true;
+        }
+        if (!(that instanceof Category)) {
+            return false;
+        }
+
+        // Compare state data
+        final Category cat = (Category) that;
+        return getCategoryID().equals(cat.getCategoryID())
+                && getClassification().equals(cat.getClassification())
+                && getDescription().equals(cat.getDescription());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(final Category that) {
+
+        // Check sanity
+        if (that == null) {
+            return -1;
+        }
+        if (that == this) {
+            return 0;
+        }
+
+        // Compare the state
+        int toReturn = getCategoryID().compareTo(that.getCategoryID());
+        if (toReturn == 0) {
+            toReturn = getClassification().compareTo(that.getClassification());
+        }
+        if (toReturn == 0) {
+            toReturn = getDescription().compareTo(that.getDescription());
+        }
+
+        // All done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return getCategoryID();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateEntityState() throws InternalStateValidationException {
+
+        InternalStateValidationException.create()
+                .notNullOrEmpty(categoryID, "categoryID")
+                .notNullOrEmpty(classification, "classification")
+                .notNullOrEmpty(description, "description")
+                .endExpressionAndValidate();
+    }
+}
