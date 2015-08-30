@@ -197,6 +197,7 @@ public class User extends NazgulEntity {
 
         // Convert the birthday to a Calendar
         this.birthday = GregorianCalendar.from(birthday.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));
+        setXmlID();
     }
 
     /**
@@ -415,11 +416,18 @@ public class User extends NazgulEntity {
      *
      * @param marshaller The active Marshaller.
      */
+    @SuppressWarnings("all")
     private void beforeMarshal(final Marshaller marshaller) {
+        setXmlID();
+    }
+
+    private void setXmlID() {
+
+        final LocalDate localDate = ((GregorianCalendar) birthday).toZonedDateTime().toLocalDate();
         final String hopefullyUniqueString = getId()
-                + "_" + getFirstName()
-                + "_" + getLastName()
-                + "_" + TimeFormat.YEAR_MONTH_DATE.print(getBirthday());
+                + "_" + firstName
+                + "_" + lastName
+                + "_" + TimeFormat.YEAR_MONTH_DATE.print(localDate);
         this.xmlID = hopefullyUniqueString.replaceAll("\\s+", "_");
     }
 }

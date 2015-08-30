@@ -86,9 +86,10 @@ public class CategorizedAddressTest extends AbstractEntityTest {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/categorizedAddresses.xml");
+        final CategorizedAddresses toMarshal = new CategorizedAddresses(addressArray);
 
         // Act
-        final String result = marshal(new CategorizedAddresses(addressArray));
+        final String result = marshal(toMarshal);
 
         // Assert
         // System.out.println("Got: " + result);

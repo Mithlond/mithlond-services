@@ -71,26 +71,41 @@ public class Guild extends Group {
     /**
      * Compound constructor creating a Guild object wrapping the supplied data.
      *
-     * @param groupName
-     * @param organisation
-     * @param parent
-     * @param emailList
-     * @param quenyaName
-     * @param quenyaPrefix
+     * @param quenyaName   The quenya name of this Guild.
+     * @param quenyaPrefix The quenya prefix of this Guild.
+     * @param organisation The Organisation where this guild belongs.
+     * @param guildName    The name of this Guild. Identical to group name for Guilds.
+     * @param emailList    An optional electronic mail list which delivers elecronic mail to all members of this Group.
+     *                     If the emailList property does not contain a full email address, the email suffix of the
+     *                     Organisation will be appended to form the full mail address of
+     *                     <code>[emailList]@[organisation email suffix]</code>.
      */
-    public Guild(final String groupName,
+    public Guild(final String guildName,
                  final Organisation organisation,
-                 final Group parent,
                  final String emailList,
                  final String quenyaName,
                  final String quenyaPrefix) {
 
         // Delegate
-        super(groupName, organisation, parent, emailList);
+        super(guildName, organisation, null, emailList);
 
         // Assign internal state
         this.quenyaName = quenyaName;
         this.quenyaPrefix = quenyaPrefix;
+    }
+
+    /**
+     * @return The Quenya name of this Guild, without any prefixes. Example: "Galabargian".
+     */
+    public String getQuenyaName() {
+        return quenyaName;
+    }
+
+    /**
+     * @return The Quenya prefix of this Guild, without any names. Example: "Mellonath".
+     */
+    public String getQuenyaPrefix() {
+        return quenyaPrefix;
     }
 
     //
@@ -103,6 +118,7 @@ public class Guild extends Group {
      *
      * @param marshaller The active Marshaller.
      */
+    @SuppressWarnings("all")
     private void beforeMarshal(final Marshaller marshaller) {
         this.xmlID = "guild_" + getOrganisation().getOrganisationName().replaceAll("\\s+", "_")
                 + "_" + getGroupName().trim().replaceAll("\\s+", "_");

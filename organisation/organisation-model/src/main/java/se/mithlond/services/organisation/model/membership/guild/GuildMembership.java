@@ -205,6 +205,14 @@ public class GuildMembership extends GroupMembership {
      * {@inheritDoc}
      */
     @Override
+    public boolean equals(final Object obj) {
+        return super.equals(obj);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int compareTo(final GroupMembership that) {
 
         // Check sanity

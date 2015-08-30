@@ -21,12 +21,11 @@
  */
 package se.mithlond.services.organisation.model.membership.order;
 
-import org.apache.commons.lang3.Validate;
-import org.joda.time.DateTime;
-import se.jguru.nazgul.mithlond.service.organisation.model.Organisation;
-import se.jguru.nazgul.mithlond.service.organisation.model.membership.Membership;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -47,7 +46,9 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * The record of when a particular OrderLevel was granted to a Membership,
@@ -58,7 +59,7 @@ import java.util.Calendar;
  */
 @Entity
 @Access(value = AccessType.FIELD)
-@XmlType(namespace = Organisation.NAMESPACE, propOrder = {"orderLevel", "dateGranted", "note"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"orderLevel", "dateGranted", "note"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant>, Validatable {
 
@@ -111,11 +112,11 @@ public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant
      */
     public OrderLevelGrant(final OrderLevel orderLevel,
                            final Membership membership,
-                           final DateTime dateGranted,
+                           final ZonedDateTime dateGranted,
                            final String note) {
         // Check some sanity
-        Validate.notNull(orderLevel, "Cannot handle null orderLevel argument.");
-        Validate.notNull(membership, "Cannot handle null membership argument.");
+        Validate.notNull(orderLevel, "orderLevel");
+        Validate.notNull(membership, "membership");
 
         // Assign internal state
         this.orderLevel = orderLevel;
@@ -158,8 +159,8 @@ public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant
     /**
      * @return The date when the OrderLevelGrant was given.
      */
-    public DateTime getDateGranted() {
-        return new DateTime(dateGranted);
+    public ZonedDateTime getDateGranted() {
+        return ((GregorianCalendar) this.dateGranted).toZonedDateTime();
     }
 
     /**
@@ -174,13 +175,13 @@ public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant
      *
      * @param dateGranted The date when the OrderLevelGrant was given.
      */
-    public final void setDateGranted(final DateTime dateGranted) {
+    public final void setDateGranted(final ZonedDateTime dateGranted) {
 
         // Check sanity
-        Validate.notNull(dateGranted, "Cannot handle null dateGranted argument.");
+        Validate.notNull(dateGranted, "dateGranted");
 
         // Assign internal state
-        this.dateGranted = dateGranted.toGregorianCalendar();
+        this.dateGranted = GregorianCalendar.from(dateGranted);
     }
 
     /**

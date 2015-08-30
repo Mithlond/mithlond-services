@@ -23,7 +23,7 @@
 
 <organisation:categorizedAddresses xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
-        <organisation jpaId="0" version="0">
+        <organisation xmlID="name" jpaId="0" version="0">
             <organisationName>name</organisationName>
             <suffix>suffix</suffix>
             <phone>phone</phone>
@@ -42,11 +42,52 @@
             </visitingAddress>
         </organisation>
     </organisations>
+    <categories>
+        <category xmlID="mail_delivery_address_delivery" jpaId="0" version="0">
+            <classification>mail_delivery_address</classification>
+            <categoryID>delivery</categoryID>
+            <description>Address type [mail_delivery_address :: delivery]</description>
+        </category>
+        <category xmlID="visitable_address_cafe" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>cafe</categoryID>
+            <description>Address type [visitable_address :: cafe]</description>
+        </category>
+        <category xmlID="visitable_address_home" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>home</categoryID>
+            <description>Address type [visitable_address :: home]</description>
+        </category>
+        <category xmlID="visitable_address_outdoors" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>outdoors</categoryID>
+            <description>Address type [visitable_address :: outdoors]</description>
+        </category>
+        <category xmlID="visitable_address_pub_restaurant" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>pub_restaurant</categoryID>
+            <description>Address type [visitable_address :: pub_restaurant]</description>
+        </category>
+        <category xmlID="visitable_address_shop" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>shop</categoryID>
+            <description>Address type [visitable_address :: shop]</description>
+        </category>
+        <category xmlID="visitable_address_site" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>site</categoryID>
+            <description>Address type [visitable_address :: site]</description>
+        </category>
+        <category xmlID="visitable_address_visiting" jpaId="0" version="0">
+            <classification>visitable_address</classification>
+            <categoryID>visiting</categoryID>
+            <description>Address type [visitable_address :: visiting]</description>
+        </category>
+    </categories>
     <categorizedAddresses>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -57,16 +98,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -77,16 +112,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -97,16 +126,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -117,16 +140,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -137,16 +154,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -157,16 +168,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -177,16 +182,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_0</shortDesc>
             <fullDesc>fullDesc_0</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -197,16 +196,10 @@
                 <country>country_0</country>
                 <description>description_0</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -217,16 +210,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -237,16 +224,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -257,16 +238,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -277,16 +252,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -297,16 +266,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -317,16 +280,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -337,16 +294,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_1</shortDesc>
             <fullDesc>fullDesc_1</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -357,16 +308,10 @@
                 <country>country_1</country>
                 <description>description_1</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -377,16 +322,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -397,16 +336,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -417,16 +350,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -437,16 +364,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -457,16 +378,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -477,16 +392,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -497,16 +406,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_2</shortDesc>
             <fullDesc>fullDesc_2</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -517,16 +420,10 @@
                 <country>country_2</country>
                 <description>description_2</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -537,16 +434,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -557,16 +448,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -577,16 +462,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -597,16 +476,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -617,16 +490,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -637,16 +504,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -657,16 +518,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_3</shortDesc>
             <fullDesc>fullDesc_3</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -677,16 +532,10 @@
                 <country>country_3</country>
                 <description>description_3</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -697,16 +546,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -717,16 +560,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -737,16 +574,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -757,16 +588,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -777,16 +602,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -797,16 +616,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -817,16 +630,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_4</shortDesc>
             <fullDesc>fullDesc_4</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -837,16 +644,10 @@
                 <country>country_4</country>
                 <description>description_4</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -857,16 +658,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -877,16 +672,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -897,16 +686,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -917,16 +700,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -937,16 +714,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -957,16 +728,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -977,16 +742,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_5</shortDesc>
             <fullDesc>fullDesc_5</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -997,16 +756,10 @@
                 <country>country_5</country>
                 <description>description_5</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1017,16 +770,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1037,16 +784,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1057,16 +798,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1077,16 +812,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1097,16 +826,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1117,16 +840,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1137,16 +854,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_6</shortDesc>
             <fullDesc>fullDesc_6</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -1157,16 +868,10 @@
                 <country>country_6</country>
                 <description>description_6</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1177,16 +882,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1197,16 +896,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1217,16 +910,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1237,16 +924,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1257,16 +938,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1277,16 +952,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1297,16 +966,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_7</shortDesc>
             <fullDesc>fullDesc_7</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -1317,16 +980,10 @@
                 <country>country_7</country>
                 <description>description_7</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1337,16 +994,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1357,16 +1008,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1377,16 +1022,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1397,16 +1036,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1417,16 +1050,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1437,16 +1064,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1457,16 +1078,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_8</shortDesc>
             <fullDesc>fullDesc_8</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -1477,16 +1092,10 @@
                 <country>country_8</country>
                 <description>description_8</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_home" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1497,16 +1106,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>home</categoryID>
-                <description>Address type [visitable_address :: home]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_visiting" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1517,16 +1120,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>visiting</categoryID>
-                <description>Address type [visitable_address :: visiting]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="mail_delivery_address_delivery" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1537,16 +1134,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>mail_delivery_address</classification>
-                <categoryID>delivery</categoryID>
-                <description>Address type [mail_delivery_address :: delivery]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_pub_restaurant" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1557,16 +1148,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>pub_restaurant</categoryID>
-                <description>Address type [visitable_address :: pub_restaurant]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_shop" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1577,16 +1162,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>shop</categoryID>
-                <description>Address type [visitable_address :: shop]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_outdoors" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1597,16 +1176,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>outdoors</categoryID>
-                <description>Address type [visitable_address :: outdoors]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_cafe" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1617,16 +1190,10 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>cafe</categoryID>
-                <description>Address type [visitable_address :: cafe]</description>
-            </category>
         </categorizedAddress>
-        <categorizedAddress jpaId="0" version="0">
+        <categorizedAddress categoryReference="visitable_address_site" organisationReference="name" jpaId="0" version="0">
             <shortDesc>shortDesc_9</shortDesc>
             <fullDesc>fullDesc_9</fullDesc>
-            <owningOrganisation>name</owningOrganisation>
             <address>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>
@@ -1637,11 +1204,6 @@
                 <country>country_9</country>
                 <description>description_9</description>
             </address>
-            <category jpaId="0" version="0">
-                <classification>visitable_address</classification>
-                <categoryID>site</categoryID>
-                <description>Address type [visitable_address :: site]</description>
-            </category>
         </categorizedAddress>
     </categorizedAddresses>
 </organisation:categorizedAddresses>

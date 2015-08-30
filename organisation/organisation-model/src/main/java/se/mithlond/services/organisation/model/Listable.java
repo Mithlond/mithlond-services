@@ -35,6 +35,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
@@ -45,9 +46,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @MappedSuperclass
 @Access(value = AccessType.FIELD)
-@Table(uniqueConstraints = {@UniqueConstraint(
-        name = "oneShortDescPerOrganisation",
-        columnNames = {"shortDesc", "owningorganisation_id"})})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "oneShortDescPerOrganisation", columnNames = {"shortDesc", "owningorganisation_id"})
+})
 @XmlType(propOrder = {"shortDesc", "fullDesc", "owningOrganisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Listable extends NazgulEntity {
@@ -61,8 +62,9 @@ public abstract class Listable extends NazgulEntity {
     @Column(nullable = false, length = 2048)
     private String fullDesc;
 
-    @ManyToOne(optional = false)
+    @XmlAttribute(required = true, name = "organisationReference")
     @XmlIDREF
+    @ManyToOne(optional = false)
     private Organisation owningOrganisation;
 
     /**

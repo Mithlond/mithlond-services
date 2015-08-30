@@ -23,8 +23,10 @@ package se.mithlond.services.organisation.model.membership.order;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Listable;
+import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -51,12 +53,15 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "Order.getAll",
-                query = "select a from Order a order by a.id"),
-        @NamedQuery(name = "getOrdersByName",
-                query = "select a from Order a where a.orderName like ?1 order by a.orderName"),
-        @NamedQuery(name = "getOrdersByOwningGuild",
-                query = "select a from Order a where a.owningGuild.guildName like ?1")
+        @NamedQuery(name = "Order.getByOrganisation",
+                query = "select a from Order a where a.owningOrganisation.organisationName like :organisationName"
+                        + " order by a.orderName"),
+        @NamedQuery(name = "Order.getByOrganisationAndName",
+                query = "select a from Order a where a.owningOrganisation.organisationName like :organisationName" +
+                        " and a.orderName like :orderName order by a.orderName"),
+        @NamedQuery(name = "Order.getOrganisationAndGuild",
+                query = "select a from Order a where a.owningOrganisation.organisationName like :organisationName" +
+                        " and a.owningGuild.groupName like :guildName order by a.orderName")
 })
 @Entity
 @Table(name = "NazgulOrder")
@@ -166,7 +171,7 @@ public class Order extends Listable {
     public final void setLevels(final List<OrderLevel> levels) {
 
         // Check sanity
-        Validate.notNull(levels, "Cannot handle null levels argument.");
+        Validate.notNull(levels, "levels");
 
         // Assign the relation to our internal state
         this.levels = levels;

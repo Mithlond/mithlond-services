@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.model.helpers;
 
+import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
@@ -45,7 +46,7 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(propOrder = {"organisations", "categorizedAddresses"})
+@XmlType(propOrder = {"organisations", "categories", "categorizedAddresses"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CategorizedAddresses {
 
@@ -53,6 +54,10 @@ public class CategorizedAddresses {
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = false, required = true, name = "organisation")
     private List<Organisation> organisations;
+
+    @XmlElementWrapper(required = true, nillable = false)
+    @XmlElement(nillable = false, required = true, name = "category")
+    private List<Category> categories;
 
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = true, required = false, name = "categorizedAddress")
@@ -66,6 +71,7 @@ public class CategorizedAddresses {
 
         organisations = new ArrayList<>();
         categorizedAddresses = new ArrayList<>();
+        categories = new ArrayList<>();
 
         if (cats != null) {
             for (CategorizedAddress current : cats) {
@@ -76,16 +82,25 @@ public class CategorizedAddresses {
         }
 
         if(categorizedAddresses != null && categorizedAddresses.size() > 0) {
-            // Harvest all unique organisations, since they must be
+
+            // Harvest all unique organisations and categories, since they must be
             // written before the CategorizedAddresses that refer them.
-            final SortedMap<String, Organisation> tmp = new TreeMap<>();
+            final SortedMap<String, Organisation> organisationMap = new TreeMap<>();
+            final SortedMap<String, Category> categoryMap = new TreeMap<>();
+
             for(CategorizedAddress current : categorizedAddresses) {
                 final Organisation currentOrg = current.getOwningOrganisation();
-                tmp.put(currentOrg.getOrganisationName(), currentOrg);
+                final Category currentCategory = current.getCategory();
+                organisationMap.put(currentOrg.getOrganisationName(), currentOrg);
+                categoryMap.put(currentCategory.toString(), currentCategory);
             }
 
-            for(Map.Entry<String, Organisation> current : tmp.entrySet()) {
+            for(Map.Entry<String, Organisation> current : organisationMap.entrySet()) {
                 organisations.add(current.getValue());
+            }
+
+            for(Map.Entry<String, Category> current : categoryMap.entrySet()) {
+                categories.add(current.getValue());
             }
         }
     }

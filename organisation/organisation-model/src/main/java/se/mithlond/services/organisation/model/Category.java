@@ -30,9 +30,13 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -52,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
         @UniqueConstraint(
                 name = "categoryIdAndClassificationIsUnique",
                 columnNames = {"category", "classification"})})
-@XmlType(propOrder = {"classification", "categoryID", "description"})
+@XmlType(propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
 
@@ -71,6 +75,17 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
     @Basic(optional = false)
     @Column(nullable = false, length = 2048)
     private String description;
+
+    /**
+     * Syntetic XML ID for this Organisation, generated immediately before Marshalling.
+     * Since whitespace is not permitted in an XML ID, the beforeMarshal listener method generates this field from
+     * the organisation name while replacing all whitespace with underscore.
+     */
+    @XmlID
+    @XmlAttribute(required = true)
+    @Transient
+    @SuppressWarnings("all")
+    private String xmlID;
 
     /**
      * JPA/JAXB-friendly constructor.
@@ -97,6 +112,7 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
         this.categoryID = categoryID;
         this.description = description;
         this.classification = classification;
+        setXmlID();
     }
 
     /**
@@ -141,9 +157,9 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
      */
     @Override
     public int hashCode() {
-        return getCategoryID().hashCode()
-                + getDescription().hashCode()
-                + getClassification().hashCode();
+        return classification.hashCode()
+                + categoryID.hashCode()
+                + description.hashCode();
     }
 
     /**
@@ -199,7 +215,7 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
      */
     @Override
     public String toString() {
-        return getCategoryID();
+        return getClassification() + " --> " + getCategoryID();
     }
 
     /**
@@ -213,5 +229,26 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
                 .notNullOrEmpty(classification, "classification")
                 .notNullOrEmpty(description, "description")
                 .endExpressionAndValidate();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * immediately before this object is Marshalled.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("all")
+    private void beforeMarshal(final Marshaller marshaller) {
+        setXmlID();
+    }
+
+    private void setXmlID() {
+        final String xmlIdClassification = classification == null ? "" : classification.trim();
+        final String xmlIdCategoryID = categoryID == null ? "" : categoryID.trim();
+        this.xmlID = (xmlIdClassification + "_" + xmlIdCategoryID).replaceAll("\\s+", "_");
     }
 }

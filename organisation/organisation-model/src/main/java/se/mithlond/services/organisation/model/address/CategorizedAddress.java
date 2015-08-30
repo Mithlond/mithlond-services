@@ -36,7 +36,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -70,7 +72,8 @@ public class CategorizedAddress extends Listable implements Comparable<Categoriz
 
     // Internal state
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @XmlElement(nillable = false, required = true)
+    @XmlIDREF
+    @XmlAttribute(required = true, name = "categoryReference")
     private Category category;
 
     @Embedded

@@ -27,6 +27,7 @@ import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.validation.constraints.Null;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -159,6 +160,8 @@ public class PlainJaxbContextRule extends TestWatcher {
                 final String currentTypeName = objects[i] == null ? "<null>" : objects[i].getClass().getName();
                 throw new IllegalArgumentException("Could not marshal object [" + i + "] of type ["
                         + currentTypeName + "].", e);
+            } catch(Exception e) {
+                throw new IllegalArgumentException("Could not marshal object [" + i + "]: " + objects[i], e);
             }
         }
 

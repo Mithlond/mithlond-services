@@ -23,9 +23,8 @@ package se.mithlond.services.organisation.model.membership.order;
 
 import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
-import se.jguru.nazgul.mithlond.service.model.IgnoreXmlIDREFScanning;
-import se.jguru.nazgul.mithlond.service.organisation.model.Organisation;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -52,15 +51,13 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "getAllOrderLevels",
-                query = "select a from OrderLevel a order by a.id"),
-        @NamedQuery(name = "getOrderLevelsByOrderName",
-                query = "select a from OrderLevel a where a.order.orderName like ?1 order by a.index")
+        @NamedQuery(name = "OrderLevel.getByOrganisationAndOrder",
+                query = "select a from OrderLevel a where a.order.orderName like :orderName order by a.index")
 })
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "orderNameAndIndexIsUnique",
         columnNames = {"index", "order_id"})})
-@XmlType(namespace = Organisation.NAMESPACE,
+@XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"orderLevelXmlID", "index", "name", "shortDesc", "fullDesc", "order"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OrderLevel extends NazgulEntity {
@@ -95,7 +92,6 @@ public class OrderLevel extends NazgulEntity {
     private Picture distinctiveImage;
     */
 
-    @IgnoreXmlIDREFScanning
     @XmlIDREF
     @XmlElement(required = true, nillable = false)
     @ManyToOne(optional = false,

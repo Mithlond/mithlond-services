@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -67,28 +68,23 @@ import java.util.TreeSet;
 @NamedQueries({
         @NamedQuery(name = "Membership.getByAliasAndOrganisation",
                 query = "select a from Membership a "
-                        + "where a.member.login = ?1 and "
-                        + "a.organisation.organisationName = ?2 order by a.id"),
-        @NamedQuery(name = "getMembershipsByGroupAndOrganisation",
-                query = "select a from Membership a, in(a.groups) groups "
-                        + "where groups.groupName = ?1 and a.organisation.organisationName = ?2 "
+                        + "where a.member.login = ?1 "
+                        + "and a.loginPermitted = :loginPermitted "
+                        + "and a.organisation.organisationName = ?2 order by a.id"),
+        @NamedQuery(name = "Membership.getByGroupAndOrganisation",
+                query = "select a from Membership a, in(a.groupMemberships) groupMemberships "
+                        + "where groupMemberships.group.groupName = :groupName "
+                        + "and a.organisation.organisationName = :organisationName "
+                        + "and a.loginPermitted = :loginPermitted "
                         + "order by a.member.login"),
-        @NamedQuery(name = "getMembershipsByGuildAndOrganisation",
-                query = "select a from Membership a, in(a.guildMemberships) guilds "
-                        + "where guilds.guild.guildName = ?1 and a.organisation.organisationName = ?2 "
-                        + "order by a.member.login"),
-        @NamedQuery(name = "getMembershipsByLogin",
-                query = "select a from Membership a where a.member.login = ?1 "
-                        + "order by a.organisation.organisationName, a.member.login"),
-        @NamedQuery(name = "getMembershipsByOrganisationAndLoginPermitted",
+        @NamedQuery(name = "Membership.getByOrganisation",
                 query = "select a from Membership a where a.organisation.organisationName = ?1 "
                         + "and a.loginPermitted = ?2 order by a.member.alias")
 })
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "aliasAndOrganisationIsUnique",
         columnNames = {"alias", "organisation_id"})})
-@XmlType(propOrder = {"emailAlias", "loginPermitted", "user",
-        "guildMemberships", "groupMemberships", "orderLevelGrants", "organisation"})
+@XmlType(propOrder = {"emailAlias", "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Membership extends NazgulEntity implements Comparable<Membership> {
 
@@ -411,7 +407,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
      * @return The added or updated OrderLevelGrant.
      */
     public OrderLevelGrant addOrUpdateOrderLevelGrant(final OrderLevel orderLevel,
-                                                      final DateTime grantedDate,
+                                                      final ZonedDateTime grantedDate,
                                                       final String note) {
 
         // Check sanity
@@ -466,7 +462,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
 
         // Delegate
         final Membership that = (Membership) o;
-        if (!user.getLogin().equals(that.user.getLogin())) {
+        if (!(user.hashCode() == that.user.hashCode())) {
             return false;
         }
         if (!organisation.getOrganisationName().equals(that.organisation.getOrganisationName())) {
@@ -478,7 +474,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     }
 
     /**
-     * The equals and hashCode methods only considers the Member::login and Organisation::organisationName fields,
+     * The equals and hashCode methods only considers User and Organisation::organisationName fields,
      * as that combination should be unique.
      * <p/>
      * {@inheritDoc}
@@ -486,8 +482,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     @Override
     @SuppressWarnings("all")
     public int hashCode() {
-        return user.getLogin().hashCode()
-                + organisation.getOrganisationName().hashCode();
+        return user.hashCode() + organisation.getOrganisationName().hashCode();
     }
 
     /**
@@ -495,7 +490,8 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
      */
     @Override
     public String toString() {
-        return "Membership [" + getUser().getLogin() + " -> " + getOrganisation().getOrganisationName() + "]";
+        final String userIdAndName = user.getId() + "_" + user.getFirstName() + "_" + user.getLastName();
+        return "Membership [" + userIdAndName + " -> " + getOrganisation().getOrganisationName() + "]";
     }
 
     /**
@@ -508,9 +504,6 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
         // Re-assign the XmlTransient collections.
-        for (GuildMembership current : guildMemberships) {
-            current.setMembership(this);
-        }
         for (OrderLevelGrant current : orderLevelGrants) {
             current.setMembership(this);
         }
@@ -529,14 +522,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
 
         // Ensure that the reference is fully loaded.
         // Workaround for the https://hibernate.atlassian.net/browse/HHH-8839 bug.
-        for (Group current : getGroupMemberships()) {
-            current.getGroupName();
+        for (GroupMembership current : getGroupMemberships()) {
+            current.getGroup().getGroupName();
         }
 
         InternalStateValidationException.create()
                 .notNull(user, "user")
                 .notNull(organisation, "organisation")
-                .notNull(guildMemberships, "guildMemberships")
                 .notNull(orderLevelGrants, "orderLevelGrants")
                 .notNull(groupMemberships, "groupMemberships")
                 .endExpressionAndValidate();

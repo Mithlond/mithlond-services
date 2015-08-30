@@ -36,6 +36,7 @@ import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
@@ -47,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
-@XmlType(propOrder = {"organisationName", "suffix", "phone", "bankAccountInfo",
+@XmlType(propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
         "postAccountInfo", "emailSuffix", "visitingAddress"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation extends NazgulEntity implements Comparable<Organisation> {
@@ -71,6 +72,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      * the organisation name while replacing all whitespace with underscore.
      */
     @XmlID
+    @XmlAttribute(required = true)
     @Transient
     @SuppressWarnings("all")
     private String xmlID;
@@ -158,6 +160,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
         this.postAccountInfo = postAccountInfo;
         this.visitingAddress = visitingAddress;
         this.emailSuffix = emailSuffix;
+        setXmlID();
     }
 
     /**
@@ -279,7 +282,12 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      *
      * @param marshaller The active Marshaller.
      */
+    @SuppressWarnings("all")
     private void beforeMarshal(final Marshaller marshaller) {
+        setXmlID();
+    }
+
+    private void setXmlID() {
         this.xmlID = this.organisationName.replaceAll("\\s+", "_");
     }
 }

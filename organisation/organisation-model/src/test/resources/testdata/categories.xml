@@ -23,52 +23,52 @@
 
 <organisation:categories xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <categories>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_0_categoryID_0" jpaId="0" version="0">
             <classification>classification_0</classification>
             <categoryID>categoryID_0</categoryID>
             <description>description_0</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_1_categoryID_1" jpaId="0" version="0">
             <classification>classification_1</classification>
             <categoryID>categoryID_1</categoryID>
             <description>description_1</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_2_categoryID_2" jpaId="0" version="0">
             <classification>classification_2</classification>
             <categoryID>categoryID_2</categoryID>
             <description>description_2</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_3_categoryID_3" jpaId="0" version="0">
             <classification>classification_3</classification>
             <categoryID>categoryID_3</categoryID>
             <description>description_3</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_4_categoryID_4" jpaId="0" version="0">
             <classification>classification_4</classification>
             <categoryID>categoryID_4</categoryID>
             <description>description_4</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_5_categoryID_5" jpaId="0" version="0">
             <classification>classification_5</classification>
             <categoryID>categoryID_5</categoryID>
             <description>description_5</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_6_categoryID_6" jpaId="0" version="0">
             <classification>classification_6</classification>
             <categoryID>categoryID_6</categoryID>
             <description>description_6</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_7_categoryID_7" jpaId="0" version="0">
             <classification>classification_7</classification>
             <categoryID>categoryID_7</categoryID>
             <description>description_7</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_8_categoryID_8" jpaId="0" version="0">
             <classification>classification_8</classification>
             <categoryID>categoryID_8</categoryID>
             <description>description_8</description>
         </category>
-        <category jpaId="0" version="0">
+        <category xmlID="classification_9_categoryID_9" jpaId="0" version="0">
             <classification>classification_9</classification>
             <categoryID>categoryID_9</categoryID>
             <description>description_9</description>

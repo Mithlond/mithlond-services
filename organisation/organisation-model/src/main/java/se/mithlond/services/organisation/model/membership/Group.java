@@ -262,6 +262,7 @@ public class Group extends NazgulEntity implements Comparable<Group> {
      *
      * @param marshaller The active Marshaller.
      */
+    @SuppressWarnings("all")
     private void beforeMarshal(final Marshaller marshaller) {
         this.xmlID = "group_" + organisation.getOrganisationName().replaceAll("\\s+", "_")
                 + "_" + groupName.trim().replaceAll("\\s+", "_");

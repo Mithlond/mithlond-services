@@ -77,10 +77,24 @@
     <!-- +=============================================== -->
     <!-- | Section 3:  Build settings                     -->
     <!-- +=============================================== -->
-    <!-- build>
-        <plugins>
-        </plugins>
-    </build -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle.plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>6.9</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <!-- +=============================================== -->
     <!-- | Section 4:  External systems                   -->

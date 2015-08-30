@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.membership.order;
 
-import se.jguru.nazgul.mithlond.service.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -41,7 +41,7 @@ import java.io.Serializable;
 @Embeddable
 @Access(value = AccessType.FIELD)
 @XmlTransient
-@XmlType(namespace = Organisation.NAMESPACE)
+@XmlType(namespace = Patterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OrderLevelGrantId implements Serializable {
 
