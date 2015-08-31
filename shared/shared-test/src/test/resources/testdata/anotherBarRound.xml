@@ -28,16 +28,16 @@
             <name>lennart</name>
             <consumption>
                 <consumptionRecords>
-                    <record numConsumed="2">
-                        <beverage>
-                            <name>Root Beer</name>
-                            <producer>Ödeshögs Bryggeri</producer>
-                        </beverage>
-                    </record>
                     <record numConsumed="1">
                         <beverage>
                             <name>DIPA</name>
                             <producer>Poppels</producer>
+                        </beverage>
+                    </record>
+                    <record numConsumed="2">
+                        <beverage>
+                            <name>Root Beer</name>
+                            <producer>Ödeshögs Bryggeri</producer>
                         </beverage>
                     </record>
                 </consumptionRecords>
@@ -47,16 +47,16 @@
             <name>malin</name>
             <consumption>
                 <consumptionRecords>
-                    <record numConsumed="1">
-                        <beverage>
-                            <name>Root Beer</name>
-                            <producer>Ödeshögs Bryggeri</producer>
-                        </beverage>
-                    </record>
                     <record numConsumed="2">
                         <beverage>
                             <name>DIPA</name>
                             <producer>Poppels</producer>
+                        </beverage>
+                    </record>
+                    <record numConsumed="1">
+                        <beverage>
+                            <name>Root Beer</name>
+                            <producer>Ödeshögs Bryggeri</producer>
                         </beverage>
                     </record>
                 </consumptionRecords>

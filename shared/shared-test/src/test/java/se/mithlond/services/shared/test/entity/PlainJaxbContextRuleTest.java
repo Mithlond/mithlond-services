@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.test.entity;
 
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,8 @@ import se.mithlond.services.shared.test.entity.helpers.Customer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -95,6 +99,7 @@ public class PlainJaxbContextRuleTest {
             }
         }
         */
+
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
     }
 

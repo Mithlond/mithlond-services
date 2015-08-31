@@ -20,7 +20,6 @@
   limitations under the License.
   #L%
   -->
-
 <barRound:barRound xmlns:core="http://www.jguru.se/nazgul/core" xmlns:barRound="mithlond:shared:test:event" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <identifier>fridayNightOut</identifier>
     <customers>

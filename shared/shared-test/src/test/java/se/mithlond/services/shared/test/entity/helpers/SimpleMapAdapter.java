@@ -27,6 +27,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,25 +41,36 @@ import java.util.TreeMap;
 public class SimpleMapAdapter extends XmlAdapter<SimpleMapAdapter.ListMap, Map<Beverage, Integer>> {
 
     public static class ListMap {
+
         @XmlElementWrapper(required = true, nillable = false)
         @XmlElement(nillable = true, required = false, name = "record")
         public List<ConsumptionEntry> consumptionRecords = new ArrayList<>();
 
         public void addNameValuePair(Beverage beverage, int numConsumed) {
+
+            // Create the entry
             ConsumptionEntry toAdd = new ConsumptionEntry();
             toAdd.beverage = beverage;
             toAdd.numConsumed = numConsumed;
             consumptionRecords.add(toAdd);
+
+            // Tidy up.
+            Collections.sort(consumptionRecords);
         }
     }
 
-    public static class ConsumptionEntry {
+    public static class ConsumptionEntry implements Comparable<ConsumptionEntry> {
 
         @XmlAttribute(required = true)
         public Integer numConsumed;
 
         @XmlElement(required = true)
         public Beverage beverage;
+
+        @Override
+        public int compareTo(final ConsumptionEntry that) {
+            return beverage.getName().compareTo(that.beverage.getName());
+        }
     }
 
     /**
@@ -65,7 +78,9 @@ public class SimpleMapAdapter extends XmlAdapter<SimpleMapAdapter.ListMap, Map<B
      */
     @Override
     public Map<Beverage, Integer> unmarshal(final ListMap toUnmarshal) throws Exception {
-        final Map<Beverage, Integer> toReturn = new TreeMap<>();
+
+        final Comparator<Beverage> beverageComparator = (lhs, rhs) -> lhs.getName().compareTo(rhs.getName());
+        final Map<Beverage, Integer> toReturn = new TreeMap<>(beverageComparator);
 
         if(toUnmarshal != null) {
             for(ConsumptionEntry current : toUnmarshal.consumptionRecords) {

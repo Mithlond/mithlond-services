@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,11 +44,16 @@ public class BarRound {
     private List<Customer> customers;
 
     public BarRound() {
+        this.customers = new ArrayList<>();
     }
 
     public BarRound(final String identifier, final List<Customer> customers) {
+        this();
+
+        // Assign internal state
         this.identifier = identifier;
-        this.customers = customers;
+        this.customers.addAll(customers);
+        Collections.sort(this.customers);
     }
 
     public String getIdentifier() {
