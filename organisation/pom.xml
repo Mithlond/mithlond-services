@@ -31,7 +31,7 @@
     <!-- +=============================================== -->
     <modules>
         <module>organisation-model</module>
-        <!-- module>organisation-api</module -->
+        <module>organisation-api</module>
     </modules>
 
     <!-- +=============================================== -->

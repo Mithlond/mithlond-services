@@ -84,7 +84,8 @@ import java.util.TreeSet;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "aliasAndOrganisationIsUnique",
         columnNames = {"alias", "organisation_id"})})
-@XmlType(propOrder = {"emailAlias", "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
+@XmlType(propOrder = {"alias", "subAlias", "emailAlias",
+        "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Membership extends NazgulEntity implements Comparable<Membership> {
 

@@ -18,14 +18,14 @@
     <artifactId>mithlond-services-organisation-model</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Content (Model, version ${project.version})</description>
+    <description>Mithlond Service: Organisation (Model, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>content/content-model</path.in.reactor>
+        <path.in.reactor>organisation/organisation-model</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
 
         <!-- Reduce coverage requirements -->

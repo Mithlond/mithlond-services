@@ -71,7 +71,8 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(propOrder = {"firstName", "lastName", "birthday", "personalNumberLast4Digits", "homeAddress"})
+@XmlType(propOrder = {"xmlID", "firstName", "lastName", "birthday", "personalNumberLast4Digits",
+        "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class User extends NazgulEntity {
 
@@ -153,6 +154,7 @@ public class User extends NazgulEntity {
      * The method ensures that whitespace is weeded not found in the xmlID as per the XML specification.
      */
     @XmlID
+    @XmlAttribute(required = true)
     @Transient
     @SuppressWarnings("all")
     private String xmlID;

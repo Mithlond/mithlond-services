@@ -93,6 +93,7 @@ public class Group extends NazgulEntity implements Comparable<Group> {
      * all whitespace with underscore.
      */
     @XmlID
+    @XmlAttribute(required = true)
     @Transient
     @SuppressWarnings("all")
     protected String xmlID;

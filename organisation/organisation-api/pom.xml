@@ -9,24 +9,28 @@
     <!-- +=============================================== -->
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
-        <artifactId>mithlond-codestyle-model-parent</artifactId>
+        <artifactId>mithlond-codestyle-api-parent</artifactId>
         <version>1.0.0</version>
         <relativePath/>
     </parent>
 
-    <groupId>se.mithlond.services.content.model</groupId>
-    <artifactId>mithlond-services-content-model</artifactId>
+    <groupId>se.mithlond.services.organisation.api</groupId>
+    <artifactId>mithlond-services-organisation-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Content (Model, version ${project.version})</description>
+    <description>Mithlond Service: Organisation (API, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>content/content-model</path.in.reactor>
+        <path.in.reactor>organisation/organisation-api</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
+
+        <!-- Reduce coverage requirements -->
+        <breakOnFailure.enforcer>true</breakOnFailure.enforcer>
+        <breakOnFailure.cobertura>false</breakOnFailure.cobertura>
 
         <!-- Build-controlling properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -73,10 +77,24 @@
     <!-- +=============================================== -->
     <!-- | Section 3:  Build settings                     -->
     <!-- +=============================================== -->
-    <!-- build>
-        <plugins>
-        </plugins>
-    </build -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${checkstyle.plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>6.9</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <!-- +=============================================== -->
     <!-- | Section 4:  External systems                   -->
@@ -112,10 +130,27 @@
                 </property>
             </activation>
 
+            <!-- dependencyManagement>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jboss.spec</groupId>
+                        <artifactId>jboss-javaee-7.0</artifactId>
+                        <version>${version.jboss.spec.javaee.7.0}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                </dependencies>
+            </dependencyManagement -->
+
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.spec.javax.ejb</groupId>
                     <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
+                    <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>

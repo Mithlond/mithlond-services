@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-organisation-model
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2010 - 2014 jGuru Europe AB
  * %%

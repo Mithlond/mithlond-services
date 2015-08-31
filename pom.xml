@@ -33,7 +33,7 @@
     <modules>
         <module>shared</module>
         <module>organisation</module>
-        <!-- module>content</module -->
+        <module>content</module>
     </modules>
 
     <!-- +=============================================== -->

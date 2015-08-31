@@ -36,7 +36,7 @@ import java.util.TreeMap;
  */
 public class TimeFormatTest extends AbstractStandardizedTimezoneTest {
 
-    // Shared stat
+    // Shared state
     private ZonedDateTime firstOfMay2014 = ZonedDateTime.of(2014, 5, 1, 13, 15, 0, 0, TimeFormat.SWEDISH_TIMEZONE);
     private SortedMap<TimeFormat, String> actual;
 
