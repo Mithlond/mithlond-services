@@ -14,18 +14,18 @@
         <relativePath/>
     </parent>
 
-    <groupId>se.mithlond.services.organisation.api</groupId>
-    <artifactId>mithlond-services-organisation-api</artifactId>
+    <groupId>se.mithlond.services.shared.spi.jpa</groupId>
+    <artifactId>mithlond-services-shared-spi-jpa</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Organisation (API, version ${project.version})</description>
+    <description>Mithlond Service: Shared JPA (SPI, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>organisation/organisation-api</path.in.reactor>
+        <path.in.reactor>shared/shared-spi</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
 
         <!-- Reduce coverage requirements -->
@@ -42,25 +42,6 @@
     <!-- | Section 2:  Dependency (management) settings   -->
     <!-- +=============================================== -->
     <dependencies>
-        <!-- Internal dependencies -->
-        <dependency>
-            <groupId>se.mithlond.services.organisation.model</groupId>
-            <artifactId>mithlond-services-organisation-model</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>se.mithlond.services.shared.spi.jpa</groupId>
-            <artifactId>mithlond-services-shared-spi-jpa</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>se.mithlond.services.shared.test.entity</groupId>
-            <artifactId>mithlond-services-shared-entity-test</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- External dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -69,12 +50,6 @@
         <dependency>
             <groupId>se.jguru.nazgul.test.xmlbinding</groupId>
             <artifactId>nazgul-core-xmlbinding-test</artifactId>
-            <version>${nazgul-core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -82,24 +57,10 @@
     <!-- +=============================================== -->
     <!-- | Section 3:  Build settings                     -->
     <!-- +=============================================== -->
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyle.plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>6.9</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+    <!-- build>
+        <plugins>
+        </plugins>
+    </build -->
 
     <!-- +=============================================== -->
     <!-- | Section 4:  External systems                   -->

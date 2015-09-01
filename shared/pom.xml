@@ -31,7 +31,8 @@
     <!-- +=============================================== -->
     <modules>
         <module>shared-test</module>
-        <module>shared-spi</module>
+        <module>shared-spi-algorithms</module>
+        <module>shared-spi-jpa</module>
     </modules>
 
     <!-- +=============================================== -->

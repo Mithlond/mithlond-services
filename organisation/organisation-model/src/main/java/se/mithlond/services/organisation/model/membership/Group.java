@@ -25,6 +25,7 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthorizationPath;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -67,7 +68,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"groupName", "organisation", "parent", "emailList"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Group extends NazgulEntity implements Comparable<Group> {
+public class Group extends NazgulEntity implements Comparable<Group>, AuthorizationPath {
 
     /**
      * Name of this Group, which must be non-empty and unique within each Organisation.
@@ -105,7 +106,7 @@ public class Group extends NazgulEntity implements Comparable<Group> {
             fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @XmlIDREF
-    @XmlAttribute(required = true)
+    @XmlAttribute(required = true, name = "organisationReference")
     private Organisation organisation;
 
     /**
@@ -251,6 +252,22 @@ public class Group extends NazgulEntity implements Comparable<Group> {
 
         // All Done
         return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getRealm() {
+        return organisation.getOrganisationName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getGroup() {
+        return groupName;
     }
 
     //

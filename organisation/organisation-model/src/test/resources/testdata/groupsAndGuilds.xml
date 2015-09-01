@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<organisation:groupsAndGuilds xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <organisations>
+        <organisation xmlID="organisation_name_0" jpaId="0" version="0">
+            <organisationName>name_0</organisationName>
+            <suffix>suffix_0</suffix>
+            <phone>phone_0</phone>
+            <bankAccountInfo>bankAccountInfo_0</bankAccountInfo>
+            <postAccountInfo>postAccountInfo_0</postAccountInfo>
+            <emailSuffix>emailSuffix_0</emailSuffix>
+            <visitingAddress>
+                <careOfLine>careOfLine_0</careOfLine>
+                <departmentName>departmentName_0</departmentName>
+                <street>street_0</street>
+                <number>number_0</number>
+                <city>city_0</city>
+                <zipCode>zipCode_0</zipCode>
+                <country>country_0</country>
+                <description>description_0</description>
+            </visitingAddress>
+        </organisation>
+        <organisation xmlID="organisation_name_1" jpaId="0" version="0">
+            <organisationName>name_1</organisationName>
+            <suffix>suffix_1</suffix>
+            <phone>phone_1</phone>
+            <bankAccountInfo>bankAccountInfo_1</bankAccountInfo>
+            <postAccountInfo>postAccountInfo_1</postAccountInfo>
+            <emailSuffix>emailSuffix_1</emailSuffix>
+            <visitingAddress>
+                <careOfLine>careOfLine_1</careOfLine>
+                <departmentName>departmentName_1</departmentName>
+                <street>street_1</street>
+                <number>number_1</number>
+                <city>city_1</city>
+                <zipCode>zipCode_1</zipCode>
+                <country>country_1</country>
+                <description>description_1</description>
+            </visitingAddress>
+        </organisation>
+        <organisation xmlID="organisation_name_2" jpaId="0" version="0">
+            <organisationName>name_2</organisationName>
+            <suffix>suffix_2</suffix>
+            <phone>phone_2</phone>
+            <bankAccountInfo>bankAccountInfo_2</bankAccountInfo>
+            <postAccountInfo>postAccountInfo_2</postAccountInfo>
+            <emailSuffix>emailSuffix_2</emailSuffix>
+            <visitingAddress>
+                <careOfLine>careOfLine_2</careOfLine>
+                <departmentName>departmentName_2</departmentName>
+                <street>street_2</street>
+                <number>number_2</number>
+                <city>city_2</city>
+                <zipCode>zipCode_2</zipCode>
+                <country>country_2</country>
+                <description>description_2</description>
+            </visitingAddress>
+        </organisation>
+    </organisations>
+    <groupsAndGuilds>
+        <group organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0" jpaId="0" version="0">
+            <groupName>groupName_0</groupName>
+            <emailList>emailList_0</emailList>
+        </group>
+        <group organisationReference="organisation_name_1" xmlID="group_name_1_groupName_1" jpaId="0" version="0">
+            <groupName>groupName_1</groupName>
+            <emailList>emailList_1</emailList>
+        </group>
+        <group organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2" jpaId="0" version="0">
+            <groupName>groupName_2</groupName>
+            <emailList>emailList_2</emailList>
+        </group>
+        <group organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3" jpaId="0" version="0">
+            <groupName>groupName_3</groupName>
+            <emailList>emailList_3</emailList>
+        </group>
+        <group organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4" jpaId="0" version="0">
+            <groupName>groupName_4</groupName>
+            <emailList>emailList_4</emailList>
+        </group>
+        <guild organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_0" jpaId="0" version="0">
+            <groupName>guildName_0</groupName>
+            <emailList>emailList_0</emailList>
+            <quenyaName>quenyaName_0</quenyaName>
+            <quenyaPrefix>quenyaPrefix_0</quenyaPrefix>
+        </guild>
+        <guild organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_1" jpaId="0" version="0">
+            <groupName>guildName_1</groupName>
+            <emailList>emailList_1</emailList>
+            <quenyaName>quenyaName_1</quenyaName>
+            <quenyaPrefix>quenyaPrefix_1</quenyaPrefix>
+        </guild>
+        <guild organisationReference="organisation_name_2" xmlID="guild_name_2_guildName_2" jpaId="0" version="0">
+            <groupName>guildName_2</groupName>
+            <emailList>emailList_2</emailList>
+            <quenyaName>quenyaName_2</quenyaName>
+            <quenyaPrefix>quenyaPrefix_2</quenyaPrefix>
+        </guild>
+        <guild organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3" jpaId="0" version="0">
+            <groupName>guildName_3</groupName>
+            <emailList>emailList_3</emailList>
+            <quenyaName>quenyaName_3</quenyaName>
+            <quenyaPrefix>quenyaPrefix_3</quenyaPrefix>
+        </guild>
+        <guild organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_4" jpaId="0" version="0">
+            <groupName>guildName_4</groupName>
+            <emailList>emailList_4</emailList>
+            <quenyaName>quenyaName_4</quenyaName>
+            <quenyaPrefix>quenyaPrefix_4</quenyaPrefix>
+        </guild>
+    </groupsAndGuilds>
+</organisation:groupsAndGuilds>

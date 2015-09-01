@@ -339,9 +339,10 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
 
         // Check sanity
         Validate.notNull(group, "group");
-        Validate.isTrue(!(group instanceof Guild), "Cannot handle Guild groups.");
+        Validate.isTrue(!(group instanceof Guild), "Cannot handle Guild groups. (Got type: "
+                + group.getClass().getName() + ")");
 
-        //
+        // Do we already have a Group membership to the supplied Group?
         for (GroupMembership current : groupMemberships) {
             if (current.getGroup().equals(group)) {
                 return current;

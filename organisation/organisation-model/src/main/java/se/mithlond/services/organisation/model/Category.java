@@ -249,6 +249,6 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
     private void setXmlID() {
         final String xmlIdClassification = classification == null ? "" : classification.trim();
         final String xmlIdCategoryID = categoryID == null ? "" : categoryID.trim();
-        this.xmlID = (xmlIdClassification + "_" + xmlIdCategoryID).replaceAll("\\s+", "_");
+        this.xmlID = "category_" + (xmlIdClassification + "_" + xmlIdCategoryID).replaceAll("\\s+", "_");
     }
 }

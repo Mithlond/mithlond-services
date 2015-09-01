@@ -288,6 +288,6 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
     }
 
     private void setXmlID() {
-        this.xmlID = this.organisationName.replaceAll("\\s+", "_");
+        this.xmlID = "organisation_" + this.organisationName.replaceAll("\\s+", "_");
     }
 }

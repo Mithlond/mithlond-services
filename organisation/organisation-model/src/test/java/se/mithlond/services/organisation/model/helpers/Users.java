@@ -43,12 +43,16 @@ public class Users {
     private List<CategorizedAddress> categorizedAddresses;
 
     @XmlElementWrapper(required = true, nillable = false)
-    @XmlElement(nillable = true, required = false, name = "group")
-    private List<Group> groups;
-
-    @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = true, required = false, name = "user")
     private List<User> users;
+
+    @XmlElementWrapper(required = true, nillable = false)
+    @XmlElement(nillable = true, required = false, name = "membership")
+    private List<Membership> memberships;
+
+    @XmlElementWrapper(required = true, nillable = false)
+    @XmlElement(nillable = true, required = false, name = "group")
+    private List<Group> groups;
 
     public Users() {
         this((User) null);
@@ -60,6 +64,8 @@ public class Users {
         categorizedAddresses = new ArrayList<>();
         categories = new ArrayList<>();
         this.users = new ArrayList<>();
+        this.memberships = new ArrayList<>();
+        this.groups = new ArrayList<>();
 
         // Harvest all unique organisations and categories, since they must be
         // written before the CategorizedAddresses that refer them.
@@ -87,6 +93,7 @@ public class Users {
         }
 
         organisations.addAll(organisationMap.values());
+        groups.addAll(groupMap.values());
 
         if(this.users != null && this.users.size() > 0) {
 

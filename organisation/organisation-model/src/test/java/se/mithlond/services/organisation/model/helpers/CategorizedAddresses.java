@@ -34,13 +34,11 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -74,32 +72,32 @@ public class CategorizedAddresses {
         categories = new ArrayList<>();
 
         if (cats != null) {
-            for (CategorizedAddress current : cats) {
+            Arrays.asList(cats).forEach(current -> {
                 if (current != null) {
                     categorizedAddresses.add(current);
                 }
-            }
+            });
         }
 
-        if(categorizedAddresses != null && categorizedAddresses.size() > 0) {
+        if (categorizedAddresses != null && categorizedAddresses.size() > 0) {
 
             // Harvest all unique organisations and categories, since they must be
             // written before the CategorizedAddresses that refer them.
             final SortedMap<String, Organisation> organisationMap = new TreeMap<>();
             final SortedMap<String, Category> categoryMap = new TreeMap<>();
 
-            for(CategorizedAddress current : categorizedAddresses) {
+            categorizedAddresses.forEach(current -> {
                 final Organisation currentOrg = current.getOwningOrganisation();
                 final Category currentCategory = current.getCategory();
                 organisationMap.put(currentOrg.getOrganisationName(), currentOrg);
                 categoryMap.put(currentCategory.toString(), currentCategory);
-            }
+            });
 
-            for(Map.Entry<String, Organisation> current : organisationMap.entrySet()) {
+            for (Map.Entry<String, Organisation> current : organisationMap.entrySet()) {
                 organisations.add(current.getValue());
             }
 
-            for(Map.Entry<String, Category> current : categoryMap.entrySet()) {
+            for (Map.Entry<String, Category> current : categoryMap.entrySet()) {
                 categories.add(current.getValue());
             }
         }
@@ -107,6 +105,14 @@ public class CategorizedAddresses {
 
     public List<CategorizedAddress> getCategorizedAddresses() {
         return categorizedAddresses;
+    }
+
+    public List<Organisation> getOrganisations() {
+        return organisations;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
     }
 
     /**
