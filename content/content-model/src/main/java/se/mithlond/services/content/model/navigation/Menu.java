@@ -46,7 +46,7 @@ public interface Menu extends PresentableLink {
      * Retrieves an ordered List of all PresentableLink children stashed within this Menu.
      *
      * @param <T> The type of data retrieved.
-     * @return
+     * @return A List containing all PresentableLinks contained within this Menu.
      */
     <T extends PresentableLink> List<T> getChildren();
 }

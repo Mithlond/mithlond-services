@@ -20,7 +20,7 @@
  * #L%
  */
 /**
- * Package holding entity classes defining various types of Content for Mithlond services.
+ * Package holding specifications for navigation types, such as Menus and MenuItems.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -36,7 +36,7 @@
         }
 )
 @XmlAccessorType(XmlAccessType.FIELD)
-package se.mithlond.services.content.model;
+package se.mithlond.services.content.model.navigation;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -21,7 +21,12 @@
  */
 package se.mithlond.services.content.model.navigation;
 
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthorizationPath;
+
+import java.util.SortedSet;
+
 /**
+ * <h2>Basic specification</h2>
  * <p>Specification for a minimalistic bootstrap-type item which can be put in a Menu.</p>
  * <pre>
  *     &lt;li role="[role]"&gt;
@@ -29,6 +34,10 @@ package se.mithlond.services.content.model.navigation;
  *          &lt;i class="icon-fixed-width [iconIdentifier]"&gt;&lt;/i&gt; [text]&lt;/a&gt;
  *     &lt;/li&gt;
  * </pre>
+ * <h2>AuthorizationPath</h2>
+ * <p>Any PresentableLink can be defined as requiring at least one of a defined set of
+ * authorization paths. Each AuthorizationPath defines a realm and an optional group to
+ * which the active User must belong in order to view the full data within this PresentableLink.</p>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -48,6 +57,22 @@ public interface PresentableLink {
      * @return the altText (help-popup-text) of this PresentableLink. Default implementation retrieves {@code null}.
      */
     default String getAltText() {
+        return null;
+    }
+
+    /**
+     * <p>Retrieves an optional Set of AuthorizationPath instances. If the user possesses at least one of these
+     * AuthorizationPaths, this PresentableLink should be shown to the user with all its detail.
+     * If the user does <strong>not</strong> possess any of the AuthorizationPaths returned by this method,
+     * only non-sensitive data from this PresentableLink should be made available to the user.</p>
+     * <p>In this context, <strong>non-sensitive data</strong> might be the text and icon of the PresentableLink,
+     * but not any HREFs.</p>
+     *
+     * @return A SortedSet containing AuthorizationPaths required to view the data of this PresentableLink.
+     * A {@code null} return value from this method indicates that this PresentableLink does not have any protection,
+     * and is hence viewable by all Users.
+     */
+    default SortedSet<AuthorizationPath> getRequiredAuthorization() {
         return null;
     }
 }
