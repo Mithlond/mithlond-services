@@ -270,6 +270,14 @@ public class Group extends NazgulEntity implements Comparable<Group>, Authorizat
         return groupName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getQualifier() {
+        return ALLOW_ANY;
+    }
+
     //
     // Private helpers
     //

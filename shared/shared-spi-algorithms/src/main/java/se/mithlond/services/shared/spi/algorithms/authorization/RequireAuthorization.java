@@ -40,7 +40,7 @@ public @interface RequireAuthorization {
      * @return The AuthorizationPaths required to have the required authorization.
      * {@code null} values indicate that no particular AuthorizationPath is required.
      *
-     * @see AuthorizationPath#parse(String)
+     * @see SimpleAuthorizationPath#parse(String)
      */
     String authorizationPaths() default NONE;
 }

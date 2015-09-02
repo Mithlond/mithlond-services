@@ -43,23 +43,29 @@ public interface AuthorizationPath {
     String PATH_SEPARATOR = "/";
 
     /**
-     * A constant to indicate that the value in question is unimportant (i.e. that we don't care about it).
+     * A constant to indicate that all values will be permitted.
      */
-    String DONT_CARE = "dont_care";
+    String ALLOW_ANY = "allowAny";
 
     /**
-     * @return The Realm of this AuthorizationPath. Should never be {@code null}; use {@code #DONT_CARE} in that case.
+     * A constant to indicate that no value will be permitted, and that any supplied value
+     * will hence disqualify match.
+     */
+    String ALLOW_NONE = "allowNone";
+
+    /**
+     * @return The Realm of this AuthorizationPath. Should never be {@code null}; use {@code #ALLOW_ANY} in that case.
      */
     String getRealm();
 
     /**
-     * @return The Group of this AuthorizationPath. Should never be {@code null}; use {@code #DONT_CARE} in that case.
+     * @return The Group of this AuthorizationPath. Should never be {@code null}; use {@code #ALLOW_ANY} in that case.
      */
     String getGroup();
 
     /**
      * @return The qualifier of this AuthorizationPath. Should never be {@code null};
-     * use {@code #DONT_CARE} in that case.
+     * use {@code #ALLOW_ANY} in that case.
      */
     String getQualifier();
 
@@ -70,13 +76,13 @@ public interface AuthorizationPath {
      */
     default Pattern getPattern() {
 
-        final String realmPattern = getRealm() != null && !getRealm().equalsIgnoreCase(DONT_CARE)
+        final String realmPattern = getRealm() != null && !getRealm().equalsIgnoreCase(ALLOW_ANY)
                 ? getRealm()
                 : ".*";
-        final String groupPattern = getGroup() != null && !getGroup().equalsIgnoreCase(DONT_CARE)
+        final String groupPattern = getGroup() != null && !getGroup().equalsIgnoreCase(ALLOW_ANY)
                 ? getGroup()
                 : ".*";
-        final String qualifierPattern = getQualifier() != null && !getQualifier().equalsIgnoreCase(DONT_CARE)
+        final String qualifierPattern = getQualifier() != null && !getQualifier().equalsIgnoreCase(ALLOW_ANY)
                 ? getQualifier()
                 : ".*";
 

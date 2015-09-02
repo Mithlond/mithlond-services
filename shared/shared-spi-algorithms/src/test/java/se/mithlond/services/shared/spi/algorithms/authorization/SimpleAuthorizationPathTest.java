@@ -24,7 +24,9 @@ package se.mithlond.services.shared.spi.algorithms.authorization;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -58,5 +60,20 @@ public class SimpleAuthorizationPathTest {
 
         Assert.assertNotSame(path3, path3_2);
         Assert.assertEquals(path3, path3_2);
+    }
+
+    @Test
+    public void validateAuthorizingPaths() {
+
+        // Assemble
+        final List<String> requirements = Arrays.asList("/mithlond/village_idiots", "/forodrim/members");
+        final List<AuthorizationPath> paths = new ArrayList<>(SimpleAuthorizationPath.parse(
+                "/mithlond/village_idiots/guildmaster,/mithlond/council/allowAny"));
+
+        // Act
+        final boolean authorized = SimpleAuthorizationPath.isAuthorized(requirements, paths);
+
+        // Assert
+        Assert.assertTrue(authorized);
     }
 }

@@ -23,9 +23,11 @@ package se.mithlond.services.shared.spi.algorithms.authorization;
 
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import java.util.List;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.regex.Pattern;
 
 /**
  * Simple AuthorizationPath implementation with a pair of Strings for internal state.
@@ -61,13 +63,13 @@ public class SimpleAuthorizationPath implements AuthorizationPath, Comparable<Si
 
     /**
      * Compound constructor, creating a SimpleAuthorizationPath wrapping the supplied data,
-     * and using {@code #DONT_CARE} for qualifier.
+     * and using {@code #ALLOW_ANY} for qualifier.
      *
-     * @param realm     A non-null realm.
-     * @param group     A non-null group.
+     * @param realm A non-null realm.
+     * @param group A non-null group.
      */
     public SimpleAuthorizationPath(final String realm, final String group) {
-        this(realm, group, DONT_CARE);
+        this(realm, group, ALLOW_ANY);
     }
 
     /**
@@ -146,7 +148,7 @@ public class SimpleAuthorizationPath implements AuthorizationPath, Comparable<Si
         if (toReturn == 0) {
             toReturn = this.group.compareTo(that.group);
         }
-        if(toReturn == 0) {
+        if (toReturn == 0) {
             toReturn = this.qualifier.compareTo(that.qualifier);
         }
 
@@ -191,5 +193,36 @@ public class SimpleAuthorizationPath implements AuthorizationPath, Comparable<Si
         return AuthorizationPath.PATH_SEPARATOR + realm
                 + AuthorizationPath.PATH_SEPARATOR + group
                 + AuthorizationPath.PATH_SEPARATOR + qualifier;
+    }
+
+    /**
+     * Simple authorization matcher method, which returns {@code true} if any possessed privileges match
+     * one of the requirements. Also returns {@code true} if no requirements are supplied.
+     *
+     * @param requirements        The requirements to match.
+     * @param possessedPrivileges The AuthorizationPaths to match (i.e. held by the caller).
+     * @return {@code true} if the authorization succeeded.
+     */
+    public static boolean isAuthorized(final List<String> requirements,
+                                       final List<AuthorizationPath> possessedPrivileges) {
+
+        // No requirements? Then public.
+        if (requirements == null || requirements.size() == 0) {
+            return true;
+        }
+
+        // The first possessed privilege that matches any of
+        // the requirements yields a positive result.
+        for (AuthorizationPath current : possessedPrivileges) {
+            final Pattern currentPattern = current.getPattern();
+            for (String currentRequirement : requirements) {
+                if (currentPattern.matcher(currentRequirement).matches()) {
+                    return true;
+                }
+            }
+        }
+
+        // Nopes.
+        return false;
     }
 }
