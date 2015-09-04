@@ -21,19 +21,17 @@
  */
 package se.mithlond.services.shared.spi.algorithms.authorization;
 
+import java.util.SortedSet;
+
 /**
- * Specification for how to indicate that content may be protected, and hence require
- * authorization to permit access. This really simplistic authorization model implies
- * that callers must possess at least one of a set of required GroupMemberships to be
- * granted access to a protected resource.
+ * Trivial specification for how to produce SemanticAuthorizationPath instances.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public @interface RequireAuthorization {
+public interface SemanticAuthorizationPathProducer {
 
     /**
-     * @return The AuthorizationPaths required to have the required authorization.
-     * {@code null} values indicate that no particular AuthorizationPath is required.
+     * @return A set of SemanticAuthorizationPaths produced by this SemanticAuthorizationPathProducer.
      */
-    String authorizationPaths();
+    SortedSet<SemanticAuthorizationPath> getPaths();
 }
