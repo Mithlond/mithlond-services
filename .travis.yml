@@ -10,7 +10,7 @@ addons:
       - graphviz
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
-  - "./mvnw --show-version --errors --batch-mode validate dependency:go-offline"
+  - "./mvnw --show-version --errors --batch-mode validate"
 script: "./mvnw --show-version --errors --batch-mode clean verify site"
 cache:
     directories:
