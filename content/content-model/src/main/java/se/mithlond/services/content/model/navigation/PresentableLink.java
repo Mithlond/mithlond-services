@@ -21,7 +21,8 @@
  */
 package se.mithlond.services.content.model.navigation;
 
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPathProducer;
 
 import java.util.SortedSet;
 
@@ -41,7 +42,7 @@ import java.util.SortedSet;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public interface PresentableLink {
+public interface PresentableLink extends SemanticAuthorizationPathProducer {
 
     /**
      * @return The value in the href attribute of the MenuItem anchor/link.
@@ -72,7 +73,8 @@ public interface PresentableLink {
      * A {@code null} return value from this method indicates that this PresentableLink does not have any protection,
      * and is hence viewable by all Users.
      */
-    default SortedSet<AuthorizationPath> getRequiredAuthorization() {
+    @Override
+    default SortedSet<SemanticAuthorizationPath> getPaths() {
         return null;
     }
 }

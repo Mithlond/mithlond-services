@@ -24,7 +24,7 @@ package se.mithlond.services.content.model.navigation;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.mithlond.services.content.model.Patterns;
 import se.mithlond.services.organisation.model.membership.Group;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
 
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -71,7 +71,7 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = true, required = false, name = "authorizationPath")
     @XmlIDREF
-    private SortedSet<AuthorizationPath> requiredAuthorization;
+    private SortedSet<SemanticAuthorizationPath> requiredAuthorization;
 
     /**
      * JAXB/JPA-friendly constructor.
@@ -95,7 +95,7 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
         this.anchorHRef = anchorHRef;
         this.text = text;
         if (requiredGroups != null) {
-            this.requiredAuthorization.addAll(requiredGroups);
+            requiredGroups.forEach(current -> requiredAuthorization.add(current.createPath()));
         }
     }
 
@@ -116,10 +116,11 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
     }
 
     /**
+     *
      * {@inheritDoc}
      */
     @Override
-    public SortedSet<AuthorizationPath> getRequiredAuthorization() {
+    public SortedSet<SemanticAuthorizationPath> getPaths() {
         return requiredAuthorization;
     }
 }

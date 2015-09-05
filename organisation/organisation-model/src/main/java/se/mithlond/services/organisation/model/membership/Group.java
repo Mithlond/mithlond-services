@@ -25,6 +25,9 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -67,7 +70,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"groupName", "organisation", "parent", "emailList"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Group extends NazgulEntity implements Comparable<Group> {
+public class Group extends NazgulEntity implements Comparable<Group>, SingleSemanticAuthorizationPathProducer {
 
     /**
      * Name of this Group, which must be non-empty and unique within each Organisation.
@@ -251,6 +254,17 @@ public class Group extends NazgulEntity implements Comparable<Group> {
 
         // All Done
         return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SemanticAuthorizationPath createPath() {
+        return AuthPathBuilder.create()
+                .withRealm(this.organisation.getOrganisationName())
+                .withGroup(this.groupName)
+                .build();
     }
 
     //
