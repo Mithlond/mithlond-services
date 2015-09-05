@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-organisation-model
  * %%
- * Copyright (C) 2010 - 2013 jGuru Europe AB
+ * Copyright (C) 2010 - 2015 jGuru Europe AB
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -25,6 +25,9 @@ import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -60,7 +63,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"orderLevelXmlID", "index", "name", "shortDesc", "fullDesc", "order"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OrderLevel extends NazgulEntity {
+public class OrderLevel extends NazgulEntity implements SingleSemanticAuthorizationPathProducer {
 
     // Constants
     private static final long serialVersionUID = 8829990012L;
@@ -291,6 +294,19 @@ public class OrderLevel extends NazgulEntity {
     @Override
     public int hashCode() {
         return order.getOrderName().hashCode() + index;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SemanticAuthorizationPath createPath() {
+        final Order myOrder = getOrder();
+        return AuthPathBuilder.create()
+                .withRealm(myOrder.getOwningOrganisation().getOrganisationName())
+                .withGroup(myOrder.getOrderName())
+                .withQualifier(getName())
+                .build();
     }
 
     /**

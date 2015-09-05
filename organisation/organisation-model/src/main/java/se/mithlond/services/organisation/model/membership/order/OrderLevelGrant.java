@@ -26,6 +26,9 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -61,7 +64,8 @@ import java.util.GregorianCalendar;
 @Access(value = AccessType.FIELD)
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"orderLevel", "dateGranted", "note"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant>, Validatable {
+public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant>,
+        Validatable, SingleSemanticAuthorizationPathProducer {
 
     // Internal state
     @Version
@@ -278,6 +282,20 @@ public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant
     @Override
     public int hashCode() {
         return membership.hashCode() + orderLevel.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SemanticAuthorizationPath createPath() {
+
+        final Order myOrder = getOrderLevel().getOrder();
+        return AuthPathBuilder.create()
+                .withRealm(myOrder.getOwningOrganisation().getOrganisationName())
+                .withGroup(myOrder.getOrderName())
+                .withQualifier(getOrderLevel().getName())
+                .build();
     }
 
     /**

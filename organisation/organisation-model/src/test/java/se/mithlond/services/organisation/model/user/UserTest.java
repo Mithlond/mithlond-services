@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.model.user;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
@@ -93,7 +94,7 @@ public class UserTest extends AbstractEntityTest {
                     "alias_" + i,
                     "subAlias_" + i,
                     "emailAlias_" + i,
-                    i % 2 == 0,
+                    i % 3 == 0,
                     currentUser,
                     organisations.get(i % organisations.size()),
                     new TreeSet<>(),
@@ -117,66 +118,42 @@ public class UserTest extends AbstractEntityTest {
     public void validateMarshalling() throws Exception {
 
         // Assemble
-        // final String expected = XmlTestUtils.readFully("testdata/users.xml");
+        final String expected = XmlTestUtils.readFully("testdata/someUsers.xml");
         final Users toMarshal = new Users(users);
 
         // Act
         final String result = marshal(toMarshal);
 
         // Assert
-        System.out.println("Got: " + result);
-        // validateIdenticalContent(expected, result);
+        // System.out.println("Got: " + result);
+        validateIdenticalContent(expected, result);
     }
 
-    /*
     @Test
     public void validateUnmarshalling() throws Exception {
 
         // Assemble
-        final DateTime birthDay = new DateTime(1968, 9, 17, 0, 0, DateTimeZone.UTC);
-        final Address address = new Address("careOfLine", "departmentName", "street",
-                "number", "city", "zipCode", "country", "description");
-        final Map<String, String> contactDetails = new TreeMap<String, String>();
-        contactDetails.put(ContactType.HOME_PHONE.toString(), "012345678");
-
-        final Member unitUnderTest = new Member("login", "alias", "subalias", "firstName", "lastName",
-                "hashedPassword", birthDay, (short) 6789, address, contactDetails);
-
-        final String data = XmlTestUtils.readFully("testdata/member.xml");
+        final String data = XmlTestUtils.readFully("testdata/someUsers.xml");
+        jaxb.add(Users.class);
 
         // Act
-        final Member result = binder.unmarshalInstance(new StringReader(data));
+        final Users resurrected = unmarshal(Users.class, data);
 
         // Assert
-        Assert.assertNotSame(unitUnderTest, result);
-        Assert.assertEquals(unitUnderTest.getAlias(), result.getAlias());
-        Assert.assertEquals(unitUnderTest.getFirstName(), result.getFirstName());
+        Assert.assertNotNull(resurrected);
+
+        final List<User> users = resurrected.getUsers();
+        Assert.assertNotNull(users);
+        Assert.assertEquals(this.users.length, users.size());
+
+        for(int i = 0; i < this.users.length; i++) {
+
+            final User expectedUser = this.users[i];
+            final User actualUser = users.get(i);
+
+            Assert.assertNotSame(expectedUser, actualUser);
+            Assert.assertEquals(expectedUser, actualUser);
+        }
     }
-
-    @Test
-    public void validateToString() {
-
-        // Assemble
-        final DateTime birthDay = new DateTime(1968, 9, 17, 0, 0, DateTimeZone.UTC);
-        final Address address = new Address("careOfLine", "departmentName", "street", "number", "city", "zipCode",
-                "country", "description");
-        final Map<String, String> contactDetails = new TreeMap<String, String>();
-        contactDetails.put("HOME_PHONE", "012345678");
-
-        final Member unitUnderTest = new Member("login", "alias", "subalias", "firstName", "lastName",
-                "hashedPassword", birthDay, (short) 6789, address, contactDetails);
-
-        final String expected = "Member: " + unitUnderTest.getAlias() + " (" + unitUnderTest.getFirstName()
-                + " - " + unitUnderTest.getLastName() + ")\n" +
-                "Contact Details: " + ContactType.HOME_PHONE + ": " + "012345678\n" +
-                "\n" + "Home Address: " + address.toString();
-
-        // Act
-        final String result = unitUnderTest.toString();
-
-        // Assert
-        Assert.assertEquals(expected, result);
-    }
-    */
 }
 

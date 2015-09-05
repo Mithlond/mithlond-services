@@ -32,6 +32,8 @@ import se.mithlond.services.organisation.model.membership.order.OrderLevel;
 import se.mithlond.services.organisation.model.membership.order.OrderLevelGrant;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPathProducer;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -87,7 +89,7 @@ import java.util.TreeSet;
 @XmlType(propOrder = {"alias", "subAlias", "emailAlias",
         "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Membership extends NazgulEntity implements Comparable<Membership> {
+public class Membership extends NazgulEntity implements Comparable<Membership>, SemanticAuthorizationPathProducer {
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(Membership.class);
@@ -494,6 +496,24 @@ public class Membership extends NazgulEntity implements Comparable<Membership> {
     public String toString() {
         final String userIdAndName = user.getId() + "_" + user.getFirstName() + "_" + user.getLastName();
         return "Membership [" + userIdAndName + " -> " + getOrganisation().getOrganisationName() + "]";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SortedSet<SemanticAuthorizationPath> getPaths() {
+
+        final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+        if(groupMemberships != null) {
+            groupMemberships.forEach(current -> toReturn.add(current.createPath()));
+        }
+        if(orderLevelGrants != null) {
+            orderLevelGrants.forEach(current -> toReturn.add(current.createPath()));
+        }
+
+        // All done.
+        return toReturn;
     }
 
     /**

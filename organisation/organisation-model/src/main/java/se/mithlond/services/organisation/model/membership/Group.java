@@ -25,7 +25,6 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthorizationPath;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -68,7 +67,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"groupName", "organisation", "parent", "emailList"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Group extends NazgulEntity implements Comparable<Group>, AuthorizationPath {
+public class Group extends NazgulEntity implements Comparable<Group> {
 
     /**
      * Name of this Group, which must be non-empty and unique within each Organisation.
@@ -252,30 +251,6 @@ public class Group extends NazgulEntity implements Comparable<Group>, Authorizat
 
         // All Done
         return toReturn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getRealm() {
-        return organisation.getOrganisationName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getGroup() {
-        return groupName;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getQualifier() {
-        return ALLOW_ANY;
     }
 
     //

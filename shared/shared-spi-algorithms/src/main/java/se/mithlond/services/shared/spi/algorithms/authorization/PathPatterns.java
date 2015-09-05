@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -96,6 +95,7 @@ public final class PathPatterns {
      *                                    from the requiredPathPatterns.
      * @return {@code true} if any path matched at least one of the requiredPathPatterns.
      */
+    /*
     public static boolean isMatched(final String requiredPathPatterns,
                                     final Set<String> possessedAuthorizationPaths) {
 
@@ -112,6 +112,7 @@ public final class PathPatterns {
         // Delegate.
         return isMatched(requiredPathPatterns, givenPaths);
     }
+    */
 
     /**
      * Determines if the supplied paths match at least one of the requiredPathPatterns.

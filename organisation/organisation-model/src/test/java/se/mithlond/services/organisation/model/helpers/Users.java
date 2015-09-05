@@ -24,7 +24,6 @@ package se.mithlond.services.organisation.model.helpers;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
-import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
@@ -46,7 +45,7 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(propOrder = {"organisations", "categories", "categorizedAddresses", "groups", "users"})
+@XmlType(propOrder = {"organisations", "groups", "users", "memberships"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Users {
 
@@ -55,13 +54,15 @@ public class Users {
     @XmlElement(nillable = false, required = true, name = "organisation")
     private List<Organisation> organisations;
 
+    /*
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = false, required = true, name = "category")
     private List<Category> categories;
 
-    @XmlElementWrapper(required = true, nillable = false)
+    @XmlElementWrapper(required = false, nillable = true)
     @XmlElement(nillable = true, required = false, name = "categorizedAddress")
     private List<CategorizedAddress> categorizedAddresses;
+    */
 
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = true, required = false, name = "user")
@@ -82,8 +83,8 @@ public class Users {
     public Users(final User... users) {
 
         organisations = new ArrayList<>();
-        categorizedAddresses = new ArrayList<>();
-        categories = new ArrayList<>();
+        // categorizedAddresses = new ArrayList<>();
+        // categories = new ArrayList<>();
         this.users = new ArrayList<>();
         this.memberships = new ArrayList<>();
         this.groups = new ArrayList<>();
@@ -100,6 +101,7 @@ public class Users {
                     this.users.add(current);
 
                     for(Membership currentMembership : current.getMemberships()) {
+                        memberships.add(currentMembership);
 
                         final Organisation currentOrg = currentMembership.getOrganisation();
 
@@ -113,26 +115,45 @@ public class Users {
             }
         }
 
-        organisations.addAll(organisationMap.values());
-        groups.addAll(groupMap.values());
-
         if(this.users != null && this.users.size() > 0) {
 
 
+            /*
             for(CategorizedAddress current : categorizedAddresses) {
                 final Organisation currentOrg = current.getOwningOrganisation();
                 final Category currentCategory = current.getCategory();
                 organisationMap.put(currentOrg.getOrganisationName(), currentOrg);
                 categoryMap.put(currentCategory.toString(), currentCategory);
             }
+            */
 
             for(Map.Entry<String, Organisation> current : organisationMap.entrySet()) {
-                organisations.add(current.getValue());
+                organisationMap.put(current.getValue().getOrganisationName(), current.getValue());
             }
 
             for(Map.Entry<String, Category> current : categoryMap.entrySet()) {
-                categories.add(current.getValue());
+                categoryMap.put(current.getValue().toString(), current.getValue());
             }
         }
+
+        organisations.addAll(organisationMap.values());
+        groups.addAll(groupMap.values());
+        // categories.addAll(categoryMap.values());
+    }
+
+    public List<Organisation> getOrganisations() {
+        return organisations;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public List<Membership> getMemberships() {
+        return memberships;
+    }
+
+    public List<Group> getGroups() {
+        return groups;
     }
 }

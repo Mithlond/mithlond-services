@@ -25,6 +25,8 @@ package se.mithlond.services.organisation.model.membership.guild;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -294,5 +296,17 @@ public class GuildMembership extends GroupMembership {
 
         // All done.
         return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SemanticAuthorizationPath createPath() {
+        return AuthPathBuilder.create()
+                .withRealm(getGroup().getOrganisation().getOrganisationName())
+                .withGroup(getGroup().getGroupName())
+                .withQualifier(toGuildRole(this).toString())
+                .build();
     }
 }

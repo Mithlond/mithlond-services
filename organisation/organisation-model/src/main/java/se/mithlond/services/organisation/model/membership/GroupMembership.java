@@ -25,7 +25,9 @@ import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
+import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -51,7 +53,8 @@ import java.io.Serializable;
 @Access(value = AccessType.FIELD)
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"group"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GroupMembership implements Serializable, Comparable<GroupMembership>, Validatable {
+public class GroupMembership implements Serializable, Comparable<GroupMembership>,
+        Validatable, SingleSemanticAuthorizationPathProducer {
 
     private static final long serialVersionUID = 88299927L;
 
@@ -215,11 +218,11 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
         if (toReturn == 0) {
             toReturn = getMembership().getAlias().compareTo(that.getMembership().getAlias());
         }
-        if(toReturn == 0) {
+        if (toReturn == 0) {
             toReturn = thisGroup.getOrganisation().getOrganisationName().compareTo(
                     thatGroup.getOrganisation().getOrganisationName());
         }
-        if(toReturn == 0) {
+        if (toReturn == 0) {
             toReturn = getMembership().getOrganisation().getOrganisationName().compareTo(
                     that.getMembership().getOrganisation().getOrganisationName());
         }
@@ -236,6 +239,17 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
         final String groupName = group == null ? "<group not yet set>" : group.getGroupName();
         final String alias = membership == null ? "<membership not yet set>" : membership.getAlias();
         return "GroupMembership [" + alias + " -> " + groupName + "]";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SemanticAuthorizationPath createPath() {
+        return AuthPathBuilder.create()
+                .withRealm(getGroup().getOrganisation().getOrganisationName())
+                .withGroup(getGroup().getGroupName())
+                .build();
     }
 
     /**

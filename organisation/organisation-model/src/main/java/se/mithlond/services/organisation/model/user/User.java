@@ -423,13 +423,16 @@ public class User extends NazgulEntity {
         setXmlID();
     }
 
+    /**
+     * Note that all XML IDs must start with letters.
+     */
     private void setXmlID() {
 
         final LocalDate localDate = ((GregorianCalendar) birthday).toZonedDateTime().toLocalDate();
-        final String hopefullyUniqueString = getId()
+        final String hopefullyUniqueString = "user_" + getId()
                 + "_" + firstName
                 + "_" + lastName
-                + "_" + TimeFormat.YEAR_MONTH_DATE.print(localDate);
+                + "_" + TimeFormat.YEAR_MONTH_DATE.print(localDate).replaceAll("-", "_");
         this.xmlID = hopefullyUniqueString.replaceAll("\\s+", "_");
     }
 }
