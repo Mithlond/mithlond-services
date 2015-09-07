@@ -425,6 +425,8 @@ public class User extends NazgulEntity {
 
     /**
      * Note that all XML IDs must start with letters.
+     * ... because otherwise it is considered an XML number
+     * ... glorious framework implementation....
      */
     private void setXmlID() {
 

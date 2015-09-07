@@ -6,13 +6,13 @@
     <!-- | Section 1:  Project information                -->
     <!-- +=============================================== -->
     <parent>
-        <groupId>se.mithlond.services</groupId>
-        <artifactId>mithlond-services-reactor</artifactId>
+        <groupId>se.mithlond.services.shared</groupId>
+        <artifactId>mithlond-services-shared-reactor</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>se.mithlond.services.shared</groupId>
-    <artifactId>mithlond-services-shared-reactor</artifactId>
+    <groupId>se.mithlond.services.shared.authorization</groupId>
+    <artifactId>mithlond-services-shared-authorization-reactor</artifactId>
     <name>${project.artifactId}</name>
     <description>${project.artifactId}</description>
     <packaging>pom</packaging>
@@ -22,7 +22,7 @@
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>shared</path.in.reactor>
+        <path.in.reactor>shared/authorization</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
     </properties>
 
@@ -30,10 +30,8 @@
     <!-- | Section 2:  Module definitions                 -->
     <!-- +=============================================== -->
     <modules>
-        <module>shared-test</module>
-        <module>shared-spi-algorithms</module>
-        <module>shared-spi-jpa</module>
-        <module>authorization</module>
+        <module>authorization-model</module>
+        <module>authorization-api</module>
     </modules>
 
     <!-- +=============================================== -->

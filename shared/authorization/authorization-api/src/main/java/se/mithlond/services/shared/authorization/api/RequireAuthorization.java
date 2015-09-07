@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-shared-spi-algorithms
+ * Nazgul Project: mithlond-services-shared-authorization-api
  * %%
  * Copyright (C) 2015 Mithlond
  * %%
@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.shared.spi.algorithms.authorization;
+package se.mithlond.services.shared.authorization.api;
 
 /**
  * Specification for how to indicate that content may be protected, and hence require
@@ -32,8 +32,8 @@ package se.mithlond.services.shared.spi.algorithms.authorization;
 public @interface RequireAuthorization {
 
     /**
-     * @return The AuthorizationPaths required to have the required authorization.
+     * @return The AuthorizationPath patterns required to have the required authorization.
      * {@code null} values indicate that no particular AuthorizationPath is required.
      */
-    String authorizationPaths();
+    String authorizationPatterns();
 }

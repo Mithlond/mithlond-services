@@ -43,8 +43,9 @@ public interface MenuItem extends PresentableLink {
     }
 
     /**
-     * @return The role of the MenuItem list element within this MenuItem. The WAI-ARIA specification requires that
-     * menu items which should be part of the presentation set the attribute role to {@code presentation}.
+     * @return The role of the MenuItem list element within this MenuItem.
+     * The WAI-ARIA specification requires that menu items which should be part
+     * of the presentation set the attribute role to {@code presentation}.
      */
     default String getRole() {
         return "presentation";

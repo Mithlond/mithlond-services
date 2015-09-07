@@ -26,6 +26,7 @@ import se.mithlond.services.content.model.Patterns;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
@@ -67,11 +68,11 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
     @XmlElement(nillable = true, required = false)
     private String text;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ElementCollection()
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = true, required = false, name = "authorizationPath")
     @XmlIDREF
-    private SortedSet<SemanticAuthorizationPath> requiredAuthorization;
+    private SortedSet<String> requiredAuthorization;
 
     /**
      * JAXB/JPA-friendly constructor.
