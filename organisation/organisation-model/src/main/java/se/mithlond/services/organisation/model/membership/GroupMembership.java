@@ -24,10 +24,12 @@ package se.mithlond.services.organisation.model.membership;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.shared.authorization.api.Segmenter;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.builder.AuthorizationPathBuilder;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -43,6 +45,8 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Relates a Membership to a Group.
@@ -54,7 +58,7 @@ import java.io.Serializable;
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"group"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupMembership implements Serializable, Comparable<GroupMembership>,
-        Validatable, SingleSemanticAuthorizationPathProducer {
+        Validatable, SemanticAuthorizationPathProducer {
 
     private static final long serialVersionUID = 88299927L;
 
@@ -245,11 +249,14 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
      * {@inheritDoc}
      */
     @Override
-    public SemanticAuthorizationPath createPath() {
-        return AuthPathBuilder.create()
-                .withRealm(getGroup().getOrganisation().getOrganisationName())
-                .withGroup(getGroup().getGroupName())
-                .build();
+    public SortedSet<SemanticAuthorizationPath> getPaths() {
+
+        final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+        toReturn.add(new AuthorizationPath(
+                getGroup().getOrganisation().getOrganisationName(),
+                getGroup().getGroupName(),
+                Segmenter.ANY));
+        return toReturn;
     }
 
     /**

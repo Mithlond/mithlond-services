@@ -21,9 +21,10 @@
  */
 package se.mithlond.services.content.model.navigation;
 
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
+import java.util.List;
 import java.util.SortedSet;
 
 /**
@@ -31,14 +32,15 @@ import java.util.SortedSet;
  * <p>Specification for a minimalistic bootstrap-type item which can be put in a Menu.</p>
  * <pre>
  *     &lt;li role="[role]"&gt;
- *      &lt;a role="[linkRole]" tabindex="[tabIndex]" href="[href]"&gt;
+ *      &lt;a role="[anchorRole]" tabindex="[tabIndex]" href="[href]"&gt;
  *          &lt;i class="icon-fixed-width [iconIdentifier]"&gt;&lt;/i&gt; [text]&lt;/a&gt;
  *     &lt;/li&gt;
  * </pre>
- * <h2>AuthorizationPath</h2>
+ * <h2>SemanticAuthorizationPath</h2>
  * <p>Any PresentableLink can be defined as requiring at least one of a defined set of
- * authorization paths. Each AuthorizationPath defines a realm and an optional group to
- * which the active User must belong in order to view the full data within this PresentableLink.</p>
+ * authorization paths. Each SemanticAuthorizationPath gives the path to a (set of)
+ * required permissions, one of which the active User must possess in order to view the
+ * full data within this PresentableLink.</p>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -57,9 +59,12 @@ public interface PresentableLink extends SemanticAuthorizationPathProducer {
     /**
      * @return the altText (help-popup-text) of this PresentableLink. Default implementation retrieves {@code null}.
      */
-    default String getAltText() {
-        return null;
-    }
+    String getAltText();
+
+    /**
+     * @return A list of CSS classes which should be applied to this PresentableLink.
+     */
+    List<String> getCssClasses();
 
     /**
      * <p>Retrieves an optional Set of AuthorizationPath instances. If the user possesses at least one of these

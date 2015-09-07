@@ -31,9 +31,9 @@ import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.membership.order.OrderLevel;
 import se.mithlond.services.organisation.model.membership.order.OrderLevelGrant;
 import se.mithlond.services.organisation.model.user.User;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPathProducer;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -506,10 +506,10 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
 
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
         if(groupMemberships != null) {
-            groupMemberships.forEach(current -> toReturn.add(current.createPath()));
+            groupMemberships.forEach(current -> toReturn.addAll(current.getPaths()));
         }
         if(orderLevelGrants != null) {
-            orderLevelGrants.forEach(current -> toReturn.add(current.createPath()));
+            orderLevelGrants.forEach(current -> toReturn.addAll(current.getPaths()));
         }
 
         // All done.

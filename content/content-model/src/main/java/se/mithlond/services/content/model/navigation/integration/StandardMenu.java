@@ -24,6 +24,7 @@ package se.mithlond.services.content.model.navigation.integration;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.navigation.AbstractPresentableLink;
 import se.mithlond.services.content.model.navigation.Menu;
 import se.mithlond.services.content.model.navigation.MenuItem;
 import se.mithlond.services.content.model.navigation.PresentableLink;
@@ -62,7 +63,7 @@ import java.util.List;
 @Entity
 @XmlType(namespace = Patterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class StandardMenu extends NazgulEntity implements Menu {
+public class StandardMenu extends AbstractPresentableLink implements Menu {
 
     // Internal state
     @XmlElement(nillable = true, required = false)

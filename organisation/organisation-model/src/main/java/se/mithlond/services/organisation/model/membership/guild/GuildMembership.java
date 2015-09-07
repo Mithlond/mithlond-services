@@ -25,8 +25,8 @@ package se.mithlond.services.organisation.model.membership.guild;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Relates a Membership to a Guild, including some standard guild titles,
@@ -302,11 +304,13 @@ public class GuildMembership extends GroupMembership {
      * {@inheritDoc}
      */
     @Override
-    public SemanticAuthorizationPath createPath() {
-        return AuthPathBuilder.create()
-                .withRealm(getGroup().getOrganisation().getOrganisationName())
-                .withGroup(getGroup().getGroupName())
-                .withQualifier(toGuildRole(this).toString())
-                .build();
+    public SortedSet<SemanticAuthorizationPath> getPaths() {
+
+        final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+        toReturn.add(new AuthorizationPath(
+                getGroup().getOrganisation().getOrganisationName(),
+                getGroup().getGroupName(),
+                toGuildRole(this).toString()));
+        return toReturn;
     }
 }

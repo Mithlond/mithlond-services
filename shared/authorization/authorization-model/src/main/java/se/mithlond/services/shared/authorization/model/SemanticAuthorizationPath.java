@@ -66,4 +66,11 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
      * @return The qualifier of this AuthorizationPath. Should never be {@code null}.
      */
     String getQualifier();
+
+    /**
+     * @return A String/path representation of this SemanticAuthorizationPath.
+     */
+    default String getPath() {
+        return SEGMENT_SEPARATOR + getRealm() + SEGMENT_SEPARATOR + getGroup() + SEGMENT_SEPARATOR + getQualifier();
+    }
 }

@@ -24,18 +24,18 @@ package se.mithlond.services.content.model.navigation;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.mithlond.services.content.model.Patterns;
 import se.mithlond.services.organisation.model.membership.Group;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.builder.AuthorizationPathBuilder;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -51,7 +51,7 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @MappedSuperclass
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"anchorHRef", "text", "requiredAuthorization"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractPresentableLink extends NazgulEntity implements PresentableLink {
 
@@ -68,17 +68,28 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
     @XmlElement(nillable = true, required = false)
     private String text;
 
-    @ElementCollection()
-    @XmlElementWrapper(required = true, nillable = false)
-    @XmlElement(nillable = true, required = false, name = "authorizationPath")
-    @XmlIDREF
-    private SortedSet<String> requiredAuthorization;
+    /**
+     * Any extra CSS classes added to this AbstractPresentableLink.
+     */
+    @XmlElementWrapper(nillable = true, required = false)
+    @XmlElement(nillable = true, name = "cssClass")
+    private List<String> cssClasses;
+
+    /**
+     * A concatenated set of AuthorizationPaths required to access this AbstractPresentableLink.
+     */
+    @XmlElement(nillable = true, required = false)
+    private String requiredAuthorization;
+
+    // Mutex lock.
+    private final transient Object[] lock;
 
     /**
      * JAXB/JPA-friendly constructor.
      */
     public AbstractPresentableLink() {
-        requiredAuthorization = new TreeSet<>();
+        lock = new Object[0];
+        cssClasses = new ArrayList<>();
     }
 
     /**
@@ -90,13 +101,16 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
     protected AbstractPresentableLink(final String anchorHRef,
                                       final String text,
                                       final SortedSet<Group> requiredGroups) {
+        // Delegate
         this();
 
         // Assign internal state
         this.anchorHRef = anchorHRef;
         this.text = text;
         if (requiredGroups != null) {
-            requiredGroups.forEach(current -> requiredAuthorization.add(current.createPath()));
+            final Group[] groupArray = new Group[requiredGroups.size()];
+            requiredGroups.toArray(groupArray);
+            addRequiredAuthorization(groupArray);
         }
     }
 
@@ -117,11 +131,57 @@ public abstract class AbstractPresentableLink extends NazgulEntity implements Pr
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getCssClasses() {
+        final List<String> toReturn = new ArrayList<>();
+    }
+
+    /**
+     * Adds the SemanticAuthorizationPath instances as acquired from the SemanticAuthorizationPathProducer.
      *
+     * @param producers All SemanticAuthorizationPathProducers whose SemanticAuthorizationPaths should be
+     *                  added as required authorization paths to this AbstractPresentableLink.
+     */
+    public void addRequiredAuthorization(final SemanticAuthorizationPathProducer... producers) {
+
+        if (producers != null && producers.length > 0) {
+
+            synchronized (lock) {
+                final SortedSet<SemanticAuthorizationPath> auths = this.requiredAuthorization == null
+                        ? new TreeSet<>()
+                        : AuthorizationPathBuilder.parse(this.requiredAuthorization);
+
+                // Add all required authorization from the supplied producers.
+                for (SemanticAuthorizationPathProducer current : producers) {
+                    auths.addAll(current.getPaths());
+                }
+
+                // Write back the changed
+                final StringBuilder builder = new StringBuilder();
+                for (SemanticAuthorizationPath current : auths) {
+                    builder.append(SemanticAuthorizationPath.SEGMENT_SEPARATOR)
+                            .append(current.getRealm())
+                            .append(SemanticAuthorizationPath.SEGMENT_SEPARATOR)
+                            .append(current.getGroup())
+                            .append(SemanticAuthorizationPath.SEGMENT_SEPARATOR)
+                            .append(current.getQualifier())
+                            .append(SemanticAuthorizationPath.PATTERN_SEPARATOR);
+                }
+
+                this.requiredAuthorization = builder.substring(
+                        0,
+                        builder.length() - SemanticAuthorizationPath.PATTERN_SEPARATOR);
+            }
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public SortedSet<SemanticAuthorizationPath> getPaths() {
-        return requiredAuthorization;
+        return AuthorizationPathBuilder.parse(this.requiredAuthorization);
     }
 }

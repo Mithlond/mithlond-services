@@ -25,7 +25,7 @@ package se.mithlond.services.content.model.navigation;
  * <p>Specification for a bootstrap-type MenuItem, with the principal structure shown below:</p>
  * <pre>
  *     &lt;li role="[role]"&gt;
- *      &lt;a role="[linkRole]" tabindex="[tabIndex]" href="[href]"&gt;
+ *      &lt;a role="[anchorRole]" tabindex="[tabIndex]" href="[href]"&gt;
  *          &lt;i class="icon-fixed-width [iconIdentifier]"&gt;&lt;/i&gt; [text]&lt;/a&gt;
  *     &lt;/li&gt;
  * </pre>
@@ -55,7 +55,7 @@ public interface MenuItem extends PresentableLink {
      * <p>Retrieves the role attribute for the anchor/link of this MenuItem. This r</p>
      * <pre>
      *     &lt;li role="[role]"&gt;
-     *      &lt;a role="[linkRole]" tabindex="[tabIndex]" href="[href]"&gt;
+     *      &lt;a role="[anchorRole]" tabindex="[tabIndex]" href="[href]"&gt;
      *          &lt;i class="icon-fixed-width [iconIdentifier]"&gt;&lt;/i&gt; [text]&lt;/a&gt;
      *     &lt;/li&gt;
      * </pre>

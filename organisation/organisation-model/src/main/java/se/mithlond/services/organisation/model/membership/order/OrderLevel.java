@@ -25,9 +25,9 @@ import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Patterns;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -46,6 +46,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 /**
@@ -63,7 +65,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"orderLevelXmlID", "index", "name", "shortDesc", "fullDesc", "order"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class OrderLevel extends NazgulEntity implements SingleSemanticAuthorizationPathProducer {
+public class OrderLevel extends NazgulEntity implements SemanticAuthorizationPathProducer {
 
     // Constants
     private static final long serialVersionUID = 8829990012L;
@@ -273,10 +275,10 @@ public class OrderLevel extends NazgulEntity implements SingleSemanticAuthorizat
     public boolean equals(final Object that) {
 
         // Check sanity
-        if(this == that) {
+        if (this == that) {
             return true;
         }
-        if(!(that instanceof OrderLevel)) {
+        if (!(that instanceof OrderLevel)) {
             return false;
         }
 
@@ -300,13 +302,16 @@ public class OrderLevel extends NazgulEntity implements SingleSemanticAuthorizat
      * {@inheritDoc}
      */
     @Override
-    public SemanticAuthorizationPath createPath() {
+    public SortedSet<SemanticAuthorizationPath> getPaths() {
+
         final Order myOrder = getOrder();
-        return AuthPathBuilder.create()
-                .withRealm(myOrder.getOwningOrganisation().getOrganisationName())
-                .withGroup(myOrder.getOrderName())
-                .withQualifier(getName())
-                .build();
+
+        final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+        toReturn.add(new AuthorizationPath(
+                myOrder.getOwningOrganisation().getOrganisationName(),
+                myOrder.getOrderName(),
+                getName()));
+        return toReturn;
     }
 
     /**

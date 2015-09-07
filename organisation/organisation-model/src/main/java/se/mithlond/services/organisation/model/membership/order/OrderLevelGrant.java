@@ -25,10 +25,10 @@ import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
-import se.mithlond.services.shared.spi.algorithms.authorization.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.SingleSemanticAuthorizationPathProducer;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -52,6 +52,8 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * The record of when a particular OrderLevel was granted to a Membership,
@@ -65,7 +67,7 @@ import java.util.GregorianCalendar;
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"orderLevel", "dateGranted", "note"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant>,
-        Validatable, SingleSemanticAuthorizationPathProducer {
+        Validatable, SemanticAuthorizationPathProducer {
 
     // Internal state
     @Version
@@ -288,14 +290,16 @@ public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant
      * {@inheritDoc}
      */
     @Override
-    public SemanticAuthorizationPath createPath() {
+    public SortedSet<SemanticAuthorizationPath> getPaths() {
 
         final Order myOrder = getOrderLevel().getOrder();
-        return AuthPathBuilder.create()
-                .withRealm(myOrder.getOwningOrganisation().getOrganisationName())
-                .withGroup(myOrder.getOrderName())
-                .withQualifier(getOrderLevel().getName())
-                .build();
+
+        final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+        toReturn.add(new AuthorizationPath(
+                myOrder.getOwningOrganisation().getOrganisationName(),
+                myOrder.getOrderName(),
+                getOrderLevel().getName()));
+        return toReturn;
     }
 
     /**

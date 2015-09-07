@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-shared-spi-algorithms
+ * Nazgul Project: mithlond-services-shared-authorization-api
  * %%
  * Copyright (C) 2015 Mithlond
  * %%
@@ -19,19 +19,21 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.shared.spi.algorithms.authorization;
+package se.mithlond.services.shared.authorization.api;
+
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import java.util.SortedSet;
 
 /**
- * Trivial specification for how to produce SemanticAuthorizationPath instances.
+ * Specification for how to produce SemanticAuthorizationPath instances.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public interface SemanticAuthorizationPathProducer {
 
     /**
-     * @return A set of SemanticAuthorizationPaths produced by this SemanticAuthorizationPathProducer.
+     * @return The SortedSet of SemanticAuthorizationPath instances produced by this SemanticAuthorizationPathProducer.
      */
     SortedSet<SemanticAuthorizationPath> getPaths();
 }

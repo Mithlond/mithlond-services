@@ -26,8 +26,6 @@ import org.junit.Test;
 import se.mithlond.services.shared.authorization.api.Segmenter;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthPath;
-import se.mithlond.services.shared.spi.algorithms.authorization.AuthPathBuilder;
 
 import java.util.Map;
 import java.util.SortedMap;
@@ -77,7 +75,7 @@ public class AuthorizationPathBuilderTest {
     public void validateBuildingAuthPath() {
 
         // Assemble
-        final AuthPathBuilder unitUnderTest = AuthPathBuilder.create();
+        final AuthorizationPathBuilder unitUnderTest = AuthorizationPathBuilder.create();
         final SortedMap<String, Boolean> expected = new TreeMap<>();
 
         expected.put("/mithlond/baz", false);
@@ -89,7 +87,7 @@ public class AuthorizationPathBuilderTest {
         expected.put("/uhm", false);
 
         // Act
-        final AuthPath result = unitUnderTest
+        final AuthorizationPath result = unitUnderTest
                 .withGroup("mithlond")
                 .build();
         final Pattern pattern = Pattern.compile(result.toString());

@@ -138,7 +138,7 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      */
     @Override
     public String toString() {
-        return SEGMENT_SEPARATOR + realm + SEGMENT_SEPARATOR + group + SEGMENT_SEPARATOR + qualifier;
+        return getPath();
     }
 
     /**
