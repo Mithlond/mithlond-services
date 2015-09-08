@@ -19,48 +19,46 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.model.navigation.integration;
+package se.mithlond.services.content.model.navigation;
 
 import se.mithlond.services.content.model.Patterns;
-import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>Default Entity implementation of a MenuItem, complying with the MenuItem specification of a
- * <a href="http://getbootstrap.com">Twitter Bootstrap</a>-style menu item. Refer to the
- * MenuItem for a markup model specification.</p>
- * <pre>
- *     &lt;li&gt;
- *      &lt;a role="[linkRole]" tabindex="[tabIndex]" href="[href]"&gt;
- *          &lt;i class="icon-fixed-width [iconIdentifier]"&gt;&lt;/i&gt; [text]&lt;/a&gt;
- *     &lt;/li&gt;
- * </pre>
+ * Abstract implementation of a LinkedNavItem, forming the basis for Menus and MenuItems.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@Entity
-@DiscriminatorValue("menu_item")
-@Access(AccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE)
+@MappedSuperclass
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"iconIdentifier", "href"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class StandardMenuItem extends AbstractLinkedNavItem {
+public class AbstractLinkedNavItem extends AbstractAuthorizedNavItem implements LinkedNavItem {
+
+    /**
+     * Standard font awesome class for fixed width icons.
+     */
+    public static final String ICON_FIXED_WITH_CSS = "icon-fixed-width";
+
+    @XmlElement
+    private String iconIdentifier;
+
+    @XmlElement
+    private String href;
 
     /**
      * JAXB/JPA-friendly constructor.
      */
-    public StandardMenuItem() {
+    public AbstractLinkedNavItem() {
         super();
     }
 
     /**
-     * Compound constructor creating a StandardMenuItem wrapping the supplied data.
+     * Compound constructor creating an AbstractLinkedNavItem wrapping the supplied data.
      *
      * @param role                  The value of the {@code role} attribute. Typically something like
      *                              "separator", "search" or "button".
@@ -75,16 +73,45 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
      *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
      * @param href                  The hypertext link of this AbstractLinkedNavItem.
      */
-    public StandardMenuItem(final String role,
-                            final String domId,
-                            final Integer tabIndex,
-                            final String cssClasses,
-                            final String authorizationPatterns,
-                            final boolean enabled,
-                            final String iconIdentifier,
-                            final String href) {
+    public AbstractLinkedNavItem(final String role,
+                                 final String domId,
+                                 final Integer tabIndex,
+                                 final String cssClasses,
+                                 final String authorizationPatterns,
+                                 final boolean enabled,
+                                 final String iconIdentifier,
+                                 final String href) {
 
-        // Delegate
-        super(role, domId, tabIndex, cssClasses, authorizationPatterns, enabled, iconIdentifier, href);
+        super(role,
+                domId,
+                tabIndex,
+                cssClasses,
+                authorizationPatterns,
+                enabled);
+
+        // Assign internal state
+        this.iconIdentifier = iconIdentifier;
+        this.href = href;
+
+        // Handle non-null iconIdentifier
+        if(iconIdentifier != null) {
+            addCssClass(ICON_FIXED_WITH_CSS);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getHrefAttribute() {
+        return href;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getIconIdentifier() {
+        return iconIdentifier;
     }
 }

@@ -21,14 +21,19 @@
  */
 package se.mithlond.services.content.model.navigation.integration;
 
-import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.navigation.MenuItem;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
+import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
+import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.SortedSet;
 
 /**
  * <p>Implementation of a menu item Separator, on the following form:</p>
@@ -38,13 +43,17 @@ import java.util.SortedSet;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class SeparatorMenuItem extends NazgulEntity implements MenuItem {
+@Entity
+@DiscriminatorValue("separator")
+@XmlType(namespace = Patterns.NAMESPACE)
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SeparatorMenuItem extends AbstractAuthorizedNavItem {
 
     /**
-     * Defines the standard list of CSS classes used by this SeparatorMenuItem.
+     * Defines the standard CSS class used by this SeparatorMenuItem.
      */
     @SuppressWarnings("all")
-    public static final List<String> CSS_CLASSES = Arrays.asList("divider");
+    public static final String CSS_DIVIDER = "divider";
 
     /**
      * JPA/JAXB-friendly constructor.
@@ -54,52 +63,11 @@ public class SeparatorMenuItem extends NazgulEntity implements MenuItem {
     }
 
     /**
-     * @return Always returns {@code null}.
+     * @return The constant value {@code separator}
      */
     @Override
-    public String getText() {
-        return null;
-    }
-
-    /**
-     * @return Always returns {@code null}.
-     */
-    @Override
-    public String getAnchorHRef() {
-        return null;
-    }
-
-    /**
-     * @return the role "separator".
-     */
-    @Override
-    public String getRole() {
+    public String getRoleAttribute() {
         return "separator";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getAltText() {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SortedSet<SemanticAuthorizationPath> getPaths() {
-        return null;
-    }
-
-    /**
-     * @return The standard List of CSS classes for this SeparatorMenuItem.
-     * @see #CSS_CLASSES
-     */
-    @Override
-    public List<String> getCssClasses() {
-        return CSS_CLASSES;
     }
 
     /**

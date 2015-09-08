@@ -21,18 +21,12 @@
  */
 package se.mithlond.services.content.model.navigation.integration;
 
-import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
-import se.mithlond.services.content.model.navigation.AbstractPresentableLink;
-import se.mithlond.services.content.model.navigation.Menu;
-import se.mithlond.services.content.model.navigation.MenuItem;
-import se.mithlond.services.content.model.navigation.PresentableLink;
-import se.mithlond.services.organisation.model.membership.GroupMembership;
-import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
+import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
+import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,6 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,46 +56,65 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE)
+@DiscriminatorValue("menu")
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"children"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class StandardMenu extends AbstractPresentableLink implements Menu {
+public class StandardMenu extends AbstractLinkedNavItem {
 
     // Internal state
-    @XmlElement(nillable = true, required = false)
-    private String anchorHRef;
-
-    @XmlElement(nillable = true, required = false)
-    private String text;
-
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElements(value = {
-            @XmlElement(name = "subMenu", type = Menu.class),
-            @XmlElement(name = "menuItem", type = MenuItem.class)
+            @XmlElement(name = "subMenu", type = StandardMenu.class),
+            @XmlElement(name = "menuItem", type = StandardMenuItem.class),
+            @XmlElement(name = "separator", type = SeparatorMenuItem.class)
     })
-    private List<PresentableLink> children;
+    private List<AuthorizedNavItem> children;
 
     /**
-     * {@inheritDoc}
+     * JPA/JAXB-friendly constructor.
      */
-    @Override
-    public <T extends PresentableLink> List<T> getChildren() {
-        return (List<T>) children;
+    public StandardMenu() {
+        this.children = new ArrayList<>();
     }
 
     /**
-     * {@inheritDoc}
+     * Compound constructor creating a StandardMenu wrapping the supplied data.
+     *
+     * @param role                  The value of the {@code role} attribute. Typically something like
+     *                              "separator", "search" or "button".
+     * @param domId                 The DOM ID of this AbstractAuthorizedNavItem.
+     * @param tabIndex              The tabindex to be rendered on this AbstractAuthorizedNavItem.
+     * @param cssClasses            A concatenated string of CSS classes to be used within the "classes" attribute
+     *                              on the markup element rendered by this AbstractAuthorizedNavItem.
+     * @param authorizationPatterns A concatenated string of AuthorizationPatterns to be used on this
+     *                              AbstractAuthorizedNavItem.
+     * @param enabled               {@code false} to indicate that this AbstractAuthorizedNavItem should be disabled.
+     * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
+     *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
+     * @param href                  The hypertext link of this AbstractLinkedNavItem.
      */
-    @Override
-    public String getAnchorHRef() {
-        return anchorHRef;
+    public StandardMenu(final String role,
+                        final String domId,
+                        final Integer tabIndex,
+                        final String cssClasses,
+                        final String authorizationPatterns,
+                        final boolean enabled,
+                        final String iconIdentifier,
+                        final String href) {
+        super(role, domId, tabIndex, cssClasses, authorizationPatterns, enabled, iconIdentifier, href);
+
+        // Assign internal state
+        this.children = new ArrayList<>();
     }
 
     /**
-     * {@inheritDoc}
+     * Retrieves the (ordered) list of LinkedNavItems which should be rendered as children of this StandardMenu.
+     *
+     * @return the (ordered) list of LinkedNavItems which should be rendered as children of this StandardMenu.
+     * Can be empty, but never {@code null}.
      */
-    @Override
-    public String getText() {
-        return text;
+    public List<AuthorizedNavItem> getChildren() {
+        return children;
     }
 
     /**
