@@ -67,6 +67,6 @@ public class MenuTest extends AbstractEntityTest {
         // System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertEquals(expected, result);
+        validateIdenticalContent(expected, result);
     }
 }

@@ -40,6 +40,5 @@ public class Article extends NazgulEntity {
 
     @Override
     protected void validateEntityState() throws InternalStateValidationException {
-
     }
 }
