@@ -20,8 +20,7 @@
   limitations under the License.
   #L%
   -->
-
-<content:menuItems xmlns:content="http://www.jguru.se/mithlond/services/content">
+<content:menuItems xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <rootMenu>
         <separator enabled="false" jpaId="0" version="0"/>
         <separator jpaId="0" version="0">
