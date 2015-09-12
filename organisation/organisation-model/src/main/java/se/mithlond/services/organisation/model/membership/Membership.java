@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.membership.order.OrderLevel;
@@ -86,7 +87,7 @@ import java.util.TreeSet;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "aliasAndOrganisationIsUnique",
         columnNames = {"alias", "organisation_id"})})
-@XmlType(propOrder = {"alias", "subAlias", "emailAlias",
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"alias", "subAlias", "emailAlias",
         "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Membership extends NazgulEntity implements Comparable<Membership>, SemanticAuthorizationPathProducer {

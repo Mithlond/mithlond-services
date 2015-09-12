@@ -33,7 +33,7 @@
     <modules>
         <module>content-model</module>
         <module>content-api</module>
-        <!-- module>content-impl-ejb</module -->
+        <module>content-impl-ejb</module>
     </modules>
 
     <!-- +=============================================== -->

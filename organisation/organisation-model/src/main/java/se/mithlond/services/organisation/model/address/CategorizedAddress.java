@@ -26,6 +26,7 @@ import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.CascadeType;
@@ -66,7 +67,7 @@ import javax.xml.bind.annotation.XmlType;
                         + "and a.shortDesc like 'Hemma hos %' group by a.shortDesc order by a.shortDesc") */
 })
 @Entity
-@XmlType(propOrder = {"address", "category"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"address", "category"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CategorizedAddress extends Listable implements Comparable<CategorizedAddress> {
 

@@ -24,21 +24,204 @@ package se.mithlond.services.content.model.articles;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
+ * Holds data and metadata for an Article.
+ *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"title", "author", "createdAt", "lastModified", "content"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends NazgulEntity {
 
     // Internal state
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(nillable = false, required = true)
+    private String title;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(nillable = false, required = true)
+    private String author;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @XmlElement(nillable = false, required = true)
+    private Calendar createdAt;
+
+    @Basic(optional = true)
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @XmlElement(nillable = true, required = false)
+    private Calendar lastModified;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Lob
+    @XmlTransient
+    private String markup;
+
+    @Transient
+    @XmlAnyElement(MarkupDomAdapter.class)
+    private Markup content;
+
+    /**
+     * JPA/JAXB-friendly constructor.
+     */
+    public Article() {
+    }
+
+    /**
+     * Convenience constructor, creating an Article using the supplied data and
+     * using the current timestamp ("now") for createdAt.
+     *
+     * @param title   The title of this Article.
+     * @param author  The Article author.
+     * @param content The Article content.
+     */
+    public Article(final String title, final String author, final String content) {
+        this(title, author, ZonedDateTime.now(), content);
+    }
+
+    /**
+     * Compound constructor creating an Article wrapping the supplied data.
+     *
+     * @param title     The title of this Article.
+     * @param author    The Article author.
+     * @param createdAt The timestamp when this article was created.
+     * @param markup    The Article markup content.
+     */
+    public Article(final String title,
+                   final String author,
+                   final ZonedDateTime createdAt,
+                   final String markup) {
+        this.title = title;
+        this.author = author;
+        this.createdAt = GregorianCalendar.from(createdAt);
+        this.markup = markup;
+    }
+
+    /**
+     * Reassigns the title and updates the lastModified timestamp.
+     *
+     * @param title a non-empty new title for this Article.
+     */
+    public void setTitle(final String title) {
+
+        // Check sanity
+        Validate.notEmpty(title, "title");
+
+        // Assign internal state
+        this.title = title;
+        this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
+    }
+
+    /**
+     * Reassigns the markup content and updates the lastModified timestamp.
+     *
+     * @param markup a non-empty new markup content for this Article.
+     */
+    public void setMarkup(final String markup) {
+
+        // Check sanity
+        Validate.notEmpty(markup, "markup");
+
+        // Assign internal state
+        this.markup = markup;
+        this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
+    }
+
+    /**
+     * @return The title of this Article. Never null or empty.
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @return The Article author. Never null or empty.
+     */
+    public String getAuthor() {
+        return author;
+    }
+
+    /**
+     * @return The ZonedDateTime when this Article was created. Never null.
+     */
+    public ZonedDateTime getCreatedAt() {
+        return ((GregorianCalendar) createdAt).toZonedDateTime();
+    }
+
+    /**
+     * @return The ZonedDateTime when this Article was last modified, or {@code null} if not modified after creation.
+     */
+    public ZonedDateTime getLastModified() {
+        return lastModified == null ? null : ((GregorianCalendar) lastModified).toZonedDateTime();
+    }
+
+    /**
+     * @return The full markup content of this article.
+     */
+    public String getMarkup() {
+        return markup;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void validateEntityState() throws InternalStateValidationException {
+
+        InternalStateValidationException.create()
+                .notNullOrEmpty(author, "author")
+                .notNullOrEmpty(title, "title")
+                .notNullOrEmpty(markup, "markup")
+                .notNull(createdAt, "createdAt")
+                .endExpressionAndValidate();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * after it has created an instance of this Class.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("PMD")
+    private void beforeMarshal(final Marshaller marshaller) {
+        this.content = new Markup(markup);
+    }
+
+    /**
+     * This method is called after all the properties (except IDREF) are unmarshalled for this object,
+     * but before this object is set to the parent object.
+     */
+    @SuppressWarnings("PMD")
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+        markup = content.getContent();
     }
 }

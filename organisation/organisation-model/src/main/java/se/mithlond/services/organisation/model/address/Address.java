@@ -25,6 +25,7 @@ import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.Entities;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -41,7 +42,7 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Embeddable
-@XmlType(propOrder = {"careOfLine", "departmentName", "street", "number", "city",
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"careOfLine", "departmentName", "street", "number", "city",
         "zipCode", "country", "description"})
 public class Address implements Validatable, Comparable<Address>, Serializable {
 

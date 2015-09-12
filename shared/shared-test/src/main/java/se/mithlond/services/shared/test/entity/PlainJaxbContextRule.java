@@ -27,9 +27,9 @@ import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
-import javax.validation.constraints.Null;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
@@ -83,6 +83,7 @@ public class PlainJaxbContextRule extends TestWatcher {
     private SortedSet<Class<?>> jaxbAnnotatedClasses;
     private JAXBContext jaxbContext;
     private JaxbNamespacePrefixResolver namespacePrefixResolver;
+    private boolean performXsdValidation = true;
 
     /**
      * Default constructor, setting up a clean internal state.
@@ -90,6 +91,17 @@ public class PlainJaxbContextRule extends TestWatcher {
     public PlainJaxbContextRule() {
         this.jaxbAnnotatedClasses = new TreeSet<>(CLASS_COMPARATOR);
         this.namespacePrefixResolver = new JaxbNamespacePrefixResolver();
+    }
+
+    /**
+     * Assigns the perform XSD validation flag. By default, the value of this flag is {@code true}, implying that
+     * validation is always done before marshalling and after unmarshalling.
+     *
+     * @param performXsdValidation if {@code false}, XSD validation will not be performed before marshalling and
+     *                             after unmarshalling data.
+     */
+    public void setPerformXsdValidation(final boolean performXsdValidation) {
+        this.performXsdValidation = performXsdValidation;
     }
 
     /**
@@ -148,7 +160,7 @@ public class PlainJaxbContextRule extends TestWatcher {
         final Marshaller marshaller = JaxbUtils.getHumanReadableStandardMarshaller(
                 jaxbContext,
                 namespacePrefixResolver,
-                true);
+                performXsdValidation);
 
         final StringWriter result = new StringWriter();
         for (int i = 0; i < objects.length; i++) {

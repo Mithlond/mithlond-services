@@ -23,8 +23,10 @@ package se.mithlond.services.organisation.model.address;
 
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.CategoryProducer;
+import se.mithlond.services.organisation.model.Patterns;
 
 import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Enum defining a suite of the most commonly used address classifications, also
@@ -32,6 +34,7 @@ import javax.xml.bind.annotation.XmlEnum;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@XmlType(namespace = Patterns.NAMESPACE)
 @XmlEnum(String.class)
 public enum WellKnownAddressType implements CategoryProducer {
 

@@ -80,7 +80,7 @@ public class T_AbstractPlainJaxbTestTest extends AbstractPlainJaxbTest {
         final String result = jaxb.marshal(getClass().getClassLoader(), barRound);
 
         // Assert
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
         /*
         final Diff diff = XmlTestUtils.compareXmlIgnoringWhitespace(expected, result);
         final SortedMap<String, List<Difference>> diffMap = XmlTestUtils.getXPathLocationToDifferenceMap(diff);

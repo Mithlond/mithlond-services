@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
-@XmlType(propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
         "postAccountInfo", "emailSuffix", "visitingAddress"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation extends NazgulEntity implements Comparable<Organisation> {

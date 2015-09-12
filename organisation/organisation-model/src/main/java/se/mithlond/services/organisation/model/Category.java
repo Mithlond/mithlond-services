@@ -56,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
         @UniqueConstraint(
                 name = "categoryIdAndClassificationIsUnique",
                 columnNames = {"category", "classification"})})
-@XmlType(propOrder = {"xmlID", "classification", "categoryID", "description"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
 
