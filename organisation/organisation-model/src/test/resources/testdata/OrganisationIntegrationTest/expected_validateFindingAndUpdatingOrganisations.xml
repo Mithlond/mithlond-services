@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-organisation-model
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<dataset>
+    <CATEGORIZEDADDRESS/>
+    <CATEGORY/>
+    <GROUPMEMBERSHIP/>
+    <INTERNALGROUPS ID="1" DISCRIMINATOR="group" EMAILLIST="emailList_0" GROUPNAME="groupName_0" VERSION="1"
+                    ORGANISATION_ID="1"/>
+    <INTERNALGROUPS ID="2" DISCRIMINATOR="group" EMAILLIST="emailList_1" GROUPNAME="groupName_1" VERSION="1"
+                    ORGANISATION_ID="2"/>
+    <INTERNALGROUPS ID="3" DISCRIMINATOR="group" EMAILLIST="emailList_2" GROUPNAME="updatedGroupName_2" VERSION="2"
+                    ORGANISATION_ID="3" PARENT_ID="2"/>
+    <INTERNALGROUPS ID="4" DISCRIMINATOR="group" EMAILLIST="emailList_3" GROUPNAME="groupName_3" VERSION="1"
+                    ORGANISATION_ID="1" PARENT_ID="3"/>
+    <INTERNALGROUPS ID="5" DISCRIMINATOR="group" EMAILLIST="emailList_4" GROUPNAME="groupName_4" VERSION="1"
+                    ORGANISATION_ID="2" PARENT_ID="4"/>
+    <INTERNALGROUPS ID="6" DISCRIMINATOR="guild" EMAILLIST="emailList_0" GROUPNAME="guildName_0" VERSION="1"
+                    ORGANISATION_ID="1" QUENYANAME="quenyaName_0" QUENYAPREFIX="quenyaPrefix_0"/>
+    <INTERNALGROUPS ID="7" DISCRIMINATOR="guild" EMAILLIST="emailList_1" GROUPNAME="guildName_1" VERSION="1"
+                    ORGANISATION_ID="2" QUENYANAME="quenyaName_1" QUENYAPREFIX="quenyaPrefix_1"/>
+    <INTERNALGROUPS ID="8" DISCRIMINATOR="guild" EMAILLIST="emailList_2" GROUPNAME="guildName_2" VERSION="1"
+                    ORGANISATION_ID="3" QUENYANAME="quenyaName_2" QUENYAPREFIX="quenyaPrefix_2"/>
+    <INTERNALGROUPS ID="9" DISCRIMINATOR="guild" EMAILLIST="emailList_3" GROUPNAME="guildName_3" VERSION="1"
+                    ORGANISATION_ID="1" QUENYANAME="quenyaName_3" QUENYAPREFIX="quenyaPrefix_3"/>
+    <INTERNALGROUPS ID="10" DISCRIMINATOR="guild" EMAILLIST="emailList_4" GROUPNAME="guildName_4" VERSION="1"
+                    ORGANISATION_ID="2" QUENYANAME="quenyaName_4" QUENYAPREFIX="quenyaPrefix_4"/>
+    <MEMBERSHIP/>
+    <MEMBERSHIP_GROUPMEMBERSHIP/>
+    <NAZGULORDER/>
+    <ORDERLEVEL/>
+    <ORDERLEVELGRANT/>
+    <ORGANISATION ID="1" BANKACCOUNTINFO="bankAccountInfo_0" EMAILSUFFIX="emailSuffix_0" ORGANISATIONNAME="name_0"
+                  PHONE="phone_0" POSTACCOUNTINFO="postAccountInfo_0" SUFFIX="suffix_0" VERSION="1"
+                  CAREOFLINE="careOfLine_0" CITY="city_0" COUNTRY="country_0" DEPARTMENTNAME="departmentName_0"
+                  DESCRIPTION="description_0" NUMBER="number_0" STREET="street_0" ZIPCODE="zipCode_0"/>
+    <ORGANISATION ID="2" BANKACCOUNTINFO="bankAccountInfo_1" EMAILSUFFIX="emailSuffix_1" ORGANISATIONNAME="name_1"
+                  PHONE="phone_1" POSTACCOUNTINFO="postAccountInfo_1" SUFFIX="suffix_1" VERSION="1"
+                  CAREOFLINE="careOfLine_1" CITY="city_1" COUNTRY="country_1" DEPARTMENTNAME="departmentName_1"
+                  DESCRIPTION="description_1" NUMBER="number_1" STREET="street_1" ZIPCODE="zipCode_1"/>
+    <ORGANISATION ID="3" BANKACCOUNTINFO="bankAccountInfo_2" EMAILSUFFIX="emailSuffix_2" ORGANISATIONNAME="name_2"
+                  PHONE="phone_2" POSTACCOUNTINFO="postAccountInfo_2" SUFFIX="suffix_2" VERSION="1"
+                  CAREOFLINE="careOfLine_2" CITY="city_2" COUNTRY="country_2" DEPARTMENTNAME="departmentName_2"
+                  DESCRIPTION="description_2" NUMBER="number_2" STREET="street_2" ZIPCODE="zipCode_2"/>
+    <PERSONALSETTINGS/>
+    <PERSONALSETTINGS_SETTINGS/>
+    <USER/>
+    <USER_CONTACTDETAILS/>
+</dataset>

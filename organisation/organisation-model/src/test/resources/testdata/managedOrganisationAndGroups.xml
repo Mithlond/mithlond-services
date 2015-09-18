@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<organisation:groupsAndGuilds xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <organisations>
+        <organisation xmlID="organisation_name_0" jpaId="1" version="1">
+            <organisationName>name_0</organisationName>
+            <suffix>suffix_0</suffix>
+            <phone>phone_0</phone>
+            <bankAccountInfo>bankAccountInfo_0</bankAccountInfo>
+            <postAccountInfo>postAccountInfo_0</postAccountInfo>
+            <emailSuffix>emailSuffix_0</emailSuffix>
+            <visitingAddress>
+                <careOfLine>careOfLine_0</careOfLine>
+                <departmentName>departmentName_0</departmentName>
+                <street>street_0</street>
+                <number>number_0</number>
+                <city>city_0</city>
+                <zipCode>zipCode_0</zipCode>
+                <country>country_0</country>
+                <description>description_0</description>
+            </visitingAddress>
+        </organisation>
+    </organisations>
+    <groupsAndGuilds>
+        <group organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0" jpaId="1" version="1">
+            <groupName>modifiedGroupName</groupName>
+            <emailList>modifiedEmailList</emailList>
+        </group>
+        <guild organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3" jpaId="9" version="1">
+            <groupName>guildName_3</groupName>
+            <emailList>emailList_3</emailList>
+            <quenyaName>modifiedQuenyaName</quenyaName>
+            <quenyaPrefix>modifiedQuenyaPrefix</quenyaPrefix>
+        </guild>
+    </groupsAndGuilds>
+</organisation:groupsAndGuilds>

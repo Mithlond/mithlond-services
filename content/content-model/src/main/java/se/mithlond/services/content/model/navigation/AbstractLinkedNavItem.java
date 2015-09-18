@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 @MappedSuperclass
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"iconIdentifier", "href"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AbstractLinkedNavItem extends AbstractAuthorizedNavItem implements LinkedNavItem {
+public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem implements LinkedNavItem {
 
     /**
      * Standard font awesome class for fixed width icons.

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-organisation-model
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<dataset>
+  <ORGANISATION ID="1" BANKACCOUNTINFO="bankAccountInfo_0" EMAILSUFFIX="mithlond.se" ORGANISATIONNAME="Mithlond"
+                PHONE="031987654" POSTACCOUNTINFO="823-234-234" SUFFIX="mithlond.se" VERSION="1"
+                CAREOFLINE="Lennart Jörelid" CITY="Mölnlycke" COUNTRY="Sverige"
+                DEPARTMENTNAME="Löjlighetsdepartementet"
+                DESCRIPTION="Göteborgs Tolkiensällskap" NUMBER="3" STREET="Stenflisavägen" ZIPCODE="435 56"/>
+  <ORGANISATION ID="2" BANKACCOUNTINFO="bankAccountInfo_1" EMAILSUFFIX="fjodjim.org" ORGANISATIONNAME="Fjodjim"
+                PHONE="0812345678" POSTACCOUNTINFO="5059-2020" SUFFIX="fjodjim.org" VERSION="1"
+                CAREOFLINE="Carolina Agered" CITY="Farsta" COUNTRY="Sverige"
+                DESCRIPTION="Tokholms Tolkiensällskap" NUMBER="28A" STREET="Tjabbavägen"
+                ZIPCODE="153 43"/>
+  <INTERNALGROUPS ID="1" DISCRIMINATOR="group" EMAILLIST="administratorer" GROUPNAME="Administratörer" VERSION="1"
+                  ORGANISATION_ID="1"/>
+  <INTERNALGROUPS ID="2" DISCRIMINATOR="guild" EMAILLIST="fekalion" GROUPNAME="Skitsnackargillet" VERSION="1"
+                  ORGANISATION_ID="1" QUENYANAME="Fekalion" QUENYAPREFIX="Mellonath"/>
+  <INTERNALGROUPS ID="3" DISCRIMINATOR="guild" EMAILLIST="alver" GROUPNAME="Alvgillet" VERSION="1"
+                  ORGANISATION_ID="2" QUENYANAME="Eldar" QUENYAPREFIX="Mellonath"/>
+  <INTERNALGROUPS ID="4" DISCRIMINATOR="group" EMAILLIST="members" GROUPNAME="Medlemmar" VERSION="1"
+                  ORGANISATION_ID="1" PARENT_ID="1"/>
+  <CATEGORIZEDADDRESS/>
+  <CATEGORY/>
+  <GROUPMEMBERSHIP/>
+  <MEMBERSHIP/>
+  <MEMBERSHIP_GROUPMEMBERSHIP/>
+  <NAZGULORDER/>
+  <ORDERLEVEL/>
+  <ORDERLEVELGRANT/>
+  <PERSONALSETTINGS/>
+  <PERSONALSETTINGS_SETTINGS/>
+  <USER/>
+  <USER_CONTACTDETAILS/>
+</dataset>

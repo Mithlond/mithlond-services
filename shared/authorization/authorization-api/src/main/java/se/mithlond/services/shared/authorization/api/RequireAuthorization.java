@@ -21,6 +21,12 @@
  */
 package se.mithlond.services.shared.authorization.api;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Specification for how to indicate that content may be protected, and hence require
  * authorization to permit access. This really simplistic authorization model implies
@@ -29,10 +35,16 @@ package se.mithlond.services.shared.authorization.api;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
 public @interface RequireAuthorization {
 
     /**
-     * @return The AuthorizationPath patterns required to have the required authorization.
+     * <p>Retrieves the authorization patterns required to invoke the annotated method.</p>
+     *
+     * @return A comma-separated string containing concatenated AuthorizationPath patterns,
+     * the possession of one of which is required to invoke the annotated method.
      * {@code null} values indicate that no particular AuthorizationPath is required.
      */
     String authorizationPatterns();

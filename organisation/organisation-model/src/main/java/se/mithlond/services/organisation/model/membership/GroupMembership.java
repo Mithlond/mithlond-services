@@ -26,7 +26,6 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.shared.authorization.api.Segmenter;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
-import se.mithlond.services.shared.authorization.api.builder.AuthorizationPathBuilder;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;

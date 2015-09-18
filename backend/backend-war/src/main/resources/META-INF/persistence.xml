@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-backend-war
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+    <persistence-unit name="services_PU">
+
+        <!--
+            Persistence.xml packaging:
+
+            In a WAR: WEB-INF/classes/META-INF/persistence.xml
+            In an EJB JAR: META-INF/persistence.xml
+
+            For EARs, place the persistence.xml in a JAR, located in one of two places:
+            a) WEB-INF/lib
+            b) The EAR file’s library directory
+        -->
+
+        <description>PersistenceUnit for the Mithlond Services Backend WAR.</description>
+        <jta-data-source>java:jboss/datasources/MithlondDS</jta-data-source>
+
+        <!--
+            Comment out the persistence provider class to use the default provider from the AppServer.
+            For Wildfly 8.2, the persistence provider is Hibernate 4.3+, implying that eclipselink
+            features are not used/do not work.
+
+            C.f. https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-Introduction
+            for a guide to replacing the default Hibernate JPA provider with - say - Eclipselink.
+        -->
+        <!-- provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider -->
+
+        <!-- ===============================================
+          |  Nazgul Core Entities
+          +============================================== -->
+        <class>se.jguru.nazgul.core.persistence.model.NazgulEntity</class>
+        <!-- ===============================================
+          |  Organisation Model Entities
+          +============================================== -->
+        <class>se.mithlond.services.organisation.model.Category</class>
+        <class>se.mithlond.services.organisation.model.Listable</class>
+        <class>se.mithlond.services.organisation.model.Organisation</class>
+        <class>se.mithlond.services.organisation.model.address.Address</class>
+        <class>se.mithlond.services.organisation.model.address.CategorizedAddress</class>
+        <class>se.mithlond.services.organisation.model.address.WellKnownAddressType</class>
+        <class>se.mithlond.services.organisation.model.membership.Membership</class>
+        <class>se.mithlond.services.organisation.model.membership.PersonalSettings</class>
+        <class>se.mithlond.services.organisation.model.membership.Group</class>
+        <class>se.mithlond.services.organisation.model.membership.GroupMembership</class>
+        <class>se.mithlond.services.organisation.model.membership.GroupMembershipId</class>
+        <class>se.mithlond.services.organisation.model.membership.guild.Guild</class>
+        <class>se.mithlond.services.organisation.model.membership.guild.GuildMembership</class>
+        <class>se.mithlond.services.organisation.model.membership.order.Order</class>
+        <class>se.mithlond.services.organisation.model.membership.order.OrderLevel</class>
+        <class>se.mithlond.services.organisation.model.membership.order.OrderLevelGrant</class>
+        <class>se.mithlond.services.organisation.model.membership.order.OrderLevelGrantId</class>
+        <class>se.mithlond.services.organisation.model.user.User</class>
+        <!-- ===============================================
+          |  Content Model Entities
+          +============================================== -->
+        <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
+        <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>
+        <class>se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem</class>
+        <class>se.mithlond.services.content.model.navigation.integration.StandardMenu</class>
+        <class>se.mithlond.services.content.model.navigation.integration.StandardMenuItem</class>
+        <class>se.mithlond.services.content.model.articles.Article</class>
+
+        <!--
+            When set to true then only listed classes and jars will
+            be scanned for persistent classes, otherwise the enclosing
+            jar or directory will also be scanned. Not applicable to
+            Java SE persistence units.
+        -->
+        <properties>
+            <!--
+                OpenJPA2 custom properties.
+            -->
+            <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.PostgresDictionary"/>
+            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
+            <property name="openjpa.InverseManager" value="true"/>
+            <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+            <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO, SQL=TRACE"/>
+            <!--
+                Hibernate custom properties.
+            -->
+            <!-- property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/ -->
+            <!-- property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/> -->
+            <property name="hibernate.max_fetch_depth" value="4"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <!-- property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>
+            <property name="javax.persistence.schema-generation.scripts.create-target" value="create_database.sql"/>
+            <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop_database.sql"/  -->
+            <!-- property name="javax.persistence.sql-load-script-source" value="insert.sql"/ -->
+            <!--
+                Eclipselink custom properties.
+            -->
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="both"/>
+            <property name="eclipselink.create-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
+            <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+        </properties>
+
+    </persistence-unit>
+</persistence>

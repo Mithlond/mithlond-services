@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- +=============================================== -->
+    <!-- | Section 1:  Project information                -->
+    <!-- +=============================================== -->
+    <parent>
+        <groupId>se.mithlond.services</groupId>
+        <artifactId>mithlond-services-reactor</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>se.mithlond.services.backend</groupId>
+    <artifactId>mithlond-services-backend-reactor</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
+    <description>${project.artifactId}</description>
+    <packaging>pom</packaging>
+    <url>${site.top.url}/${path.in.reactor}</url>
+
+    <properties>
+        <!--
+            Define the name and type of this reactor
+        -->
+        <path.in.reactor>backend</path.in.reactor>
+        <reactor.name>mithlond-services</reactor.name>
+    </properties>
+
+    <!-- +=============================================== -->
+    <!-- | Section 2:  Module definitions                 -->
+    <!-- +=============================================== -->
+    <modules>
+        <!-- module>backend-war</module -->
+    </modules>
+
+    <!-- +=============================================== -->
+    <!-- | Section 4:  External systems                   -->
+    <!-- +=============================================== -->
+
+    <!--
+        Compensate for Maven standard variable extrapolation.
+        Git requires steady URLs (... but Subversion requires path extrapolation, hence the problem).
+     -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>${distroManagement.url}</url>
+        </site>
+    </distributionManagement>
+
+    <scm>
+        <connection>${scm.connection.url}</connection>
+        <developerConnection>${scm.devConnection.url}</developerConnection>
+        <url>${scm.url}</url>
+        <tag>HEAD</tag>
+    </scm>
+</project>

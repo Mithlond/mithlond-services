@@ -69,24 +69,27 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "Membership.getByAliasAndOrganisation",
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ALIAS_ORGANISATION_LOGINPERMITTED,
                 query = "select a from Membership a "
-                        + "where a.member.login = ?1 "
-                        + "and a.loginPermitted = :loginPermitted "
-                        + "and a.organisation.organisationName = ?2 order by a.id"),
-        @NamedQuery(name = "Membership.getByGroupAndOrganisation",
+                        + " where a.alias like :" + Patterns.PARAM_ALIAS
+                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " and a.loginPermitted = :" + Patterns.PARAM_LOGIN_PERMITTED
+                        + " order by a.alias"),
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_GROUP_ORGANISATION_LOGINPERMITTED,
                 query = "select a from Membership a, in(a.groupMemberships) groupMemberships "
-                        + "where groupMemberships.group.groupName = :groupName "
-                        + "and a.organisation.organisationName = :organisationName "
-                        + "and a.loginPermitted = :loginPermitted "
-                        + "order by a.member.login"),
-        @NamedQuery(name = "Membership.getByOrganisation",
-                query = "select a from Membership a where a.organisation.organisationName = ?1 "
-                        + "and a.loginPermitted = ?2 order by a.member.alias")
+                        + " where groupMemberships.group.groupName like :" + Patterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " and a.loginPermitted = :" + Patterns.PARAM_LOGIN_PERMITTED
+                        + " order by a.alias"),
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED,
+                query = "select a from Membership a"
+                        + " where a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " and a.loginPermitted = :" + Patterns.PARAM_LOGIN_PERMITTED
+                        + " order by a.alias")
 })
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(name = "aliasAndOrganisationIsUnique",
-        columnNames = {"alias", "organisation_id"})})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "aliasAndOrganisationIsUnique", columnNames = {"alias", "organisation_id"})})
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"alias", "subAlias", "emailAlias",
         "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -97,6 +100,24 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
 
     // Constants
     private static final long serialVersionUID = 8829990028L;
+
+    /**
+     * NamedQuery for getting Memberships by alias, organisation name and loginPermitted.
+     */
+    public static final String NAMEDQ_GET_BY_ALIAS_ORGANISATION_LOGINPERMITTED =
+            "Membership.getByAliasOrganisationAndLoginPermitted";
+
+    /**
+     * NamedQuery for getting Memberships by group name, organisation name and loginPermitted.
+     */
+    public static final String NAMEDQ_GET_BY_GROUP_ORGANISATION_LOGINPERMITTED =
+            "Membership.getByGroupOrganisationAndLoginPermitted";
+
+    /**
+     * NamedQuery for getting Memberships by organisation name and loginPermitted.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED =
+            "Membership.getByOrganisationAndLoginPermitted";
 
     // Internal state
     @Basic(optional = false)
@@ -133,12 +154,12 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
             @XmlElement(name = "groupMembership", type = GroupMembership.class),
             @XmlElement(name = "guildMembership", type = GuildMembership.class)
     })
-    private SortedSet<GroupMembership> groupMemberships;
+    private Set<GroupMembership> groupMemberships;
 
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @XmlElementWrapper(name = "orderLevelGrants", nillable = true, required = false)
     @XmlElement(name = "orderLevelGrant")
-    private SortedSet<OrderLevelGrant> orderLevelGrants;
+    private Set<OrderLevelGrant> orderLevelGrants;
 
     /**
      * JPA/JAXB-friendly constructor.
@@ -152,8 +173,32 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     }
 
     /**
+     * Convenience constructor creating a Membership with empty collections for GroupMembership and OrderLevelGrant.
+     *
+     * @param alias          The alias of this Membership.
+     * @param subAlias       The sub-alias of this Membership.
+     * @param emailAlias     The emailAlias of this alias.
+     * @param loginPermitted Set to <code>true</code> to indicate that
+     *                       login is permitted, and false otherwise.
+     * @param user           The user of this Membership.
+     * @param organisation   The organisation of this Membership, i.e. where the user belongs.
+     */
+    public Membership(final String alias, final String subAlias, final String emailAlias, final boolean loginPermitted, final User user, final Organisation organisation) {
+        this(alias,
+                subAlias,
+                emailAlias,
+                loginPermitted,
+                user,
+                organisation,
+                new TreeSet<>(),
+                new TreeSet<>());
+    }
+
+    /**
      * Compound constructor.
      *
+     * @param alias            The alias of this Membership.
+     * @param subAlias         The sub-alias of this Membership.
      * @param emailAlias       The emailAlias of this alias.
      * @param loginPermitted   Set to <code>true</code> to indicate that
      *                         login is permitted, and false otherwise.
@@ -506,10 +551,10 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     public SortedSet<SemanticAuthorizationPath> getPaths() {
 
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
-        if(groupMemberships != null) {
+        if (groupMemberships != null) {
             groupMemberships.forEach(current -> toReturn.addAll(current.getPaths()));
         }
-        if(orderLevelGrants != null) {
+        if (orderLevelGrants != null) {
             orderLevelGrants.forEach(current -> toReturn.addAll(current.getPaths()));
         }
 
@@ -531,9 +576,17 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
             current.setMembership(this);
         }
 
+        for (GroupMembership current : groupMemberships) {
+            current.setMembership(this);
+        }
+
         if (log.isDebugEnabled()) {
-            final String parentObjectType = parent == null ? "<null>" : parent.getClass().getName();
-            log.debug("Got parent object of type: " + parentObjectType);
+            if (parent instanceof User) {
+                log.debug("Got parent user: " + parent.toString());
+            } else {
+                final String parentObjectType = parent == null ? "<null>" : parent.getClass().getName();
+                log.debug("Got parent object of type: " + parentObjectType);
+            }
         }
     }
 

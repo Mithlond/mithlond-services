@@ -38,10 +38,12 @@
     <logger name="se.jguru.nazgul" level="WARN"/>
     <logger name="se.mithlond.services" level="WARN"/>
     <logger name="se.mithlond.services.organisation.model" level="DEBUG"/>
+    <logger name="se.mithlond.services.shared.test.entity" level="INFO"/>
 
     <!-- Make the frameworks shut up. -->
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
     <logger name="org.eclipselink" level="WARN"/>
+    <logger name="org.dbunit" level="WARN"/>
 
 </configuration>

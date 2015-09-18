@@ -30,6 +30,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -47,6 +49,14 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = Organisation.NAMEDQ_GET_ALL,
+                query = "select a from Organisation a"
+                        + " order by a.organisationName"),
+        @NamedQuery(name = Organisation.NAMEDQ_GET_BY_NAME,
+                query = "select a from Organisation a where a.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " order by a.organisationName")
+})
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
         "postAccountInfo", "emailSuffix", "visitingAddress"})
@@ -55,6 +65,16 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
 
     // Constants
     private static final long serialVersionUID = 8829990020L;
+
+    /**
+     * NamedQuery for getting Organisations by organisationName.
+     */
+    public static final String NAMEDQ_GET_BY_NAME = "Organisation.getByName";
+
+    /**
+     * NamedQuery for getting Organisations by organisationName.
+     */
+    public static final String NAMEDQ_GET_ALL = "Organisation.getAll";
 
     // Internal state
     /**

@@ -196,7 +196,7 @@ public class User extends NazgulEntity {
         this.personalNumberLast4Digits = personalNumberLast4Digits;
         this.homeAddress = homeAddress;
         this.memberships = memberships;
-        this.contactDetails = contactDetails;
+        this.contactDetails = contactDetails == null ? new TreeMap<>() : contactDetails;
 
         // Convert the birthday to a Calendar
         this.birthday = GregorianCalendar.from(birthday.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));

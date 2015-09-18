@@ -35,4 +35,39 @@ public final class Patterns {
      * The XML namespace used by content model transport objects.
      */
     public static final String NAMESPACE = "http://xmlns.mithlond.se/xml/ns/organisation";
+
+    /**
+     * NamedQuery parameter name for membershipId.
+     */
+    public static final String PARAM_MEMBERSHIP_ID = "membershipId";
+
+    /**
+     * NamedQuery parameter name for organisationName.
+     */
+    public static final String PARAM_ORGANISATION_NAME = "organisationName";
+
+    /**
+     * NamedQuery parameter name for groupName.
+     */
+    public static final String PARAM_GROUP_NAME = "groupName";
+
+    /**
+     * NamedQuery parameter name for alias.
+     */
+    public static final String PARAM_ALIAS = "alias";
+
+    /**
+     * NamedQuery parameter name for loginPermitted.
+     */
+    public static final String PARAM_LOGIN_PERMITTED = "loginPermitted";
+
+    /**
+     * NamedQuery parameter name for classification.
+     */
+    public static final String PARAM_CLASSIFICATION = "classification";
+
+    /**
+     * NamedQuery parameter name for categoryID.
+     */
+    public static final String PARAM_CATEGORY_ID = "categoryID";
 }

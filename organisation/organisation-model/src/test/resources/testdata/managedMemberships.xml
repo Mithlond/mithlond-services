@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<organisation:users xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <organisations>
+        <organisation xmlID="organisation_Mithlond" jpaId="1" version="1">
+            <organisationName>Mithlond</organisationName>
+            <suffix>mithlond.se</suffix>
+            <phone>031987654</phone>
+            <bankAccountInfo>bankAccountInfo_0</bankAccountInfo>
+            <postAccountInfo>823-234-234</postAccountInfo>
+            <emailSuffix>mithlond.se</emailSuffix>
+            <visitingAddress>
+                <careOfLine>Lennart Jörelid</careOfLine>
+                <departmentName>Löjlighetsdepartementet</departmentName>
+                <street>Stenflisavägen</street>
+                <number>3</number>
+                <city>Mölnlycke</city>
+                <zipCode>435 56</zipCode>
+                <country>Sverige</country>
+                <description>Göteborgs Tolkiensällskap</description>
+            </visitingAddress>
+        </organisation>
+    </organisations>
+    <groups>
+        <group organisationReference="organisation_Mithlond" xmlID="group_Mithlond_Administratörer" jpaId="1" version="1">
+            <groupName>Administratörer</groupName>
+            <emailList>administratorer</emailList>
+        </group>
+        <group xsi:type="organisation:guild" organisationReference="organisation_Mithlond" xmlID="guild_Mithlond_Skitsnackargillet" jpaId="2" version="1">
+            <groupName>Skitsnackargillet</groupName>
+            <emailList>fekalion</emailList>
+            <quenyaName>Fekalion</quenyaName>
+            <quenyaPrefix>Mellonath</quenyaPrefix>
+        </group>
+    </groups>
+    <users>
+        <user xmlID="user_1_firstName_0_lastName_0_1974_05_01" personalNumberLast4Digits="1234" jpaId="1" version="1">
+            <firstName>firstName_0</firstName>
+            <lastName>lastName_0</lastName>
+            <birthday>1974-05-01T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_0</careOfLine>
+                <departmentName>departmentName_0</departmentName>
+                <street>street_0</street>
+                <number>number_0</number>
+                <city>city_0</city>
+                <zipCode>zipCode_0</zipCode>
+                <country>country_0</country>
+                <description>description_0</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_2_firstName_1_lastName_1_1974_05_02" personalNumberLast4Digits="1234" jpaId="2" version="1">
+            <firstName>firstName_1</firstName>
+            <lastName>lastName_1</lastName>
+            <birthday>1974-05-02T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_1</careOfLine>
+                <departmentName>departmentName_1</departmentName>
+                <street>street_1</street>
+                <number>number_1</number>
+                <city>city_1</city>
+                <zipCode>zipCode_1</zipCode>
+                <country>country_1</country>
+                <description>description_1</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_3_firstName_2_lastName_2_1974_05_03" personalNumberLast4Digits="1234" jpaId="3" version="1">
+            <firstName>firstName_2</firstName>
+            <lastName>lastName_2</lastName>
+            <birthday>1974-05-03T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_2</careOfLine>
+                <departmentName>departmentName_2</departmentName>
+                <street>street_2</street>
+                <number>number_2</number>
+                <city>city_2</city>
+                <zipCode>zipCode_2</zipCode>
+                <country>country_2</country>
+                <description>description_2</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_4_firstName_3_lastName_3_1974_05_04" personalNumberLast4Digits="1234" jpaId="4" version="1">
+            <firstName>firstName_3</firstName>
+            <lastName>lastName_3</lastName>
+            <birthday>1974-05-04T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_3</careOfLine>
+                <departmentName>departmentName_3</departmentName>
+                <street>street_3</street>
+                <number>number_3</number>
+                <city>city_3</city>
+                <zipCode>zipCode_3</zipCode>
+                <country>country_3</country>
+                <description>description_3</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_5_firstName_4_lastName_4_1974_05_05" personalNumberLast4Digits="1234" jpaId="5" version="1">
+            <firstName>firstName_4</firstName>
+            <lastName>lastName_4</lastName>
+            <birthday>1974-05-05T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_4</careOfLine>
+                <departmentName>departmentName_4</departmentName>
+                <street>street_4</street>
+                <number>number_4</number>
+                <city>city_4</city>
+                <zipCode>zipCode_4</zipCode>
+                <country>country_4</country>
+                <description>description_4</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_6_firstName_5_lastName_5_1974_05_06" personalNumberLast4Digits="1234" jpaId="6" version="1">
+            <firstName>firstName_5</firstName>
+            <lastName>lastName_5</lastName>
+            <birthday>1974-05-06T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_5</careOfLine>
+                <departmentName>departmentName_5</departmentName>
+                <street>street_5</street>
+                <number>number_5</number>
+                <city>city_5</city>
+                <zipCode>zipCode_5</zipCode>
+                <country>country_5</country>
+                <description>description_5</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_7_firstName_6_lastName_6_1974_05_07" personalNumberLast4Digits="1234" jpaId="7" version="1">
+            <firstName>firstName_6</firstName>
+            <lastName>lastName_6</lastName>
+            <birthday>1974-05-07T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_6</careOfLine>
+                <departmentName>departmentName_6</departmentName>
+                <street>street_6</street>
+                <number>number_6</number>
+                <city>city_6</city>
+                <zipCode>zipCode_6</zipCode>
+                <country>country_6</country>
+                <description>description_6</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_8_firstName_7_lastName_7_1974_05_08" personalNumberLast4Digits="1234" jpaId="8" version="1">
+            <firstName>firstName_7</firstName>
+            <lastName>lastName_7</lastName>
+            <birthday>1974-05-08T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_7</careOfLine>
+                <departmentName>departmentName_7</departmentName>
+                <street>street_7</street>
+                <number>number_7</number>
+                <city>city_7</city>
+                <zipCode>zipCode_7</zipCode>
+                <country>country_7</country>
+                <description>description_7</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_9_firstName_8_lastName_8_1974_05_09" personalNumberLast4Digits="1234" jpaId="9" version="1">
+            <firstName>firstName_8</firstName>
+            <lastName>lastName_8</lastName>
+            <birthday>1974-05-09T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_8</careOfLine>
+                <departmentName>departmentName_8</departmentName>
+                <street>street_8</street>
+                <number>number_8</number>
+                <city>city_8</city>
+                <zipCode>zipCode_8</zipCode>
+                <country>country_8</country>
+                <description>description_8</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+        <user xmlID="user_10_firstName_9_lastName_9_1974_05_10" personalNumberLast4Digits="1234" jpaId="10" version="1">
+            <firstName>firstName_9</firstName>
+            <lastName>lastName_9</lastName>
+            <birthday>1974-05-10T00:00:00+01:00</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine_9</careOfLine>
+                <departmentName>departmentName_9</departmentName>
+                <street>street_9</street>
+                <number>number_9</number>
+                <city>city_9</city>
+                <zipCode>zipCode_9</zipCode>
+                <country>country_9</country>
+                <description>description_9</description>
+            </homeAddress>
+            <memberships/>
+            <contactDetails/>
+        </user>
+    </users>
+    <memberships>
+        <membership loginPermitted="true" jpaId="1" version="1">
+            <alias>alias_0</alias>
+            <subAlias>subAlias_0</subAlias>
+            <emailAlias>emailAlias_0</emailAlias>
+            <user>user_1_firstName_0_lastName_0_1974_05_01</user>
+            <memberships>
+                <groupMembership>
+                    <group>group_Mithlond_Administratörer</group>
+                </groupMembership>
+            </memberships>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="2" version="1">
+            <alias>alias_1</alias>
+            <subAlias>subAlias_1</subAlias>
+            <emailAlias>emailAlias_1</emailAlias>
+            <user>user_2_firstName_1_lastName_1_1974_05_02</user>
+            <memberships/>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="3" version="1">
+            <alias>alias_2</alias>
+            <subAlias>subAlias_2</subAlias>
+            <emailAlias>emailAlias_2</emailAlias>
+            <user>user_3_firstName_2_lastName_2_1974_05_03</user>
+            <memberships>
+                <groupMembership>
+                    <group>group_Mithlond_Administratörer</group>
+                </groupMembership>
+                <guildMembership guildMaster="false" deputyGuildMaster="false" auditor="false">
+                    <group>guild_Mithlond_Skitsnackargillet</group>
+                </guildMembership>
+            </memberships>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="4" version="1">
+            <alias>alias_3</alias>
+            <subAlias>subAlias_3</subAlias>
+            <emailAlias>emailAlias_3</emailAlias>
+            <user>user_4_firstName_3_lastName_3_1974_05_04</user>
+            <memberships/>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="5" version="1">
+            <alias>alias_4</alias>
+            <subAlias>subAlias_4</subAlias>
+            <emailAlias>emailAlias_4</emailAlias>
+            <user>user_5_firstName_4_lastName_4_1974_05_05</user>
+            <memberships>
+                <groupMembership>
+                    <group>group_Mithlond_Administratörer</group>
+                </groupMembership>
+            </memberships>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="6" version="1">
+            <alias>alias_5</alias>
+            <subAlias>subAlias_5</subAlias>
+            <emailAlias>emailAlias_5</emailAlias>
+            <user>user_6_firstName_5_lastName_5_1974_05_06</user>
+            <memberships>
+                <guildMembership guildMaster="false" deputyGuildMaster="false" auditor="false">
+                    <group>guild_Mithlond_Skitsnackargillet</group>
+                </guildMembership>
+            </memberships>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="7" version="1">
+            <alias>alias_6</alias>
+            <subAlias>subAlias_6</subAlias>
+            <emailAlias>emailAlias_6</emailAlias>
+            <user>user_7_firstName_6_lastName_6_1974_05_07</user>
+            <memberships>
+                <groupMembership>
+                    <group>group_Mithlond_Administratörer</group>
+                </groupMembership>
+            </memberships>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="8" version="1">
+            <alias>alias_7</alias>
+            <subAlias>subAlias_7</subAlias>
+            <emailAlias>emailAlias_7</emailAlias>
+            <user>user_8_firstName_7_lastName_7_1974_05_08</user>
+            <memberships/>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="9" version="1">
+            <alias>alias_8</alias>
+            <subAlias>subAlias_8</subAlias>
+            <emailAlias>emailAlias_8</emailAlias>
+            <user>user_9_firstName_8_lastName_8_1974_05_09</user>
+            <memberships>
+                <groupMembership>
+                    <group>group_Mithlond_Administratörer</group>
+                </groupMembership>
+                <guildMembership guildMaster="false" deputyGuildMaster="false" auditor="false">
+                    <group>guild_Mithlond_Skitsnackargillet</group>
+                </guildMembership>
+            </memberships>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+        <membership loginPermitted="true" jpaId="10" version="1">
+            <alias>alias_9</alias>
+            <subAlias>subAlias_9</subAlias>
+            <emailAlias>emailAlias_9</emailAlias>
+            <user>user_10_firstName_9_lastName_9_1974_05_10</user>
+            <memberships/>
+            <orderLevelGrants/>
+            <organisation>organisation_Mithlond</organisation>
+        </membership>
+    </memberships>
+</organisation:users>

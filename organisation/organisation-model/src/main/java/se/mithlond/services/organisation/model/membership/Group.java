@@ -41,6 +41,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -70,10 +72,44 @@ import java.util.TreeSet;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "discriminator", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("group")
+@NamedQueries({
+        @NamedQuery(name = Group.NAMEDQ_GET_BY_NAME_ORGANISATION,
+                query = "select a from Group a "
+                        + " where a.groupName like :" + Patterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " order by a.groupName"),
+        @NamedQuery(name = Group.NAMEDQ_GET_BY_PARENTGROUPNAME_ORGANISATION,
+                query = "select a from Group a "
+                        + " where a.parent.groupName like :" + Patterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " order by a.groupName"),
+        @NamedQuery(name = Group.NAMEDQ_GET_BY_ORGANISATION,
+                query = "select a from Group a "
+                        + " where a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " order by a.groupName")
+})
 @XmlType(namespace = Patterns.NAMESPACE,
         propOrder = {"groupName", "organisation", "parent", "emailList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group extends NazgulEntity implements Comparable<Group>, SemanticAuthorizationPathProducer {
+
+    /**
+     * NamedQuery for getting Group by its Parent Group's groupName and organisation name.
+     */
+    public static final String NAMEDQ_GET_BY_PARENTGROUPNAME_ORGANISATION =
+            "Group.getByParentNameAndOrganisationName";
+
+    /**
+     * NamedQuery for getting Group by its organisation name.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION =
+            "Group.getByOrganisationName";
+
+    /**
+     * NamedQuery for getting Group by groupName and organisation name.
+     */
+    public static final String NAMEDQ_GET_BY_NAME_ORGANISATION =
+            "Group.getByNameAndOrganisationName";
 
     /**
      * Name of this Group, which must be non-empty and unique within each Organisation.
@@ -271,6 +307,17 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
                 groupName,
                 Segmenter.ANY));
         return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final String parentGroupName = parent != null
+                ? " with Parent Group [" + parent.groupName + "]"
+                : " without Parent Group.";
+        return "Group [" + groupName + "]" + parentGroupName;
     }
 
     //

@@ -45,11 +45,15 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "Category.getByClassification",
-                query = "select a from Category a where a.classification like :classification order by a.name"),
-        @NamedQuery(name = "Category.getByIdAndClassification",
-                query = "select a from Category a where a.categoryID like :categoryID " +
-                        "and a.classification like :classification order by a.name")
+        @NamedQuery(name = Category.NAMEDQ_GET_BY_CLASSIFICATION,
+                query = "select a from Category a"
+                        + " where a.classification like :" + Patterns.PARAM_CLASSIFICATION
+                        + " order by a.categoryID"),
+        @NamedQuery(name = Category.NAMEDQ_GET_BY_ID_CLASSIFICATION,
+                query = "select a from Category a"
+                        + " where a.categoryID like :" + Patterns.PARAM_CATEGORY_ID
+                        + " and a.classification like :" + Patterns.PARAM_CLASSIFICATION
+                        + " order by a.categoryID")
 })
 @Entity
 @Table(uniqueConstraints = {
@@ -62,6 +66,18 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
 
     // Constants
     private static final long serialVersionUID = 8829990031L;
+
+    /**
+     * NamedQuery for getting Category by classification.
+     */
+    public static final String NAMEDQ_GET_BY_CLASSIFICATION =
+            "Category.getByClassification";
+
+    /**
+     * NamedQuery for getting Category by CategoryID and classification.
+     */
+    public static final String NAMEDQ_GET_BY_ID_CLASSIFICATION =
+            "Category.getByIdAndClassification";
 
     // Internal state
     @Basic(optional = false)
