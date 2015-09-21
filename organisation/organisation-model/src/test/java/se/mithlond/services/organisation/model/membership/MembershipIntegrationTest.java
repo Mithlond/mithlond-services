@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.membership;
 
 import org.dbunit.Assertion;
 import org.dbunit.dataset.IDataSet;
+import org.joda.time.DateTimeZone;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -32,7 +33,6 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
-import se.mithlond.services.organisation.model.helpers.Users;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.user.User;
@@ -43,7 +43,6 @@ import java.lang.reflect.Field;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -60,6 +59,10 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
     private Organisation dbOrganisation;
     private List<Group> dbGroups;
     private User[] users;
+
+    public MembershipIntegrationTest() {
+        super(DateTimeZone.forID("Europe/Stockholm"));
+    }
 
     /**
      * {@inheritDoc}
