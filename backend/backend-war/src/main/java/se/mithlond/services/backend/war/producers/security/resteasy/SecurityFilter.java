@@ -25,12 +25,19 @@ import org.jboss.resteasy.core.ResourceMethodInvoker;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.producers.security.AbstractSecurityFilter;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * RestEasy-flavoured AbstractSecurityFilter implementation.
@@ -39,6 +46,9 @@ import java.lang.reflect.Method;
  */
 @Provider
 public class SecurityFilter extends AbstractSecurityFilter {
+
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(SecurityFilter.class);
 
     // Internal state
     private static final String METHOD_INVOKER_KEY = "org.jboss.resteasy.core.ResourceMethodInvoker";
@@ -56,6 +66,39 @@ public class SecurityFilter extends AbstractSecurityFilter {
         final KeycloakSecurityContext securityContext = (KeycloakSecurityContext)
                 httpRequest.getAttribute(KeycloakSecurityContext.class.getName());
         final AccessToken accessToken = securityContext.getToken();
+
+        // Printout the JSon Web Token state.
+        if(log.isDebugEnabled()) {
+            final SortedMap<String, Object> properties = new TreeMap<>();
+
+            final StringBuilder builder = new StringBuilder();
+            builder.append(" ============================\n");
+            builder.append(" = KeyCloak AccessToken Info:\n");
+
+            try {
+                final PropertyDescriptor[] descriptors = Introspector
+                        .getBeanInfo(AccessToken.class, Object.class)
+                        .getPropertyDescriptors();
+
+                final Class[] noArguments = new Class[0];
+                for(PropertyDescriptor current : descriptors) {
+                    Method getter = current.getReadMethod();
+                    if(getter != null) {
+                        properties.put(current.getName(), getter.invoke(accessToken, noArguments));
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Could not acquire AccessToken JavaBean properties", e);
+            }
+
+            for(Map.Entry<String, Object> current : properties.entrySet()) {
+                builder.append(" = [" + current.getKey() + "]: " + current.getValue() + "\n");
+            }
+            builder.append(" ============================\n");
+
+            // All done.
+            log.debug(builder.toString());
+        }
 
         // Preferred Username == Alias
         // Realm == Organisation Name.

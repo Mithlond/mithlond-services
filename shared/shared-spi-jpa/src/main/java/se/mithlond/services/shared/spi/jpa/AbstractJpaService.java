@@ -45,7 +45,7 @@ public abstract class AbstractJpaService implements JpaCudService {
     /**
      * The persistence unit identifier common to all service implementations.
      */
-    public static final String SERVICE_PERSISTENCE_UNIT = "mithlond_PU";
+    public static final String SERVICE_PERSISTENCE_UNIT = "services_PU";
 
     /**
      * <p>Internal helper which retrieves the EntityManager from the implementing subclass.

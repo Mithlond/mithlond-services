@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.backend.war.resources;
 
-import org.jboss.resteasy.spi.HttpRequest;
+import se.mithlond.services.backend.war.producers.security.NazgulMembershipPrincipal;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.PersonalSettings;
 
@@ -41,11 +41,7 @@ import javax.ws.rs.core.SecurityContext;
 public abstract class AbstractResource {
 
     // Internal state
-    @Context
-    private HttpRequest httpRequest;
-
-    @Context
-    private SecurityContext securityContext;
+    @Context private SecurityContext securityContext;
 
     /**
      * Retrieves the Membership of the active User, in JPA-disconnected state.
