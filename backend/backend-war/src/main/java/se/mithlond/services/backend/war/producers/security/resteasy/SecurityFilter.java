@@ -28,6 +28,7 @@ import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.producers.security.AbstractSecurityFilter;
+import se.mithlond.services.backend.war.producers.security.OrganisationAndAlias;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
@@ -60,7 +61,7 @@ public class SecurityFilter extends AbstractSecurityFilter {
      * {@inheritDoc}
      */
     @Override
-    protected AbstractSecurityFilter.OrganisationAndAlias getOrganisationNameAndAlias(
+    protected OrganisationAndAlias getOrganisationNameAndAlias(
             final ContainerRequestContext ctx) {
 
         final KeycloakSecurityContext securityContext = (KeycloakSecurityContext)

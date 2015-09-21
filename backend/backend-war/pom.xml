@@ -84,7 +84,7 @@
     <!-- +=============================================== -->
     <!-- | Section 3:  Build settings                     -->
     <!-- +=============================================== -->
-    <!-- build>
+    <build>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -101,7 +101,26 @@
                 </plugin>
             </plugins>
         </pluginManagement>
-    </build -->
+
+        <plugins>
+            <!--
+                Ensure that we generate XSDs for all our model projects.
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions combine.self="override">
+                    <execution >
+                        <id>schemagen</id>
+                        <phase></phase>
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <!-- +=============================================== -->
     <!-- | Section 4:  External systems                   -->
