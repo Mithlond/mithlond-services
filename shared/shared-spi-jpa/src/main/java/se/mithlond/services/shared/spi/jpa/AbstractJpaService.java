@@ -24,14 +24,13 @@ package se.mithlond.services.shared.spi.jpa;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Abstract JPA CUD service implementation.
@@ -42,6 +41,11 @@ public abstract class AbstractJpaService implements JpaCudService {
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(AbstractJpaService.class);
+
+    /**
+     * The persistence unit identifier common to all service implementations.
+     */
+    public static final String SERVICE_PERSISTENCE_UNIT = "mithlond_PU";
 
     /**
      * <p>Internal helper which retrieves the EntityManager from the implementing subclass.
@@ -85,38 +89,6 @@ public abstract class AbstractJpaService implements JpaCudService {
     protected abstract EntityManager getEntityManager();
 
     /**
-     * Creates and fires a Query instance from a NamedQuery with the given name.
-     * Also populates the parameters in order.
-     *
-     * @param queryName The name of the NamedQuery to acquire.
-     * @param <T>       The type of Entity retrieved from the named query.
-     * @param params    The parameters - in order - to set within the Query.
-     * @return The response as follows.
-     */
-    @SuppressWarnings("unchecked")
-    protected <T> List<T> fireNamedQuery(final String queryName, final Object... params) {
-
-        // Check sanity
-        Validate.notEmpty(queryName, "Cannot handle null or empty queryName argument.");
-
-        // Fire the query
-        final EntityManager em = getEntityManager();
-        final Query query = em.createNamedQuery(queryName);
-        setParameters(query, params);
-
-        // Fire the query
-        List toReturn = query.getResultList();
-
-        // Convert null results.
-        if (toReturn == null) {
-            return new ArrayList<T>();
-        }
-
-        // All done.
-        return (List<T>) toReturn;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -139,30 +111,40 @@ public abstract class AbstractJpaService implements JpaCudService {
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public <T> T update(final T toUpdate) throws PersistenceOperationFailedException {
+    public <T extends NazgulEntity> T update(final T toUpdate) throws PersistenceOperationFailedException {
 
         try {
 
-            T toReturn = toUpdate;
+            final Class<T> nazgulEntitySubclass = (Class<T>) toUpdate.getClass();
+            T managedEntity = findByPrimaryKey(nazgulEntitySubclass, toUpdate.getId());
 
-            // Merge the T instance, if required
+            // Versions OK?
+            final long managedVersion = managedEntity.getVersion();
+            final long toUpdateVersion = toUpdate.getVersion();
+            if(toUpdateVersion != managedVersion) {
+                final String message = "JPA version mismatch for type [" + nazgulEntitySubclass.getSimpleName()
+                        + "]. Received version [" + toUpdate.getVersion() + "], managed version [" + managedEntity
+                        .getVersion() + "]";
+                throw new IllegalStateException(message);
+            }
+
+            // Merge the properties of the supplied toUpdate instance.
             if (!getEntityManager().contains(toUpdate)) {
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Non-managed entity of type [" + toUpdate.getClass().getName() + "] requires merge "
+                    log.debug("Non-managed entity of type [" + nazgulEntitySubclass.getName() + "] requires merge "
                             + "into the current EntityManager. Performing it.");
                 }
-
-                toReturn = getEntityManager().merge(toUpdate);
+                managedEntity = getEntityManager().merge(toUpdate);
             } else {
 
                 if (log.isDebugEnabled()) {
-                    log.debug("Managed entity of type [" + toUpdate.getClass().getName() + "] requires no JPA merge.");
+                    log.debug("Managed entity of type [" + nazgulEntitySubclass.getName() + "] requires no JPA merge.");
                 }
             }
 
             // All done.
-            return toReturn;
+            return managedEntity;
 
         } catch (Exception e) {
             logAndThrowPersistenceOperationFailedException("update", toUpdate, e);
@@ -177,7 +159,7 @@ public abstract class AbstractJpaService implements JpaCudService {
      */
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public <T> T findByPrimaryKey(final Class<T> entityType, final long primaryKey)
+    public <T extends NazgulEntity> T findByPrimaryKey(final Class<T> entityType, final long primaryKey)
             throws PersistenceOperationFailedException {
 
         // Check sanity
@@ -211,18 +193,6 @@ public abstract class AbstractJpaService implements JpaCudService {
     //
     // Private helpers
     //
-
-    private void setParameters(final Query query, final Object... params) {
-
-        // Assign all parameters, if any.
-        if (params != null) {
-            for (int i = 0; i < params.length; i++) {
-
-                // Bump the parameter index value with 1, to comply with JDBC indexing...
-                query.setParameter((i + 1), params[i]);
-            }
-        }
-    }
 
     private void logAndThrowPersistenceOperationFailedException(final String operation,
                                                                 final Object toCreateOrClass,

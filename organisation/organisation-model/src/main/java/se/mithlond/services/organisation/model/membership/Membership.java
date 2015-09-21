@@ -69,11 +69,16 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ALIAS_ORGANISATION_LOGINPERMITTED,
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ALIAS_ORGANISATION,
                 query = "select a from Membership a "
                         + " where a.alias like :" + Patterns.PARAM_ALIAS
                         + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
-                        + " and a.loginPermitted = :" + Patterns.PARAM_LOGIN_PERMITTED
+                        + " order by a.alias"),
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_NAME_ORGANISATION,
+                query = "select a from Membership a "
+                        + " where a.user.firstName like :" + Patterns.PARAM_FIRSTNAME
+                        + " and a.user.lastName like :" + Patterns.PARAM_LASTNAME
+                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
                         + " order by a.alias"),
         @NamedQuery(name = Membership.NAMEDQ_GET_BY_GROUP_ORGANISATION_LOGINPERMITTED,
                 query = "select a from Membership a, in(a.groupMemberships) groupMemberships "
@@ -102,10 +107,17 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     private static final long serialVersionUID = 8829990028L;
 
     /**
-     * NamedQuery for getting Memberships by alias, organisation name and loginPermitted.
+     * NamedQuery for getting Memberships by alias and organisation name.
+     * Found Memberships are retrieved irrespective of their LoginPermitted flag.
      */
-    public static final String NAMEDQ_GET_BY_ALIAS_ORGANISATION_LOGINPERMITTED =
-            "Membership.getByAliasOrganisationAndLoginPermitted";
+    public static final String NAMEDQ_GET_BY_ALIAS_ORGANISATION =
+            "Membership.getByAliasAndOrganisation";
+
+    /**
+     * NamedQuery for getting Memberships by name and organisation name.
+     */
+    public static final String NAMEDQ_GET_BY_NAME_ORGANISATION =
+            "Membership.getByNameAndOrganisation";
 
     /**
      * NamedQuery for getting Memberships by group name, organisation name and loginPermitted.

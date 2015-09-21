@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.spi.jpa;
 
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
+
 /**
  * Standard specification for services which should expose a standard (and generic)
  * interface for performing CUD (Create/Update/Delete) JPA operations.
@@ -52,7 +54,7 @@ public interface JpaCudService {
      * of the supplied argument.
      * @throws PersistenceOperationFailedException if the update operation failed.
      */
-    <T> T update(T toUpdate) throws PersistenceOperationFailedException;
+    <T extends NazgulEntity> T update(T toUpdate) throws PersistenceOperationFailedException;
 
     /**
      * Deletes the supplied object from the active PersistenceContext, implying deletion
@@ -74,5 +76,6 @@ public interface JpaCudService {
      * @return The Entity with the supplied primaryKey.
      * @throws PersistenceOperationFailedException if the Entity could not be retrieved.
      */
-    <T> T findByPrimaryKey(final Class<T> entityType, final long primaryKey) throws PersistenceOperationFailedException;
+    <T extends NazgulEntity> T findByPrimaryKey(final Class<T> entityType, final long primaryKey)
+            throws PersistenceOperationFailedException;
 }

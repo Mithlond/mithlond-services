@@ -26,11 +26,8 @@ import se.mithlond.services.content.api.navigation.transport.MenuStructure;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
@@ -39,19 +36,7 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Stateless
-public class MenuNavigation extends AbstractJpaService implements NavigationService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected EntityManager getEntityManager() {
-        return entityManager;
-    }
-
+public class MenuNavigation implements NavigationService {
     /**
      * {@inheritDoc}
      */
@@ -62,17 +47,10 @@ public class MenuNavigation extends AbstractJpaService implements NavigationServ
         Validate.notNull(menuOwner, "menuOwner");
         Validate.notNull(callersMemberships, "callersMemberships");
 
-        // Read the raw menu data from the DB.
-        // entityManager.createNamedQuery()
-
         // Populate the MenuStructure, caring for authorization.
         final MenuStructure toReturn = new MenuStructure(menuOwner.getOrganisationName());
 
         // All done.
         return toReturn;
     }
-
-    //
-    // Private helpers
-    //
 }

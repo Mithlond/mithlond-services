@@ -57,6 +57,16 @@ public final class Patterns {
     public static final String PARAM_ALIAS = "alias";
 
     /**
+     * NamedQuery parameter name for firstName.
+     */
+    public static final String PARAM_FIRSTNAME = "firstName";
+
+    /**
+     * NamedQuery parameter name for lastName.
+     */
+    public static final String PARAM_LASTNAME = "lastName";
+
+    /**
      * NamedQuery parameter name for loginPermitted.
      */
     public static final String PARAM_LOGIN_PERMITTED = "loginPermitted";
