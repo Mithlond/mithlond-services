@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
+import se.mithlond.services.content.api.UnknownOrganisationException;
 import se.mithlond.services.content.api.navigation.transport.MenuStructure;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
@@ -106,7 +107,7 @@ public class MenuNavigationTest {
         unitUnderTest.setupEnvironmentStorageRootDir();
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = UnknownOrganisationException.class)
     public void validateExceptionOnRetrievingMenuStructureForNonexistentOwner() {
 
         // Assemble

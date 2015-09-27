@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.backend.war.producers.security.resteasy;
+package se.mithlond.services.backend.war.providers.security.resteasy;
 
 import org.jboss.resteasy.core.ResourceMethodInvoker;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -27,8 +27,8 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.mithlond.services.backend.war.producers.security.AbstractSecurityFilter;
-import se.mithlond.services.backend.war.producers.security.OrganisationAndAlias;
+import se.mithlond.services.backend.war.providers.security.AbstractSecurityFilter;
+import se.mithlond.services.backend.war.providers.security.OrganisationAndAlias;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;

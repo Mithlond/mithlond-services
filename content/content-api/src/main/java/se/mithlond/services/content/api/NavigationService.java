@@ -42,7 +42,9 @@ public interface NavigationService {
      * @param callersAuthPaths The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                         MenuStructure items should be retrieved. Typically, each authPath is a Membership.
      * @return A fully set-up Menu structure.
+     * @throws UnknownOrganisationException if the menuOwner was not the name of an existing organisation.
      */
     MenuStructure getMenuStructure(final String menuOwner,
-                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths);
+                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+            throws UnknownOrganisationException;
 }

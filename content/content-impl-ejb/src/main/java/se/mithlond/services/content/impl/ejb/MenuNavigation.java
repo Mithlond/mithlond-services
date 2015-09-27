@@ -24,6 +24,7 @@ package se.mithlond.services.content.impl.ejb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.content.api.NavigationService;
+import se.mithlond.services.content.api.UnknownOrganisationException;
 import se.mithlond.services.content.api.navigation.transport.MenuStructure;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
@@ -99,13 +100,21 @@ public class MenuNavigation implements NavigationService {
                                           final List<SemanticAuthorizationPathProducer> callersAuthPaths) {
 
         // Check sanity
-        Validate.notEmpty(menuOwner, "menuOwner");
+        if(menuOwner == null || menuOwner.isEmpty()) {
+            throw new UnknownOrganisationException(menuOwner);
+        }
+
         final List<SemanticAuthorizationPathProducer> effectivePathProducers = callersAuthPaths == null
                 ? new ArrayList<>()
                 : callersAuthPaths;
 
         // Read the raw MenuStructure superstructure from disk.
-        final MenuStructure rawMenuStructure = readRawMenuStructure(menuOwner);
+        final MenuStructure rawMenuStructure;
+        try {
+            rawMenuStructure = readRawMenuStructure(menuOwner);
+        } catch (IllegalStateException e) {
+            throw new UnknownOrganisationException(menuOwner, e);
+        }
 
         // Compile all the AuthenticationPaths of the supplied Memberships.
         final SortedSet<SemanticAuthorizationPath> paths = new TreeSet<>();

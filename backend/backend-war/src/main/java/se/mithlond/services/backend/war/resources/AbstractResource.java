@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.backend.war.resources;
 
-import se.mithlond.services.backend.war.producers.security.NazgulMembershipPrincipal;
+import se.mithlond.services.backend.war.providers.security.NazgulMembershipPrincipal;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.PersonalSettings;
 

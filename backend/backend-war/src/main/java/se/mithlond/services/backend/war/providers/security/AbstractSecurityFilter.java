@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.backend.war.producers.security;
+package se.mithlond.services.backend.war.providers.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
