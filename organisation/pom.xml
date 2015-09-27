@@ -14,7 +14,7 @@
     <groupId>se.mithlond.services.organisation</groupId>
     <artifactId>mithlond-services-organisation-reactor</artifactId>
     <name>${project.artifactId}</name>
-    <description>${project.artifactId}</description>
+    <description>Mithlond Service: Organisation Reactor (version ${project.version})</description>
     <packaging>pom</packaging>
     <url>${site.top.url}/${path.in.reactor}</url>
 
