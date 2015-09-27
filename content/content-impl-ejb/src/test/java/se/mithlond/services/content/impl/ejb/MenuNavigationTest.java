@@ -140,6 +140,35 @@ public class MenuNavigationTest {
         final List<AuthorizedNavItem> rootMenu = result.getRootMenu();
         Assert.assertEquals(2, rootMenu.size());
 
+        Assert.assertEquals("firstMenuInDevelopment", rootMenu.get(0).getIdAttribute());
+
+        final StandardMenuItem menuItem = (StandardMenuItem) rootMenu.get(1);
+        Assert.assertFalse(menuItem.isEnabled());
+        Assert.assertNull(menuItem.getHrefAttribute());
+    }
+
+    @Test
+    public void validateRetrievingUnauthorizedMenuStructureFromStagingEnvironment() {
+
+        // Assemble
+        System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
+        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unitteststaging");
+
+        final MenuNavigation unitUnderTest = new MenuNavigation();
+        unitUnderTest.setupEnvironmentStorageRootDir();
+
+        // Act
+        final MenuStructure result = unitUnderTest.getMenuStructure("Foo", new ArrayList<>());
+        // System.out.println("Got: " + marshal(result));
+
+        // Assert
+        Assert.assertNotNull(result);
+
+        final List<AuthorizedNavItem> rootMenu = result.getRootMenu();
+        Assert.assertEquals(2, rootMenu.size());
+
+        Assert.assertEquals("firstMenuInStaging", rootMenu.get(0).getIdAttribute());
+
         final StandardMenuItem menuItem = (StandardMenuItem) rootMenu.get(1);
         Assert.assertFalse(menuItem.isEnabled());
         Assert.assertNull(menuItem.getHrefAttribute());
