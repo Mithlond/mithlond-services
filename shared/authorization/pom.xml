@@ -14,7 +14,7 @@
     <groupId>se.mithlond.services.shared.authorization</groupId>
     <artifactId>mithlond-services-shared-authorization-reactor</artifactId>
     <name>${project.artifactId}</name>
-    <description>${project.artifactId}</description>
+    <description>Mithlond Service: Shared Authorization Reactor (version ${project.version})</description>
     <packaging>pom</packaging>
     <url>${site.top.url}/${path.in.reactor}</url>
 
