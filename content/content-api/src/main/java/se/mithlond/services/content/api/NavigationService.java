@@ -22,8 +22,7 @@
 package se.mithlond.services.content.api;
 
 import se.mithlond.services.content.api.navigation.transport.MenuStructure;
-import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
 import javax.ejb.Local;
 import java.util.List;
@@ -39,10 +38,11 @@ public interface NavigationService {
     /**
      * Retrieves the MenuStructure available to a caller sporting the supplied Memberships.
      *
-     * @param menuOwner          The organisation owning the site for which a MenuStructure should be retrieved.
-     * @param callersMemberships The Memberships of the caller, used to determine which MenuStructure
-     *                           items should be retrieved.
+     * @param menuOwner        The organisation owning the site for which a MenuStructure should be retrieved.
+     * @param callersAuthPaths The SemanticAuthorizationPathProducer of the caller, used to determine which
+     *                         MenuStructure items should be retrieved. Typically, each authPath is a Membership.
      * @return A fully set-up Menu structure.
      */
-    MenuStructure getMenuStructure(final Organisation menuOwner, final List<Membership> callersMemberships);
+    MenuStructure getMenuStructure(final String menuOwner,
+                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths);
 }

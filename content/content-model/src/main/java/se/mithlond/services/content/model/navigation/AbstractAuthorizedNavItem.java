@@ -25,6 +25,7 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import javax.persistence.Column;
@@ -163,9 +164,12 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
         }
         if (authorizationPatterns != null) {
             transportAuthorizationPatterns = new TreeSet<>();
-            AuthorizationPattern.parse(authorizationPatterns).forEach(current -> {
-                transportAuthorizationPatterns.add(current.toString());
-            });
+
+            final StringTokenizer tokenizer = new StringTokenizer(
+                    authorizationPatterns, AuthorizationPath.PATTERN_SEPARATOR_STRING, false);
+            while(tokenizer.hasMoreTokens()) {
+                transportAuthorizationPatterns.add(tokenizer.nextToken());
+            }
         }
 
         // Handle disabled state
@@ -293,12 +297,18 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
         // Populate the transport state
         if (cssClasses != null) {
             transportCssClasses = getCssClasses();
+        } else {
+            transportCssClasses = null;
         }
+
         if (authorizationPatterns != null) {
             transportAuthorizationPatterns = new TreeSet<>();
-            AuthorizationPattern.parse(authorizationPatterns).forEach(current -> {
-                transportAuthorizationPatterns.add(current.toString());
-            });
+
+            final StringTokenizer tokenizer = new StringTokenizer(
+                    authorizationPatterns, AuthorizationPath.PATTERN_SEPARATOR_STRING, false);
+            while(tokenizer.hasMoreTokens()) {
+                transportAuthorizationPatterns.add(tokenizer.nextToken());
+            }
         }
     }
 

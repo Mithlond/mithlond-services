@@ -29,6 +29,9 @@ import java.util.List;
 
 /**
  * Utility class which segments path structures into pattern-padded arrays.
+ * This Utility class is considerably more intelligent than a StringTokenizer, in that it
+ * handles empty segments/tokens and the absence of segments/tokens in better ways than
+ * the implemented behaviour of the StringTokenizer.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -44,6 +47,35 @@ public final class Segmenter {
      */
     private Segmenter() {
         // Do nothing
+    }
+
+    /**
+     * Copies the supplied segments to an output String[], replacing empty elements with the
+     * {@code ANY} pattern (i.e. <code>{@value #ANY}</code>). If {@code trimSegments} is true, the
+     * inbound segments will be {@code trim()}-med before comparing for empty-ness.
+     *
+     * @param segments     The non-null String[] segments to copy (and potentially modify) before returning.
+     * @param trimSegments If {@code trimSegments} is true, the inbound segments will be {@code trim()}-med
+     *                     before comparing for empty-ness.
+     * @return A Copy of the supplied segments String[] with any empty element replaced with {@value #ANY}.
+     */
+    public static String[] replaceEmptySegmentsWithAnyPattern(final String[] segments,
+                                                              final boolean trimSegments) {
+
+        // Check sanity
+        Validate.notNull(segments, "Cannot handle null 'segments' parameter.");
+
+        final String[] toReturn = new String[segments.length];
+        for (int i = 0; i < segments.length; i++) {
+
+            final boolean replaceWithAnyPattern = segments[i] != null && trimSegments
+                    ? "".equals(segments[i].trim())
+                    : "".equals(segments[i]);
+            toReturn[i] = replaceWithAnyPattern ? ANY : segments[i];
+        }
+
+        // All done.
+        return toReturn;
     }
 
     /**
@@ -88,9 +120,9 @@ public final class Segmenter {
     //
 
     private static String[] segment(final String toSegment,
-                                    List<Integer> separatorIndices) {
+                                    final List<Integer> separatorIndices) {
 
-        final String[] toReturn = new String[]{ANY, ANY, ANY};
+        final String[] toReturn = new String[]{"", "", ""};
         final boolean[] assigned = new boolean[]{false, false, false};
 
         int startIndex = 0;
@@ -102,7 +134,7 @@ public final class Segmenter {
             endIndex = separatorIndices.get(i);
 
             // Check sanity on the current segment, and assign the parsed substring.
-            toReturn[i] = getOrReplaceWithAnyPattern(toSegment.substring(startIndex, endIndex));
+            toReturn[i] = toSegment.substring(startIndex, endIndex);
             assigned[i] = true;
 
             // Update the startIndex
@@ -119,7 +151,8 @@ public final class Segmenter {
                 }
             }
 
-            toReturn[index] = getOrReplaceWithAnyPattern(toSegment.substring(startIndex, toSegment.length()));
+            // Don't process the results.
+            toReturn[index] = toSegment.substring(startIndex, toSegment.length());
         }
 
         // All done.
@@ -135,9 +168,5 @@ public final class Segmenter {
 
         // All done.
         return trimmed;
-    }
-
-    private static String getOrReplaceWithAnyPattern(final String aString) {
-        return "".equals(aString) ? ANY : aString;
     }
 }

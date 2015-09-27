@@ -95,10 +95,10 @@ public class SimpleAuthorizerTest {
     }
 
     @Test
-    public void validateAuthorizationUsingRegexpPatterns() {
+    public void validateAuthorizationUsingSlashTermination() {
 
         // Assemble
-        final String authorizationPattern = "/mithlond";
+        final String authorizationPattern = "/mithlond/";
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
 
         final String villageIdiotsMember = "/mithlond/village_idiots/member";
@@ -110,6 +110,23 @@ public class SimpleAuthorizerTest {
         Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(villageIdiotsMember)));
         Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(plainMithlondMember)));
         Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(plainVillageIdiots)));
+    }
+
+    @Test
+    public void validateAuthorizationUsingPatterns() {
+
+        // Assemble
+        final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
+        final SortedSet<AuthorizationPattern> patterns1 = AuthorizationPattern.parse("/forodrim/members," +
+                "/mithlond/members");
+        final SortedSet<AuthorizationPattern> patterns2 = AuthorizationPattern.parse("/mithlond/village_idiots/");
+        final SortedSet<AuthorizationPattern> patterns3 = AuthorizationPattern.parse("/mithlond/village_idiots/"
+                + Segmenter.ANY);
+
+        // Act & Assert
+        Assert.assertFalse(unitUnderTest.isAuthorized(patterns1, possessedPrivileges));
+        Assert.assertTrue(unitUnderTest.isAuthorized(patterns2, possessedPrivileges));
+        Assert.assertTrue(unitUnderTest.isAuthorized(patterns3, possessedPrivileges));
     }
 
     //

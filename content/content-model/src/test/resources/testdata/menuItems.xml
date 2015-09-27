@@ -30,7 +30,7 @@
                         <cssClass>icon-fixed-width</cssClass>
                     </cssClasses>
                     <authPatterns>
-                        <pattern>/mithlond/members/(\p{javaLetterOrDigit}|_)*</pattern>
+                        <pattern>/mithlond/members</pattern>
                     </authPatterns>
                     <iconIdentifier>cog</iconIdentifier>
                     <href>plainItemPage</href>
@@ -41,7 +41,7 @@
                         <cssClass>icon-fixed-width</cssClass>
                     </cssClasses>
                     <authPatterns>
-                        <pattern>/mithlond/members/(\p{javaLetterOrDigit}|_)*</pattern>
+                        <pattern>/mithlond/members</pattern>
                     </authPatterns>
                     <iconIdentifier>lightbulb</iconIdentifier>
                     <href>plainItemPage2</href>
@@ -53,8 +53,8 @@
                 <cssClass>icon-fixed-width</cssClass>
             </cssClasses>
             <authPatterns>
-                <pattern>/forodrim/members/(\p{javaLetterOrDigit}|_)*</pattern>
-                <pattern>/mithlond/members/(\p{javaLetterOrDigit}|_)*</pattern>
+                <pattern>/forodrim/members</pattern>
+                <pattern>/mithlond/members</pattern>
             </authPatterns>
             <iconIdentifier>calendar</iconIdentifier>
             <href>plainItemPage3</href>

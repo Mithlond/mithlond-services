@@ -27,6 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -72,5 +75,34 @@ public class DeploymentTest {
 
         // Act & Assert
         Deployment.getDeploymentName();
+    }
+
+    @Test
+    public void validateMatchingPatterns() {
+
+        // Assemble
+        final SortedMap<String, Boolean> actual = new TreeMap<>();
+        final SortedMap<String, Boolean> expected = new TreeMap<>();
+        expected.put("/foo/bar/baz", true);
+        expected.put("/contains whitespace/so/illegal", false);
+        expected.put("noInitialSlash/so/illegal", false);
+        expected.put("\\windoze\\path\\separators", true);
+        expected.put("/foo-bar_/is/ok", true);
+        expected.put("/Users/lj/Development/Projects/Tolkien/mithlond-services/content/content-impl-ejb/target/test"
+                + "-classes/testdata/storageroot", true);
+
+        // Act
+        for (Map.Entry<String, Boolean> current : expected.entrySet()) {
+            final Boolean isMatch = current.getKey().matches(Deployment.EXPECTED_STORAGE_ROOTDIR_PATTERN);
+            actual.put(current.getKey(), isMatch);
+        }
+
+        // Assert
+        for(Map.Entry<String, Boolean> current : actual.entrySet()) {
+            final String msg = " [" + current.getKey() + "]: " + current.getValue()
+                    + "  --  expected [" + expected.get(current.getKey()) + "]";
+            final String currentKey = current.getKey();
+            Assert.assertEquals(msg, expected.get(currentKey), actual.get(currentKey));
+        }
     }
 }

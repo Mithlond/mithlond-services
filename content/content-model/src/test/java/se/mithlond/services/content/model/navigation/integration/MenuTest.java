@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.content.model.navigation.integration;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
@@ -64,7 +63,7 @@ public class MenuTest extends AbstractEntityTest {
 
         // Act
         final String result = marshal(menuItems);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
   #%L
-  Nazgul Project: mithlond-services-content-api
+  Nazgul Project: mithlond-services-content-impl-ejb
   %%
   Copyright (C) 2015 Mithlond
   %%
@@ -21,7 +21,7 @@
   #L%
   -->
 
-<content:menuStructure realm="FooBar" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<content:menuStructure realm="Foo" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <rootMenu>
         <subMenu domId="firstMenu" jpaId="0" version="0">
             <children>
@@ -40,9 +40,6 @@
                     <cssClasses>
                         <cssClass>icon-fixed-width</cssClass>
                     </cssClasses>
-                    <authPatterns>
-                        <pattern>/mithlond/members</pattern>
-                    </authPatterns>
                     <iconIdentifier>lightbulb</iconIdentifier>
                     <href>plainItemPage2</href>
                 </menuItem>

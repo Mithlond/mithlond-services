@@ -31,17 +31,25 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 /**
- * Builder class to simplify creating AuthorizationPath instances.
+ * <p>Builder class to simplify creating AuthorizationPath instances. Typical usage:</p>
+ * <pre>
+ *     <code>
+ *         // Create an AuthorizationPath using the builder.
+ *         final AuthorizationPath mithlondPath = AuthorizationPathBuilder
+ *               .create()
+ *               .withGroup("mithlond")
+ *               .build();
+ *     </code>
+ * </pre>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public final class AuthorizationPathBuilder {
 
-
     // Internal state
-    private String group = Segmenter.ANY;
-    private String realm = Segmenter.ANY;
-    private String qualifier = Segmenter.ANY;
+    private String group = "";
+    private String realm = "";
+    private String qualifier = "";
 
     /**
      * Hide the constructor of the builder; use static factory methods instead.
@@ -115,6 +123,7 @@ public final class AuthorizationPathBuilder {
 
     /**
      * Parses the supplied concatenatedPatterns into several AuthorizationPath instances.
+     * Since the AuthorizationPattern class could contain regular expressions in its respective
      *
      * @param concatenatedPaths A string containing concatenated AuthorizationPaths.
      * @return a SortedSet containing AuthorizationPath instances, extracted from the concatenatedPatterns string.
@@ -130,25 +139,12 @@ public final class AuthorizationPathBuilder {
                     false);
 
             while (tok.hasMoreTokens()) {
-
                 final String[] segments = Segmenter.segment(tok.nextToken());
-                toReturn.add(
-                        new AuthorizationPath(
-                                replaceAny(segments[0], "any"),
-                                replaceAny(segments[1], "any"),
-                                replaceAny(segments[2], "any")));
+                toReturn.add(new AuthorizationPath(segments[0], segments[1] , segments[2]));
             }
         }
 
         // All done.
         return toReturn;
-    }
-
-    private static String replaceAny(final String candidate, final String replacement) {
-        if (candidate.equalsIgnoreCase(Segmenter.ANY)) {
-            return replacement;
-        }
-
-        return candidate;
     }
 }

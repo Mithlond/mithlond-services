@@ -48,10 +48,13 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         unitUnderTest = new TreeSet<>();
 
         for (int i = 0; i < 10; i++) {
-            unitUnderTest.add(new AuthorizationPath(
-                    "realm_" + i,
-                    "group_" + i,
-                    "qualifier_" + i));
+
+            final String realm = i % 3 == 0 ? "" : "realm_" + i;
+            final String group = i % 5 == 0 ? "" : "group_" + i;
+            final String qualifier = i % 2 == 0 ? "" : "qualifier_" + i;
+
+            // Add the AuthorizationPath
+            unitUnderTest.add(new AuthorizationPath(realm, group, qualifier));
         }
     }
 
@@ -156,6 +159,23 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
 
         // Act & Assert
         AuthorizationPath.create("/foo,/bar/baz");
+    }
+
+    @Test
+    public void validateParsingEmptySegment() {
+
+        // Assemble
+        final String emptyGroupPath = "/foo/ /baz";
+
+        // Act
+        final AuthorizationPath path1 = AuthorizationPath.create(emptyGroupPath);
+        final AuthorizationPath path2 = new AuthorizationPath("foo", "", "baz");
+
+        // Assert
+        Assert.assertEquals("foo", path1.getRealm());
+        Assert.assertEquals("", path1.getGroup());
+        Assert.assertEquals("baz", path1.getQualifier());
+        Assert.assertEquals(path1, path2);
     }
 
     //

@@ -34,13 +34,16 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
 import java.util.StringTokenizer;
 
 /**
- * Immutable entity implementation of a semantic Path consisting of 3 segments.
+ * Immutable Entity implementation of a Path consisting of 3 named/semantic segments, realm, group and qualifier.
+ * Any of these segments may be empty but not null.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -48,6 +51,7 @@ import java.util.StringTokenizer;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "pathIsUnique",
         columnNames = {"auth_realm", "auth_group", "auth_qualifier"})})
 @Access(AccessType.FIELD)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "realm", "group", "qualifier"})
 public class AuthorizationPath extends NazgulEntity implements SemanticAuthorizationPath {
 
@@ -209,16 +213,16 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
     protected void validateEntityState() throws InternalStateValidationException {
 
         InternalStateValidationException.create()
-                .notNullOrEmpty(realm, "realm")
-                .notNullOrEmpty(group, "group")
-                .notNullOrEmpty(qualifier, "qualifier")
+                .notNull(realm, "realm")
+                .notNull(group, "group")
+                .notNull(qualifier, "qualifier")
                 .endExpressionAndValidate();
     }
 
     /**
      * Parses a string containing a full AuthorizationPath specification, implying realm, group and qualifier -
-     * returning an AuthorizationPath created from the supplied path. None of the AuthorizationPath segments can be
-     * null or empty.
+     * returning an AuthorizationPath created from the supplied path.
+     * None of the segments can be null.
      *
      * @param path A full AuthorizationPath specification on the form {@code [/]realm/group/qualifier}.
      *             None of the path segments can be {@code null} or empty.
@@ -247,8 +251,8 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
 
         // All done.
         return new AuthorizationPath(
-                tok.nextToken(),
-                tok.nextToken(),
-                tok.nextToken());
+                tok.nextToken().trim(),
+                tok.nextToken().trim(),
+                tok.nextToken().trim());
     }
 }

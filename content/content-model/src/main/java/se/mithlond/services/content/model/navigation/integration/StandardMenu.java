@@ -28,8 +28,6 @@ import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -124,5 +122,9 @@ public class StandardMenu extends AbstractLinkedNavItem {
      */
     @Override
     protected void validateEntityState() throws InternalStateValidationException {
+
+        InternalStateValidationException.create()
+                .notNull(children, "children")
+                .endExpressionAndValidate();
     }
 }

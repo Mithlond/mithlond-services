@@ -30,9 +30,17 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
- * Regular expression path wrapper used to match AuthorizationPaths.
+ * <p>Utility class to generate and manage Patterns used to match (or not)
+ * AuthorizationPath instances.</p>
+ * <p>Each AuthorizationPattern has 3 segments used to match realm, group and qualifier respectively.
+ * AuthorizationPatterns are synthesized into a regular expression pattern by joining on
+ * {@code SemanticAuthorizationPath.SEGMENT_SEPARATOR} (i.e. "{@value SemanticAuthorizationPath#SEGMENT_SEPARATOR}").
+ * Therefore, AuthorizationPatterns have the form {@code /realm/group/qualifier}.
+ * Should one of the segments in the AuthorizationPattern be empty, it can be replaced by a regular expression
+ * which matches any string/any text. This replacement pattern is <code>{@value Segmenter#ANY}</code>.</p>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
+ * @see SemanticAuthorizationPath#PATTERN_SEPARATOR_STRING
  */
 public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
 
@@ -154,6 +162,8 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
 
     /**
      * Parses the supplied concatenatedPatterns into several AuthorizationPattern instances.
+     * Empty path segments (after trimming) will be replaced by
+     * {@code Segmenter.ANY} (i.e. <code>{@value Segmenter#ANY}</code>).
      *
      * @param concatenatedPatterns A string containing concatenated AuthorizationPatterns.
      * @return a SortedSet containing AuthorizationPattern instances, extracted from the concatenatedPatterns string.
@@ -179,7 +189,8 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
 
     /**
      * Parses the supplied pattern string into a single AuthorizationPattern instance. The patternString cannot
-     * contain more than 3 path segments. Empty path segments will be replaced by {@code #ANY}.
+     * contain more than 3 path segments. Empty path segments (after trimming) will be replaced by
+     * {@code Segmenter.ANY} (i.e. <code>{@value Segmenter#ANY}</code>).
      *
      * @param patternString The pattern string to parse. Expected patternString format:
      *                      {@code [/]realm/group/qualifier}.
@@ -191,7 +202,7 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
      */
     public static AuthorizationPattern parseSingle(final String patternString) throws IllegalArgumentException {
 
-        final String[] segments = Segmenter.segment(patternString);
+        final String[] segments = Segmenter.replaceEmptySegmentsWithAnyPattern(Segmenter.segment(patternString), true);
         return new AuthorizationPattern(segments[0], segments[1], segments[2]);
     }
 }

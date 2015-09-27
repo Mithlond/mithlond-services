@@ -46,4 +46,17 @@ public interface Authorizer {
      */
     boolean isAuthorized(final String requiredAuthorizationPatterns,
                          final SortedSet<SemanticAuthorizationPath> possessedPrivileges);
+
+    /**
+     * Validates if any of the provided SemanticAuthorizationPaths matches at least one of the
+     * supplied AuthorizationPattern instances.
+     *
+     * @param requiredAuthorizationPatterns A SortedSet of AuthorizationPatterns.
+     * @param possessedPrivileges           A Set of SemanticAuthorizationPaths to be verified against the parsed
+     *                                      AuthorizationPattern instances from the requiredAuthorizationPatterns.
+     * @return {@code true} if the possessedPrivileges contained at least one SemanticAuthorizationPath which matched
+     * one of the requiredAuthorizationPatterns.
+     */
+    boolean isAuthorized(final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+                         final SortedSet<SemanticAuthorizationPath> possessedPrivileges);
 }

@@ -68,8 +68,26 @@ public final class SimpleAuthorizer implements Authorizer {
         }
 
         // Match each possessedPrivilege against all of the supplied privileges.
-        final SortedSet<AuthorizationPattern> patterns = AuthorizationPattern.parse(requiredAuthorizationPatterns);
-        for (AuthorizationPattern current : patterns) {
+        return isAuthorized(AuthorizationPattern.parse(requiredAuthorizationPatterns), possessedPrivileges);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isAuthorized(final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+                                final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
+
+        // No requirements == authorized.
+        if (requiredAuthorizationPatterns == null || requiredAuthorizationPatterns.isEmpty()) {
+            return true;
+        }
+
+        // Requirements, but no privileges == not authorized
+        if (possessedPrivileges == null || possessedPrivileges.isEmpty()) {
+            return false;
+        }
+
+        for (AuthorizationPattern current : requiredAuthorizationPatterns) {
             for (SemanticAuthorizationPath currentPrivilege : possessedPrivileges) {
                 if (current.matches(currentPrivilege.toString())) {
                     return true;
