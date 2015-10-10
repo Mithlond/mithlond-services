@@ -109,10 +109,10 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
-                <executions combine.self="override">
+                <executions>
                     <execution>
                         <id>schemagen</id>
-                        <phase></phase>
+                        <phase/>
                         <goals>
                             <goal>schemagen</goal>
                         </goals>
