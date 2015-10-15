@@ -31,53 +31,73 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlTransient
 public final class Patterns {
 
-    /**
-     * The XML namespace used by content model transport objects.
-     */
-    public static final String NAMESPACE = "http://xmlns.mithlond.se/xml/ns/organisation";
+	/**
+	 * The XML namespace used by content model transport objects.
+	 */
+	public static final String NAMESPACE = "http://xmlns.mithlond.se/xml/ns/organisation";
 
-    /**
-     * NamedQuery parameter name for membershipId.
-     */
-    public static final String PARAM_MEMBERSHIP_ID = "membershipId";
+	/**
+	 * NamedQuery parameter name for membershipId.
+	 */
+	public static final String PARAM_MEMBERSHIP_ID = "membershipId";
 
-    /**
-     * NamedQuery parameter name for organisationName.
-     */
-    public static final String PARAM_ORGANISATION_NAME = "organisationName";
+	/**
+	 * NamedQuery parameter name for organisationName.
+	 */
+	public static final String PARAM_ORGANISATION_NAME = "organisationName";
 
-    /**
-     * NamedQuery parameter name for groupName.
-     */
-    public static final String PARAM_GROUP_NAME = "groupName";
+	/**
+	 * NamedQuery parameter name for groupName.
+	 */
+	public static final String PARAM_GROUP_NAME = "groupName";
 
-    /**
-     * NamedQuery parameter name for alias.
-     */
-    public static final String PARAM_ALIAS = "alias";
+	/**
+	 * NamedQuery parameter name for alias.
+	 */
+	public static final String PARAM_ALIAS = "alias";
 
-    /**
-     * NamedQuery parameter name for firstName.
-     */
-    public static final String PARAM_FIRSTNAME = "firstName";
+	/**
+	 * NamedQuery parameter name for firstName.
+	 */
+	public static final String PARAM_FIRSTNAME = "firstName";
 
-    /**
-     * NamedQuery parameter name for lastName.
-     */
-    public static final String PARAM_LASTNAME = "lastName";
+	/**
+	 * NamedQuery parameter name for lastName.
+	 */
+	public static final String PARAM_LASTNAME = "lastName";
 
-    /**
-     * NamedQuery parameter name for loginPermitted.
-     */
-    public static final String PARAM_LOGIN_PERMITTED = "loginPermitted";
+	/**
+	 * NamedQuery parameter name for loginPermitted.
+	 */
+	public static final String PARAM_LOGIN_PERMITTED = "loginPermitted";
 
-    /**
-     * NamedQuery parameter name for classification.
-     */
-    public static final String PARAM_CLASSIFICATION = "classification";
+	/**
+	 * NamedQuery parameter name for classification.
+	 */
+	public static final String PARAM_CLASSIFICATION = "classification";
 
-    /**
-     * NamedQuery parameter name for categoryID.
-     */
-    public static final String PARAM_CATEGORY_ID = "categoryID";
+	/**
+	 * NamedQuery parameter name for categoryID.
+	 */
+	public static final String PARAM_CATEGORY_ID = "categoryID";
+
+	/**
+	 * NamedQuery parameter name for environment identifier.
+	 */
+	public static final String PARAM_ENVIRONMENT_ID = "environmentId";
+
+	/**
+	 * NamedQuery parameter name for event calendar.
+	 */
+	public static final String PARAM_EVENT_CALENDAR = "eventCalendar";
+
+	/**
+	 * NamedQuery parameter name for the start of a time interval.
+	 */
+	public static final String PARAM_START_TIME = "startTime";
+
+	/**
+	 * NamedQuery parameter name for the end of a time interval.
+	 */
+	public static final String PARAM_END_TIME = "endTime";
 }
