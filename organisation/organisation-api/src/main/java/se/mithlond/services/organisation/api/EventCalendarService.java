@@ -20,7 +20,7 @@
  * #L%
  */
 
-package se.mithlond.services.organisation.api.activity;
+package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.model.activity.EventCalendar;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;

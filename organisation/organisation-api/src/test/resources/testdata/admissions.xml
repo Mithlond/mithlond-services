@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<organisation:admissions xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <details>
+        <admissionDetails responsible="true">
+            <alias>alias_0</alias>
+            <organisation>organisation_0</organisation>
+            <note>note_0</note>
+        </admissionDetails>
+        <admissionDetails responsible="false">
+            <alias>alias_1</alias>
+            <organisation>organisation_1</organisation>
+            <note>note_1</note>
+        </admissionDetails>
+        <admissionDetails responsible="false">
+            <alias>alias_2</alias>
+            <organisation>organisation_2</organisation>
+            <note>note_2</note>
+        </admissionDetails>
+        <admissionDetails responsible="true">
+            <alias>alias_3</alias>
+            <organisation>organisation_3</organisation>
+            <note>note_3</note>
+        </admissionDetails>
+        <admissionDetails responsible="false">
+            <alias>alias_4</alias>
+            <organisation>organisation_4</organisation>
+            <note>note_4</note>
+        </admissionDetails>
+    </details>
+</organisation:admissions>

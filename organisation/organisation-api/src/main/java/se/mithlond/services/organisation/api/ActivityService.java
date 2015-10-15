@@ -19,9 +19,9 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.activity;
+package se.mithlond.services.organisation.api;
 
-import se.mithlond.services.organisation.api.transport.ProtoAdmission;
+import se.mithlond.services.organisation.api.transport.AdmissionDetails;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.address.Address;
@@ -110,7 +110,7 @@ public interface ActivityService {
 							final Address location,
 							final String addressShortDescription,
 							final String responsibleGuildName,
-							final Set<ProtoAdmission> admissions,
+							final Set<AdmissionDetails> admissions,
 							final boolean isOpenToGeneralPublic);
 
 	/**
@@ -162,7 +162,7 @@ public interface ActivityService {
 							final Address location,
 							final String addressShortDescription,
 							final String responsibleGuildName,
-							final Set<ProtoAdmission> admissions,
+							final Set<AdmissionDetails> admissions,
 							final boolean isOpenToGeneralPublic);
 
 	/**
