@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-finance-api
+ * Nazgul Project: mithlond-services-organisation-api
  * %%
  * Copyright (C) 2010 - 2013 jGuru Europe AB
  * %%
