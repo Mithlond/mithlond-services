@@ -38,6 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -75,22 +76,35 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
 	@XmlTransient
 	private Activity activity;
 
+	/**
+	 * The Membership admitted to the corresponding Activity.
+	 */
+	@NotNull
 	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
 	@MapsId("membershipId")
 	@XmlElement(required = true, nillable = false)
 	private Membership admitted;
 
+	/**
+	 * The timestamp when the Membership was admitted.
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@XmlElement(required = true, nillable = false)
 	private Calendar admissionTimestamp;
 
+	/**
+	 * An optional note of this Admission.
+	 */
 	@Basic(optional = true)
 	@Column(nullable = true)
 	@XmlElement(required = false, nillable = true)
 	private String admissionNote;
 
+	/**
+	 * If "true" the admitted Membership is considered responsible for the activity to which this Admission is linked.
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlAttribute(required = true)

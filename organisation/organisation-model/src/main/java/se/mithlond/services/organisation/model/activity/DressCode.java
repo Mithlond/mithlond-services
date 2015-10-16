@@ -19,11 +19,6 @@
  * limitations under the License.
  * #L%
  */
-/*
- * Copyright (c) jGuru Europe AB.
- * All rights reserved.
- */
-
 package se.mithlond.services.organisation.model.activity;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
@@ -36,6 +31,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -53,6 +51,10 @@ import javax.xml.bind.annotation.XmlType;
 						+ " order by d.dressCode")
 })
 @Entity
+@Table(uniqueConstraints = {
+		@UniqueConstraint(
+				name = "dresscodeIsUniquePerOrganisation",
+				columnNames = {"dressCode", "owningorganisation_id"})})
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"dressCode"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DressCode extends Listable {
@@ -62,7 +64,12 @@ public class DressCode extends Listable {
 	 */
 	public static final String NAMEDQ_GET_BY_ORGANISATION = "DressCode.getByOrganisation";
 
-	// Internal state
+	/**
+	 * The Dresscode name, such as "Midgårda dräkt".
+	 * A single word (or two...) unique to this DressCode. Mostly used in all GUI-type of selections.
+	 * Refer to shortDesc and fullDesc for richer descriptions on this DressCode.
+	 */
+	@NotNull
 	@Basic(optional = false)
 	@Column(length = 64, nullable = false)
 	@XmlElement(nillable = false, required = true)

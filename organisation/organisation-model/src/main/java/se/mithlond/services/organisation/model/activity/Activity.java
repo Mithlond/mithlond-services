@@ -46,6 +46,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -92,74 +93,129 @@ public class Activity extends Listable {
 	public static final String NAMEDQ_GET_BY_ORGANISATION_AND_DATERANGE =
 			"Activity.getByOrganisationAndDateRange";
 
-	// Internal state
+	/**
+	 * The start time of the Activity. Never null.
+	 */
+	@NotNull
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Calendar startTime;
 
+	/**
+	 * The end time of the Activity. Must not be null, and must also be after startTime.
+	 */
+	@NotNull
 	@Basic(optional = true)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@XmlElement(required = false, nillable = true)
 	private Calendar endTime;
 
+	/**
+	 * The optional cost of the activity. Must not be negative.
+	 */
+	@Min(value = 0, message = "Cannot handle negative 'cost'.")
 	@Basic(optional = true)
 	@Column(nullable = true)
 	@XmlElement(required = false)
 	private BigDecimal cost;
 
+	/**
+	 * The optional currency for the optional cost of the activity.
+	 */
 	@Basic(optional = true)
 	@Column(nullable = true)
 	@XmlAttribute(required = false)
 	private String currency;
 
+	/**
+	 * The dress code of the activity, if applicable.
+	 */
 	@Basic(optional = true)
 	@Column(nullable = true)
 	@XmlElement(required = false)
 	private String dressCode;
 
+	/**
+	 * The cost if admission after the lateAdmissionDate.
+	 * Optional, but recommended to be higher than the (standard) cost.
+	 */
 	@Basic(optional = true)
 	@Column(nullable = true)
 	@XmlElement(required = false)
 	private BigDecimal lateAdmissionCost;
 
+	/**
+	 * The optional date before which the activity costs {@code cost}.
+	 * After this date, the activity admission costs {@code lateAdmissionCost}.
+	 */
 	@Basic(optional = true)
 	@Temporal(value = TemporalType.DATE)
 	@XmlElement(required = false, nillable = true)
 	private Calendar lateAdmissionDate;
 
+	/**
+	 * The last date of admissions to the Activity.
+	 */
 	@Basic(optional = true)
 	@Temporal(value = TemporalType.DATE)
 	@XmlElement(required = false, nillable = true)
 	private Calendar lastAdmissionDate;
 
+	/**
+	 * If 'true', the Activity is cancelled.
+	 */
+	@NotNull
 	@Basic @Column(nullable = false)
 	@XmlElement(defaultValue = "false")
 	private boolean cancelled = false;
 
+	/**
+	 * The Category of the location where this Activity takes place.
+	 */
+	@NotNull
 	@ManyToOne(optional = false)
 	@XmlElement(required = true, nillable = false)
 	private Category addressCategory;
 
+	/**
+	 * The short description of the location for this Activity, such as "Stadsbiblioteket".
+	 */
+	@NotNull
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlElement(required = true, nillable = false)
 	private String addressShortDescription;
 
+	/**
+	 * The location of the Activity. May not be null.
+	 */
+	@NotNull
 	@Embedded
 	@XmlElement(required = true, nillable = false)
 	private Address location;
 
+	/**
+	 * The Guild organizing this Activity. Optional.
+	 */
 	@XmlIDREF
 	@ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
 	@XmlElement(required = false, nillable = true)
 	private Guild responsible;
 
+	/**
+	 * All current Admissions to this Activity. May be empty - but not null.
+	 */
+	@NotNull
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "activity")
 	@XmlElementWrapper(name = "admissions", nillable = false, required = true)
 	@XmlElement(name = "admission")
 	private Set<Admission> admissions;
 
+	/**
+	 * "true" to indicate that the supplied Activity is open to the general public.
+	 * Otherwise this Activity is open only to Admissions from known Memberships.
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlAttribute(required = false)

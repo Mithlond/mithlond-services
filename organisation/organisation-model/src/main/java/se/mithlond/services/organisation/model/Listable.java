@@ -33,6 +33,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -47,121 +48,134 @@ import javax.xml.bind.annotation.XmlType;
 @MappedSuperclass
 @Access(value = AccessType.FIELD)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "oneShortDescPerOrganisation", columnNames = {"shortDesc", "owningorganisation_id"})
+		@UniqueConstraint(name = "oneShortDescPerOrganisation", columnNames = {"shortDesc", "owningorganisation_id"})
 })
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"shortDesc", "fullDesc", "owningOrganisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Listable extends NazgulEntity {
 
-    // Internal state
-    @Basic(optional = false)
-    @Column(nullable = false, length = 255)
-    private String shortDesc;
+	/**
+	 * The mandatory and non-empty short description of this Listable entity.
+	 * Typically used within short info boxes and pop-ups.
+	 */
+	@NotNull
+	@Basic(optional = false)
+	@Column(nullable = false, length = 255)
+	private String shortDesc;
 
-    @Basic(optional = false)
-    @Column(nullable = false, length = 2048)
-    private String fullDesc;
+	/**
+	 * The full description of this Listable entity (up to 2048 chars), visible in detailed listings.
+	 * May not be null or empty. Typically used within longer info boxes or modal description displays.
+	 */
+	@NotNull
+	@Basic(optional = false)
+	@Column(nullable = false, length = 2048)
+	private String fullDesc;
 
-    @XmlAttribute(required = true, name = "organisationReference")
-    @XmlIDREF
-    @ManyToOne(optional = false)
-    private Organisation owningOrganisation;
+	/**
+	 * The reference to the organisation within which this Listable exists.
+	 */
+	@NotNull
+	@XmlAttribute(required = true, name = "organisationReference")
+	@XmlIDREF
+	@ManyToOne(optional = false)
+	private Organisation owningOrganisation;
 
-    /**
-     * JAXB/JPA-friendly constructor.
-     */
-    public Listable() {
-    }
+	/**
+	 * JAXB/JPA-friendly constructor.
+	 */
+	public Listable() {
+	}
 
-    /**
-     * Compound constructor creating a Listable entity that wraps the provided data.
-     *
-     * @param shortDesc    The mandatory and non-empty short description of this Listable entity.
-     * @param fullDesc     The full description of this entity (up to 2048 chars), visible in detailed listings.
-     *                     May not be null or empty.
-     * @param organisation The organisation within which this Listable exists.
-     */
-    public Listable(final String shortDesc,
-                    final String fullDesc,
-                    final Organisation organisation) {
+	/**
+	 * Compound constructor creating a Listable entity that wraps the provided data.
+	 *
+	 * @param shortDesc    The mandatory and non-empty short description of this Listable entity.
+	 * @param fullDesc     The full description of this entity (up to 2048 chars), visible in detailed listings.
+	 *                     May not be null or empty.
+	 * @param organisation The organisation within which this Listable exists.
+	 */
+	public Listable(final String shortDesc,
+					final String fullDesc,
+					final Organisation organisation) {
 
-        // Assign internal state
-        this.shortDesc = shortDesc;
-        this.fullDesc = fullDesc;
-        this.owningOrganisation = organisation;
-    }
+		// Assign internal state
+		this.shortDesc = shortDesc;
+		this.fullDesc = fullDesc;
+		this.owningOrganisation = organisation;
+	}
 
-    /**
-     * @return The mandatory and non-empty short description of this entity.
-     */
-    public String getShortDesc() {
-        return shortDesc;
-    }
+	/**
+	 * @return The mandatory and non-empty short description of this entity.
+	 */
+	public String getShortDesc() {
+		return shortDesc;
+	}
 
-    /**
-     * @return The full description of this entity, visible in detailed listings.
-     */
-    public String getFullDesc() {
-        return fullDesc;
-    }
+	/**
+	 * @return The full description of this entity, visible in detailed listings.
+	 */
+	public String getFullDesc() {
+		return fullDesc;
+	}
 
-    /**
-     * Assigns the fullDesc of this Listable.
-     *
-     * @param fullDesc the non-null fullDesc of this Listable.
-     */
-    public void setFullDesc(final String fullDesc) {
+	/**
+	 * Assigns the fullDesc of this Listable.
+	 *
+	 * @param fullDesc the non-null fullDesc of this Listable.
+	 */
+	public void setFullDesc(final String fullDesc) {
 
-        // Check sanity
-        Validate.notEmpty(fullDesc, "fullDesc");
+		// Check sanity
+		Validate.notEmpty(fullDesc, "fullDesc");
 
-        // Assign internal state
-        this.fullDesc = fullDesc;
-    }
+		// Assign internal state
+		this.fullDesc = fullDesc;
+	}
 
-    /**
-     * Assigns the shortDesc of this Listable.
-     *
-     * @param shortDesc the shortDesc of this Listable.
-     */
-    public void setShortDesc(final String shortDesc) {
+	/**
+	 * Assigns the shortDesc of this Listable.
+	 *
+	 * @param shortDesc the shortDesc of this Listable.
+	 */
+	public void setShortDesc(final String shortDesc) {
 
-        // Check sanity
-        Validate.notEmpty(shortDesc, "Cannot handle null or empty shortDesc argument.");
+		// Check sanity
+		Validate.notEmpty(shortDesc, "Cannot handle null or empty shortDesc argument.");
 
-        // Assign internal state
-        this.shortDesc = shortDesc;
-    }
+		// Assign internal state
+		this.shortDesc = shortDesc;
+	}
 
-    /**
-     * @return The organisation within which this Activity takes place.
-     */
-    public Organisation getOwningOrganisation() {
-        return owningOrganisation;
-    }
+	/**
+	 * @return The organisation within which this Activity takes place.
+	 */
+	public Organisation getOwningOrganisation() {
+		return owningOrganisation;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected final void validateEntityState() throws InternalStateValidationException {
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected final void validateEntityState() throws InternalStateValidationException {
 
-        // Check sanity
-        InternalStateValidationException.create()
-                .notNullOrEmpty(shortDesc, "shortDesc")
-                .notNullOrEmpty(fullDesc, "fullDesc")
-                .notNull(owningOrganisation, "owningOrganisation")
-                .endExpressionAndValidate();
+		// Check sanity
+		InternalStateValidationException.create()
+				.notNullOrEmpty(shortDesc, "shortDesc")
+				.notNullOrEmpty(fullDesc, "fullDesc")
+				.notNull(owningOrganisation, "owningOrganisation")
+				.endExpressionAndValidate();
 
-        // Delegate
-        validateListableEntityState();
-    }
+		// Delegate
+		validateListableEntityState();
+	}
 
-    /**
-     * Override this method to perform validation of the entity internal state of this Listable.
-     *
-     * @throws InternalStateValidationException if the state of this Listable was in
-     *                                          an incorrect state (i.e. invalid).
-     */
-    protected abstract void validateListableEntityState() throws InternalStateValidationException;
+	/**
+	 * Override this method to perform validation of the entity internal state of this Listable.
+	 *
+	 * @throws InternalStateValidationException if the state of this Listable was in
+	 *                                          an incorrect state (i.e. invalid).
+	 */
+	protected abstract void validateListableEntityState() throws InternalStateValidationException;
 }

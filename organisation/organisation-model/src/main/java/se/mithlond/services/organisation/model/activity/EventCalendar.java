@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-organisation-model
  * %%
- * Copyright (C) 2010 - 2014 jGuru Europe AB
+ * Copyright (C) 2010 - 2015 jGuru Europe AB
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -34,6 +34,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -70,22 +71,43 @@ public class EventCalendar extends Listable {
 	public static final String NAMEDQ_GET_BY_ORGANISATION_RUNTIME_AND_IDENTIFIER =
 			"EventCalendar.getByOrganisationRuntimeAndIdentifier";
 
-	// Internal state
+	/**
+	 * The default TimeZone of this EventCalendar, used whenever
+	 * explicit TimeZone information is not available.
+	 */
+	@NotNull
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlElement(required = true, nillable = false)
 	private String timeZoneID;
 
+	/**
+	 * "true" to indicate that monday is the first day of the week,
+	 * and "false" to indicate that sunday is the first day of the week
+	 * for this EventCalendar.
+	 */
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlAttribute(required = true)
 	private boolean isMondayFirstDayOfWeek;
 
+	/**
+	 * An identifier of this EventCalendar, such as "mithlond.official@gmail.com".
+	 * This identifier can be used to identify this EventCalendar to the corresponding event
+	 * storage, such as Yahoo or Google; in that sense it works as a primary key of the
+	 * EventCalendar in the remote system.
+	 */
+	@NotNull
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlElement(required = true, nillable = false)
 	private String calendarIdentifier;
 
+	/**
+	 * The runtime environment for which this EventCalendar should be visible/accessible.
+	 * Corresponds to "Deployment.deploymentName".
+	 */
+	@NotNull
 	@Basic(optional = false)
 	@Column(nullable = false)
 	@XmlElement(required = true, nillable = false)
@@ -128,13 +150,15 @@ public class EventCalendar extends Listable {
 	/**
 	 * Compound constructor, creating a Calendar containing the supplied data.
 	 *
-	 * @param shortDesc          The short description of this EventCalendar.
-	 * @param fullDesc           The full/long description of this EventCalendar.
-	 * @param organisation       The Organisation owning this EventCalendar.
-	 * @param timeZoneID         The default TimeZone of this EventCalendar.
-	 * @param calendarIdentifier The remote identifier (or type) of the calendar used,
-	 *                           such as "mithlond.official@gmail.com".
-	 * @param runtimeEnvironment The runtime environment for which this EventCalendar should be visible/accessible.
+	 * @param shortDesc              The short description of this EventCalendar.
+	 * @param fullDesc               The full/long description of this EventCalendar.
+	 * @param organisation           The Organisation owning this EventCalendar.
+	 * @param timeZoneID             The default TimeZone of this EventCalendar.
+	 * @param calendarIdentifier     The remote identifier (or type) of the calendar used,
+	 *                               such as "mithlond.official@gmail.com".
+	 * @param isMondayFirstDayOfWeek {@code true} to indicate that the weeks in this EventCalendar starts with Monday.
+	 *                               Otherwise, weeks are assumed to start with Sunday.
+	 * @param runtimeEnvironment     The runtime environment for which this EventCalendar should be visible/accessible.
 	 */
 	public EventCalendar(final String shortDesc,
 						 final String fullDesc,
