@@ -152,10 +152,7 @@ public class Memberships {
 		final Membership nonNull = Objects.requireNonNull(toAdd, "Cannot handle null 'toAdd' argument.");
 
 		// Add the Organisation, unless already added.
-		final Organisation currentOrganisation = nonNull.getOrganisation();
-		if (!organisations.contains(currentOrganisation)) {
-			organisations.add(currentOrganisation);
-		}
+		addOrganisations(nonNull.getOrganisation());
 
 		// Add the User, unless already added.
 		final User currentUser = nonNull.getUser();
@@ -165,10 +162,7 @@ public class Memberships {
 
 		// Add all Groups and Guilds.
 		nonNull.getGroupMemberships().forEach(c -> {
-			final Group currentGroup = c.getGroup();
-			if (!groups.contains(currentGroup)) {
-				groups.add(currentGroup);
-			}
+			addGroups(c.getGroup());
 		});
 
 		// Add the membership itself, unless already added.

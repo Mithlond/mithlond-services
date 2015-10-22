@@ -36,11 +36,14 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"alias", "organisation", "note", "responsible"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializable {
 
 	// Internal state
+	@XmlAttribute
+	private Long activityID;
+
 	@XmlElement(required = true)
 	private String alias;
 
@@ -63,13 +66,15 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
 	/**
 	 * Creates a new ProtoAdmission instance, wrapping the supplied data.
 	 *
+	 * @param activityID   The JPA ID of the Activity for which these AdmissionDetails pertain.
 	 * @param alias        The alias to admit.
 	 * @param organisation The organisation where the alias exists; must not necessarily be
 	 *                     identical to the organisation of the Activity to which this ProtoAdmission is tied.
 	 * @param note         An optional admission note.
 	 * @param responsible  The
 	 */
-	public AdmissionDetails(final String alias,
+	public AdmissionDetails(final Long activityID,
+							final String alias,
 							final String organisation,
 							final String note,
 							final boolean responsible) {
@@ -79,10 +84,19 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
 		Validate.notEmpty(organisation, "Cannot handle null or empty organisation argument.");
 
 		// Assign internal state
+		this.activityID = activityID;
 		this.alias = alias;
 		this.organisation = organisation;
 		this.note = note;
 		this.responsible = responsible;
+	}
+
+	/**
+	 * @return The JPA ID of the Activity for which these AdmissionDetails pertain.
+	 * Can be {@code null} only if the Activity is not known (i.e. not created yet).
+	 */
+	public Long getActivityID() {
+		return activityID;
 	}
 
 	/**

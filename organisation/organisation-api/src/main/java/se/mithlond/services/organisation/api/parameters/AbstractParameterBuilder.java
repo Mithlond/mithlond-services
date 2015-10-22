@@ -47,9 +47,10 @@ public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilde
 	 * @param toAdd         An array of parameters to add.
 	 * @return This AbstractParameterBuilder, for chaining.
 	 */
-	protected <T> E addValuesIfApplicable(@NotNull final List<T> list,
-										  @NotNull final String parameterName,
-										  @NotNull final T... toAdd) {
+	@SafeVarargs
+	protected final <T> E addValuesIfApplicable(@NotNull final List<T> list,
+												@NotNull final String parameterName,
+												@NotNull final T... toAdd) {
 
 		// Check sanity
 		Validate.notNull(list, "Cannot handle null list argument.");
@@ -80,4 +81,10 @@ public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilde
 		// All done.
 		return (E) this;
 	}
+
+	/**
+	 * @return A completely set-up AbstractSearchParameters instance containing the aggregated state
+	 * within this AbstractParameterBuilder object.
+	 */
+	public abstract AbstractSearchParameters<E> build();
 }

@@ -40,6 +40,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -204,5 +205,67 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
 
 		// Assert
 		Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
+	}
+
+	@Test
+	public void validateUnmarshalling() throws Exception {
+
+		// Assemble
+		final String data = XmlTestUtils.readFully("testdata/memberships.xml");
+
+		final Memberships expected = new Memberships();
+		expected.addOrganisations(organisations);
+		expected.addGroups(groupsAndGuilds);
+		memberships.forEach(expected::addMembership);
+
+		jaxb.add(Memberships.class);
+
+		// Act
+		final Memberships unmarshalled = unmarshal(Memberships.class, data);
+
+		// Assert
+		Assert.assertNotNull(unmarshalled);
+
+		final Map<String, Organisation> actualOrgMap = getOrganisationMap(unmarshalled);
+		final Map<String, Organisation> expectedOrgMap = getOrganisationMap(expected);
+		Assert.assertEquals(expectedOrgMap.size(), actualOrgMap.size());
+
+		for(Map.Entry<String, Organisation> current : expectedOrgMap.entrySet()) {
+			Assert.assertEquals(current.getValue(), actualOrgMap.get(current.getKey()));
+		}
+
+		final SortedMap<String, Membership> actualMbMap = getMembershipMap(unmarshalled);
+		final SortedMap<String, Membership> expectedMbMap = getMembershipMap(expected);
+
+		for(Map.Entry<String, Membership> current : expectedMbMap.entrySet()) {
+			Assert.assertEquals(0, current.getValue().compareTo(actualMbMap.get(current.getKey())));
+		}
+	}
+
+	//
+	// Private helpers
+	//
+
+	private SortedMap<String, Membership> getMembershipMap(final Memberships memberships) {
+
+		final SortedMap<String, Membership> toReturn = new TreeMap<>();
+
+		for(Membership current : memberships.getMemberships()) {
+			toReturn.put(current.getAlias(), current);
+		}
+
+		return toReturn;
+	}
+
+	private SortedMap<String, Organisation> getOrganisationMap(final Memberships memberships) {
+
+		final SortedMap<String, Organisation> toReturn = new TreeMap<>();
+
+		for(Organisation current : memberships.getOrganisations()) {
+			toReturn.put(current.getOrganisationName(), current);
+		}
+
+		// All Done.
+		return toReturn;
 	}
 }

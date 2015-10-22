@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Service specification for Activity management, enabling callers to define calendar
- * entries and tasks as required.
+ * Service specification for Activity management, enabling callers
+ * to define calendar entries and tasks as required.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */

@@ -44,7 +44,7 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
 
 		final SortedSet<AdmissionDetails> details = admissions.getDetails();
 		for (int i = 0; i < 5; i++) {
-			details.add(new AdmissionDetails("alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
+			details.add(new AdmissionDetails((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
 		}
 	}
 

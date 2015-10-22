@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.PersonalSettings;
+import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
 import java.util.List;
@@ -33,49 +34,49 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Local
-public interface MembershipService {
+public interface MembershipService extends JpaCudService {
 
-    /**
-     * Retrieves all Memberships within the named Organisation, including the Memberships with the "Login not
-     * permitted" flag set, if so indicated.
-     *
-     * @param organisation             The name of the organisation for which all Memberships should be retrieved.
-     * @param includeLoginNotPermitted if {@code true}, all Memberships will be retrieved. if {@code false}, only
-     *                                 Memberships with the {@code loginPermitted} flag set to true will be included
-     *                                 in the result.
-     * @return All Memberships within the supplied organisation. if the {@code includeLoginNotPermitted} flag is set
-     * to false only Memberships with the {@code loginPermitted} flag set to true will be included in the result
-     */
-    List<Membership> getMembershipsIn(final String organisation, final boolean includeLoginNotPermitted);
+	/**
+	 * Retrieves all Memberships within the named Organisation, including the Memberships with
+	 * the "Login not permitted" flag set, if so indicated.
+	 *
+	 * @param organisation             The name of the organisation for which all Memberships should be retrieved.
+	 * @param includeLoginNotPermitted if {@code true}, all Memberships will be retrieved. if {@code false}, only
+	 *                                 Memberships with the {@code loginPermitted} flag set to true will be included
+	 *                                 in the result.
+	 * @return All Memberships within the supplied organisation. if the {@code includeLoginNotPermitted} flag is set
+	 * to false only Memberships with the {@code loginPermitted} flag set to true will be included in the result
+	 */
+	List<Membership> getMembershipsIn(final String organisation, final boolean includeLoginNotPermitted);
 
-    /**
-     * Retrieves the Membership corresponding to the supplied organisation name and alias.
-     *
-     * @param organisationName The non-empty organisation name in which the retrieved Membership exists.
-     * @param alias            The alias of the user for which a Membership should be retrieved.
-     * @return The Membership corresponding to the supplied data, or {@code null} if none was found.
-     */
-    Membership getMembership(final String organisationName, final String alias);
+	/**
+	 * Retrieves the Membership corresponding to the supplied organisation name and alias.
+	 *
+	 * @param organisationName The non-empty organisation name in which the retrieved Membership exists.
+	 * @param alias            The alias of the user for which a Membership should be retrieved.
+	 * @return The Membership corresponding to the supplied data, or {@code null} if none was found.
+	 */
+	Membership getMembership(final String organisationName, final String alias);
 
-    /**
-     * Retrieves the active Memberships (i.e. Memberships permitted login) within the named Organisation for the User
-     * with the supplied first and last names.
-     *
-     * @param organisationName The non-empty name of the Organisation in which the retrieved Membership should exist.
-     *                         Accepts JPQL wildcards.
-     * @param firstName        The non-empty first name of the User with the retrieved Membership.
-     *                         Accepts JPQL wildcards.
-     * @param lastName         The non-empty last name of the User with the retrieved Membership.
-     *                         Accepts JPQL wildcards.
-     * @return The Memberships corresponding to the supplied data, or an empty List if none was found.
-     */
-    List<Membership> getActiveMemberships(final String organisationName, final String firstName, final String lastName);
+	/**
+	 * Retrieves the active Memberships (i.e. Memberships permitted login) within the named Organisation for the User
+	 * with the supplied first and last names.
+	 *
+	 * @param organisationName The non-empty name of the Organisation in which the retrieved Membership should exist.
+	 *                         Accepts JPQL wildcards.
+	 * @param firstName        The non-empty first name of the User with the retrieved Membership.
+	 *                         Accepts JPQL wildcards.
+	 * @param lastName         The non-empty last name of the User with the retrieved Membership.
+	 *                         Accepts JPQL wildcards.
+	 * @return The Memberships corresponding to the supplied data, or an empty List if none was found.
+	 */
+	List<Membership> getActiveMemberships(final String organisationName, final String firstName, final String lastName);
 
-    /**
-     * Acquires the personal settings for the given Membership.
-     *
-     * @param aMember The membership for which the personal settings should be acquired.
-     * @return The PersonalSettings of the given membership.
-     */
-    PersonalSettings getPersonalSettingsFor(final Membership aMember);
+	/**
+	 * Acquires the personal settings for the given Membership.
+	 *
+	 * @param aMember The membership for which the personal settings should be acquired.
+	 * @return The PersonalSettings of the given membership.
+	 */
+	PersonalSettings getPersonalSettingsFor(final Membership aMember);
 }

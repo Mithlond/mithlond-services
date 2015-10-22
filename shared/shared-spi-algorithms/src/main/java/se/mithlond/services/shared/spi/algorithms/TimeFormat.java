@@ -151,7 +151,7 @@ public enum TimeFormat {
 		final ZoneId effectiveZoneID = optionalZoneId == null ? defaultZoneId : optionalZoneId;
 
 		// All done.
-		return (ZonedDateTime) formatter.withLocale(effectiveLocale).withZone(effectiveZoneID).parse(toParse);
+		return ZonedDateTime.parse(toParse, formatter.withLocale(effectiveLocale).withZone(effectiveZoneID));
 	}
 
 	/**
