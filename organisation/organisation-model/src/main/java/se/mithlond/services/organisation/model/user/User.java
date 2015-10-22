@@ -40,9 +40,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -61,9 +63,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * <p>Entity storing Users of Mithlond services. All calls to Mithlond
- * services should be performed by a known User.</p>
- *
+ * <p>Entity storing Users of Mithlond services. All services calls should be performed by a known User.</p>
  * <p><strong>Note!</strong> No credential information is stored within the User class.
  * Instead, such types of configuration should be managed by an IDM system assumed to handle authentication.
  * The User/Membership/Group/Guild/Organisation structure within the Mithlond service model handles internal
@@ -72,9 +72,12 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "firstName", "lastName", "birthday",
-        "personalNumberLast4Digits", "homeAddress", "memberships", "contactDetails"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken", "firstName", "lastName",
+        "birthday", "personalNumberLast4Digits", "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "userIdentifierTokenIsUnique", columnNames = "userIdentifierToken")
+})
 public class User extends NazgulEntity {
 
     // Our Logger
@@ -85,6 +88,11 @@ public class User extends NazgulEntity {
     private static final long serialVersionUID = 8829990119L;
 
     // Internal state
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true, nillable = false)
+    private String userIdentifierToken;
+
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
     @XmlElement(required = true, nillable = false)
@@ -179,6 +187,10 @@ public class User extends NazgulEntity {
      * @param personalNumberLast4Digits The last 4 digits in the User's personal number.
      * @param homeAddress               The home address of this User.
      * @param contactDetails            The contact details of this User.
+     * @param memberships               A Map containing the Memberships of this User. Can be {@code null}, in which
+     *                                  case it is initialized to an empty SortedMap.
+     * @param userIdentifierToken       A unique identifier token for this User which permits relating
+     *                                  this User to the Authentication system managing User logins.
      */
     public User(final String firstName,
                 final String lastName,
@@ -186,7 +198,8 @@ public class User extends NazgulEntity {
                 final short personalNumberLast4Digits,
                 final Address homeAddress,
                 final List<Membership> memberships,
-                final Map<String, String> contactDetails) {
+                final Map<String, String> contactDetails,
+                final String userIdentifierToken) {
 
         // Check sanity
         Validate.notNull(birthday, "birthday");
@@ -196,11 +209,20 @@ public class User extends NazgulEntity {
         this.personalNumberLast4Digits = personalNumberLast4Digits;
         this.homeAddress = homeAddress;
         this.memberships = memberships;
+        this.userIdentifierToken = userIdentifierToken;
         this.contactDetails = contactDetails == null ? new TreeMap<>() : contactDetails;
 
         // Convert the birthday to a Calendar
         this.birthday = GregorianCalendar.from(birthday.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));
         setXmlID();
+    }
+
+    /**
+     * @return A unique identifier token which permits relating this User to the
+     * Authentication system managing User logins. Typically a UUID, LDAP identifier or similar.
+     */
+    public String getUserIdentifierToken() {
+        return userIdentifierToken;
     }
 
     /**
@@ -402,6 +424,7 @@ public class User extends NazgulEntity {
                 .notNull(homeAddress, "homeAddress")
                 .notNull(memberships, "memberships")
                 .notNull(contactDetails, "contactDetails")
+                .notNullOrEmpty(userIdentifierToken, "userIdentifierToken")
                 .endExpressionAndValidate();
     }
 

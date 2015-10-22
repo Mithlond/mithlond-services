@@ -87,7 +87,8 @@ public class UserTest extends AbstractEntityTest {
                             "country_" + i,
                             "description_" + i),
                     new ArrayList<>(),
-                    new TreeMap<>()
+                    new TreeMap<>(),
+                    "userIdentiferToken_" + i
             );
 
             final Membership membership = new Membership(

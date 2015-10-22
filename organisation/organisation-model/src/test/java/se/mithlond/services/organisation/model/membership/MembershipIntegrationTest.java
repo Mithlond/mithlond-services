@@ -99,7 +99,8 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
                             "country_" + i,
                             "description_" + i),
                     new ArrayList<>(),
-                    new TreeMap<>()
+                    new TreeMap<>(),
+                    "userIdentiferToken_" + i
             );
 
             users[i] = currentUser;
