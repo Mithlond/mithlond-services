@@ -157,7 +157,8 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
 					(short) (101 + i),
 					homeAddress,
 					new ArrayList<>(),
-					contactDetails);
+					contactDetails,
+					"userIdentifierToken_" + i);
 
 			JpaIdMutator.setId(users[i], 50 + i);
 		}

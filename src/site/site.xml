@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-reactor
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<project xmlns="http://maven.apache.org/DECORATION/1.3.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
+
+    <bannerLeft>
+        <name><![CDATA[<span style="color: #777777;">${project.artifactId}</span>]]></name>
+    </bannerLeft>
+
+    <bannerRight>
+        <name><![CDATA[<a href="http://www.mithlond.se">Mithlond</a>]]></name>
+    </bannerRight>
+
+    <publishDate position="right"/>
+
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.4</version>
+    </skin>
+
+    <custom>
+        <fluidoSkin>
+            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+        </fluidoSkin>
+    </custom>
+
+    <body>
+        <head>
+            <!-- Add syntax highlighter -->
+            <link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"
+                  rel="stylesheet"
+                  type="text/css" />
+            <link href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css"
+                  rel="stylesheet"
+                  type="text/css" />
+            <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"
+                    type="text/javascript"></script>
+            <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"
+                    type="text/javascript"></script>
+            <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJScript.js"
+                    type="text/javascript"></script>
+            <script src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushXml.js"
+                    type="text/javascript"></script>
+        </head>
+
+        <links>
+            <item name="Mithlond CI" href="https://travis-ci.org/mithlond/"/>
+        </links>
+
+        <menu name="Overview">
+            <item name="Introduction" href="index.html"/>
+        </menu>
+
+
+        <menu ref="modules" inherit="bottom"/>
+        <menu ref="reports" inherit="bottom"/>
+
+        <footer>
+            <!-- Launch the syntax highlighter. -->
+            <script type="text/javascript">
+                SyntaxHighlighter.all()
+            </script>
+        </footer>
+    </body>
+</project>

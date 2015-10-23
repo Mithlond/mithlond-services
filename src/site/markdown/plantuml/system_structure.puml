@@ -1,0 +1,40 @@
+@startuml
+
+package "Clients" {
+  [NativeApp] as nativeapp
+  [WebApp] as angular
+  [JavaFX] as javafx
+  [Smartphone] as smartapp
+}
+
+package "Core Servers" {
+        [Restful Services] as restful
+        [Identity Manager] as idm
+}
+
+cloud "Identity Managers" {
+    [Facebook or Google] as fb
+}
+
+database "Databases" {
+  [Identity Management Data] as authdata
+  [Application Data] as appdata
+}
+
+[nativeapp] ..> [idm]
+[angular] ..> [idm]
+[javafx] ..> [idm]
+[smartapp] ..> [idm]
+
+[idm] -down-> [authdata] : 1. Authenticate
+[idm] <..> [fb] : 2. (Optional) Authenticate using external IDMs
+
+[nativeapp] -> [restful]
+[angular] -> [restful]
+[javafx] -> [restful]
+[smartapp] -> [restful]
+
+[restful] -down-> [appdata] : 3. Get/Update ServiceData
+[idm] <.right. [restful] : Authenticated by
+
+@enduml
