@@ -23,10 +23,14 @@ package se.mithlond.services.backend.war.providers.exceptions;
 
 import se.mithlond.services.backend.war.resources.Parameters;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Generic RuntimeException handler, which populates a JSON response and includes the
@@ -50,6 +54,11 @@ public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException
     public static final String ERROR_CAUSE_HEADER = Parameters.OUTBOUND_HEADER_PREFIX + "Cause";
 
     /**
+     * Header where the cause chain of the internal error is bound.
+     */
+    public static final String CAUSE_CHAIN_HEADER = Parameters.OUTBOUND_HEADER_PREFIX + "CauseChain";
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -59,7 +68,51 @@ public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException
                 .entity("Failed to invoke service.")
                 .header(ERROR_CAUSE_HEADER, exception.getCause())
                 .header(INTERNAL_ERROR_TYPE_HEADER, exception)
+                .header(CAUSE_CHAIN_HEADER, extractExceptionStacktrace(exception))
                 .type(MediaType.APPLICATION_JSON)
                 .build();
+    }
+
+    //
+    // Private helpers
+    //
+
+    private String extractExceptionStacktrace(final RuntimeException ex) {
+
+        // Create a sort-of human-readable string containing the exception stack trace.
+        final StringBuilder builder = new StringBuilder();
+        final List<String> segmentList = new ArrayList<>();
+
+        for (Throwable current = ex; current != null; current = current.getCause()) {
+
+            final String message = current instanceof ConstraintViolationException
+                    ? extractContraintViolationExceptionStacktrace((ConstraintViolationException) current)
+                    : current.getMessage();
+
+            segmentList.add(" [" + current.getClass().getSimpleName() + "]: " + message);
+        }
+
+        for (int i = 0; i < segmentList.size(); i++) {
+            final String current = " (" + i + "/" + segmentList.size() + "): " + segmentList.get(i) + "\n";
+            builder.append(current);
+        }
+
+        // All done.
+        return builder.toString();
+    }
+
+    private String extractContraintViolationExceptionStacktrace(final ConstraintViolationException ex) {
+
+        final StringBuilder toReturn = new StringBuilder();
+        final int numViolations = ex.getConstraintViolations().size();
+        int index = 0;
+
+        for(ConstraintViolation<?> current : ex.getConstraintViolations()) {
+            final String msg = "  Constraint [" + index++ + "/" + numViolations + "]: " + current.getMessage() + "\n";
+            toReturn.append(msg);
+        }
+
+        // All Done
+        return toReturn.toString();
     }
 }
