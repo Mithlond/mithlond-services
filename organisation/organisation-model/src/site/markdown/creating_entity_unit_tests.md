@@ -1378,10 +1378,9 @@ member:
 ]]></pre>
 
 Copy the data to a test resource file, which should reside somewhere below the `src/test/java/resources/testdata` 
-directory. Name the test resource similar to the classname, followed by the suffix `.xml`. In this example, the test 
-validates the Program entity - and the test resource is therefore called `programs.xml`:
+directory. Name the test resource similar to the classname, followed by the suffix `.xml`:
  
-<img src="images/programsResource.png" style="border: solid DarkGray 1px;" />
+<img src="images/testdataDirectories.png" style="border: solid DarkGray 1px;" />
 
 ## 5. Insert XML validation
 
