@@ -27,7 +27,6 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -44,34 +43,35 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Markup {
 
-    // Internal state
-    @XmlAnyElement
-    private String content;
+	// Internal state
+	@XmlAnyElement(MarkupDomAdapter.class)
+	private String content;
 
-    /**
-     * JAXB-friendly constructor.
-     */
-    public Markup() {
-    }
+	/**
+	 * JAXB-friendly constructor.
+	 */
+	public Markup() {
+	}
 
-    /**
-     * Compound constructor creating a Markup instance wrapping the supplied data.
-     *
-     * @param content A non-null markup-formatted string.
-     */
-    public Markup(final String content) {
+	/**
+	 * Compound constructor creating a Markup instance wrapping the supplied data.
+	 *
+	 * @param markupContent A non-null markup-formatted string.
+	 */
+	public Markup(final String markupContent) {
 
-        // Check sanity
-        Validate.notNull(content, "content");
+		// Check sanity
+		Validate.notNull(markupContent, "markupContent");
 
-        // Assign internal state
-        this.content = content;
-    }
+		// Assign internal state
+		// this.content = new JAXBElement<>(new QName(Patterns.NAMESPACE, "content"), String.class, markupContent);
+		this.content = markupContent;
+	}
 
-    /**
-     * @return A non-null markup-formatted string.
-     */
-    public String getContent() {
-        return content;
-    }
+	/**
+	 * @return The non-null markup-formatted string supplied to this Markup at construction time.
+	 */
+	public String getContent() {
+		return content;
+	}
 }

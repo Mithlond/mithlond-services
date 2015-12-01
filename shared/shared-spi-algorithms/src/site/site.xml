@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
-  Nazgul Project: mithlond-services-organisation-model
+  Nazgul Project: mithlond-services-shared-spi-algorithms
   %%
   Copyright (C) 2015 Mithlond
   %%
@@ -21,7 +21,6 @@
   #L%
   -->
 
-
 <project xmlns="http://maven.apache.org/DECORATION/1.3.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
@@ -31,16 +30,12 @@
     </bannerLeft>
 
     <body>
-
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
         </menu>
-        <menu name="Tutorials">
-            <item name="Creating Entities" href="creating_pojo_entities.html"/>
-            <item name="Creating Unit Tests" href="creating_entity_unit_tests.html"/>
-            <item name="Creating Integration Tests" href="creating_entity_integration_tests.html"/>
-        </menu>
 
+        <menu ref="parent"/>
         <menu ref="reports" inherit="bottom"/>
+
     </body>
 </project>

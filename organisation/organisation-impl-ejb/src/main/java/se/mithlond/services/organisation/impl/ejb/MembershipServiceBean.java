@@ -30,6 +30,7 @@ import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import java.util.List;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Stateless
 public class MembershipServiceBean extends AbstractJpaService implements MembershipService {
 
     // Our Logger

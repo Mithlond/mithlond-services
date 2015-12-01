@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-content-model
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  
+  You may obtain a copy of the License at
+  
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<content:ArticleList xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <articles>
+        <article jpaId="0" version="0">
+            <title>title_0</title>
+            <author>author_0</author>
+            <createdAt>2014-04-02T03:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_0</strong>
+                    <content>content_0åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_1</title>
+            <author>author_1</author>
+            <createdAt>2014-04-02T04:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_1</strong>
+                    <content>content_1åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_2</title>
+            <author>author_2</author>
+            <createdAt>2014-04-02T05:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_2</strong>
+                    <content>content_2åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_3</title>
+            <author>author_3</author>
+            <createdAt>2014-04-02T06:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_3</strong>
+                    <content>content_3åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_4</title>
+            <author>author_4</author>
+            <createdAt>2014-04-02T07:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_4</strong>
+                    <content>content_4åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_5</title>
+            <author>author_5</author>
+            <createdAt>2014-04-02T08:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_5</strong>
+                    <content>content_5åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_6</title>
+            <author>author_6</author>
+            <createdAt>2014-04-02T09:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_6</strong>
+                    <content>content_6åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_7</title>
+            <author>author_7</author>
+            <createdAt>2014-04-02T10:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_7</strong>
+                    <content>content_7åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_8</title>
+            <author>author_8</author>
+            <createdAt>2014-04-02T11:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_8</strong>
+                    <content>content_8åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>title_9</title>
+            <author>author_9</author>
+            <createdAt>2014-04-02T12:04:00+02:00</createdAt>
+            <content>
+                <div>
+                    <strong>ArticleTitle_9</strong>
+                    <content>content_9åäöÅÄÖëü</content>
+                </div>
+            </content>
+        </article>
+    </articles>
+</content:ArticleList>
