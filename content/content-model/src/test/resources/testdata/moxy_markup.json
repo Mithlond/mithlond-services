@@ -1,0 +1,11 @@
+{
+  "content.markup": {
+    "div": {
+      "h1": "Title",
+      "div": {
+        "style": "foo",
+        "value": "content"
+      }
+    }
+  }
+}

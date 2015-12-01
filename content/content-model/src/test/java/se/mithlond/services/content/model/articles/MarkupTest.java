@@ -21,9 +21,9 @@
  */
 package se.mithlond.services.content.model.articles;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
@@ -31,9 +31,11 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.model.Patterns;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -71,13 +73,6 @@ public class MarkupTest {
 		}
 	}
 
-	/*
-	@After
-	public void teardownSharedState() {
-		System.clearProperty("javax.xml.bind.context.factory");
-	}
-	*/
-
 	@Test
 	public void validateMarshallingUsingMoxy() throws Exception {
 
@@ -108,5 +103,51 @@ public class MarkupTest {
 
 		final Markup resurrected = (Markup) result;
 		Assert.assertEquals(MARKUP.replaceAll("\\p{Space}", ""), resurrected.getContent().replaceAll("\\p{Space}", ""));
+	}
+
+	@Test
+	public void validateMarshallingToMoxyJson() throws Exception {
+
+		// Assemble
+		final String expected = XmlTestUtils.readFully("testdata/moxy_markup.json");
+		final Markup toMarshal = new Markup("<div><h1>Title</h1><div style='foo'>content</div></div>");
+
+		final String JSON_CONTENT_TYPE = "application/json";
+		marshaller.setProperty("eclipselink.media-type", JSON_CONTENT_TYPE);
+		final StringWriter out = new StringWriter();
+
+		// Act
+		marshaller.marshal(toMarshal, out);
+		// System.out.println("Got: " + out.toString());
+
+		// Assert
+		Assert.assertEquals(expected.replaceAll("\\p{Space}", ""), out.toString().replaceAll("\\p{Space}", ""));
+	}
+
+	@Ignore("EclipseLink's Unmarshaller seems to confuse Elements and attributes in some cases. " +
+			"This is not important to enable marshalling Markup content.")
+	@Test
+	public void validateUnmarshallingFromMoxyJson() throws Exception {
+
+		// Assemble
+		final String data = XmlTestUtils.readFully("testdata/moxy_markup.json");
+		final Markup expected = new Markup("<div><h1>Title</h1><div style='foo'>content</div></div>");
+
+		final String JSON_CONTENT_TYPE = "application/json";
+		unmarshaller.setProperty("eclipselink.media-type", JSON_CONTENT_TYPE);
+
+		// Act
+		JAXBElement<Markup> result = unmarshaller.unmarshal(new StreamSource(new StringReader(data)), Markup.class);
+		System.out.println("Got: " + result.getValue().getContent());
+
+		// Assert
+		final String expectedNoWhitespace = expected
+				.getContent()
+				.replaceAll("\\p{Space}", "");
+		final String retrievedWithDoubleQuotes = result.getValue()
+				.getContent()
+				.replaceAll("\\p{Space}", "")
+				.replace('"', '\'');
+		Assert.assertEquals(expectedNoWhitespace, retrievedWithDoubleQuotes);
 	}
 }
