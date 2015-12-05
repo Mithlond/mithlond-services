@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.api.navigation.transport;
+package se.mithlond.services.content.api.transport;
 
 import org.apache.commons.lang3.Validate;
 import se.mithlond.services.content.model.Patterns;
@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ import java.util.List;
  */
 @XmlRootElement(namespace = Patterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class MenuStructure {
+public class MenuStructure implements Serializable {
 
     // Internal state
     @XmlAttribute(required = true)

@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.AbstractEntityTest;
+import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;

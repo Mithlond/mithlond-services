@@ -28,7 +28,7 @@ import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.mithlond.services.content.api.UnknownOrganisationException;
-import se.mithlond.services.content.api.navigation.transport.MenuStructure;
+import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;

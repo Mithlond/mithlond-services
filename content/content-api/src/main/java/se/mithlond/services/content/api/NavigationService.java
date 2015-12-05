@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.api;
 
-import se.mithlond.services.content.api.navigation.transport.MenuStructure;
+import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
 import javax.ejb.Local;

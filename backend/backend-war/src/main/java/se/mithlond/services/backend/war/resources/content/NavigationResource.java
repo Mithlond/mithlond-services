@@ -23,7 +23,7 @@ package se.mithlond.services.backend.war.resources.content;
 
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.content.api.NavigationService;
-import se.mithlond.services.content.api.navigation.transport.MenuStructure;
+import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
 import javax.ejb.EJB;
