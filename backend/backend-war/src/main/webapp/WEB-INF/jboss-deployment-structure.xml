@@ -26,11 +26,22 @@
         <exclusions>
             <module name="org.apache.log4j"/>
             <module name="org.apache.commons.logging"/>
+            <!--
+                Don't use these JSON providers for RestEasy. Use MOXy instead.
+             -->
+            <module name="org.jboss.resteasy.resteasy-jackson-provider" />
+            <module name="org.jboss.resteasy.resteasy-jettison-provider" />
         </exclusions>
         <dependencies>
-            <module name="org.slf4j" />
-            <module name="javax.ejb.api" />
-            <module name="org.glassfish.javax.json" />
+            <module name="org.slf4j"/>
+            <module name="javax.ejb.api"/>
+            <module name="javax.validation.api"/>
+            <!--
+                EclipseLink is used both for Persistence and for JAXRS provisioning.
+                Note that this requires modifications to the standard module.xml in
+                EclipseLink to properly operate with RestEasy (i.e. using MOXy).
+             -->
+            <module name="org.eclipse.persistence" services="import"/>
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

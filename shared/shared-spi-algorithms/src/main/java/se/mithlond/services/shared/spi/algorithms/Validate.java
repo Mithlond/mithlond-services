@@ -41,11 +41,18 @@ public final class Validate {
      * @param object       The object to validate for {@code null}-ness.
      * @param argumentName The argument name of the object to validate. If supplied (i.e. non-{@code null}),
      *                     this value is used in composing a better exception message.
+     * @return The supplied object - if it is was not null.
+     * @throws NullPointerException if the supplied object was null.
      */
-    public static void notNull(final Object object, final String argumentName) {
+    public static <T> T notNull(final T object, final String argumentName) {
+
+        // Check sanity
         if (object == null) {
             throw new NullPointerException(getMessage("null", argumentName));
         }
+
+        // All done.
+        return object;
     }
 
     /**
@@ -55,8 +62,9 @@ public final class Validate {
      * @param argumentName The argument name of the object to validate.
      *                     If supplied (i.e. non-{@code null}), this value is used in composing
      *                     a better exception message.
+     * @return The non-empty
      */
-    public static void notEmpty(final String aString, final String argumentName) {
+    public static String notEmpty(final String aString, final String argumentName) {
 
         // Check sanity
         notNull(aString, argumentName);
