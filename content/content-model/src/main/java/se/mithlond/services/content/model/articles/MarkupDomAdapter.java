@@ -109,7 +109,7 @@ public class MarkupDomAdapter implements DomHandler<String, StreamResult> {
 
 		} catch (Exception e) {
 
-			final String msg = "Could not marshal markup of size ["
+			final String msg = "Could not marshalToXML markup of size ["
 					+ (markupToMarshal == null ? "<null/0>" : markupToMarshal.length()) + "]";
 			throw new RuntimeException(msg, e);
 		}

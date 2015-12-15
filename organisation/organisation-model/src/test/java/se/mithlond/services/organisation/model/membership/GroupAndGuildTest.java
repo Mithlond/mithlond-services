@@ -117,7 +117,7 @@ public class GroupAndGuildTest extends AbstractEntityTest {
         final GroupsAndGuilds toMarshal = new GroupsAndGuilds(groupsAndGuilds);
 
         // Act
-        final String result = marshal(toMarshal);
+        final String result = marshalToXML(toMarshal);
 
         // Assert
         // System.out.println("Got: " + result);
@@ -132,7 +132,7 @@ public class GroupAndGuildTest extends AbstractEntityTest {
         jaxb.add(GroupsAndGuilds.class);
 
         // Act
-        final GroupsAndGuilds result = unmarshal(GroupsAndGuilds.class, data);
+        final GroupsAndGuilds result = unmarshalFromXML(GroupsAndGuilds.class, data);
 
         // Assert
         Assert.assertNotNull(result);

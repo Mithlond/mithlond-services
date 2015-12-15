@@ -61,7 +61,7 @@ public class WellKnownAddressTypeTest extends AbstractEntityTest {
         wrapper.add(WellKnownAddressType.values());
 
         // Act
-        final String result = marshal(wrapper);
+        final String result = marshalToXML(wrapper);
 
         // Assert
         // System.out.println("Got: " + result);
@@ -76,7 +76,7 @@ public class WellKnownAddressTypeTest extends AbstractEntityTest {
         jaxb.add(WellKnownAddressTypes.class);
 
         // Act
-        final WellKnownAddressTypes resurrected = unmarshal(WellKnownAddressTypes.class, data);
+        final WellKnownAddressTypes resurrected = unmarshalFromXML(WellKnownAddressTypes.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

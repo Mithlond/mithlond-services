@@ -125,12 +125,7 @@ public abstract class Listable extends NazgulEntity {
 	 * @param fullDesc the non-null fullDesc of this Listable.
 	 */
 	public void setFullDesc(final String fullDesc) {
-
-		// Check sanity
-		Validate.notEmpty(fullDesc, "fullDesc");
-
-		// Assign internal state
-		this.fullDesc = fullDesc;
+		this.fullDesc = Validate.notEmpty(fullDesc, "fullDesc");
 	}
 
 	/**
@@ -139,12 +134,7 @@ public abstract class Listable extends NazgulEntity {
 	 * @param shortDesc the shortDesc of this Listable.
 	 */
 	public void setShortDesc(final String shortDesc) {
-
-		// Check sanity
-		Validate.notEmpty(shortDesc, "Cannot handle null or empty shortDesc argument.");
-
-		// Assign internal state
-		this.shortDesc = shortDesc;
+		this.shortDesc = Validate.notEmpty(shortDesc, "shortDesc");
 	}
 
 	/**

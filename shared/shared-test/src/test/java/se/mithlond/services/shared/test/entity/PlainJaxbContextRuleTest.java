@@ -69,7 +69,7 @@ public class PlainJaxbContextRuleTest {
     }
 
     @Test
-    public void validateMarshalling() throws Exception {
+    public void validateMarshallingToXML() throws Exception {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/anotherBarRound.xml");
@@ -77,7 +77,7 @@ public class PlainJaxbContextRuleTest {
         // Act
         unitUnderTest.add(BarRound.class, Beverage.class, Customer.class);
         unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
-        final String result = unitUnderTest.marshal(getClass().getClassLoader(), barRound);
+        final String result = unitUnderTest.marshal(getClass().getClassLoader(), false, barRound);
 
         // Assert
         /*
@@ -100,7 +100,22 @@ public class PlainJaxbContextRuleTest {
     }
 
     @Test
-    public void validateUnmarshalling() throws Exception {
+    public void validateMarshallingToJSON() throws Exception {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/anotherBarRound.json");
+
+        // Act
+        unitUnderTest.add(BarRound.class, Beverage.class, Customer.class);
+        unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
+        final String result = unitUnderTest.marshal(getClass().getClassLoader(), true, barRound);
+
+        // Assert
+        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+    }
+
+    @Test
+    public void validateUnmarshallingFromXML() throws Exception {
 
         // Assemble
         final String data = XmlTestUtils.readFully("testdata/anotherBarRound.xml");
@@ -108,7 +123,36 @@ public class PlainJaxbContextRuleTest {
         // Act
         unitUnderTest.add(BarRound.class, Beverage.class, Customer.class);
         unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
-        final BarRound result = unitUnderTest.unmarshal(getClass().getClassLoader(), BarRound.class, data);
+        final BarRound result = unitUnderTest.unmarshal(getClass().getClassLoader(), false, BarRound.class, data);
+
+        // Assert
+        // System.out.println("Got: " + result);
+        Assert.assertNotNull(result);
+        Assert.assertEquals(barRound.getIdentifier(), result.getIdentifier());
+
+        final List<Customer> customers = result.getCustomers();
+        Assert.assertEquals(customerList.size(), customers.size());
+        outer: for(Customer current : customers) {
+            for(Customer comparison : customerList) {
+                if(current.compareTo(comparison) == 0) {
+                    continue outer;
+                }
+            }
+
+            Assert.fail("Unexpected Customer [" + current.getName() + "] found.");
+        }
+    }
+
+    @Test
+    public void validateUnmarshallingFromJSON() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/anotherBarRound.json");
+
+        // Act
+        unitUnderTest.add(BarRound.class, Beverage.class, Customer.class);
+        unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
+        final BarRound result = unitUnderTest.unmarshal(getClass().getClassLoader(), true, BarRound.class, data);
 
         // Assert
         // System.out.println("Got: " + result);

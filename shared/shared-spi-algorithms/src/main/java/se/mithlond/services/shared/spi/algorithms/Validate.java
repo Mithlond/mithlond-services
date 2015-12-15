@@ -62,7 +62,9 @@ public final class Validate {
      * @param argumentName The argument name of the object to validate.
      *                     If supplied (i.e. non-{@code null}), this value is used in composing
      *                     a better exception message.
-     * @return The non-empty
+     * @return The non-empty String submitted.
+     * @throws IllegalArgumentException if the submitted {@code aString} is empty.
+     * @throws NullPointerException if the supplied {@code aString} is null.
      */
     public static String notEmpty(final String aString, final String argumentName) {
 
@@ -72,6 +74,9 @@ public final class Validate {
         if (aString.length() == 0) {
             throw new IllegalArgumentException(getMessage("empty", argumentName));
         }
+
+        // All done
+        return aString;
     }
 
     /**

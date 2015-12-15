@@ -66,7 +66,7 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         jaxb.add(AuthorizationPaths.class);
 
         // Act
-        final String result = marshal(new AuthorizationPaths(unitUnderTest));
+        final String result = marshalToXML(new AuthorizationPaths(unitUnderTest));
 
         // Assert
         // System.out.println("Got: " + result);.
@@ -81,7 +81,7 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         jaxb.add(AuthorizationPaths.class);
 
         // Act
-        final AuthorizationPaths resurrected = unmarshal(AuthorizationPaths.class, data);
+        final AuthorizationPaths resurrected = unmarshalFromXML(AuthorizationPaths.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

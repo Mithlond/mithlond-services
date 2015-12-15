@@ -58,7 +58,7 @@ public class UserTest extends AbstractEntityTest {
 
         final String data = XmlTestUtils.readFully("testdata/groupsAndGuilds.xml");
         jaxb.add(GroupsAndGuilds.class);
-        groupsAndGuilds = unmarshal(GroupsAndGuilds.class, data);
+        groupsAndGuilds = unmarshalFromXML(GroupsAndGuilds.class, data);
 
         final List<Organisation> organisations = groupsAndGuilds.getOrganisations();
 
@@ -123,7 +123,7 @@ public class UserTest extends AbstractEntityTest {
         final Users toMarshal = new Users(users);
 
         // Act
-        final String result = marshal(toMarshal);
+        final String result = marshalToXML(toMarshal);
 
         // Assert
         // System.out.println("Got: " + result);
@@ -138,7 +138,7 @@ public class UserTest extends AbstractEntityTest {
         jaxb.add(Users.class);
 
         // Act
-        final Users resurrected = unmarshal(Users.class, data);
+        final Users resurrected = unmarshalFromXML(Users.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

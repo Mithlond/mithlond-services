@@ -38,7 +38,7 @@ import java.sql.SQLException;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public abstract class AbstractIntegrationTest extends StandardPersistenceTest {
+public abstract class AbstractIntegrationTest extends StandardPersistenceTest implements ExtendedJaxbOperations {
 
     // Our Log
     private static final Logger log = LoggerFactory.getLogger(AbstractIntegrationTest.class);
@@ -89,26 +89,35 @@ public abstract class AbstractIntegrationTest extends StandardPersistenceTest {
     }
 
     /**
-     * Convenience method used to marshal all supplied object to an XML String using the standard ClassLoader.
-     *
-     * @param toMarshal The objects to marshal.
-     * @return The resulting XML string.
+     * {@inheritDoc}
      */
-    protected String marshal(final Object... toMarshal) {
-        return jaxb.marshal(standardClassLoader, toMarshal);
+    @Override
+    public String marshalToXML(final Object... toMarshal) {
+        return jaxb.marshal(standardClassLoader, false, toMarshal);
     }
 
     /**
-     * Convenience method used to unmarshal the supplied XML string into an object of type T using
-     * the standard ClassLoader.
-     *
-     * @param expectedReturnType The expected return type.
-     * @param toUnmarshal        The XML string to unmarshal.
-     * @param <T>                The expected return type.
-     * @return The resurrected T object.
+     * {@inheritDoc}
      */
-    protected <T> T unmarshal(final Class<T> expectedReturnType, final String toUnmarshal) {
-        return jaxb.unmarshal(standardClassLoader, expectedReturnType, toUnmarshal);
+    @Override
+    public String marshalToJSon(final Object... toMarshal) {
+        return jaxb.marshal(standardClassLoader, false, toMarshal);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T unmarshalFromXML(final Class<T> expectedReturnType, final String toUnmarshal) {
+        return jaxb.unmarshal(standardClassLoader, false, expectedReturnType, toUnmarshal);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T unmarshalFromJSON(final Class<T> expectedReturnType, final String toUnmarshal) {
+        return jaxb.unmarshal(standardClassLoader, true, expectedReturnType, toUnmarshal);
     }
 
     /**

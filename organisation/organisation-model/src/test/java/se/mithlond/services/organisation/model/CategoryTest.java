@@ -57,7 +57,7 @@ public class CategoryTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/categories.xml");
 
         // Act
-        final String result = marshal(new Categories(categoryArray));
+        final String result = marshalToXML(new Categories(categoryArray));
 
         // Assert
         // System.out.println("Got: " + result);
@@ -72,7 +72,7 @@ public class CategoryTest extends AbstractEntityTest {
         jaxb.add(Categories.class);
 
         // Act
-        final Categories result = unmarshal(Categories.class, data);
+        final Categories result = unmarshalFromXML(Categories.class, data);
 
         // Assert
         Assert.assertNotNull(result);

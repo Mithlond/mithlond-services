@@ -31,7 +31,6 @@ import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
 import se.mithlond.services.shared.test.entity.AbstractIntegrationTest;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,7 +65,7 @@ public class GroupIntegrationTest extends AbstractIntegrationTest {
 
         // Fake reading some transported data.
         // This occurs when reading / unmarshalling transport model entities from the network.
-        final GroupsAndGuilds transported = unmarshal(
+        final GroupsAndGuilds transported = unmarshalFromXML(
                 GroupsAndGuilds.class,
                 XmlTestUtils.readFully("testdata/managedOrganisationAndGroups.xml"));
         receivedFromClient = transported.getGroupsAndGuilds();

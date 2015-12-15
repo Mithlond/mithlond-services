@@ -1,0 +1,46 @@
+{
+  "barRound.barRound" : {
+    "identifier" : "fridayNightOut",
+    "customers" : {
+      "customer" : [ {
+        "name" : "lennart",
+        "consumption" : {
+          "consumptionRecords" : {
+            "record" : [ {
+              "numConsumed" : 1,
+              "beverage" : {
+                "name" : "DIPA",
+                "producer" : "Poppels"
+              }
+            }, {
+              "numConsumed" : 2,
+              "beverage" : {
+                "name" : "Root Beer",
+                "producer" : "Ödeshögs Bryggeri"
+              }
+            } ]
+          }
+        }
+      }, {
+        "name" : "malin",
+        "consumption" : {
+          "consumptionRecords" : {
+            "record" : [ {
+              "numConsumed" : 2,
+              "beverage" : {
+                "name" : "DIPA",
+                "producer" : "Poppels"
+              }
+            }, {
+              "numConsumed" : 1,
+              "beverage" : {
+                "name" : "Root Beer",
+                "producer" : "Ödeshögs Bryggeri"
+              }
+            } ]
+          }
+        }
+      } ]
+    }
+  }
+}

@@ -89,7 +89,7 @@ public class CategorizedAddressTest extends AbstractEntityTest {
         final CategorizedAddresses toMarshal = new CategorizedAddresses(addressArray);
 
         // Act
-        final String result = marshal(toMarshal);
+        final String result = marshalToXML(toMarshal);
 
         // Assert
         // System.out.println("Got: " + result);
@@ -104,7 +104,7 @@ public class CategorizedAddressTest extends AbstractEntityTest {
         jaxb.add(CategorizedAddresses.class);
 
         // Act
-        final CategorizedAddresses result = unmarshal(CategorizedAddresses.class, data);
+        final CategorizedAddresses result = unmarshalFromXML(CategorizedAddresses.class, data);
 
         // Assert
         Assert.assertNotNull(result);

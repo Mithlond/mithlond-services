@@ -88,4 +88,17 @@ public class ValidateTest {
             Assert.fail("Expected IllegalArgumentException, but got " + e);
         }
     }
+
+    @Test
+    public void validateReturningSameInstance() {
+
+        // Assemble
+        final StringBuilder toValidate = new StringBuilder();
+
+        // Act
+        final StringBuilder result = Validate.notNull(toValidate, "toValidate");
+
+        // Assert
+        Assert.assertSame(toValidate, result);
+    }
 }

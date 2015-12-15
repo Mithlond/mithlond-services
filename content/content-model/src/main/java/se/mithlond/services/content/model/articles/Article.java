@@ -133,11 +133,8 @@ public class Article extends NazgulEntity {
 	 */
 	public void setTitle(final String title) {
 
-		// Check sanity
-		Validate.notEmpty(title, "title");
-
 		// Assign internal state
-		this.title = title;
+		this.title = Validate.notEmpty(title, "title");
 		this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
 	}
 
@@ -148,11 +145,8 @@ public class Article extends NazgulEntity {
 	 */
 	public void setMarkup(final String markup) {
 
-		// Check sanity
-		Validate.notEmpty(markup, "markup");
-
 		// Assign internal state
-		this.markup = markup;
+		this.markup = Validate.notEmpty(markup, "markup");
 		this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
 	}
 

@@ -29,8 +29,8 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -49,20 +49,20 @@ import java.util.TreeSet;
  * Typically, this rule is invoked in 3 steps for marshalling and 2 steps for unmarshalling.</p>
  * <h2>Marshalling Objects to XML Strings</h2>
  * <ol>
- *     <li>Call <code>add(class1, class2, ...);</code> to add any classes that should be bound into the
- *     JAXBContext for marshalling or unmarshalling.</li>
- *     <li>(Optional): Call <code>mapXmlNamespacePrefix(anXmlURI, marshalledXmlPrefix)</code>
- *     to control the XML namespace prefix in the marshalled structure.</li>
- *     <li>Call <code>marshal(classLoader, anObject)</code> to marshal the objects into XML</li>
+ * <li>Call <code>add(class1, class2, ...);</code> to add any classes that should be bound into the
+ * JAXBContext for marshalling or unmarshalling.</li>
+ * <li>(Optional): Call <code>mapXmlNamespacePrefix(anXmlURI, marshalledXmlPrefix)</code>
+ * to control the XML namespace prefix in the marshalled structure.</li>
+ * <li>Call <code>marshalToXML(classLoader, anObject)</code> to marshalToXML the objects into XML</li>
  * </ol>
  * <h2>Unmarshalling Objects from XML Strings</h2>
  * <ol>
- *     <li>Call <code>add(class1, class2, ...);</code> to add any classes that should be bound into the
- *     JAXBContext for marshalling or unmarshalling.</li>
- *     <li>(Optional): Call <code>mapXmlNamespacePrefix(anXmlURI, marshalledXmlPrefix)</code>
- *     to control the XML namespace prefix in the marshalled structure.</li>
- *     <li>Call <code>unmarshal(classLoader, ResultClass.class, xmlString);</code> to unmarshal the XML String into
- *     Java Objects.</li>
+ * <li>Call <code>add(class1, class2, ...);</code> to add any classes that should be bound into the
+ * JAXBContext for marshalling or unmarshalling.</li>
+ * <li>(Optional): Call <code>mapXmlNamespacePrefix(anXmlURI, marshalledXmlPrefix)</code>
+ * to control the XML namespace prefix in the marshalled structure.</li>
+ * <li>Call <code>unmarshal(classLoader, ResultClass.class, xmlString);</code> to unmarshal the XML String into
+ * Java Objects.</li>
  * </ol>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -79,11 +79,20 @@ public class PlainJaxbContextRule extends TestWatcher {
         return className1.compareTo(className2);
     };
 
+    /**
+     * The JAXBContextFactory implementation within EclipseLink (i.e. the MOXy implementation).
+     */
+    public static final String ECLIPSELINK_JAXB_CONTEXT_FACTORY = "org.eclipse.persistence.jaxb.JAXBContextFactory";
+    private static final String JAXB_CONTEXTFACTORY_PROPERTY = "javax.xml.bind.context.factory";
+    private static final String JSON_CONTENT_TYPE = "application/json";
+    private static final String ECLIPSELINK_MEDIA_TYPE = "eclipselink.media-type";
+
     // Internal state
     private SortedSet<Class<?>> jaxbAnnotatedClasses;
     private JAXBContext jaxbContext;
     private JaxbNamespacePrefixResolver namespacePrefixResolver;
     private boolean performXsdValidation = true;
+    private boolean useEclipseLinkMOXyIfAvailable = true;
 
     /**
      * Default constructor, setting up a clean internal state.
@@ -91,6 +100,19 @@ public class PlainJaxbContextRule extends TestWatcher {
     public PlainJaxbContextRule() {
         this.jaxbAnnotatedClasses = new TreeSet<>(CLASS_COMPARATOR);
         this.namespacePrefixResolver = new JaxbNamespacePrefixResolver();
+    }
+
+    /**
+     * If {@code false}, the JAXB reference implementation will be used for JAXB operations,
+     * and otherwise the MOXy implementation from EclipseLink.
+     *
+     * @param useEclipseLinkMOXyIfAvailable if {@code false}, the JAXB reference implementation is used.
+     * @see #useEclipseLinkMOXyIfAvailable
+     */
+    public void setUseEclipseLinkMOXyIfAvailable(final boolean useEclipseLinkMOXyIfAvailable) {
+
+        // Check sanity
+        this.useEclipseLinkMOXyIfAvailable = useEclipseLinkMOXyIfAvailable;
     }
 
     /**
@@ -119,7 +141,8 @@ public class PlainJaxbContextRule extends TestWatcher {
      * </pre>
      *
      * @param jaxbAnnotatedClasses The classes to add to any JAXBContext used within this PlainJaxbContextRule, for
-     *                             marshalling or unmarshalling. The supplied classes are given in
+     *                             marshalling or unmarshalling. The supplied classes are given to the JAXBContext
+     *                             during creation.
      */
     public void add(final Class<?>... jaxbAnnotatedClasses) {
         if (jaxbAnnotatedClasses != null) {
@@ -131,22 +154,36 @@ public class PlainJaxbContextRule extends TestWatcher {
      * Marshals the supplied objects into an XML String, or throws an IllegalArgumentException
      * containing a wrapped JAXBException indicating why the marshalling was unsuccessful.
      *
-     * @param loader  The ClassLoader to use in order to load all classes previously added
-     *                by calls to the {@code add} method.
-     * @param objects The objects to Marshal into XML.
+     * @param loader   The ClassLoader to use in order to load all classes previously added
+     *                 by calls to the {@code add} method.
+     * @param emitJSON if {@code true}, the method will attempt to output JSON instead of XML.
+     *                 This requires the EclipseLink MOXy implementation as the JAXBContextFactory.
+     * @param objects  The objects to Marshal into XML.
      * @return An XML-formatted String containing
      * @throws IllegalArgumentException if the marshalling operation failed.
      *                                  The {@code cause} field in the IllegalArgumentException contains
      *                                  the JAXBException thrown by the JAXB framework.
      * @see #add(Class[])
      */
-    public String marshal(final ClassLoader loader, final Object... objects) throws IllegalArgumentException {
+    @SuppressWarnings("all")
+    public String marshal(final ClassLoader loader,
+                          final boolean emitJSON,
+                          final Object... objects) throws IllegalArgumentException {
 
-        // Create an EntityTransporter, to extract the
-        // types as required by the plain JAXBContext.
+        // Create an EntityTransporter, to extract the types as required by the plain JAXBContext.
         final EntityTransporter<Object> transporter = new EntityTransporter<>();
         for (Object current : objects) {
             transporter.addItem(current);
+        }
+
+        // Use EclipseLink?
+        if (emitJSON) {
+            setUseEclipseLinkMOXyIfAvailable(true);
+        }
+        if (useEclipseLinkMOXyIfAvailable) {
+            System.setProperty(JAXB_CONTEXTFACTORY_PROPERTY, ECLIPSELINK_JAXB_CONTEXT_FACTORY);
+        } else {
+            System.clearProperty(JAXB_CONTEXTFACTORY_PROPERTY);
         }
 
         // Extract class info as required by the JAXBContext.
@@ -157,10 +194,32 @@ public class PlainJaxbContextRule extends TestWatcher {
             throw new IllegalArgumentException("Could not create JAXB context.", e);
         }
 
-        final Marshaller marshaller = JaxbUtils.getHumanReadableStandardMarshaller(
-                jaxbContext,
-                namespacePrefixResolver,
-                performXsdValidation);
+        Marshaller marshaller = null;
+        try {
+            marshaller = JaxbUtils.getHumanReadableStandardMarshaller(
+                    jaxbContext,
+                    namespacePrefixResolver,
+                    performXsdValidation                             );
+        } catch (Exception e) {
+
+            try {
+                marshaller = jaxbContext.createMarshaller();
+                marshaller.setProperty("jaxb.encoding", "UTF-8");
+                marshaller.setProperty("jaxb.formatted.output", Boolean.valueOf(true));
+                marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", namespacePrefixResolver);
+            } catch (JAXBException e1) {
+
+                throw new IllegalStateException("Could not create non-validating JAXB Marshaller", e);
+            }
+        }
+
+        if (emitJSON) {
+            try {
+                marshaller.setProperty(ECLIPSELINK_MEDIA_TYPE, JSON_CONTENT_TYPE);
+            } catch (PropertyException e) {
+                // This is likely not the EclipseLink Marshaller.
+            }
+        }
 
         final StringWriter result = new StringWriter();
         for (int i = 0; i < objects.length; i++) {
@@ -170,10 +229,10 @@ public class PlainJaxbContextRule extends TestWatcher {
                 result.write(tmp.toString());
             } catch (JAXBException e) {
                 final String currentTypeName = objects[i] == null ? "<null>" : objects[i].getClass().getName();
-                throw new IllegalArgumentException("Could not marshal object [" + i + "] of type ["
-                        + currentTypeName + "].", e);
-            } catch(Exception e) {
-                throw new IllegalArgumentException("Could not marshal object [" + i + "]: " + objects[i], e);
+                throw new IllegalArgumentException("Could not marshalToXML object [" + i + "] of type ["
+                                                           + currentTypeName + "].", e);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Could not marshalToXML object [" + i + "]: " + objects[i], e);
             }
         }
 
@@ -195,21 +254,33 @@ public class PlainJaxbContextRule extends TestWatcher {
      *     </code>
      * </pre>
      *
-     * @param loader         The ClassLoader to use in order to load all classes previously added
-     *                       by calls to the {@code add} method.
-     * @param resultType     The type of the resulting object.
-     * @param xmlToUnmarshal The XML string to unmarshal into a T object.
-     * @param <T>            The expected type to unmarshal into.
+     * @param loader          The ClassLoader to use in order to load all classes previously added
+     *                        by calls to the {@code add} method.
+     * @param assumeJSonInput If {@code true}, the input is assumed to be JSON.
+     *                        This requires the EclipseLink MOXy JAXBContextFactory to succeed.
+     * @param resultType      The type of the resulting object.
+     * @param toUnmarshal     The XML string to unmarshal into a T object.
+     * @param <T>             The expected type to unmarshal into.
      * @return The resulting, unmarshalled object.
      * @see #add(Class[])
      */
-    public <T> T unmarshal(final ClassLoader loader, final Class<T> resultType, final String xmlToUnmarshal) {
+    public <T> T unmarshal(final ClassLoader loader,
+                           final boolean assumeJSonInput,
+                           final Class<T> resultType,
+                           final String toUnmarshal) {
 
         // Check sanity
         Validate.notNull(resultType, "resultType");
-        Validate.notEmpty(xmlToUnmarshal, "xmlToUnmarshal");
+        Validate.notEmpty(toUnmarshal, "xmlToUnmarshal");
 
-        final Source source = new StreamSource(new StringReader(xmlToUnmarshal));
+        final Source source = new StreamSource(new StringReader(toUnmarshal));
+
+        // Use Eclipselink?
+        if (assumeJSonInput || useEclipseLinkMOXyIfAvailable) {
+            System.setProperty(JAXB_CONTEXTFACTORY_PROPERTY, ECLIPSELINK_JAXB_CONTEXT_FACTORY);
+        } else {
+            System.clearProperty(JAXB_CONTEXTFACTORY_PROPERTY);
+        }
 
         try {
             jaxbContext = JAXBContext.newInstance(getClasses(loader, null));
@@ -219,6 +290,16 @@ public class PlainJaxbContextRule extends TestWatcher {
 
         try {
             final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            if (assumeJSonInput) {
+                try {
+                    unmarshaller.setProperty(ECLIPSELINK_MEDIA_TYPE, JSON_CONTENT_TYPE);
+                } catch (PropertyException e) {
+                    // This is likely not the EclipseLink Marshaller.
+                }
+            }
+
+            // All Done.
             return unmarshaller.unmarshal(source, resultType).getValue();
         } catch (JAXBException e) {
             throw new IllegalArgumentException("Could not unmarshal xml into [" + resultType.getName() + "]", e);
@@ -233,10 +314,10 @@ public class PlainJaxbContextRule extends TestWatcher {
      *                       by calls to the {@code add} method.
      * @param xmlToUnmarshal The XML string to unmarshal into a T object.
      * @return The resulting, unmarshalled object.
-     * @see #unmarshal(ClassLoader, Class, String)
+     * @see #unmarshal(ClassLoader, boolean, Class, String)
      */
-    public Object unmarshal(final ClassLoader loader, final String xmlToUnmarshal) {
-        return unmarshal(loader, Object.class, xmlToUnmarshal);
+    public Object unmarshal(final ClassLoader loader, final boolean assumeJSonInput, final String xmlToUnmarshal) {
+        return unmarshal(loader, assumeJSonInput, Object.class, xmlToUnmarshal);
     }
 
     /**

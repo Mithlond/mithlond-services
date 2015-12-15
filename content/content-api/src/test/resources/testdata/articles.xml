@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content:articles xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" realm="FooBar">
+    <selectionPath>/news/latest</selectionPath>
+    <articleList>
+        <article jpaId="0" version="0">
+            <title>News_1</title>
+            <author>ERF Häxxxxmästaren</author>
+            <createdAt>2015-12-12T05:02:03+01:00</createdAt>
+            <content>
+                <div>
+                    <header>foo</header>
+                    <body>bar!</body>
+                </div>
+            </content>
+        </article>
+        <article jpaId="0" version="0">
+            <title>News_2</title>
+            <author>ERF Häxxmästaren</author>
+            <createdAt>2015-11-11T15:22:33+01:00</createdAt>
+            <content>
+                <div>
+                    <header>foo2</header>
+                    <body>bar2!</body>
+                </div>
+            </content>
+        </article>
+    </articleList>
+</content:articles>

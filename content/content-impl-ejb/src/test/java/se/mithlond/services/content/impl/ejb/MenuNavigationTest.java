@@ -133,7 +133,7 @@ public class MenuNavigationTest {
 
         // Act
         final MenuStructure result = unitUnderTest.getMenuStructure("Foo", new ArrayList<>());
-        // System.out.println("Got: " + marshal(result));
+        // System.out.println("Got: " + marshalToXML(result));
 
         // Assert
         Assert.assertNotNull(result);
@@ -160,7 +160,7 @@ public class MenuNavigationTest {
 
         // Act
         final MenuStructure result = unitUnderTest.getMenuStructure("Foo", new ArrayList<>());
-        // System.out.println("Got: " + marshal(result));
+        // System.out.println("Got: " + marshalToXML(result));
 
         // Assert
         Assert.assertNotNull(result);
@@ -192,7 +192,7 @@ public class MenuNavigationTest {
 
         // Act
         final MenuStructure result = unitUnderTest.getMenuStructure("Foo", authorizationPathProducerList);
-        // System.out.println("Got: " + marshal(result));
+        // System.out.println("Got: " + marshalToXML(result));
 
         // Assert
         Assert.assertNotNull(result);
@@ -290,7 +290,7 @@ public class MenuNavigationTest {
 
             marshaller.marshal(aMenuStructure, result);
         } catch (JAXBException e) {
-            throw new IllegalStateException("Could not marshal a MenuStructure to XML", e);
+            throw new IllegalStateException("Could not marshalToXML a MenuStructure to XML", e);
         }
 
         // All done.

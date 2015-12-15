@@ -168,17 +168,13 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
                         final Address visitingAddress,
                         final String emailSuffix) {
 
-        // Check sanity
-        Validate.notEmpty(organisationName, "organisationName");
-        Validate.notNull(visitingAddress, "visitingAddress");
-
         // Assign internal state
-        this.organisationName = organisationName;
+        this.organisationName = Validate.notEmpty(organisationName, "organisationName");
+        this.visitingAddress = Validate.notNull(visitingAddress, "visitingAddress");
         this.suffix = suffix;
         this.phone = phone;
         this.bankAccountInfo = bankAccountInfo;
         this.postAccountInfo = postAccountInfo;
-        this.visitingAddress = visitingAddress;
         this.emailSuffix = emailSuffix;
         setXmlID();
     }

@@ -264,11 +264,8 @@ public class ActivitySearchParameters
 		 */
 		public ActivitySearchParametersBuilder withFreeText(@NotNull final String freeText) {
 
-			// Check sanity
-			Validate.notEmpty(freeText, "freeText");
-
 			// Assign internal state
-			this.freeTextSearch = freeText;
+			this.freeTextSearch = Validate.notEmpty(freeText, "freeText");
 
 			// All done.
 			return this;

@@ -233,7 +233,7 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
 
         // Read some data to originate from
         final String data = XmlTestUtils.readFully("testdata/managedOrganisationAndGroups.xml");
-        final GroupsAndGuilds groupsAndGuilds = unmarshal(GroupsAndGuilds.class, data);
+        final GroupsAndGuilds groupsAndGuilds = unmarshalFromXML(GroupsAndGuilds.class, data);
 
         // Populate the database
         dbGroups = new ArrayList<>();

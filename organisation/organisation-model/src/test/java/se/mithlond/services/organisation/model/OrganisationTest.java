@@ -53,10 +53,10 @@ public class OrganisationTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/anOrganisation.xml");
 
         // Act
-        final String result = marshal(new Organisations(unitUnderTest));
+        final String result = marshalToXML(new Organisations(unitUnderTest));
 
         // Assert
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
         validateIdenticalContent(expected, result);
     }
 
@@ -68,7 +68,7 @@ public class OrganisationTest extends AbstractEntityTest {
         jaxb.add(Organisations.class);
 
         // Act
-        final Organisations result = unmarshal(Organisations.class, data);
+        final Organisations result = unmarshalFromXML(Organisations.class, data);
 
         // Assert
         Assert.assertEquals(1, result.getOrganisations().size());

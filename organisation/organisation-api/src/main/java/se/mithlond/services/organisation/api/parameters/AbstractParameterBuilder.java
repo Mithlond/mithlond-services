@@ -60,11 +60,9 @@ public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilde
 
 				// Check the current argument
 				final T currentArgument = toAdd[i];
-				Validate.notNull(currentArgument, "Cannot handle null '" + parameterName + "' (index: "
-						+ i + ") argument.");
+				Validate.notNull(currentArgument, "'" + parameterName + "' (index: " + i + ")");
 				if (currentArgument instanceof String) {
-					Validate.notEmpty((String) currentArgument, "Cannot handle null or empty '"
-							+ parameterName + "' (index: " + i + ") argument.");
+					Validate.notEmpty((String) currentArgument, "'" + parameterName + "' (index: " + i + ")");
 				}
 
 				// Assign internal state

@@ -77,7 +77,7 @@ public class T_AbstractPlainJaxbTestTest extends AbstractPlainJaxbTest {
         // Act
         jaxb.add(BarRound.class, Beverage.class, Customer.class);
         jaxb.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
-        final String result = jaxb.marshal(getClass().getClassLoader(), barRound);
+        final String result = jaxb.marshal(getClass().getClassLoader(), false, barRound);
 
         // Assert
         // System.out.println("Got: " + result);
@@ -98,7 +98,7 @@ public class T_AbstractPlainJaxbTestTest extends AbstractPlainJaxbTest {
         // Act
         jaxb.add(BarRound.class, Beverage.class, Customer.class);
         jaxb.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
-        final BarRound result = jaxb.unmarshal(getClass().getClassLoader(), BarRound.class, data);
+        final BarRound result = jaxb.unmarshal(getClass().getClassLoader(), false, BarRound.class, data);
 
         // Assert
         // System.out.println("Got: " + result);

@@ -120,7 +120,7 @@ public class ActivityTest extends AbstractEntityTest {
 	final String expected = XmlTestUtils.readFully("testdata/activity.xml");
 
 	// Act - ensure that we have forward references WRT @XmlIDREFs here.
-	final String result = binder.marshal(mifflond, subGroup, superGroup, mmm, zzz, member1, member2, unitUnderTest);
+	final String result = binder.marshalToXML(mifflond, subGroup, superGroup, mmm, zzz, member1, member2, unitUnderTest);
 	System.out.println("Got: "+result);
 
 	// Assert

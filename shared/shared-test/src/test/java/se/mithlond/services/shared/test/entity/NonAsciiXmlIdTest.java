@@ -71,7 +71,7 @@ public class NonAsciiXmlIdTest extends AbstractPlainJaxbTest {
         final String expected = XmlTestUtils.readFully("testdata/ecosystem.xml");
 
         // Act
-        final String result = marshal(ecosystem);
+        final String result = marshalToXML(ecosystem);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -87,7 +87,7 @@ public class NonAsciiXmlIdTest extends AbstractPlainJaxbTest {
         jaxb.add(EcoSystem.class);
 
         // Act
-        final EcoSystem resurrected = unmarshal(EcoSystem.class, data);
+        final EcoSystem resurrected = unmarshalFromXML(EcoSystem.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

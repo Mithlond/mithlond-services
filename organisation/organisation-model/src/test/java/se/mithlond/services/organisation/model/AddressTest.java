@@ -68,7 +68,7 @@ public class AddressTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/singleAddress.xml");
 
         // Act
-        final String result = marshal(new Addresses(addresses.get(0)));
+        final String result = marshalToXML(new Addresses(addresses.get(0)));
 
         // Assert
         // System.out.println("Got: " + result);
@@ -86,7 +86,7 @@ public class AddressTest extends AbstractEntityTest {
 
         // Act
         jaxb.add(Addresses.class);
-        final Addresses result = unmarshal(Addresses.class, data);
+        final Addresses result = unmarshalFromXML(Addresses.class, data);
 
         // Assert
         final List<Address> resurrected = result.getAddresses();
