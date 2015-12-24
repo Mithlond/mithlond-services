@@ -62,7 +62,7 @@ public class CategorizedAddresses {
     private List<CategorizedAddress> categorizedAddresses;
 
     public CategorizedAddresses() {
-        this((CategorizedAddress) null);
+        this((CategorizedAddress[]) null);
     }
 
     public CategorizedAddresses(final CategorizedAddress... cats) {

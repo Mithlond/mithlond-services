@@ -46,7 +46,7 @@ public class Organisations {
     private List<Organisation> organisations;
 
     public Organisations() {
-        this((Organisation) null);
+        this((Organisation[]) null);
     }
 
     public Organisations(final Organisation... orgs) {

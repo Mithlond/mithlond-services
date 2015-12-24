@@ -54,16 +54,6 @@ public class Users {
     @XmlElement(nillable = false, required = true, name = "organisation")
     private List<Organisation> organisations;
 
-    /*
-    @XmlElementWrapper(required = true, nillable = false)
-    @XmlElement(nillable = false, required = true, name = "category")
-    private List<Category> categories;
-
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = true, required = false, name = "categorizedAddress")
-    private List<CategorizedAddress> categorizedAddresses;
-    */
-
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElement(nillable = true, required = false, name = "user")
     private List<User> users;
@@ -77,14 +67,12 @@ public class Users {
     private List<Group> groups;
 
     public Users() {
-        this((User) null);
+        this((User[]) null);
     }
 
     public Users(final User... users) {
 
         organisations = new ArrayList<>();
-        // categorizedAddresses = new ArrayList<>();
-        // categories = new ArrayList<>();
         this.users = new ArrayList<>();
         this.memberships = new ArrayList<>();
         this.groups = new ArrayList<>();

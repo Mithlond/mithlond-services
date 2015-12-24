@@ -48,7 +48,7 @@ public class AddressTest extends AbstractEntityTest {
 
         addresses = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             addresses.add(new Address(
                     "careOfLine_" + i,
                     "departmentName_" + i,
@@ -90,6 +90,9 @@ public class AddressTest extends AbstractEntityTest {
 
         // Assert
         final List<Address> resurrected = result.getAddresses();
+        for (int i = 0; i < expected.getAddresses().size(); i++) {
+            Assert.assertEquals(expected.getAddresses().get(i), result.getAddresses().get(i));
+        }
         Assert.assertEquals(10, resurrected.size());
         Assert.assertEquals(resurrected.get(2), addresses.get(2));
     }

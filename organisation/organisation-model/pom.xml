@@ -88,6 +88,16 @@
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!--
+            Remove this when updating the parent pom
+        -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>2.1.1</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <!-- +=============================================== -->

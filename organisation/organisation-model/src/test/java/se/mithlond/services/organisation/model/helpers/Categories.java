@@ -47,7 +47,7 @@ public class Categories {
     private List<Category> categories;
 
     public Categories() {
-        this((Category) null);
+        this((Category[]) null);
     }
 
     public Categories(final Category... cats) {

@@ -21,17 +21,18 @@
  */
 package se.mithlond.services.organisation.model.helpers;
 
-import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.address.Address;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -46,13 +47,25 @@ public class Addresses {
     private List<Address> addresses;
 
     public Addresses() {
-        this((Address) null);
+        this((Address[]) null);
     }
 
     public Addresses(final Address... addresses) {
-        this.addresses = new ArrayList<>();
-        if (addresses != null) {
-            Collections.addAll(this.addresses, addresses);
+
+        // Check sanity for EclipseLink's unmarshal process.
+        if (this.addresses == null) {
+            this.addresses = new ArrayList<>();
+        }
+
+        if(addresses != null) {
+            for (int i = 0; i < addresses.length; i++) {
+                final Address current = addresses[i];
+                if (current != null) {
+                    this.addresses.add(current);
+                } else {
+                    new IllegalStateException("Got null address for element [" + i + "]").printStackTrace();
+                }
+            }
         }
     }
 
