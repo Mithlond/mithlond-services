@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<xml-bindings
+        xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        version="${eclipselink.version}">
+    <java-types>
+        <!--
+            Don't attempt to deal with AspectJ's JoinPointImpl#StaticPartImpl parts.
+            The AspectJ-introduced field is:
+
+            private static final org.aspectj.lang.JoinPoint$StaticPart ajc$tjp_0;
+        -->
+        <java-type name="se.mithlond.services.organisation.model.address.CategorizedAddress">
+            <java-attributes>
+                <xml-transient java-attribute="ajc$tjp_0"/>
+            </java-attributes>
+        </java-type>
+        <!--java-type name="org.aspectj.runtime.reflect.JoinPointImpl$StaticPartImpl" xml-transient="true" />
+        <java-type name="org.aspectj.runtime.reflect.JoinPointImpl" xml-transient="true" / -->
+    </java-types>
+</xml-bindings>

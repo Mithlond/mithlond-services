@@ -54,9 +54,9 @@ public class CategorizedAddressTest extends AbstractEntityTest {
 
         addresses = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
 
-            for(WellKnownAddressType current : WellKnownAddressType.values()) {
+            for (WellKnownAddressType current : WellKnownAddressType.values()) {
 
                 final Address currentAddress = new Address(
                         "careOfLine_" + i,
@@ -87,8 +87,6 @@ public class CategorizedAddressTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/categorizedAddresses.xml");
         final CategorizedAddresses toMarshal = new CategorizedAddresses(addressArray);
 
-        JoinPoint
-
         // Act
         final String result = marshalToXML(toMarshal);
 
@@ -113,7 +111,7 @@ public class CategorizedAddressTest extends AbstractEntityTest {
         final List<CategorizedAddress> resurrected = result.getCategorizedAddresses();
         Assert.assertEquals(addresses.size(), resurrected.size());
 
-        for(int i = 0; i < addresses.size(); i++) {
+        for (int i = 0; i < addresses.size(); i++) {
 
             final CategorizedAddress expected = addresses.get(i);
             final CategorizedAddress actual = resurrected.get(i);

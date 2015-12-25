@@ -90,7 +90,7 @@
         </dependency>
 
         <!--
-            Remove this when updating the parent pom
+            TODO: Remove this when updating the parent pom
         -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -104,6 +104,12 @@
     <!-- | Section 3:  Build settings                     -->
     <!-- +=============================================== -->
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 
         <plugins>
             <!--

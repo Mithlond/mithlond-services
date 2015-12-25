@@ -39,10 +39,12 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * <p>jUnit rule simplifying working with JAXB marshalling and unmarshalling during tests.
@@ -358,7 +360,15 @@ public class PlainJaxbContextRule extends TestWatcher {
             name2ClassMap.put(current.getName(), current);
         }
 
+        // Remove any AspectJ classes found.
+        // Otherwise,
+        final List<Class<?>> classList = name2ClassMap
+                .values()
+                .stream()
+                .filter(c -> !c.getName().contains("aspectj"))
+                .collect(Collectors.toList());
+
         // All done.
-        return name2ClassMap.values().toArray(new Class<?>[name2ClassMap.size()]);
+        return classList.toArray(new Class<?>[classList.size()]);
     }
 }
