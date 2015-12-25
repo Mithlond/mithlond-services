@@ -10,7 +10,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-api-parent</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.0</version>
         <relativePath/>
     </parent>
 
@@ -42,6 +42,18 @@
     <!-- | Section 2:  Dependency (management) settings   -->
     <!-- +=============================================== -->
     <dependencies>
+        <!--
+            External dependencies.
+        -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.runtime.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+            Test-scope dependencies.
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

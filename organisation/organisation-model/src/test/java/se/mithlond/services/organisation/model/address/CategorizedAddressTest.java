@@ -21,14 +21,13 @@
  */
 package se.mithlond.services.organisation.model.address;
 
+import org.aspectj.lang.JoinPoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
-import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.helpers.Categories;
 import se.mithlond.services.organisation.model.helpers.CategorizedAddresses;
 
 import java.util.ArrayList;
@@ -87,6 +86,8 @@ public class CategorizedAddressTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/categorizedAddresses.xml");
         final CategorizedAddresses toMarshal = new CategorizedAddresses(addressArray);
+
+        JoinPoint
 
         // Act
         final String result = marshalToXML(toMarshal);

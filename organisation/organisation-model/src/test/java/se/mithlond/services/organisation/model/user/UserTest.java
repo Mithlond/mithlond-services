@@ -126,7 +126,7 @@ public class UserTest extends AbstractEntityTest {
         final String result = marshalToXML(toMarshal);
 
         // Assert
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
         validateIdenticalContent(expected, result);
     }
 
