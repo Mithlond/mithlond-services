@@ -55,6 +55,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.time.ZonedDateTime;
 import java.util.Set;
@@ -101,6 +102,7 @@ import java.util.TreeSet;
 public class Membership extends NazgulEntity implements Comparable<Membership>, SemanticAuthorizationPathProducer {
 
     // Our Logger
+    @XmlTransient
     private static final Logger log = LoggerFactory.getLogger(Membership.class);
 
     // Constants
@@ -562,8 +564,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      */
     @Override
     public String toString() {
-        final String userIdAndName = user.getId() + "_" + user.getFirstName() + "_" + user.getLastName();
-        return "Membership [" + userIdAndName + " -> " + getOrganisation().getOrganisationName() + "]";
+        final String userIdAndName = user == null
+                ? "<No User Set>"
+                : user.getId() + "_" + user.getFirstName() + "_" + user.getLastName();
+        final String organisationString = getOrganisation() == null
+                ? "<Organisation Not Yet Set>"
+                : getOrganisation().getOrganisationName();
+        return "Membership [" + userIdAndName + " -> " + organisationString + "]";
     }
 
     /**
@@ -598,16 +605,18 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
             current.setMembership(this);
         }
 
-        for (GroupMembership current : groupMemberships) {
-            current.setMembership(this);
-        }
-
         if (log.isDebugEnabled()) {
             if (parent instanceof User) {
                 log.debug("Got parent user: " + parent.toString());
             } else {
                 final String parentObjectType = parent == null ? "<null>" : parent.getClass().getName();
                 log.debug("Got parent object of type: " + parentObjectType);
+            }
+        }
+
+        for (GroupMembership current : groupMemberships) {
+            if(current != null) {
+                current.setMembership(this);
             }
         }
     }

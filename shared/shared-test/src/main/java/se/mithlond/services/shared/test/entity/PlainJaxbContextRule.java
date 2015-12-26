@@ -44,6 +44,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -88,13 +89,41 @@ public class PlainJaxbContextRule extends TestWatcher {
     private static final String JAXB_CONTEXTFACTORY_PROPERTY = "javax.xml.bind.context.factory";
     private static final String JSON_CONTENT_TYPE = "application/json";
     private static final String ECLIPSELINK_MEDIA_TYPE = "eclipselink.media-type";
+    private static final SortedSet<String> STD_IGNORED_CLASSPATTERNS;
+
+    static {
+        STD_IGNORED_CLASSPATTERNS = new TreeSet<>();
+        STD_IGNORED_CLASSPATTERNS.add("org.aspectj");
+        STD_IGNORED_CLASSPATTERNS.add("ch.");
+        STD_IGNORED_CLASSPATTERNS.add("org.slf4j");
+    }
 
     // Internal state
     private SortedSet<Class<?>> jaxbAnnotatedClasses;
+    private SortedSet<String> classPatternsToIgnore;
     private JAXBContext jaxbContext;
     private JaxbNamespacePrefixResolver namespacePrefixResolver;
     private boolean performXsdValidation = true;
     private boolean useEclipseLinkMOXyIfAvailable = true;
+
+    private Predicate<Class<?>> ignoredClassFilter = aClass -> {
+
+        // Don't accept nulls.
+        if (aClass == null) {
+            return false;
+        }
+
+        // Don't accept classes whose names contain any of the classPatternsToIgnore.
+        final String className = aClass.getName();
+        for (String current : classPatternsToIgnore) {
+            if (className.contains(current)) {
+                return false;
+            }
+        }
+
+        // Accept the aClass.
+        return true;
+    };
 
     /**
      * Default constructor, setting up a clean internal state.
@@ -102,6 +131,8 @@ public class PlainJaxbContextRule extends TestWatcher {
     public PlainJaxbContextRule() {
         this.jaxbAnnotatedClasses = new TreeSet<>(CLASS_COMPARATOR);
         this.namespacePrefixResolver = new JaxbNamespacePrefixResolver();
+        this.classPatternsToIgnore = new TreeSet<>();
+        this.classPatternsToIgnore.addAll(STD_IGNORED_CLASSPATTERNS);
     }
 
     /**
@@ -150,6 +181,37 @@ public class PlainJaxbContextRule extends TestWatcher {
         if (jaxbAnnotatedClasses != null) {
             Collections.addAll(this.jaxbAnnotatedClasses, jaxbAnnotatedClasses);
         }
+    }
+
+    /**
+     * Adds patterns for classes to ignore in creating a JAXBContext.
+     *
+     * @param clearExistingPatterns if {@code true}, any existing patterns are cleared before adding the supplied
+     *                              ignore patterns. Typically something like {@code org.aspectj}.
+     * @param ignorePattern         A set of patterns to ignore if present within JAXContext classes.
+     */
+    public void addIgnoreClassPatterns(final boolean clearExistingPatterns, final String... ignorePattern) {
+
+        // Handle clearing existing patterns
+        if (clearExistingPatterns) {
+            classPatternsToIgnore.clear();
+        }
+
+        // ... and add the supplied ones.
+        if (ignorePattern != null && ignorePattern.length > 0) {
+            Collections.addAll(classPatternsToIgnore, ignorePattern);
+        }
+    }
+
+    /**
+     * Adds the supplied patterns for classes to ignore in creating a JAXBContext, without clearing any existing
+     * patterns.
+     *
+     * @param ignorePattern A set of patterns to ignore if present within JAXContext classes.
+     * @see #addIgnoreClassPatterns(boolean, String...)
+     */
+    public void addIgnoreClassPatterns(final String... ignorePattern) {
+        addIgnoreClassPatterns(false, ignorePattern);
     }
 
     /**
@@ -232,7 +294,7 @@ public class PlainJaxbContextRule extends TestWatcher {
             } catch (JAXBException e) {
                 final String currentTypeName = objects[i] == null ? "<null>" : objects[i].getClass().getName();
                 throw new IllegalArgumentException("Could not marshalToXML object [" + i + "] of type ["
-                                                           + currentTypeName + "].", e);
+                        + currentTypeName + "].", e);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Could not marshalToXML object [" + i + "]: " + objects[i], e);
             }
@@ -360,12 +422,11 @@ public class PlainJaxbContextRule extends TestWatcher {
             name2ClassMap.put(current.getName(), current);
         }
 
-        // Remove any AspectJ classes found.
-        // Otherwise,
+        // Remove any ignored classes.
         final List<Class<?>> classList = name2ClassMap
                 .values()
                 .stream()
-                .filter(c -> !c.getName().contains("aspectj"))
+                .filter(ignoredClassFilter)
                 .collect(Collectors.toList());
 
         // All done.

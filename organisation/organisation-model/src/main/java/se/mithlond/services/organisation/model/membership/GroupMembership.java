@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.organisation.model.membership;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Patterns;
@@ -58,6 +60,10 @@ import java.util.TreeSet;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupMembership implements Serializable, Comparable<GroupMembership>,
         Validatable, SemanticAuthorizationPathProducer {
+
+    // Our Logger
+    @XmlTransient
+    private static final Logger log = LoggerFactory.getLogger(Membership.class);
 
     private static final long serialVersionUID = 88299927L;
 
@@ -167,9 +173,13 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
         this.membership = membership;
 
         if (this.groupMembershipId == null) {
-            groupMembershipId = new GroupMembershipId(group.getId(), membership.getId());
+            if (group == null) {
+                log.warn("Cannot assign Membership with null group and membership parameters.");
+            } else {
+                groupMembershipId = new GroupMembershipId(group.getId(), membership.getId());
+            }
         } else {
-            this.groupMembershipId.membershipId = membership.getId();
+            groupMembershipId.membershipId = membership.getId();
         }
     }
 
@@ -217,17 +227,33 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
         // Delegate
         final Group thisGroup = this.getGroup();
         final Group thatGroup = that.getGroup();
-        int toReturn = thisGroup.getGroupName().compareTo(thatGroup.getGroupName());
-        if (toReturn == 0) {
-            toReturn = getMembership().getAlias().compareTo(that.getMembership().getAlias());
+
+        int toReturn = 0;
+        if (thisGroup != null) {
+
+            // Check internals
+            if (thisGroup.getGroupName() != null) {
+                toReturn = thisGroup.getGroupName().compareTo(thatGroup.getGroupName());
+            }
+
+            if (toReturn == 0
+                    && thisGroup.getOrganisation() != null
+                    && thisGroup.getOrganisation().getOrganisationName() != null) {
+                toReturn = thisGroup.getOrganisation().getOrganisationName().compareTo(
+                        thatGroup.getOrganisation().getOrganisationName()             );
+            }
         }
-        if (toReturn == 0) {
-            toReturn = thisGroup.getOrganisation().getOrganisationName().compareTo(
-                    thatGroup.getOrganisation().getOrganisationName());
-        }
-        if (toReturn == 0) {
-            toReturn = getMembership().getOrganisation().getOrganisationName().compareTo(
-                    that.getMembership().getOrganisation().getOrganisationName());
+        if (toReturn == 0 && getMembership() != null) {
+
+            if (getMembership().getAlias() != null) {
+                toReturn = getMembership().getAlias().compareTo(that.getMembership().getAlias());
+            }
+
+            if (getMembership().getOrganisation() != null
+                    && getMembership().getOrganisation().getOrganisationName() != null) {
+                toReturn = getMembership().getOrganisation().getOrganisationName().compareTo(
+                        that.getMembership().getOrganisation().getOrganisationName()        );
+            }
         }
 
         // All done.

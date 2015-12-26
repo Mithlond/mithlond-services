@@ -21,9 +21,9 @@
   #L%
   -->
 
-<organisation:users xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<organisation:users xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
-        <organisation xmlID="organisation_name_0" jpaId="0" version="0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_0">
             <organisationName>name_0</organisationName>
             <suffix>suffix_0</suffix>
             <phone>phone_0</phone>
@@ -41,7 +41,7 @@
                 <description>description_0</description>
             </visitingAddress>
         </organisation>
-        <organisation xmlID="organisation_name_1" jpaId="0" version="0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_1">
             <organisationName>name_1</organisationName>
             <suffix>suffix_1</suffix>
             <phone>phone_1</phone>
@@ -59,7 +59,7 @@
                 <description>description_1</description>
             </visitingAddress>
         </organisation>
-        <organisation xmlID="organisation_name_2" jpaId="0" version="0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_2">
             <organisationName>name_2</organisationName>
             <suffix>suffix_2</suffix>
             <phone>phone_2</phone>
@@ -79,51 +79,51 @@
         </organisation>
     </organisations>
     <groups>
-        <group organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0">
             <groupName>groupName_0</groupName>
             <emailList>emailList_0</emailList>
         </group>
-        <group organisationReference="organisation_name_1" xmlID="group_name_1_groupName_1" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="group_name_1_groupName_1">
             <groupName>groupName_1</groupName>
             <emailList>emailList_1</emailList>
         </group>
-        <group organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2">
             <groupName>groupName_2</groupName>
             <emailList>emailList_2</emailList>
         </group>
-        <group organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3">
             <groupName>groupName_3</groupName>
             <emailList>emailList_3</emailList>
         </group>
-        <group organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4">
             <groupName>groupName_4</groupName>
             <emailList>emailList_4</emailList>
         </group>
-        <group xsi:type="organisation:guild" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_0" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_0" xsi:type="organisation:guild">
             <groupName>guildName_0</groupName>
             <emailList>emailList_0</emailList>
             <quenyaName>quenyaName_0</quenyaName>
             <quenyaPrefix>quenyaPrefix_0</quenyaPrefix>
         </group>
-        <group xsi:type="organisation:guild" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_1" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_1" xsi:type="organisation:guild">
             <groupName>guildName_1</groupName>
             <emailList>emailList_1</emailList>
             <quenyaName>quenyaName_1</quenyaName>
             <quenyaPrefix>quenyaPrefix_1</quenyaPrefix>
         </group>
-        <group xsi:type="organisation:guild" organisationReference="organisation_name_2" xmlID="guild_name_2_guildName_2" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_2" xmlID="guild_name_2_guildName_2" xsi:type="organisation:guild">
             <groupName>guildName_2</groupName>
             <emailList>emailList_2</emailList>
             <quenyaName>quenyaName_2</quenyaName>
             <quenyaPrefix>quenyaPrefix_2</quenyaPrefix>
         </group>
-        <group xsi:type="organisation:guild" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3" xsi:type="organisation:guild">
             <groupName>guildName_3</groupName>
             <emailList>emailList_3</emailList>
             <quenyaName>quenyaName_3</quenyaName>
             <quenyaPrefix>quenyaPrefix_3</quenyaPrefix>
         </group>
-        <group xsi:type="organisation:guild" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_4" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_4" xsi:type="organisation:guild">
             <groupName>guildName_4</groupName>
             <emailList>emailList_4</emailList>
             <quenyaName>quenyaName_4</quenyaName>
@@ -131,7 +131,7 @@
         </group>
     </groups>
     <users>
-        <user xmlID="user_0_firstName_0_lastName_0_2014_05_01" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_0_lastName_0_2014_05_01" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_0</userIdentifierToken>
             <firstName>firstName_0</firstName>
             <lastName>lastName_0</lastName>
@@ -147,7 +147,7 @@
                 <description>description_0</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="true" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="true">
                     <alias>alias_0</alias>
                     <subAlias>subAlias_0</subAlias>
                     <emailAlias>emailAlias_0</emailAlias>
@@ -188,9 +188,8 @@
                     <organisation>organisation_name_0</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_1_lastName_1_2014_05_02" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_1_lastName_1_2014_05_02" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_1</userIdentifierToken>
             <firstName>firstName_1</firstName>
             <lastName>lastName_1</lastName>
@@ -206,7 +205,7 @@
                 <description>description_1</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="false" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="false">
                     <alias>alias_1</alias>
                     <subAlias>subAlias_1</subAlias>
                     <emailAlias>emailAlias_1</emailAlias>
@@ -216,9 +215,8 @@
                     <organisation>organisation_name_1</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_2_lastName_2_2014_05_03" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_2_lastName_2_2014_05_03" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_2</userIdentifierToken>
             <firstName>firstName_2</firstName>
             <lastName>lastName_2</lastName>
@@ -234,7 +232,7 @@
                 <description>description_2</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="false" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="false">
                     <alias>alias_2</alias>
                     <subAlias>subAlias_2</subAlias>
                     <emailAlias>emailAlias_2</emailAlias>
@@ -275,9 +273,8 @@
                     <organisation>organisation_name_2</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_3_lastName_3_2014_05_04" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_3_lastName_3_2014_05_04" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_3</userIdentifierToken>
             <firstName>firstName_3</firstName>
             <lastName>lastName_3</lastName>
@@ -293,7 +290,7 @@
                 <description>description_3</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="true" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="true">
                     <alias>alias_3</alias>
                     <subAlias>subAlias_3</subAlias>
                     <emailAlias>emailAlias_3</emailAlias>
@@ -303,9 +300,8 @@
                     <organisation>organisation_name_0</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_4_lastName_4_2014_05_05" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_4_lastName_4_2014_05_05" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_4</userIdentifierToken>
             <firstName>firstName_4</firstName>
             <lastName>lastName_4</lastName>
@@ -321,7 +317,7 @@
                 <description>description_4</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="false" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="false">
                     <alias>alias_4</alias>
                     <subAlias>subAlias_4</subAlias>
                     <emailAlias>emailAlias_4</emailAlias>
@@ -362,9 +358,8 @@
                     <organisation>organisation_name_1</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_5_lastName_5_2014_05_06" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_5_lastName_5_2014_05_06" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_5</userIdentifierToken>
             <firstName>firstName_5</firstName>
             <lastName>lastName_5</lastName>
@@ -380,7 +375,7 @@
                 <description>description_5</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="false" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="false">
                     <alias>alias_5</alias>
                     <subAlias>subAlias_5</subAlias>
                     <emailAlias>emailAlias_5</emailAlias>
@@ -390,9 +385,8 @@
                     <organisation>organisation_name_2</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_6_lastName_6_2014_05_07" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_6_lastName_6_2014_05_07" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_6</userIdentifierToken>
             <firstName>firstName_6</firstName>
             <lastName>lastName_6</lastName>
@@ -408,7 +402,7 @@
                 <description>description_6</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="true" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="true">
                     <alias>alias_6</alias>
                     <subAlias>subAlias_6</subAlias>
                     <emailAlias>emailAlias_6</emailAlias>
@@ -449,9 +443,8 @@
                     <organisation>organisation_name_0</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_7_lastName_7_2014_05_08" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_7_lastName_7_2014_05_08" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_7</userIdentifierToken>
             <firstName>firstName_7</firstName>
             <lastName>lastName_7</lastName>
@@ -467,7 +460,7 @@
                 <description>description_7</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="false" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="false">
                     <alias>alias_7</alias>
                     <subAlias>subAlias_7</subAlias>
                     <emailAlias>emailAlias_7</emailAlias>
@@ -477,9 +470,8 @@
                     <organisation>organisation_name_1</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_8_lastName_8_2014_05_09" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_8_lastName_8_2014_05_09" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_8</userIdentifierToken>
             <firstName>firstName_8</firstName>
             <lastName>lastName_8</lastName>
@@ -495,7 +487,7 @@
                 <description>description_8</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="false" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="false">
                     <alias>alias_8</alias>
                     <subAlias>subAlias_8</subAlias>
                     <emailAlias>emailAlias_8</emailAlias>
@@ -536,9 +528,8 @@
                     <organisation>organisation_name_2</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
-        <user xmlID="user_0_firstName_9_lastName_9_2014_05_10" personalNumberLast4Digits="1234" jpaId="0" version="0">
+        <user jpaId="0" version="0" xmlID="user_0_firstName_9_lastName_9_2014_05_10" personalNumberLast4Digits="1234">
             <userIdentifierToken>userIdentiferToken_9</userIdentifierToken>
             <firstName>firstName_9</firstName>
             <lastName>lastName_9</lastName>
@@ -554,7 +545,7 @@
                 <description>description_9</description>
             </homeAddress>
             <memberships>
-                <membership loginPermitted="true" jpaId="0" version="0">
+                <membership jpaId="0" version="0" loginPermitted="true">
                     <alias>alias_9</alias>
                     <subAlias>subAlias_9</subAlias>
                     <emailAlias>emailAlias_9</emailAlias>
@@ -564,11 +555,10 @@
                     <organisation>organisation_name_0</organisation>
                 </membership>
             </memberships>
-            <contactDetails/>
         </user>
     </users>
     <memberships>
-        <membership loginPermitted="true" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_0</alias>
             <subAlias>subAlias_0</subAlias>
             <emailAlias>emailAlias_0</emailAlias>
@@ -608,7 +598,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
         </membership>
-        <membership loginPermitted="false" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_1</alias>
             <subAlias>subAlias_1</subAlias>
             <emailAlias>emailAlias_1</emailAlias>
@@ -617,7 +607,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
         </membership>
-        <membership loginPermitted="false" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_2</alias>
             <subAlias>subAlias_2</subAlias>
             <emailAlias>emailAlias_2</emailAlias>
@@ -657,7 +647,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
         </membership>
-        <membership loginPermitted="true" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_3</alias>
             <subAlias>subAlias_3</subAlias>
             <emailAlias>emailAlias_3</emailAlias>
@@ -666,7 +656,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
         </membership>
-        <membership loginPermitted="false" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_4</alias>
             <subAlias>subAlias_4</subAlias>
             <emailAlias>emailAlias_4</emailAlias>
@@ -706,7 +696,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
         </membership>
-        <membership loginPermitted="false" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_5</alias>
             <subAlias>subAlias_5</subAlias>
             <emailAlias>emailAlias_5</emailAlias>
@@ -715,7 +705,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
         </membership>
-        <membership loginPermitted="true" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_6</alias>
             <subAlias>subAlias_6</subAlias>
             <emailAlias>emailAlias_6</emailAlias>
@@ -755,7 +745,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
         </membership>
-        <membership loginPermitted="false" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_7</alias>
             <subAlias>subAlias_7</subAlias>
             <emailAlias>emailAlias_7</emailAlias>
@@ -764,7 +754,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
         </membership>
-        <membership loginPermitted="false" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_8</alias>
             <subAlias>subAlias_8</subAlias>
             <emailAlias>emailAlias_8</emailAlias>
@@ -804,7 +794,7 @@
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
         </membership>
-        <membership loginPermitted="true" jpaId="0" version="0">
+        <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_9</alias>
             <subAlias>subAlias_9</subAlias>
             <emailAlias>emailAlias_9</emailAlias>

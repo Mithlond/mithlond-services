@@ -27,6 +27,7 @@ import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -136,7 +137,7 @@ public class GuildMembership extends GroupMembership {
      * @param guild The non-null guild which should be assigned to this GuildMembership.
      */
     public void setGuild(final Guild guild) {
-        super.setGroup(guild);
+        super.setGroup(Validate.notNull(guild, "guild"));
     }
 
     /**

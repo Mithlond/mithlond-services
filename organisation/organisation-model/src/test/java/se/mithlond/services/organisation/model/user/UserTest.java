@@ -56,6 +56,8 @@ public class UserTest extends AbstractEntityTest {
     @Before
     public void setupSharedState() {
 
+        // jaxb.addIgnoreClassPatterns("ch.");
+
         final String data = XmlTestUtils.readFully("testdata/groupsAndGuilds.xml");
         jaxb.add(GroupsAndGuilds.class);
         groupsAndGuilds = unmarshalFromXML(GroupsAndGuilds.class, data);
@@ -126,7 +128,7 @@ public class UserTest extends AbstractEntityTest {
         final String result = marshalToXML(toMarshal);
 
         // Assert
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
         validateIdenticalContent(expected, result);
     }
 
