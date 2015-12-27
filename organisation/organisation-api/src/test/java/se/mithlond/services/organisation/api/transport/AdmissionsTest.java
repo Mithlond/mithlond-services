@@ -21,59 +21,103 @@
  */
 package se.mithlond.services.organisation.api.transport;
 
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import java.util.SortedSet;
+import java.util.List;
+import java.util.SortedMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public class AdmissionsTest extends AbstractPlainJaxbTest {
 
-	// Shared state
-	private Admissions admissions;
+    // Shared state
+    private Admissions admissions;
 
-	@Before
-	public void setupSharedState() {
+    @Before
+    public void setupSharedState() {
 
-		admissions = new Admissions();
+        admissions = new Admissions();
 
-		final SortedSet<AdmissionDetails> details = admissions.getDetails();
-		for (int i = 0; i < 5; i++) {
-			details.add(new AdmissionDetails((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
-		}
-	}
+        final List<AdmissionDetails> details = admissions.getDetails();
+        for (int i = 0; i < 5; i++) {
+            details.add(new AdmissionDetails((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
+        }
+    }
 
-	@Test
-	public void validateMarshalling() throws Exception {
+    @Test
+    public void validateMarshallingToXML() throws Exception {
 
-		// Assemble
-		final String expected = XmlTestUtils.readFully("testdata/admissions.xml");
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/admissions.xml");
 
-		// Act
-		final String result = marshal(admissions);
-		// System.out.println("Got: " + result);
+        // Act
+        final String result = marshalToXML(admissions);
+        // System.out.println("Got: " + result);
 
-		// Assert
-		Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
-	}
+        // Assert
+        Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
+    }
 
-	@Test
-	public void validateUnmarshalling() throws Exception {
+    @Test
+    public void validateMarshallingToJSon() throws Exception {
 
-		// Assemble
-		final String data = XmlTestUtils.readFully("testdata/admissions.xml");
-		jaxb.add(Admissions.class);
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/admissions.json");
 
-		// Act
-		final Admissions resurrected = unmarshal(Admissions.class, data);
+        final SortedMap<String, Object> marshallerProperties = jaxb.getMarshallerProperties();
+        marshallerProperties.put(MarshallerProperties.JSON_INCLUDE_ROOT, true);
+        marshallerProperties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+        marshallerProperties.put(MarshallerProperties.JSON_REDUCE_ANY_ARRAYS, true);
 
-		// Assert
-		Assert.assertNotNull(resurrected);
-		Assert.assertEquals(5, resurrected.getDetails().size());
-	}
+        // Act
+        final String result = marshalToJSon(admissions);
+        // System.out.println("Got: " + result);
+        // System.out.println("Got: " + jaxb.getMarshallerProperties());
+
+        // Assert
+        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+    }
+
+    @Test
+    public void validateUnmarshallingFromXML() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/admissions.xml");
+        jaxb.add(Admissions.class);
+
+        // Act
+        final Admissions resurrected = unmarshalFromXML(Admissions.class, data);
+
+        // Assert
+        Assert.assertNotNull(resurrected);
+        Assert.assertEquals(5, resurrected.getDetails().size());
+    }
+
+    @Ignore("Does not work correctly.")
+    @Test
+    public void validateUnmarshallingFromJSon() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/admissions.json");
+        jaxb.add(Admissions.class);
+
+        final SortedMap<String, Object> unMarshallerProperties = jaxb.getUnMarshallerProperties();
+        unMarshallerProperties.put(UnmarshallerProperties.JSON_VALUE_WRAPPER, "false");
+        unMarshallerProperties.put(UnmarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
+        // Act
+        final Admissions resurrected = unmarshalFromJSON(Admissions.class, data);
+
+        // Assert
+        Assert.assertNotNull(resurrected);
+        Assert.assertEquals(5, resurrected.getDetails().size());
+    }
 }

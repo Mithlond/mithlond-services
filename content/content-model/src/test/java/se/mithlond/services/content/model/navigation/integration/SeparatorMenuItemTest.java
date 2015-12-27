@@ -55,7 +55,7 @@ public class SeparatorMenuItemTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateMarshalling() {
+    public void validateMarshallingToXML() {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/separatorMenuItems.xml");
@@ -64,7 +64,7 @@ public class SeparatorMenuItemTest extends AbstractEntityTest {
         menuItems.getRootMenu().add(unitUnderTest2);
 
         // Act
-        final String result = marshal(menuItems);
+        final String result = marshalToXML(menuItems);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -72,13 +72,13 @@ public class SeparatorMenuItemTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateUnmarshalling() {
+    public void validateUnmarshallingFromXML() {
 
         // Assemble
         final String data = XmlTestUtils.readFully("testdata/separatorMenuItems.xml");
 
         // Act
-        final MenuItems resurrected = unmarshal(MenuItems.class, data);
+        final MenuItems resurrected = unmarshalFromXML(MenuItems.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

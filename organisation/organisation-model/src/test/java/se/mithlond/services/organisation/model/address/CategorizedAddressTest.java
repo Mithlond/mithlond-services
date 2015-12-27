@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.organisation.model.address;
 
-import org.aspectj.lang.JoinPoint;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

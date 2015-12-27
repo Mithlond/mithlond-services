@@ -201,7 +201,7 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
 		memberships.forEach(unitUnderTest::addMembership);
 
 		// Act
-		final String result = marshal(unitUnderTest);
+		final String result = marshalToXML(unitUnderTest);
 		// System.out.println("Got:  " + result);
 
 		// Assert
@@ -222,7 +222,7 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
 		jaxb.add(Memberships.class);
 
 		// Act
-		final Memberships unmarshalled = unmarshal(Memberships.class, data);
+		final Memberships unmarshalled = unmarshalFromXML(Memberships.class, data);
 
 		// Assert
 		Assert.assertNotNull(unmarshalled);

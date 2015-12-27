@@ -45,7 +45,7 @@ public class MenuTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateMarshalling() {
+    public void validateMarshallingToXML() {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/menuItems.xml");
@@ -62,8 +62,8 @@ public class MenuTest extends AbstractEntityTest {
                 "/mithlond/members,/forodrim/members", true, "calendar", "plainItemPage3"));
 
         // Act
-        final String result = marshal(menuItems);
-        System.out.println("Got: " + result);
+        final String result = marshalToXML(menuItems);
+        // System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);

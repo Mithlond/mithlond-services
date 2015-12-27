@@ -69,7 +69,7 @@ public class MenuStructureTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/menuStructure.xml");
 
         // Act
-        final String result = marshal(menuStructure);
+        final String result = marshalToXML(menuStructure);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -83,7 +83,7 @@ public class MenuStructureTest extends AbstractEntityTest {
         final String data = XmlTestUtils.readFully("testdata/menuStructure.xml");
 
         // Act
-        final MenuStructure resurrected = unmarshal(MenuStructure.class, data);
+        final MenuStructure resurrected = unmarshalFromXML(MenuStructure.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

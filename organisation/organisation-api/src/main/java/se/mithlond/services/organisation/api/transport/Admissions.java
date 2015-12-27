@@ -29,8 +29,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A transport wrapper for multiple Region objects.
@@ -45,21 +45,21 @@ public class Admissions {
 	// Internal state
 	@XmlElementWrapper(required = true, nillable = false)
 	@XmlElement(nillable = false, required = false, name = "admissionDetails")
-	private SortedSet<AdmissionDetails> details;
+	private List<AdmissionDetails> details;
 
 	/**
 	 * JAXB-friendly constructor.
 	 */
 	public Admissions() {
-		details = new TreeSet<>();
+		details = new ArrayList<>();
 	}
 
 	/**
 	 * Retrieves all known AdmissionDetails.
 	 *
-	 * @return The SortedSet of AdmissionDetails wrapped by this Admissions.
+	 * @return The List of AdmissionDetails wrapped by this Admissions.
 	 */
-	public SortedSet<AdmissionDetails> getDetails() {
+	public List<AdmissionDetails> getDetails() {
 		return details;
 	}
 }

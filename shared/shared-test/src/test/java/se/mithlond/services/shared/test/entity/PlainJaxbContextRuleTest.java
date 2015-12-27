@@ -109,6 +109,7 @@ public class PlainJaxbContextRuleTest {
         unitUnderTest.add(BarRound.class, Beverage.class, Customer.class);
         unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
         final String result = unitUnderTest.marshal(getClass().getClassLoader(), true, barRound);
+        // System.out.println("Got: " + result);
 
         // Assert
         Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));

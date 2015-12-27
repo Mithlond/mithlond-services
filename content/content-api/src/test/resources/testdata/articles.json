@@ -1,33 +1,31 @@
 {
   "content.articles" : {
-    "realm" : "FooBar",
+    "@realm" : "FooBar",
     "selectionPath" : "/news/latest",
-    "articleList" : {
-      "article" : [ {
-        "jpaId" : 0,
-        "version" : 0,
-        "title" : "News_1",
-        "author" : "ERF Häxxxxmästaren",
-        "createdAt" : "2015-12-12T05:02:03+01:00",
-        "content" : {
-          "div" : {
-            "header" : "foo",
-            "body" : "bar!"
-          }
+    "articleList" : [ {
+      "@jpaId" : 0,
+      "@version" : 0,
+      "title" : "News_1",
+      "author" : "ERF Häxxxxmästaren",
+      "createdAt" : "2015-12-12T05:02:03+01:00",
+      "content" : {
+        "div" : {
+          "header" : "foo",
+          "body" : "bar!"
         }
-      }, {
-        "jpaId" : 0,
-        "version" : 0,
-        "title" : "News_2",
-        "author" : "ERF Häxxmästaren",
-        "createdAt" : "2015-11-11T15:22:33+01:00",
-        "content" : {
-          "div" : {
-            "header" : "foo2",
-            "body" : "bar2!"
-          }
+      }
+    }, {
+      "@jpaId" : 0,
+      "@version" : 0,
+      "title" : "News_2",
+      "author" : "ERF Häxxmästaren",
+      "createdAt" : "2015-11-11T15:22:33+01:00",
+      "content" : {
+        "div" : {
+          "header" : "foo2",
+          "body" : "bar2!"
         }
-      } ]
-    }
+      }
+    } ]
   }
 }

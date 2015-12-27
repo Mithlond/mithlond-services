@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.shared.test.entity;
 
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.junit.rules.TestWatcher;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
@@ -40,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -105,6 +107,8 @@ public class PlainJaxbContextRule extends TestWatcher {
     private JaxbNamespacePrefixResolver namespacePrefixResolver;
     private boolean performXsdValidation = true;
     private boolean useEclipseLinkMOXyIfAvailable = true;
+    private SortedMap<String, Object> marshallerProperties;
+    private SortedMap<String, Object> unMarshallerProperties;
 
     private Predicate<Class<?>> ignoredClassFilter = aClass -> {
 
@@ -129,10 +133,21 @@ public class PlainJaxbContextRule extends TestWatcher {
      * Default constructor, setting up a clean internal state.
      */
     public PlainJaxbContextRule() {
+
         this.jaxbAnnotatedClasses = new TreeSet<>(CLASS_COMPARATOR);
         this.namespacePrefixResolver = new JaxbNamespacePrefixResolver();
         this.classPatternsToIgnore = new TreeSet<>();
         this.classPatternsToIgnore.addAll(STD_IGNORED_CLASSPATTERNS);
+
+        // Assign standard properties for the Marshaller
+        marshallerProperties = new TreeMap<>();
+        marshallerProperties.put(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshallerProperties.put(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", namespacePrefixResolver);
+        // marshallerProperties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
+        // Assign standard properties for the Unmarshaller
+        unMarshallerProperties = new TreeMap<>();
     }
 
     /**
@@ -204,6 +219,24 @@ public class PlainJaxbContextRule extends TestWatcher {
     }
 
     /**
+     * Retrieves the set of properties used within the Marshaller.
+     *
+     * @return the properties assigned to the Marshaller before use.
+     */
+    public SortedMap<String, Object> getMarshallerProperties() {
+        return marshallerProperties;
+    }
+
+    /**
+     * Retrieves the set of properties used within the Unmarshaller.
+     *
+     * @return the properties assigned to the Unmarshaller before use.
+     */
+    public SortedMap<String, Object> getUnMarshallerProperties() {
+        return unMarshallerProperties;
+    }
+
+    /**
      * Adds the supplied patterns for classes to ignore in creating a JAXBContext, without clearing any existing
      * patterns.
      *
@@ -231,8 +264,8 @@ public class PlainJaxbContextRule extends TestWatcher {
      */
     @SuppressWarnings("all")
     public String marshal(final ClassLoader loader,
-                          final boolean emitJSON,
-                          final Object... objects) throws IllegalArgumentException {
+            final boolean emitJSON,
+            final Object... objects) throws IllegalArgumentException {
 
         // Create an EntityTransporter, to extract the types as required by the plain JAXBContext.
         final EntityTransporter<Object> transporter = new EntityTransporter<>();
@@ -263,20 +296,18 @@ public class PlainJaxbContextRule extends TestWatcher {
             marshaller = JaxbUtils.getHumanReadableStandardMarshaller(
                     jaxbContext,
                     namespacePrefixResolver,
-                    performXsdValidation                             );
+                    performXsdValidation);
         } catch (Exception e) {
 
             try {
                 marshaller = jaxbContext.createMarshaller();
-                marshaller.setProperty("jaxb.encoding", "UTF-8");
-                marshaller.setProperty("jaxb.formatted.output", Boolean.valueOf(true));
-                marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", namespacePrefixResolver);
             } catch (JAXBException e1) {
 
                 throw new IllegalStateException("Could not create non-validating JAXB Marshaller", e);
             }
         }
 
+        // Should we emit JSON instead of XML?
         if (emitJSON) {
             try {
                 marshaller.setProperty(ECLIPSELINK_MEDIA_TYPE, JSON_CONTENT_TYPE);
@@ -285,6 +316,20 @@ public class PlainJaxbContextRule extends TestWatcher {
             }
         }
 
+        // Assign all other Marshaller properties.
+        try {
+            for(Map.Entry<String, Object> current : marshallerProperties.entrySet()) {
+                marshaller.setProperty(current.getKey(), current.getValue());
+            }
+        } catch (PropertyException e) {
+            final StringBuilder builder = new StringBuilder("Could not assign Marshaller properties.");
+            marshallerProperties.entrySet().stream().forEach(c -> builder.append("\n  ["
+                    + c.getKey() + "]: " + c.getValue()));
+
+            throw new IllegalStateException(builder.toString(), e);
+        }
+
+        // Marshal the objects
         final StringWriter result = new StringWriter();
         for (int i = 0; i < objects.length; i++) {
             final StringWriter tmp = new StringWriter();
@@ -329,9 +374,9 @@ public class PlainJaxbContextRule extends TestWatcher {
      * @see #add(Class[])
      */
     public <T> T unmarshal(final ClassLoader loader,
-                           final boolean assumeJSonInput,
-                           final Class<T> resultType,
-                           final String toUnmarshal) {
+            final boolean assumeJSonInput,
+            final Class<T> resultType,
+            final String toUnmarshal) {
 
         // Check sanity
         Validate.notNull(resultType, "resultType");
@@ -339,7 +384,7 @@ public class PlainJaxbContextRule extends TestWatcher {
 
         final Source source = new StreamSource(new StringReader(toUnmarshal));
 
-        // Use Eclipselink?
+        // Use EclipseLink?
         if (assumeJSonInput || useEclipseLinkMOXyIfAvailable) {
             System.setProperty(JAXB_CONTEXTFACTORY_PROPERTY, ECLIPSELINK_JAXB_CONTEXT_FACTORY);
         } else {
@@ -354,6 +399,16 @@ public class PlainJaxbContextRule extends TestWatcher {
 
         try {
             final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            // Assign all unMarshallerProperties to the Unmarshaller
+            unMarshallerProperties.entrySet().stream().forEach(c -> {
+                try {
+                    unmarshaller.setProperty(c.getKey(), c.getValue());
+                } catch (PropertyException e) {
+                    throw new IllegalStateException("Could not assign Unmarshaller property [" + c.getKey()
+                            + "] with value [" + c.getValue() + "]", e);
+                }
+            });
 
             if (assumeJSonInput) {
                 try {
