@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import java.util.Optional;
 
 /**
  * Resource superclass for sharing common functionality. Requires a Resteasy runtime.
@@ -50,16 +51,17 @@ public abstract class AbstractResource {
      * This implies that changes to the supplied Membership <strong>will not</strong>
      * be persisted when the invocation ends. Instead, use EJB services with corresponding
      * transactions to change database state. If the SecurityContext was not injected, this
-     * method returns {@code null}.
+     * method returns an empty Optional.
      */
-    protected Membership getDisconnectedActiveMembership() {
+    protected Optional<Membership> getDisconnectedActiveMembership() {
 
         final NazgulMembershipPrincipal principal = getPrincipal();
         if (principal != null) {
-            return principal.getMembership();
+            return Optional.of(principal.getMembership());
         }
 
-        return null;
+        // All done.
+        return Optional.empty();
     }
 
     /**
@@ -69,15 +71,17 @@ public abstract class AbstractResource {
      * This implies that changes to the supplied Membership <strong>will not</strong>
      * be persisted when the invocation ends. Instead, use EJB services with corresponding
      * transactions to change database state. If the SecurityContext was not injected, this
-     * method returns {@code null}.
+     * method returns an empty Optional.
      */
-    protected PersonalSettings getDisconnectedPersonalSettings() {
+    protected Optional<PersonalSettings> getDisconnectedPersonalSettings() {
 
         final NazgulMembershipPrincipal principal = getPrincipal();
         if (principal != null) {
-            return principal.getPersonalSettings();
+            return Optional.of(principal.getPersonalSettings());
         }
-        return null;
+
+        // Nopes.
+        return Optional.empty();
     }
 
     /**

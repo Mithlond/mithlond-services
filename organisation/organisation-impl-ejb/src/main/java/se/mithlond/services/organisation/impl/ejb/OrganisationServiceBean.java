@@ -134,7 +134,11 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      * {@inheritDoc}
      */
     @Override
-    public CategorizedAddress createCategorizedActivityAddress(final String shortDesc, final String fullDesc, final Address address, final String category, final String organisation) {
+    public CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
+                                                               final String fullDesc,
+                                                               final Address address,
+                                                               final String category,
+                                                               final String organisation) {
         return null;
     }
 }

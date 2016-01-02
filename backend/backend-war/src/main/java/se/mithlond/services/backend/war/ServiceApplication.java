@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * The JAX-RS Application-derived class providing the s
+ * The JAX-RS Application-derived class providing the integration point to backend services.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
