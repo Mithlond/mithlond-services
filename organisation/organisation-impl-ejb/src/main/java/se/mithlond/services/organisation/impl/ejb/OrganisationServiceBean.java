@@ -10,6 +10,7 @@ import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
@@ -74,21 +75,31 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
     @Override
     public List<Group> getGroups(@NotNull final GroupIdSearchParameters searchParameters) {
 
+        // Check sanity
+        Validate.notNull(searchParameters, "searchParameters");
+
         final List<Group> toReturn = new ArrayList<>();
 
+        // Pad the ID Lists.
         final int groupIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getGroupIDs(), 0L);
         final int organisationIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getOrganisationIDs(), 0L);
         final int classifierIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getClassifierIDs(), 0L);
 
+        // Acquire the padded lists.
         final List<Long> groupIDs = searchParameters.getGroupIDs();
         final List<Long> organisationIDs = searchParameters.getOrganisationIDs();
         final List<Long> classifierIDs = searchParameters.getClassifierIDs();
 
-        entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_SEARCHPARAMETERS, Group.class)
+        // Fire, and add all results to the return List.
+        final List<Group> groups = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_SEARCHPARAMETERS, Group.class)
                 .setParameter(Patterns.PARAM_NUM_GROUPIDS, groupIDsSize)
                 .setParameter(Patterns.PARAM_GROUP_IDS, groupIDs)
                 .setParameter(Patterns.PARAM_NUM_ORGANISATIONIDS, organisationIDsSize)
                 .setParameter(Patterns.PARAM_ORGANISATION_IDS, organisationIDs)
+                .setParameter(Patterns.PARAM_NUM_CLASSIFICATIONIDS, classifierIDsSize)
+                .setParameter(Patterns.PARAM_CLASSIFICATION_IDS, classifierIDs)
+                .getResultList();
+        toReturn.addAll(groups);
 
 
         // All Done.
