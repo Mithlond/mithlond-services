@@ -63,7 +63,7 @@ public class MenuStructureTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateMarshalling() {
+    public void validateMarshallingToXML() {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/menuStructure.xml");
@@ -74,6 +74,20 @@ public class MenuStructureTest extends AbstractEntityTest {
 
         // Assert
         validateIdenticalContent(expected, result);
+    }
+
+    @Test
+    public void validateMarshallingToJSON() {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/menuStructure.json");
+
+        // Act
+        final String result = marshalToJSon(menuStructure);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
     }
 
     @Test

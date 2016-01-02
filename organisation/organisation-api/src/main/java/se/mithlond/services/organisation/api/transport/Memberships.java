@@ -53,149 +53,149 @@ import java.util.Set;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Memberships {
 
-	// Internal state
-	@XmlElementWrapper(required = false)
-	@XmlElement(nillable = false, required = false, name = "user")
-	private List<User> users;
+    // Internal state
+    @XmlElementWrapper(required = false)
+    @XmlElement(nillable = false, required = false, name = "user")
+    private List<User> users;
 
-	@XmlElementWrapper(required = false)
-	@XmlElement(nillable = false, required = false, name = "organisation")
-	private List<Organisation> organisations;
+    @XmlElementWrapper(required = false)
+    @XmlElement(nillable = false, required = false, name = "organisation")
+    private List<Organisation> organisations;
 
-	@XmlElementWrapper(required = false)
-	@XmlElements(value = {
-			@XmlElement(required = false, name = "group", type = Group.class),
-			@XmlElement(required = false, name = "guild", type = Guild.class)
-	})
-	private List<Group> groups;
+    @XmlElementWrapper(required = false)
+    @XmlElements(value = {
+            @XmlElement(required = false, name = "group", type = Group.class),
+            @XmlElement(required = false, name = "guild", type = Guild.class)
+    })
+    private List<Group> groups;
 
-	@XmlElementWrapper(required = false)
-	@XmlElement(nillable = false, required = false, name = "membership")
-	private List<Membership> memberships;
+    @XmlElementWrapper(required = false)
+    @XmlElement(nillable = false, required = false, name = "membership")
+    private List<Membership> memberships;
 
-	/**
-	 * JAXB-friendly constructor.
-	 */
-	public Memberships() {
-		users = new ArrayList<>();
-		organisations = new ArrayList<>();
-		groups = new ArrayList<>();
-		memberships = new ArrayList<>();
-	}
+    /**
+     * JAXB-friendly constructor.
+     */
+    public Memberships() {
+        users = new ArrayList<>();
+        organisations = new ArrayList<>();
+        groups = new ArrayList<>();
+        memberships = new ArrayList<>();
+    }
 
-	/**
-	 * Compound constructor, adding all the supplied Memberships, including referenced Users
-	 * and Organisations, to this Memberships transport.
-	 *
-	 * @param memberships The Memberships to transport.
-	 */
-	public Memberships(final Set<Membership> memberships) {
+    /**
+     * Compound constructor, adding all the supplied Memberships, including referenced Users
+     * and Organisations, to this Memberships transport.
+     *
+     * @param memberships The Memberships to transport.
+     */
+    public Memberships(final Set<Membership> memberships) {
 
-		this();
+        this();
 
-		// Assign internal state
-		memberships.forEach(this::addMembership);
-	}
+        // Assign internal state
+        memberships.forEach(this::addMembership);
+    }
 
-	/**
-	 * Adds the supplied Organisation(s) to this Memberships transport.
-	 *
-	 * @param toAdd The non-null organisation objects to add to this Memberships transport structure.
-	 */
-	public void addOrganisations(final Organisation... toAdd) {
+    /**
+     * Adds the supplied Organisation(s) to this Memberships transport.
+     *
+     * @param toAdd The non-null organisation objects to add to this Memberships transport structure.
+     */
+    public void addOrganisations(final Organisation... toAdd) {
 
-		// Check sanity
-		Validate.notNull(toAdd, "Cannot handle null 'toAdd' argument.");
+        // Check sanity
+        Validate.notNull(toAdd, "Cannot handle null 'toAdd' argument.");
 
-		// Add the current Organisation, unless already added.
-		Arrays.asList(toAdd).forEach(c -> {
-			if (c != null && !this.organisations.contains(c)) {
-				this.organisations.add(c);
-			}
-		});
-	}
+        // Add the current Organisation, unless already added.
+        Arrays.asList(toAdd).forEach(c -> {
+            if (c != null && !this.organisations.contains(c)) {
+                this.organisations.add(c);
+            }
+        });
+    }
 
-	/**
-	 * Adds the supplied Group(s) to this Memberships transport.
-	 * Also adds any Organisations to which the toAdd Groups belong.
-	 *
-	 * @param toAdd The non-null Group objects to add to this Memberships transport structure.
-	 */
-	public void addGroups(final Group... toAdd) {
+    /**
+     * Adds the supplied Group(s) to this Memberships transport.
+     * Also adds any Organisations to which the toAdd Groups belong.
+     *
+     * @param toAdd The non-null Group objects to add to this Memberships transport structure.
+     */
+    public void addGroups(final Group... toAdd) {
 
-		// Check sanity
-		Validate.notNull(toAdd, "Cannot handle null 'toAdd' argument.");
+        // Check sanity
+        Validate.notNull(toAdd, "Cannot handle null 'toAdd' argument.");
 
-		// Add the current Group, unless already added.
-		Arrays.asList(toAdd).stream().forEach(c -> {
+        // Add the current Group, unless already added.
+        Arrays.asList(toAdd).stream().forEach(c -> {
 
-			if (c != null) {
+            if (c != null) {
 
-				// Add the Organisation, if not already added
-				addOrganisations(c.getOrganisation());
+                // Add the Organisation, if not already added
+                addOrganisations(c.getOrganisation());
 
-				if (!this.groups.contains(c)) {
-					this.groups.add(c);
-				}
-			}
-		});
-	}
+                if (!this.groups.contains(c)) {
+                    this.groups.add(c);
+                }
+            }
+        });
+    }
 
-	/**
-	 * Adds the supplied Membership, including its internal state.
-	 *
-	 * @param toAdd The Membership to add.
-	 */
-	public void addMembership(final Membership toAdd) {
+    /**
+     * Adds the supplied Membership, including its internal state.
+     *
+     * @param toAdd The Membership to add.
+     */
+    public void addMembership(final Membership toAdd) {
 
-		// Check sanity
-		final Membership nonNull = Objects.requireNonNull(toAdd, "Cannot handle null 'toAdd' argument.");
+        // Check sanity
+        final Membership nonNull = Objects.requireNonNull(toAdd, "Cannot handle null 'toAdd' argument.");
 
-		// Add the Organisation, unless already added.
-		addOrganisations(nonNull.getOrganisation());
+        // Add the Organisation, unless already added.
+        addOrganisations(nonNull.getOrganisation());
 
-		// Add the User, unless already added.
-		final User currentUser = nonNull.getUser();
-		if (!users.contains(currentUser)) {
-			users.add(currentUser);
-		}
+        // Add the User, unless already added.
+        final User currentUser = nonNull.getUser();
+        if (!users.contains(currentUser)) {
+            users.add(currentUser);
+        }
 
-		// Add all Groups and Guilds.
-		nonNull.getGroupMemberships().forEach(c -> {
-			addGroups(c.getGroup());
-		});
+        // Add all Groups and Guilds.
+        nonNull.getGroupMemberships().forEach(c -> {
+            addGroups(c.getGroup());
+        });
 
-		// Add the membership itself, unless already added.
-		if (!this.memberships.contains(nonNull)) {
-			this.memberships.add(nonNull);
-		}
-	}
+        // Add the membership itself, unless already added.
+        if (!this.memberships.contains(nonNull)) {
+            this.memberships.add(nonNull);
+        }
+    }
 
-	/**
-	 * @return The users within this Memberships transport.
-	 */
-	public List<User> getUsers() {
-		return Collections.unmodifiableList(users);
-	}
+    /**
+     * @return The users within this Memberships transport.
+     */
+    public List<User> getUsers() {
+        return Collections.unmodifiableList(users);
+    }
 
-	/**
-	 * @return The organisations within this Memberships transport.
-	 */
-	public List<Organisation> getOrganisations() {
-		return Collections.unmodifiableList(organisations);
-	}
+    /**
+     * @return The organisations within this Memberships transport.
+     */
+    public List<Organisation> getOrganisations() {
+        return Collections.unmodifiableList(organisations);
+    }
 
-	/**
-	 * @return The groups within this Memberships transport.
-	 */
-	public List<Group> getGroups() {
-		return Collections.unmodifiableList(groups);
-	}
+    /**
+     * @return The groups within this Memberships transport.
+     */
+    public List<Group> getGroups() {
+        return Collections.unmodifiableList(groups);
+    }
 
-	/**
-	 * @return The memberships within this Memberships transport.
-	 */
-	public List<Membership> getMemberships() {
-		return Collections.unmodifiableList(memberships);
-	}
+    /**
+     * @return The memberships within this Memberships transport.
+     */
+    public List<Membership> getMemberships() {
+        return Collections.unmodifiableList(memberships);
+    }
 }

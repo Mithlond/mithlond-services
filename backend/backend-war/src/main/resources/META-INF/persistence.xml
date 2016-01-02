@@ -40,7 +40,7 @@
         -->
 
         <description>PersistenceUnit for the Mithlond Services Backend WAR.</description>
-        <jta-data-source>java:jboss/datasources/MithlondDS</jta-data-source>
+        <jta-data-source>java:global/datasources/ServicesDS</jta-data-source>
 
         <!--
             Comment out the persistence provider class to use the default provider from the AppServer.

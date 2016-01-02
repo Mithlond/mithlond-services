@@ -32,6 +32,7 @@ import se.mithlond.services.shared.spi.jpa.JpaCudService;
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>Service specification for queries extracting information from Organisations - without
@@ -44,71 +45,72 @@ import java.util.List;
 @Local
 public interface OrganisationService extends JpaCudService {
 
-	/**
-	 * Retrieves all known Organisations.
-	 *
-	 * @return all known Organisations.
-	 */
-	List<Organisation> getOrganisations();
+    /**
+     * Retrieves all known Organisations.
+     *
+     * @return all known Organisations.
+     */
+    List<Organisation> getOrganisations();
 
-	/**
-	 * Retrieves the organisation with the supplied name.
-	 *
-	 * @param organisationName The name of the organisation that should be retrieved.
-	 * @return the organisation with the supplied name.
-	 */
-	Organisation getOrganisation(@NotNull String organisationName);
+    /**
+     * Retrieves the organisation with the supplied name.
+     *
+     * @param organisationName The name of the organisation that should be retrieved.
+     * @return the organisation with the supplied name, or an empty Optional if no organisation
+     * with the supplied name was found.
+     */
+    Optional<Organisation> getOrganisation(@NotNull String organisationName);
 
-	/**
-	 * Retrieves all Groups matching the supplied searchParameters.
-	 *
-	 * @param searchParameters The GroupIdSearchParameters populated with the IDs of the
-	 *                         groups (or organisations) which should be retrieved.
-	 * @return all Groups matching the supplied searchParameters.
-	 */
-	List<Group> getGroups(@NotNull GroupIdSearchParameters searchParameters);
+    /**
+     * Retrieves all Groups matching the supplied searchParameters.
+     *
+     * @param searchParameters The GroupIdSearchParameters populated with the IDs of the
+     *                         groups (or organisations) which should be retrieved.
+     * @return all Groups matching the supplied searchParameters.
+     */
+    List<Group> getGroups(@NotNull GroupIdSearchParameters searchParameters);
 
-	/**
-	 * Retrieves all CategorizedAddresses matching the supplied searchParameters.
-	 *
-	 * @param searchParameters The GroupIdSearchParameters populated with the IDs of the
-	 *                         groups (or organisations) which should be retrieved.
-	 * @return all CategorizedAddresses matching the supplied searchParameters.
-	 */
-	List<CategorizedAddress> getCategorizedAddresses(@NotNull GroupIdSearchParameters searchParameters);
+    /**
+     * Retrieves all CategorizedAddresses matching the supplied searchParameters.
+     *
+     * @param searchParameters The GroupIdSearchParameters populated with the IDs of the
+     *                         groups (or organisations) which should be retrieved.
+     * @return all CategorizedAddresses matching the supplied searchParameters.
+     */
+    List<CategorizedAddress> getCategorizedAddresses(@NotNull GroupIdSearchParameters searchParameters);
 
-	/**
-	 * Retrieves all Categories matching the supplied classification.
-	 *
-	 * @param classification The classification of the Categories to retrieve.
-	 * @return all Categories matching the supplied classification.
-	 */
-	List<Category> getCategoriesByClassification(@NotNull String classification);
+    /**
+     * Retrieves all Categories matching the supplied classification.
+     *
+     * @param classification The classification of the Categories to retrieve.
+     * @return all Categories matching the supplied classification.
+     */
+    List<Category> getCategoriesByClassification(@NotNull String classification);
 
-	/**
-	 * Updates the supplied CategorizedAddress within the database.
-	 *
-	 * @param toUpdate The CategorizedAddress to update.
-	 * @return The updated/merged CategorizedAddress.
-	 */
-	CategorizedAddress updateCategorizedAddress(final CategorizedAddress toUpdate);
+    /**
+     * Updates the supplied CategorizedAddress within the database.
+     *
+     * @param toUpdate The CategorizedAddress to update.
+     * @return The updated/merged CategorizedAddress.
+     */
+    CategorizedAddress updateCategorizedAddress(final CategorizedAddress toUpdate);
 
-	/**
-	 * Creates a CategorizedAddress from supplied Address and categories.
-	 * The categories are assumed to have the {@code CategorizedAddress.ACTIVITY_LOCALE_CLASSIFICATION}
-	 * classification.
-	 *
-	 * @param shortDesc    The categorized address short description.
-	 * @param fullDesc     The full description of the CatgorizedAddress.
-	 * @param address      The address to wrap to a CategorizedAddress.
-	 * @param category     The Category (assumed to be present in the database already) of
-	 *                     the created CategorizedAddress.
-	 * @param organisation The name of the owning organisation for the CategorizedAddress.
-	 * @return The created CategorizedAddress instance.
-	 */
-	CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-														final String fullDesc,
-														final Address address,
-														final String category,
-														final String organisation);
+    /**
+     * Creates a CategorizedAddress from supplied Address and categories.
+     * The categories are assumed to have the {@code CategorizedAddress.ACTIVITY_LOCALE_CLASSIFICATION}
+     * classification.
+     *
+     * @param shortDesc    The categorized address short description.
+     * @param fullDesc     The full description of the CatgorizedAddress.
+     * @param address      The address to wrap to a CategorizedAddress.
+     * @param category     The Category (assumed to be present in the database already) of
+     *                     the created CategorizedAddress.
+     * @param organisation The name of the owning organisation for the CategorizedAddress.
+     * @return The created CategorizedAddress instance.
+     */
+    CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
+            final String fullDesc,
+            final Address address,
+            final String category,
+            final String organisation);
 }

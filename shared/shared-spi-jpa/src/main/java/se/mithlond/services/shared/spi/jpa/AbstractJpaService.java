@@ -26,17 +26,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
-import javax.persistence.Query;
+import javax.persistence.PersistenceContext;
+import java.util.Collection;
 
 /**
- * Abstract JPA CUD service implementation.
+ * Abstract stateless EJB implementation of a JPA CUD service implementation.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Stateless
 public abstract class AbstractJpaService implements JpaCudService {
 
     // Our Logger
@@ -47,46 +50,13 @@ public abstract class AbstractJpaService implements JpaCudService {
      */
     public static final String SERVICE_PERSISTENCE_UNIT = "services_PU";
 
+    // Internal state
+
     /**
-     * <p>Internal helper which retrieves the EntityManager from the implementing subclass.
-     * The specs for the subclass using PersistenceUnit with a {@code JTA}-style transaction
-     * management (i.e.{@code &lt;persistence-unit transaction-type="JTA"&gt;}) implies that
-     * the container will do EntityManager (PersistenceContext/Cache) creating and tracking.</p>
-     * <p>Typically, the EntityManager should be injected by the EJB container:</p>
-     * <pre>
-     *     <code>
-     *
-     *         // Inject an EntityManager
-     *         &#064;PersistenceContext(name = ...someName...)
-     *         private EntityManager entityManager;
-     *
-     *         // Expose the EntityManager to the superclass.
-     *         &#064;Override
-     *         protected EntityManager getEntityManager() {
-     *              return entityManager;
-     *         }
-     *     </code>
-     * </pre>
-     * <h2>Rules for obtaining the EntityManager</h2>
-     * <p>These rules are generic, for any Container-Managed EntityManager (in which case you cannot manage the
-     * transactions on the EntityManager from the application):</p>
-     * <ul>
-     * <li>You cannot use the EntityManagerFactory to get an EntityManager</li>
-     * <li>You can only get an EntityManager supplied by the container</li>
-     * <li>An EntityManager can be injected via the @PersistenceContext annotation only (not @PersistenceUnit)</li>
-     * <li>You are not allowed to use @PersistenceUnit to refer to a unit of type JTA</li>
-     * <li>The EntityManager given by the container is a reference to the PersistenceContext/Cache
-     * associated with a JTA Transaction.</li>
-     * <li>If no JTA transaction is in progress, the EntityManager cannot be used because
-     * there is no PersistenceContext/Cache.</li>
-     * <li>Everyone with an EntityManager reference to the same unit in the same transaction will
-     * automatically have a reference to the same PersistenceContext/Cache</li>
-     * <li>The PersistenceContext/Cache is flushed and cleared at JTA commit time</li>
-     * </ul>
-     *
-     * @return An EntityManager ready for use.
+     * The per-call standard injected EntityManager.
      */
-    protected abstract EntityManager getEntityManager();
+    @PersistenceContext(name = AbstractJpaService.SERVICE_PERSISTENCE_UNIT)
+    protected EntityManager entityManager;
 
     /**
      * {@inheritDoc}
@@ -97,7 +67,7 @@ public abstract class AbstractJpaService implements JpaCudService {
 
         try {
             // Persist the T instance
-            getEntityManager().persist(toCreate);
+            entityManager.persist(toCreate);
         } catch (Exception e) {
             logAndThrowPersistenceOperationFailedException("persist", toCreate, e);
         }
@@ -121,7 +91,7 @@ public abstract class AbstractJpaService implements JpaCudService {
             // Versions OK?
             final long managedVersion = managedEntity.getVersion();
             final long toUpdateVersion = toUpdate.getVersion();
-            if(toUpdateVersion != managedVersion) {
+            if (toUpdateVersion != managedVersion) {
                 final String message = "JPA version mismatch for type [" + nazgulEntitySubclass.getSimpleName()
                         + "]. Received version [" + toUpdate.getVersion() + "], managed version [" + managedEntity
                         .getVersion() + "]";
@@ -129,13 +99,13 @@ public abstract class AbstractJpaService implements JpaCudService {
             }
 
             // Merge the properties of the supplied toUpdate instance.
-            if (!getEntityManager().contains(toUpdate)) {
+            if (!entityManager.contains(toUpdate)) {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Non-managed entity of type [" + nazgulEntitySubclass.getName() + "] requires merge "
                             + "into the current EntityManager. Performing it.");
                 }
-                managedEntity = getEntityManager().merge(toUpdate);
+                managedEntity = entityManager.merge(toUpdate);
             } else {
 
                 if (log.isDebugEnabled()) {
@@ -166,7 +136,7 @@ public abstract class AbstractJpaService implements JpaCudService {
         Validate.notNull(entityType, "Cannot handle null entityType argument.");
 
         try {
-            return getEntityManager().find(entityType, primaryKey);
+            return entityManager.find(entityType, primaryKey);
         } catch (Exception e) {
             logAndThrowPersistenceOperationFailedException("findByPrimaryKey", entityType, e);
         }
@@ -184,10 +154,35 @@ public abstract class AbstractJpaService implements JpaCudService {
 
         try {
             // Remove the T instance
-            getEntityManager().remove(toDelete);
+            entityManager.remove(toDelete);
         } catch (Exception e) {
             logAndThrowPersistenceOperationFailedException("delete", toDelete, e);
         }
+    }
+
+    /**
+     * JPA does not handle null or empty collection parameters gracefully.
+     * Hence the need for this operation, which retrieves the initial (before padding)
+     * size of the supplied aCollection.
+     *
+     * @param aCollection A collection which may need padding.
+     * @param padObject An object added to aCollection only if {@code aCollection.isEmpty()}.
+     * @return The size of the supplied aCollection <strong>before</strong> any padding took place.
+     */
+    public static <T> int padAndGetSize(final Collection<T> aCollection, final T padObject) {
+
+        // Check sanity
+        Validate.notNull(aCollection, "aCollection");
+
+        if(aCollection.isEmpty()) {
+
+            // Pad the collection
+            aCollection.add(padObject);
+            return 0;
+        }
+
+        // No need to pad the Collection. Simply return its size.
+        return aCollection.size();
     }
 
     //
@@ -195,8 +190,8 @@ public abstract class AbstractJpaService implements JpaCudService {
     //
 
     private void logAndThrowPersistenceOperationFailedException(final String operation,
-                                                                final Object toCreateOrClass,
-                                                                final Exception e) {
+            final Object toCreateOrClass,
+            final Exception e) {
 
         // Log somewhat
         String toCreateClass = "<null>";

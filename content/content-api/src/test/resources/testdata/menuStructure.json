@@ -1,0 +1,53 @@
+{
+  "content.menuStructure" : {
+    "realm" : "FooBar",
+    "rootMenu" : {
+      "subMenu" : [ {
+        "jpaId" : 0,
+        "version" : 0,
+        "domId" : "firstMenu",
+        "children" : {
+          "menuItem" : [ {
+            "jpaId" : 0,
+            "version" : 0,
+            "cssClasses" : {
+              "cssClass" : [ "icon-fixed-width" ]
+            },
+            "authPatterns" : {
+              "pattern" : [ "/mithlond/members" ]
+            },
+            "iconIdentifier" : "cog",
+            "href" : "plainItemPage"
+          }, {
+            "jpaId" : 0,
+            "version" : 0,
+            "cssClasses" : {
+              "cssClass" : [ "icon-fixed-width" ]
+            },
+            "authPatterns" : {
+              "pattern" : [ "/mithlond/members" ]
+            },
+            "iconIdentifier" : "lightbulb",
+            "href" : "plainItemPage2"
+          } ],
+          "separator" : [ {
+            "jpaId" : 0,
+            "version" : 0
+          } ]
+        }
+      } ],
+      "menuItem" : [ {
+        "jpaId" : 0,
+        "version" : 0,
+        "cssClasses" : {
+          "cssClass" : [ "icon-fixed-width" ]
+        },
+        "authPatterns" : {
+          "pattern" : [ "/forodrim/members", "/mithlond/members" ]
+        },
+        "iconIdentifier" : "calendar",
+        "href" : "plainItemPage3"
+      } ]
+    }
+  }
+}

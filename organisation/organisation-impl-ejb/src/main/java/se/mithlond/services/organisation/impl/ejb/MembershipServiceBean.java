@@ -31,13 +31,11 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pojo (EJB) implementation of the MembershipService specification.
+ * Stateless EJB implementation of the MembershipService specification.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -46,17 +44,6 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(MembershipServiceBean.class);
-
-    @PersistenceContext(name = AbstractJpaService.SERVICE_PERSISTENCE_UNIT)
-    private EntityManager entityManager;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected EntityManager getEntityManager() {
-        return entityManager;
-    }
 
     /**
      * {@inheritDoc}
@@ -74,7 +61,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
         toReturn.addAll(loginPermittedMemberships);
 
         // Include the ones denied Login?
-        if(includeLoginNotPermitted) {
+        if (includeLoginNotPermitted) {
             final List<Membership> loginNotPermittedMemberships = entityManager.createNamedQuery(
                     Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
                     .setParameter(Patterns.PARAM_ORGANISATION_NAME, organisation)
@@ -99,7 +86,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                 .setParameter(Patterns.PARAM_ALIAS, alias)
                 .getResultList();
 
-        if(result.size() > 1) {
+        if (result.size() > 1) {
             log.warn("Got [" + result.size() + "] number of Memberships for organisation [" + organisationName +
                     "] and alias [" + alias + "]. Returning the first result.");
         }
@@ -113,8 +100,9 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
      */
     @Override
     public List<Membership> getActiveMemberships(final String organisationName,
-                                                 final String firstName,
-                                                 final String lastName) {
+            final String firstName,
+            final String lastName) {
+
         final List<Membership> toReturn = new ArrayList<>();
 
         final List<Membership> loginPermittedMemberships = entityManager.createNamedQuery(

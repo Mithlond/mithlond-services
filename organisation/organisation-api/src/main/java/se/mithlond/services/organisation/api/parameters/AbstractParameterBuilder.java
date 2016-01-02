@@ -36,53 +36,53 @@ import java.util.List;
  */
 public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilder<E>> {
 
-	@XmlTransient
-	private static final Logger log = LoggerFactory.getLogger(AbstractParameterBuilder.class);
+    @XmlTransient
+    private static final Logger log = LoggerFactory.getLogger(AbstractParameterBuilder.class);
 
-	/**
-	 * Adds the values within the toAdd in order to the supplied list with the given parameterName.
-	 *
-	 * @param list          The List of strings holding the configuration parameter.
-	 * @param parameterName The name of the parameter to add.
-	 * @param toAdd         An array of parameters to add.
-	 * @return This AbstractParameterBuilder, for chaining.
-	 */
-	@SafeVarargs
-	protected final <T> E addValuesIfApplicable(@NotNull final List<T> list,
-												@NotNull final String parameterName,
-												@NotNull final T... toAdd) {
+    /**
+     * Adds the values within the toAdd in order to the supplied list with the given parameterName.
+     *
+     * @param list          The List of strings holding the configuration parameter.
+     * @param parameterName The name of the parameter to add.
+     * @param toAdd         An array of parameters to add.
+     * @return This AbstractParameterBuilder, for chaining.
+     */
+    @SafeVarargs
+    protected final <T> E addValuesIfApplicable(@NotNull final List<T> list,
+            @NotNull final String parameterName,
+            @NotNull final T... toAdd) {
 
-		// Check sanity
-		Validate.notNull(list, "Cannot handle null list argument.");
+        // Check sanity
+        Validate.notNull(list, "Cannot handle null list argument.");
 
-		if (toAdd.length > 0) {
-			for (int i = 0; i < toAdd.length; i++) {
+        if (toAdd.length > 0) {
+            for (int i = 0; i < toAdd.length; i++) {
 
-				// Check the current argument
-				final T currentArgument = toAdd[i];
-				Validate.notNull(currentArgument, "'" + parameterName + "' (index: " + i + ")");
-				if (currentArgument instanceof String) {
-					Validate.notEmpty((String) currentArgument, "'" + parameterName + "' (index: " + i + ")");
-				}
+                // Check the current argument
+                final T currentArgument = toAdd[i];
+                Validate.notNull(currentArgument, "'" + parameterName + "' (index: " + i + ")");
+                if (currentArgument instanceof String) {
+                    Validate.notEmpty((String) currentArgument, "'" + parameterName + "' (index: " + i + ")");
+                }
 
-				// Assign internal state
-				if (!list.contains(currentArgument)) {
-					list.add(currentArgument);
-				}
-			}
-		} else {
-			if (log.isDebugEnabled()) {
-				log.debug("Not adding empty '" + parameterName + "' argument.");
-			}
-		}
+                // Assign internal state
+                if (!list.contains(currentArgument)) {
+                    list.add(currentArgument);
+                }
+            }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Not adding empty '" + parameterName + "' argument.");
+            }
+        }
 
-		// All done.
-		return (E) this;
-	}
+        // All done.
+        return (E) this;
+    }
 
-	/**
-	 * @return A completely set-up AbstractSearchParameters instance containing the aggregated state
-	 * within this AbstractParameterBuilder object.
-	 */
-	public abstract AbstractSearchParameters<E> build();
+    /**
+     * @return A completely set-up AbstractSearchParameters instance containing the aggregated state
+     * within this AbstractParameterBuilder object.
+     */
+    public abstract AbstractSearchParameters<E> build();
 }

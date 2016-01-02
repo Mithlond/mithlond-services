@@ -42,24 +42,24 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Admissions {
 
-	// Internal state
-	@XmlElementWrapper(required = true, nillable = false)
-	@XmlElement(nillable = false, required = false, name = "admissionDetails")
-	private List<AdmissionDetails> details;
+    // Internal state
+    @XmlElementWrapper(required = true, nillable = false)
+    @XmlElement(nillable = false, required = false, name = "admissionDetails")
+    private List<AdmissionDetails> details;
 
-	/**
-	 * JAXB-friendly constructor.
-	 */
-	public Admissions() {
-		details = new ArrayList<>();
-	}
+    /**
+     * JAXB-friendly constructor.
+     */
+    public Admissions() {
+        details = new ArrayList<>();
+    }
 
-	/**
-	 * Retrieves all known AdmissionDetails.
-	 *
-	 * @return The List of AdmissionDetails wrapped by this Admissions.
-	 */
-	public List<AdmissionDetails> getDetails() {
-		return details;
-	}
+    /**
+     * Retrieves all known AdmissionDetails.
+     *
+     * @return The List of AdmissionDetails wrapped by this Admissions.
+     */
+    public List<AdmissionDetails> getDetails() {
+        return details;
+    }
 }
