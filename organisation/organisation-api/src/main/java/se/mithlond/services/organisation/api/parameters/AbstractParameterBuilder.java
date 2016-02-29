@@ -40,6 +40,16 @@ public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilde
     private static final Logger log = LoggerFactory.getLogger(AbstractParameterBuilder.class);
 
     /**
+     * DB empty string value.
+     */
+    public static final String EMPTY_STRING = "";
+
+    /**
+     * JPQL any string value.
+     */
+    public static final String ANY_STRING = "%";
+
+    /**
      * Adds the values within the toAdd in order to the supplied list with the given parameterName.
      *
      * @param list          The List of strings holding the configuration parameter.

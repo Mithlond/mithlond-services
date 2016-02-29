@@ -40,6 +40,7 @@
         -->
 
         <description>PersistenceUnit for the Mithlond Services Backend WAR.</description>
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>java:global/datasources/ServicesDS</jta-data-source>
 
         <!--
@@ -80,12 +81,19 @@
         <!-- ===============================================
           |  Content Model Entities
           +============================================== -->
+        <class>se.mithlond.services.content.model.localization.Localization</class>
+        <class>se.mithlond.services.content.model.localization.LocalizedTexts</class>
         <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.StandardMenu</class>
         <class>se.mithlond.services.content.model.navigation.integration.StandardMenuItem</class>
         <class>se.mithlond.services.content.model.articles.Article</class>
+
+        <!--
+            Don't consider other classes than the ones listed for the PersistenceUnit.
+        -->
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <!--
             When set to true then only listed classes and jars will
@@ -117,8 +125,12 @@
             <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop_database.sql"/  -->
             <!-- property name="javax.persistence.sql-load-script-source" value="insert.sql"/ -->
             <!--
-                Eclipselink custom properties.
+               EclipseLink custom properties.
             -->
+            <property name="eclipselink.orm.throw.exceptions" value="true"/>
+            <property name="eclipselink.id-validation" value="NULL"/>
+            <property name="eclipselink.logging.logger" value="ServerLogger"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="both"/>
             <property name="eclipselink.create-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
@@ -126,6 +138,5 @@
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>
         </properties>
-
     </persistence-unit>
 </persistence>

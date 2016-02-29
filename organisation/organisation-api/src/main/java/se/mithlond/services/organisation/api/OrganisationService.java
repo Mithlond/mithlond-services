@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.api;
 
+import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
@@ -73,19 +74,11 @@ public interface OrganisationService extends JpaCudService {
     /**
      * Retrieves all CategorizedAddresses matching the supplied searchParameters.
      *
-     * @param searchParameters The GroupIdSearchParameters populated with the IDs of the
-     *                         groups (or organisations) which should be retrieved.
+     * @param searchParameters The CategorizedAddressSearchParameters populated with the IDs of the
+     *                         CategorizedAddresses which should be retrieved.
      * @return all CategorizedAddresses matching the supplied searchParameters.
      */
-    List<CategorizedAddress> getCategorizedAddresses(@NotNull GroupIdSearchParameters searchParameters);
-
-    /**
-     * Retrieves all Categories matching the supplied classification.
-     *
-     * @param classification The classification of the Categories to retrieve.
-     * @return all Categories matching the supplied classification.
-     */
-    List<Category> getCategoriesByClassification(@NotNull String classification);
+    List<CategorizedAddress> getCategorizedAddresses(@NotNull CategorizedAddressSearchParameters searchParameters);
 
     /**
      * Updates the supplied CategorizedAddress within the database.

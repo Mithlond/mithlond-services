@@ -38,13 +38,14 @@ public interface NavigationService {
     /**
      * Retrieves the MenuStructure available to a caller sporting the supplied Memberships.
      *
-     * @param menuOwner        The organisation owning the site for which a MenuStructure should be retrieved.
+     * @param realm            The realm (or organisation name) owning the site for which a MenuStructure
+     *                         should be retrieved.
      * @param callersAuthPaths The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                         MenuStructure items should be retrieved. Typically, each authPath is a Membership.
      * @return A fully set-up Menu structure.
      * @throws UnknownOrganisationException if the menuOwner was not the name of an existing organisation.
      */
-    MenuStructure getMenuStructure(final String menuOwner,
-                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+    MenuStructure getMenuStructure(final String realm,
+            final List<SemanticAuthorizationPathProducer> callersAuthPaths)
             throws UnknownOrganisationException;
 }

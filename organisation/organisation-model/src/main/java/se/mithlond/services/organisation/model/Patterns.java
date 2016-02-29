@@ -122,6 +122,16 @@ public final class Patterns {
     public static final String PARAM_ORGANISATION_IDS = "organisationIDs";
 
     /**
+     * NamedQuery parameter name for the number of categoryIDs found.
+     */
+    public static final String PARAM_NUM_CATEGORYIDS = "numCategoryIDs";
+
+    /**
+     * NamedQuery parameter name for the classificationIDs found.
+     */
+    public static final String PARAM_CATEGORY_IDS = "categoryIDs";
+
+    /**
      * NamedQuery parameter name for the number of classificationIDs found.
      */
     public static final String PARAM_NUM_CLASSIFICATIONIDS = "numClassificationIDs";
@@ -130,4 +140,64 @@ public final class Patterns {
      * NamedQuery parameter name for the classificationIDs found.
      */
     public static final String PARAM_CLASSIFICATION_IDS = "classificationIDs";
+
+    /**
+     * NamedQuery parameter name for the number of classifications found.
+     */
+    public static final String PARAM_NUM_CLASSIFICATIONS = "numClassifications";
+
+    /**
+     * NamedQuery parameter name for the classifications found.
+     */
+    public static final String PARAM_CLASSIFICATIONS = "classifications";
+
+    /**
+     * NamedQuery parameter name for a pattern matching the careOfLine in an Address.
+     */
+    public static final String PARAM_ADDRESSCAREOFLINE = "careOfLine";
+
+    /**
+     * NamedQuery parameter name for a pattern matching the city in an Address.
+     */
+    public static final String PARAM_CITY = "city";
+
+    /**
+     * NamedQuery parameter name for a pattern matching the country in an Address.
+     */
+    public static final String PARAM_COUNTRY = "country";
+
+    /**
+     * NamedQuery parameter name for a pattern matching the department in an Address.
+     */
+    public static final String PARAM_DEPARTMENT = "dept";
+
+    /**
+     * NamedQuery parameter name for a description.
+     */
+    public static final String PARAM_DESCRIPTION = "description";
+
+    /**
+     * NamedQuery parameter name for a short description (in a Listable).
+     */
+    public static final String PARAM_SHORT_DESC = "shortDesc";
+
+    /**
+     * NamedQuery parameter name for a full description (in a Listable)
+     */
+    public static final String PARAM_FULL_DESC = "fullDesc";
+
+    /**
+     * NamedQuery parameter name for a number (typically within an Address)
+     */
+    public static final String PARAM_NUMBER = "number";
+
+    /**
+     * NamedQuery parameter name for a street (typically within an Address)
+     */
+    public static final String PARAM_STREET = "street";
+
+    /**
+     * NamedQuery parameter name for a zip code (typically within an Address)
+     */
+    public static final String PARAM_ZIPCODE = "zipcode";
 }

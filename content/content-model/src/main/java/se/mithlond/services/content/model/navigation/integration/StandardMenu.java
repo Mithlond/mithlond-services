@@ -21,13 +21,20 @@
  */
 package se.mithlond.services.content.model.navigation.integration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.content.model.localization.LocalizedTexts;
+import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
-import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,6 +42,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,20 +69,69 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StandardMenu extends AbstractLinkedNavItem {
 
+    // Our Logger
+    private static final Logger log = LoggerFactory.getLogger(StandardMenu.class);
+
     // Internal state
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElements(value = {
-            @XmlElement(name = "subMenu", type = StandardMenu.class),
+            @XmlElement(name = "menu", type = StandardMenu.class),
             @XmlElement(name = "menuItem", type = StandardMenuItem.class),
             @XmlElement(name = "separator", type = SeparatorMenuItem.class)
     })
-    private List<AuthorizedNavItem> children;
+    @OneToMany(mappedBy = "parent")
+    private List<AbstractAuthorizedNavItem> children;
 
     /**
      * JPA/JAXB-friendly constructor.
      */
     public StandardMenu() {
         this.children = new ArrayList<>();
+    }
+
+    /**
+     * Convenience constructor creating a StandardMenu, with a single localized text for display and a null
+     * StandardMenu parent.
+     *
+     * @param role                  The value of the {@code role} attribute. Typically something like
+     *                              "separator", "search" or "button".
+     * @param domId                 The DOM ID of this AbstractAuthorizedNavItem.
+     * @param tabIndex              The tabindex to be rendered on this AbstractAuthorizedNavItem.
+     * @param cssClasses            A concatenated string of CSS classes to be used within the "classes" attribute
+     *                              on the markup element rendered by this AbstractAuthorizedNavItem.
+     * @param authorizationPatterns A concatenated string of AuthorizationPatterns to be used on this
+     *                              AbstractAuthorizedNavItem.
+     * @param enabled               {@code false} to indicate that this AbstractAuthorizedNavItem should be disabled.
+     * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
+     *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
+     * @param href                  The hypertext link of this AbstractLinkedNavItem.
+     * @param languageCode          The language code (as defined in {@link java.util.Locale}) of the text for
+     *                              this AbstractLinkedNavItem.
+     * @param text                  The non-empty text for this AbstractLinkedNavItem, supplied in the
+     *                              languageCode given.
+     */
+    public StandardMenu(final String role,
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final String iconIdentifier,
+            final String href,
+            final String languageCode,
+            final String text) {
+
+        // Delegate
+        super(role,
+                domId,
+                tabIndex,
+                cssClasses,
+                authorizationPatterns,
+                enabled,
+                iconIdentifier,
+                href,
+                languageCode,
+                text);
     }
 
     /**
@@ -94,27 +151,96 @@ public class StandardMenu extends AbstractLinkedNavItem {
      * @param href                  The hypertext link of this AbstractLinkedNavItem.
      */
     public StandardMenu(final String role,
-                        final String domId,
-                        final Integer tabIndex,
-                        final String cssClasses,
-                        final String authorizationPatterns,
-                        final boolean enabled,
-                        final String iconIdentifier,
-                        final String href) {
-        super(role, domId, tabIndex, cssClasses, authorizationPatterns, enabled, iconIdentifier, href);
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final String iconIdentifier,
+            final LocalizedTexts localizedTexts,
+            final String href,
+            final StandardMenu parent) {
+
+        // First, delegate
+        super(role,
+                domId,
+                tabIndex,
+                cssClasses,
+                authorizationPatterns,
+                enabled,
+                iconIdentifier,
+                href,
+                localizedTexts,
+                parent);
 
         // Assign internal state
         this.children = new ArrayList<>();
     }
 
     /**
-     * Retrieves the (ordered) list of LinkedNavItems which should be rendered as children of this StandardMenu.
+     * Retrieves an unmodifiable List of AbstractAuthorizedNavItem which should be rendered as
+     * children of this StandardMenu.
      *
-     * @return the (ordered) list of LinkedNavItems which should be rendered as children of this StandardMenu.
-     * Can be empty, but never {@code null}.
+     * @return the unmodifiable List of LinkedNavItems which should be rendered as children
+     * of this StandardMenu. Can be empty, but never {@code null}.
      */
-    public List<AuthorizedNavItem> getChildren() {
-        return children;
+    public List<AbstractAuthorizedNavItem> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+
+    /**
+     * Adds the supplied AbstractAuthorizedNavItem to the list of Children within this StandardMenu.
+     *
+     * @param child the non-null AbstractAuthorizedNavItem to be added to the list of Children within this StandardMenu.
+     */
+    public void addChild(final AbstractAuthorizedNavItem child) {
+
+        // Check sanity
+        Validate.notNull(child, "child");
+        Validate.isTrue(child != this, "Cannot add a StandardMenu as a child to itself.");
+        if (children.contains(child)) {
+
+            // Don't add a child twice.
+            return;
+        }
+
+        // Add the child; update its parent and index properties.
+        child.setParent(this);
+        children.add(child);
+
+        final int index = children.indexOf(child);
+        if (index < 0) {
+            throw new IllegalStateException("Could not add child of type ["
+                    + child.getClass().getSimpleName() + "] to the list of children.");
+        }
+        child.setIndex(index);
+    }
+
+    /**
+     * Removes the supplied AbstractAuthorizedNavItem as a child from this StandardMenu.
+     *
+     * @param child a non-null AbstractAuthorizedNavItem which should be removed as a child from this StandardMenu.
+     */
+    public void removeChild(final AbstractAuthorizedNavItem child) {
+
+        // Check sanity
+        Validate.notNull(child, "child");
+        Validate.isTrue(child != this, "Cannot remove a StandardMenu as a child from itself.");
+        if (!children.contains(child)) {
+
+            if (log.isWarnEnabled()) {
+                log.warn("Object [" + child + "] was not a child to this StandardMenu. Ignoring remove.");
+            }
+
+            // Never mind.
+            return;
+        }
+
+        // Remove the child; update its parent and the index properties of all children.
+        children.remove(child);
+
+        child.setIndex(0);
+        child.setParent(null);
     }
 
     /**
@@ -123,8 +249,62 @@ public class StandardMenu extends AbstractLinkedNavItem {
     @Override
     protected void validateEntityState() throws InternalStateValidationException {
 
+        // First, delegate
+        super.validateEntityState();
+
+        // Then, check own internal state.
         InternalStateValidationException.create()
                 .notNull(children, "children")
                 .endExpressionAndValidate();
+    }
+
+    /**
+     * Retrieves a Builder to simplify creating a StandardMenu.
+     *
+     * @return a Builder used to create a StandardMenu.
+     */
+    public static StandardMenuBuilder getBuilder() {
+        return new StandardMenuBuilder();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Simple builder class for StandardMenus.
+     */
+    public static class StandardMenuBuilder extends AbstractLinkedNavItemBuilder<StandardMenuBuilder> {
+
+        /**
+         * Builds the StandardMenu from a constructor call using the "with"-ed parameters.
+         *
+         * @return a fully constructed StandardMenu.
+         */
+        public StandardMenu build() {
+            return new StandardMenu(role,
+                    domId,
+                    tabIndex,
+                    cssClasses,
+                    authorizationPatterns,
+                    enabled,
+                    iconIdentifier,
+                    localizedTexts,
+                    href,
+                    parent);
+        }
+    }
+
+    /**
+     * This method is called after all the properties (except IDREF) are unmarshalled for this object,
+     * but before this object is set to the parent object.
+     */
+    @SuppressWarnings("PMD")
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+
+        // Re-connect all children
+        for (AbstractAuthorizedNavItem current : children) {
+            current.setParent(this);
+        }
     }
 }

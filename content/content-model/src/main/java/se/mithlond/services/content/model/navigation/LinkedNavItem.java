@@ -35,7 +35,7 @@ package se.mithlond.services.content.model.navigation;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public interface LinkedNavItem extends AuthorizedNavItem {
+public interface LinkedNavItem extends AuthorizedNavItem, Localizable {
 
     /**
      * @return The value of the {@code href} attribute of this LinkedNavItem.

@@ -87,8 +87,8 @@ public class MenuNavigation implements NavigationService {
                         + environmentStorageRootDir.getAbsolutePath() + "]");
             }
         } else {
-            throw new IllegalStateException("NavigationStorageRootDir [" + navRoot.getAbsolutePath() + "] must be an " +
-                    "existing directory. Please create it and restart the application.");
+            throw new IllegalStateException("NavigationStorageRootDir [" + navRoot.getAbsolutePath()
+                    + "] must be an existing directory. Please create it and restart the application.");
         }
     }
 
@@ -96,12 +96,13 @@ public class MenuNavigation implements NavigationService {
      * {@inheritDoc}
      */
     @Override
-    public MenuStructure getMenuStructure(final String menuOwner,
-                                          final List<SemanticAuthorizationPathProducer> callersAuthPaths) {
+    public MenuStructure getMenuStructure(
+            final String realm,
+            final List<SemanticAuthorizationPathProducer> callersAuthPaths) {
 
         // Check sanity
-        if(menuOwner == null || menuOwner.isEmpty()) {
-            throw new UnknownOrganisationException(menuOwner);
+        if (realm == null || realm.isEmpty()) {
+            throw new UnknownOrganisationException(realm);
         }
 
         final List<SemanticAuthorizationPathProducer> effectivePathProducers = callersAuthPaths == null
@@ -111,9 +112,9 @@ public class MenuNavigation implements NavigationService {
         // Read the raw MenuStructure superstructure from disk.
         final MenuStructure rawMenuStructure;
         try {
-            rawMenuStructure = readRawMenuStructure(menuOwner);
+            rawMenuStructure = readRawMenuStructure(realm);
         } catch (IllegalStateException e) {
-            throw new UnknownOrganisationException(menuOwner, e);
+            throw new UnknownOrganisationException(realm, e);
         }
 
         // Compile all the AuthenticationPaths of the supplied Memberships.
@@ -123,7 +124,7 @@ public class MenuNavigation implements NavigationService {
         }
 
         // Populate the return menu structure
-        final MenuStructure toReturn = new MenuStructure(menuOwner);
+        final MenuStructure toReturn = new MenuStructure(realm);
         populate(toReturn.getRootMenu(), rawMenuStructure.getRootMenu(), paths);
 
         // All done.
@@ -135,8 +136,8 @@ public class MenuNavigation implements NavigationService {
     //
 
     private void populate(final List<AuthorizedNavItem> toPopulate,
-                          final List<AuthorizedNavItem> sourceItems,
-                          final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
+            final List<AuthorizedNavItem> sourceItems,
+            final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
 
         final Authorizer authorizer = SimpleAuthorizer.getInstance();
 
@@ -162,8 +163,8 @@ public class MenuNavigation implements NavigationService {
     }
 
     private StandardMenu complete(final StandardMenu rawMenu,
-                                  final boolean isAuthorized,
-                                  final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
+            final boolean isAuthorized,
+            final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
 
         // #1: Create the resulting StandardMenu
         final StandardMenu toReturn = new StandardMenu(

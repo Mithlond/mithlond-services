@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
@@ -39,7 +38,6 @@ import java.util.Collection;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@Stateless
 public abstract class AbstractJpaService implements JpaCudService {
 
     // Our Logger
@@ -166,7 +164,8 @@ public abstract class AbstractJpaService implements JpaCudService {
      * size of the supplied aCollection.
      *
      * @param aCollection A collection which may need padding.
-     * @param padObject An object added to aCollection only if {@code aCollection.isEmpty()}.
+     * @param padObject   An object added to aCollection only if {@code aCollection.isEmpty()}.
+     * @param <T>         The type of element retrieved (and also to pad).
      * @return The size of the supplied aCollection <strong>before</strong> any padding took place.
      */
     public static <T> int padAndGetSize(final Collection<T> aCollection, final T padObject) {
@@ -174,7 +173,7 @@ public abstract class AbstractJpaService implements JpaCudService {
         // Check sanity
         Validate.notNull(aCollection, "aCollection");
 
-        if(aCollection.isEmpty()) {
+        if (aCollection.isEmpty()) {
 
             // Pad the collection
             aCollection.add(padObject);

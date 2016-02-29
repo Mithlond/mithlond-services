@@ -24,16 +24,13 @@ package se.mithlond.services.content.model.navigation.integration;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
-import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>Implementation of a menu item Separator, on the following form:</p>
@@ -68,6 +65,77 @@ public class SeparatorMenuItem extends AbstractAuthorizedNavItem {
     @Override
     public String getRoleAttribute() {
         return "separator";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        final SeparatorMenuItem that = (SeparatorMenuItem) o;
+
+        final String thisCssClasses = getCssClasses() == null ? "" : getCssClasses().stream()
+                .sorted()
+                .reduce((left, right) -> left + "," + right)
+                .get();
+        final String thatCssClasses = that.getCssClasses() == null ? "" : that.getCssClasses().stream()
+                .sorted()
+                .reduce((left, right) -> left + "," + right)
+                .get();
+
+        return Objects.equals(getIndex(), that.getIndex())
+                && Objects.equals(getIdAttribute(), that.getIdAttribute())
+                && Objects.equals(getParent(), that.getParent())
+                && Objects.equals(thisCssClasses, thatCssClasses)
+                && Objects.equals(isEnabled(), that.isEnabled())
+                && Objects.equals(getRoleAttribute(), that.getRoleAttribute());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        final String cssClasses = getCssClasses() == null ? "" : getCssClasses().stream()
+                .sorted()
+                .reduce((left, right) -> left + "," + right)
+                .get();
+
+        return Objects.hash(getRoleAttribute(),
+                getIdAttribute(),
+                getTabIndexAttribute(),
+                cssClasses,
+                isEnabled(),
+                getRoleAttribute());
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "SeparatorMenuItem{"
+                + "role='" + getRoleAttribute() + '\''
+                + ", domId='" + getIdAttribute() + '\''
+                + ", tabIndex=" + getTabIndexAttribute()
+                + ", cssClasses='" + getCssClasses() + '\''
+                + ", authorizationPatterns='" + getRequiredAuthorizationPatterns() + '\''
+                + ", enabled=" + isEnabled()
+                + ", parent=" + getParent()
+                + ", index=" + getIndex()
+                + '}';
     }
 
     /**

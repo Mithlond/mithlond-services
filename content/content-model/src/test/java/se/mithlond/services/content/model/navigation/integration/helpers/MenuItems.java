@@ -22,6 +22,8 @@
 package se.mithlond.services.content.model.navigation.integration.helpers;
 
 import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
@@ -33,6 +35,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,22 +45,18 @@ import java.util.List;
  */
 @XmlRootElement(namespace = Patterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({StandardMenuItem.class, SeparatorMenuItem.class, LocalizedTexts.class, Localization.class})
 public class MenuItems {
 
     // Internal state
-    @XmlElementWrapper(required = true, nillable = false)
-    @XmlElements(value = {
-            @XmlElement(name = "subMenu", type = StandardMenu.class),
-            @XmlElement(name = "menuItem", type = StandardMenuItem.class),
-            @XmlElement(name = "separator", type = SeparatorMenuItem.class)
-    })
-    private List<AuthorizedNavItem> rootMenu;
+    @XmlElement
+    private StandardMenu rootMenu;
 
     public MenuItems() {
-        rootMenu = new ArrayList<>();
+        rootMenu = new StandardMenu();
     }
 
-    public List<AuthorizedNavItem> getRootMenu() {
+    public StandardMenu getRootMenu() {
         return rootMenu;
     }
 }

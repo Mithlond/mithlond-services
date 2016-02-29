@@ -61,15 +61,14 @@ public class SecurityFilter extends AbstractSecurityFilter {
      * {@inheritDoc}
      */
     @Override
-    protected OrganisationAndAlias getOrganisationNameAndAlias(
-            final ContainerRequestContext ctx) {
+    protected OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx) {
 
         final KeycloakSecurityContext securityContext = (KeycloakSecurityContext)
                 httpRequest.getAttribute(KeycloakSecurityContext.class.getName());
         final AccessToken accessToken = securityContext.getToken();
 
         // Printout the JSon Web Token state.
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             final SortedMap<String, Object> properties = new TreeMap<>();
 
             final StringBuilder builder = new StringBuilder();
@@ -82,9 +81,9 @@ public class SecurityFilter extends AbstractSecurityFilter {
                         .getPropertyDescriptors();
 
                 final Class[] noArguments = new Class[0];
-                for(PropertyDescriptor current : descriptors) {
+                for (PropertyDescriptor current : descriptors) {
                     Method getter = current.getReadMethod();
-                    if(getter != null) {
+                    if (getter != null) {
                         properties.put(current.getName(), getter.invoke(accessToken, noArguments));
                     }
                 }
@@ -92,7 +91,7 @@ public class SecurityFilter extends AbstractSecurityFilter {
                 log.error("Could not acquire AccessToken JavaBean properties", e);
             }
 
-            for(Map.Entry<String, Object> current : properties.entrySet()) {
+            for (Map.Entry<String, Object> current : properties.entrySet()) {
                 builder.append(" = [" + current.getKey() + "]: " + current.getValue() + "\n");
             }
             builder.append(" ============================\n");

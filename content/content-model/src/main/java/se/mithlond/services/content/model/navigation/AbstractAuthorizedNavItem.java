@@ -21,9 +21,11 @@
  */
 package se.mithlond.services.content.model.navigation;
 
+import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
@@ -34,6 +36,7 @@ import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -63,6 +66,9 @@ import java.util.TreeSet;
         "enabled", "transportAuthorizationPatterns"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements AuthorizedNavItem {
+
+    // Our Logger
+    // private static final Logger log = LoggerFactory.getLogger(AbstractAuthorizedNavItem.class);
 
     /**
      * Standard twitter bootstrap class for disabled Nav items.
@@ -121,12 +127,23 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
     @XmlAttribute
     private Boolean enabled;
 
+    @ManyToOne
+    @XmlTransient
+    private StandardMenu parent;
+
+    /**
+     * The index (within the parent's children) of this AbstractAuthorizedNavItem.
+     */
+    @Column
+    @XmlTransient
+    private int index;
+
     /**
      * JAXB/JPA-friendly constructor. Actually delegates to the compound constructor, using a default
      * value of true for the enabled indicator.
      */
     public AbstractAuthorizedNavItem() {
-        this(null, null, null, null, null, true);
+        this(null, null, null, null, null, true, null);
     }
 
     /**
@@ -143,14 +160,19 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
      * @param authorizationPatterns A concatenated string of AuthorizationPatterns to be used on this
      *                              AbstractAuthorizedNavItem.
      * @param enabled               {@code false} to indicate that this AbstractAuthorizedNavItem should be disabled.
+     * @param parent                The StandardMenu parent of this AbstractAuthorizedNavItem. Should be {@code null}
+     *                              only for the root menu. (But can later be assigned using a call to
+     *                              {@link AbstractLinkedNavItem#setParent(StandardMenu)}).
      */
     @SuppressWarnings("PMD")
     public AbstractAuthorizedNavItem(final String role,
-                                     final String domId,
-                                     final Integer tabIndex,
-                                     final String cssClasses,
-                                     final String authorizationPatterns,
-                                     final boolean enabled) {
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final StandardMenu parent) {
+
         this.role = role;
         this.domId = domId;
         this.tabIndex = tabIndex;
@@ -167,7 +189,7 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
 
             final StringTokenizer tokenizer = new StringTokenizer(
                     authorizationPatterns, AuthorizationPath.PATTERN_SEPARATOR_STRING, false);
-            while(tokenizer.hasMoreTokens()) {
+            while (tokenizer.hasMoreTokens()) {
                 transportAuthorizationPatterns.add(tokenizer.nextToken());
             }
         }
@@ -175,6 +197,11 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
         // Handle disabled state
         if (!enabled) {
             addCssClass(DISABLED_CSS_CLASS);
+        }
+
+        // Apply some smarts when assigning the StandardMenu parent of this AbstractAuthorizedNavItem.
+        if (parent != null) {
+            setParent(parent);
         }
     }
 
@@ -264,6 +291,49 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
      * {@inheritDoc}
      */
     @Override
+    public StandardMenu getParent() {
+        return parent;
+    }
+
+    /**
+     * Assigns the StandardMenu parent of this AbstractAuthorizedNavItem.
+     *
+     * @param parent the StandardMenu parent of this AbstractAuthorizedNavItem.
+     */
+    public void setParent(final StandardMenu parent) {
+
+        // Check sanity
+        final boolean saneParent = parent != null || this instanceof StandardMenu;
+        Validate.isTrue(saneParent, "Only StandardMenu items can have a null parent "
+                + "(implying that it is the root menu).");
+
+        // Assign internal state
+        this.parent = parent;
+    }
+
+    /**
+     * Retrieves the index of this AbstractAuthorizedNavItem within the collection of siblings.
+     *
+     * @return the index of this AbstractAuthorizedNavItem within the collection of siblings
+     * (i.e. children to its StandardMenu parent).
+     */
+    public int getIndex() {
+        return index;
+    }
+
+    /**
+     * Assigns the index of this AbstractAuthorizedNavItem within the collection of siblings.
+     *
+     * @param index the index of this AbstractAuthorizedNavItem within the collection of siblings.
+     */
+    public void setIndex(final int index) {
+        this.index = index;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public SortedSet<AuthorizationPattern> getRequiredAuthorizationPatterns() {
         return authorizationPatterns == null ? null : AuthorizationPattern.parse(authorizationPatterns);
     }
@@ -306,7 +376,7 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
 
             final StringTokenizer tokenizer = new StringTokenizer(
                     authorizationPatterns, AuthorizationPath.PATTERN_SEPARATOR_STRING, false);
-            while(tokenizer.hasMoreTokens()) {
+            while (tokenizer.hasMoreTokens()) {
                 transportAuthorizationPatterns.add(tokenizer.nextToken());
             }
         }
@@ -317,7 +387,7 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
      * but before this object is set to the parent object.
      */
     @SuppressWarnings("PMD")
-    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parentObject) {
 
         // Populate the JPA state
         if (transportAuthorizationPatterns != null) {
@@ -344,5 +414,16 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
         if (enabled == null) {
             enabled = true;
         }
+
+        /*
+        if (parentObject != null) {
+
+            log.debug("Got parentObject of type [" + parentObject.getClass().getName() + "]");
+
+            if(parentObject instanceof StandardMenu) {
+                this.parent = (StandardMenu) parentObject;
+            }
+        }
+        */
     }
 }

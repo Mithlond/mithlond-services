@@ -3,12 +3,14 @@ package se.mithlond.services.organisation.impl.ejb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.OrganisationService;
+import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
-import se.mithlond.services.organisation.model.Category;
+import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
+import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
@@ -110,16 +112,44 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      * {@inheritDoc}
      */
     @Override
-    public List<CategorizedAddress> getCategorizedAddresses(@NotNull final GroupIdSearchParameters searchParameters) {
-        return null;
-    }
+    public List<CategorizedAddress> getCategorizedAddresses(@NotNull final CategorizedAddressSearchParameters searchParameters) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<Category> getCategoriesByClassification(@NotNull final String classification) {
-        return null;
+        // Check sanity
+        Validate.notNull(searchParameters, "searchParameters");
+        Validate.notNull(searchParameters.getOrganisationID(), "organisationID");
+
+        final List<CategorizedAddress> toReturn = new ArrayList<>();
+
+        // Pad the ID Lists.
+        final int classifiersSize = AbstractJpaService.padAndGetSize(searchParameters.getClassifierIDs(), "none");
+
+        // Acquire the padded lists.
+        final List<String> classifiers = searchParameters.getClassifierIDs();
+        final List<Long> organisationIDs = new ArrayList<>();
+        organisationIDs.add(searchParameters.getOrganisationID());
+
+        // Fire, and add all results to the return List.
+        final List<CategorizedAddress> categorizedAddresses = entityManager.createNamedQuery(
+                CategorizedAddress.NAMEDQ_GET_BY_SEARCHPARAMETERS, CategorizedAddress.class)
+                .setParameter(Patterns.PARAM_FULL_DESC, searchParameters.getFullDescPattern())
+                .setParameter(Patterns.PARAM_SHORT_DESC, searchParameters.getShortDescPattern())
+                .setParameter(Patterns.PARAM_NUM_ORGANISATIONIDS, organisationIDs.size())
+                .setParameter(Patterns.PARAM_ORGANISATION_IDS, organisationIDs)
+                .setParameter(Patterns.PARAM_NUM_CLASSIFICATIONS, classifiersSize)
+                .setParameter(Patterns.PARAM_CLASSIFICATIONS, classifiers)
+                .setParameter(Patterns.PARAM_ADDRESSCAREOFLINE, searchParameters.getAddressCareOfLinePattern())
+                .setParameter(Patterns.PARAM_CITY, searchParameters.getCityPattern())
+                .setParameter(Patterns.PARAM_COUNTRY, searchParameters.getCountryPattern())
+                .setParameter(Patterns.PARAM_DEPARTMENT, searchParameters.getDepartmentNamePattern())
+                .setParameter(Patterns.PARAM_DESCRIPTION, searchParameters.getDescriptionPattern())
+                .setParameter(Patterns.PARAM_NUMBER, searchParameters.getNumberPattern())
+                .setParameter(Patterns.PARAM_STREET, searchParameters.getStreetPattern())
+                .setParameter(Patterns.PARAM_ZIPCODE, searchParameters.getZipCodePattern())
+                .getResultList();
+        toReturn.addAll(categorizedAddresses);
+
+        // All Done.
+        return toReturn;
     }
 
     /**
@@ -127,7 +157,27 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      */
     @Override
     public CategorizedAddress updateCategorizedAddress(final CategorizedAddress toUpdate) {
-        return null;
+
+        // Ensure that the ID of the supplied CategorizedAddress is not 0
+        final CategorizedAddress nonNull = Validate.notNull(toUpdate, "toUpdate");
+        final long id = toUpdate.getId();
+        Validate.isTrue(id > 0L, "Cannot handle zero or negative JPA ID.");
+
+        // Retrieve an existing CategorizedAddress
+        final CategorizedAddress existingCA = entityManager.find(CategorizedAddress.class, (Long) nonNull.getId());
+        if(existingCA == null) {
+            throw new IllegalArgumentException("No existing CategorizedAddress with JPA ID [" + id + "]");
+        }
+
+        // Update the existing CA
+        existingCA.setAddress(toUpdate.getAddress());
+        existingCA.setCategory(toUpdate.getCategory());
+        existingCA.setFullDesc(toUpdate.getFullDesc());
+        existingCA.setShortDesc(toUpdate.getShortDesc());
+        entityManager.flush();
+
+        // All done.
+        return existingCA;
     }
 
     /**
@@ -135,10 +185,29 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      */
     @Override
     public CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-                                                               final String fullDesc,
-                                                               final Address address,
-                                                               final String category,
-                                                               final String organisation) {
-        return null;
+            final String fullDesc,
+            final Address address,
+            final String category,
+            final String organisation) {
+
+        final Optional<Organisation> potentialOrganisation = getOrganisation(organisation);
+        if(!potentialOrganisation.isPresent()) {
+            throw new IllegalArgumentException("No organisation '" + organisation + "' found.");
+        }
+
+        final CategoryProducer categoryProducer = WellKnownAddressType.valueOf(category);
+
+        // Create the CategorizedAddress, and persist it.
+        final CategorizedAddress toPersist = new CategorizedAddress(
+                shortDesc,
+                fullDesc,
+                categoryProducer,
+                potentialOrganisation.get(),
+                address);
+        entityManager.persist(toPersist);
+        entityManager.flush();
+
+        // All done.
+        return toPersist;
     }
 }

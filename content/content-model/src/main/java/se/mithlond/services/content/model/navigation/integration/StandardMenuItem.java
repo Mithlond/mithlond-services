@@ -22,6 +22,7 @@
 package se.mithlond.services.content.model.navigation.integration;
 
 import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 
 import javax.persistence.Access;
@@ -60,6 +61,50 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
     }
 
     /**
+     * Convenience constructor for creating a StandardMenuItem with a null StandardParent and
+     * otherwise wrapping the supplied data.
+     *
+     * @param role                  The value of the {@code role} attribute. Typically something like
+     *                              "separator", "search" or "button".
+     * @param domId                 The DOM ID of this AbstractAuthorizedNavItem.
+     * @param tabIndex              The tabindex to be rendered on this AbstractAuthorizedNavItem.
+     * @param cssClasses            A concatenated string of CSS classes to be used within the "classes" attribute
+     *                              on the markup element rendered by this AbstractAuthorizedNavItem.
+     * @param authorizationPatterns A concatenated string of AuthorizationPatterns to be used on this
+     *                              AbstractAuthorizedNavItem.
+     * @param enabled               {@code false} to indicate that this AbstractAuthorizedNavItem should be disabled.
+     * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
+     *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
+     * @param href                  The hypertext link of this AbstractLinkedNavItem.
+     * @param languageCode          The language code (as defined in {@link java.util.Locale}) of the text for
+     *                              this AbstractLinkedNavItem.
+     * @param text                  The non-empty text for this AbstractLinkedNavItem, supplied in the
+     *                              languageCode given.
+     */
+    public StandardMenuItem(final String role,
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final String iconIdentifier,
+            final String href,
+            final String languageCode,
+            final String text) {
+
+        super(role,
+                domId,
+                tabIndex,
+                cssClasses,
+                authorizationPatterns,
+                enabled,
+                iconIdentifier,
+                href,
+                languageCode,
+                text);
+    }
+
+    /**
      * Compound constructor creating a StandardMenuItem wrapping the supplied data.
      *
      * @param role                  The value of the {@code role} attribute. Typically something like
@@ -74,17 +119,70 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
      * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
      *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
      * @param href                  The hypertext link of this AbstractLinkedNavItem.
+     * @param localizedTexts        The LocalizedTexts used to provide texts for this StandardMenuItem in
+     *                              various Locales.
+     * @param parent                An optional (i.e. nullable) StandardMenu of this StandardMenuItem. Should be
+     *                              null only for the root menu or until set by a call to
+     *                              {@link AbstractLinkedNavItem#setParent(StandardMenu)}
      */
     public StandardMenuItem(final String role,
-                            final String domId,
-                            final Integer tabIndex,
-                            final String cssClasses,
-                            final String authorizationPatterns,
-                            final boolean enabled,
-                            final String iconIdentifier,
-                            final String href) {
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final String iconIdentifier,
+            final String href,
+            final LocalizedTexts localizedTexts,
+            final StandardMenu parent) {
 
         // Delegate
-        super(role, domId, tabIndex, cssClasses, authorizationPatterns, enabled, iconIdentifier, href);
+        super(role,
+                domId,
+                tabIndex,
+                cssClasses,
+                authorizationPatterns,
+                enabled,
+                iconIdentifier,
+                href,
+                localizedTexts,
+                parent);
+    }
+
+    /**
+     * Retrieves a Builder to simplify creating a StandardMenuItem.
+     *
+     * @return a Builder used to create a StandardMenuItem.
+     */
+    public static StandardMenuItemBuilder getBuilder() {
+        return new StandardMenuItemBuilder();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Simple builder class for StandardMenuItems.
+     */
+    public static class StandardMenuItemBuilder extends AbstractLinkedNavItemBuilder<StandardMenuItemBuilder> {
+
+        /**
+         * Builds the StandardMenu from a constructor call using the "with"-ed parameters.
+         *
+         * @return a fully constructed StandardMenu.
+         */
+        public StandardMenuItem build() {
+            return new StandardMenuItem(role,
+                    domId,
+                    tabIndex,
+                    cssClasses,
+                    authorizationPatterns,
+                    enabled,
+                    iconIdentifier,
+                    href,
+                    localizedTexts,
+                    parent);
+        }
     }
 }

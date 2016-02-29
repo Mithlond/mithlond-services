@@ -35,4 +35,11 @@ public final class Patterns {
      * The XML namespace used by content model transport objects.
      */
     public static final String NAMESPACE = "http://www.jguru.se/mithlond/services/content";
+
+    /*
+     * Hide utility-class constructors.
+     */
+    private Patterns() {
+        // Do nothing.
+    }
 }

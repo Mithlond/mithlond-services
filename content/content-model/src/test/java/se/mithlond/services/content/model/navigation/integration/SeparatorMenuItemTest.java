@@ -60,8 +60,8 @@ public class SeparatorMenuItemTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/separatorMenuItems.xml");
 
-        menuItems.getRootMenu().add(unitUnderTest1);
-        menuItems.getRootMenu().add(unitUnderTest2);
+        menuItems.getRootMenu().addChild(unitUnderTest1);
+        menuItems.getRootMenu().addChild(unitUnderTest2);
 
         // Act
         final String result = marshalToXML(menuItems);
@@ -83,14 +83,14 @@ public class SeparatorMenuItemTest extends AbstractEntityTest {
         // Assert
         Assert.assertNotNull(resurrected);
 
-        final List<AuthorizedNavItem> rootMenu = resurrected.getRootMenu();
+        final StandardMenu rootMenu = resurrected.getRootMenu();
         Assert.assertNotNull(rootMenu);
-        Assert.assertEquals(2, rootMenu.size());
+        Assert.assertEquals(2, rootMenu.getChildren().size());
 
-        final SeparatorMenuItem first = (SeparatorMenuItem) rootMenu.get(0);
+        final SeparatorMenuItem first = (SeparatorMenuItem) rootMenu.getChildren().get(0);
         Assert.assertNull(first.getCssClasses());
 
-        final SeparatorMenuItem second = (SeparatorMenuItem) rootMenu.get(1);
+        final SeparatorMenuItem second = (SeparatorMenuItem) rootMenu.getChildren().get(1);
         Assert.assertEquals(1, second.getCssClasses().size());
         Assert.assertEquals("blah", second.getCssClasses().get(0));
     }

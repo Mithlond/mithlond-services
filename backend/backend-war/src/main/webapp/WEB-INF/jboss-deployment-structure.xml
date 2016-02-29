@@ -26,6 +26,9 @@
         <exclusions>
             <module name="org.apache.log4j"/>
             <module name="org.apache.commons.logging"/>
+            <module name="org.hibernate"/>
+            <module name="org.hibernate.hql"/>
+            <module name="org.hibernate.jpa"/>
             <!--
                 Don't use these JSON providers for RestEasy. Use MOXy instead.
              -->

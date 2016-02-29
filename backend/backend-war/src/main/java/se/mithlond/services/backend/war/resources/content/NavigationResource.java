@@ -22,6 +22,7 @@
 package se.mithlond.services.backend.war.resources.content;
 
 import se.mithlond.services.backend.war.resources.AbstractResource;
+import se.mithlond.services.backend.war.resources.Parameters;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
@@ -50,8 +51,8 @@ public class NavigationResource extends AbstractResource {
      * @param organisationName The name of the organisation for which the MenuStructure should be retrieved.
      * @return The fully populated MenuStructure for the supplied organisationName and the active Membership.
      */
-    @Path("/{organisationName}")
-    public MenuStructure getMenuStructure(@PathParam("organisationName") final String organisationName) {
+    @Path("/{" + Parameters.ORGANISATION_NAME + "}")
+    public MenuStructure getMenuStructure(@PathParam(Parameters.ORGANISATION_NAME) final String organisationName) {
 
         // Populate the SemanticAuthorizationPathProducer List with the active Membership.
         final List<SemanticAuthorizationPathProducer> sapp = new ArrayList<>();

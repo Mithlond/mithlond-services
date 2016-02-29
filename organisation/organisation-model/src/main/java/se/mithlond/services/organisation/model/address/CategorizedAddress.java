@@ -49,10 +49,11 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "CategorizedAddress.getByOrganisationAndCategoryID",
+        @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_AND_CATEGORY_ID,
                 query = "select a from CategorizedAddress a "
-                        + "where a.owningOrganisation.organisationName like :organisationName "
-                        + "and a.category.categoryID like :categoryID order by a.shortDesc"),
+                        + "where a.owningOrganisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " and a.category.categoryID like :" + Patterns.PARAM_CATEGORY_ID
+                        + " order by a.shortDesc"),
         @NamedQuery(name = "CategorizedAddress.getByOrganisationAndClassification",
                 query = "select a from CategorizedAddress a "
                         + "where a.owningOrganisation.organisationName like :organisationName "
@@ -60,16 +61,42 @@ import javax.xml.bind.annotation.XmlType;
         @NamedQuery(name = "CategorizedAddress.getByOrganisationAndShortDesc",
                 query = "select a from CategorizedAddress a "
                         + "where a.owningOrganisation.organisationName like :organisationName "
-                        + "and a.shortDesc like :shortDesc order by a.shortDesc")
-        /* @NamedQuery(name = "CategorizedAddress.getCountOfHomeCategorizedAddressesByOrganisation",
-                query = "select a.shortDesc, count(a.shortDesc) as counts from CategorizedAddress a "
-                        + "where a.owningOrganisation.organisationName = ?1 "
-                        + "and a.shortDesc like 'Hemma hos %' group by a.shortDesc order by a.shortDesc") */
+                        + "and a.shortDesc like :shortDesc order by a.shortDesc"),
+        @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_SEARCHPARAMETERS,
+                query = "select a from CategorizedAddress a "
+                        + "where a.fullDesc like :" + Patterns.PARAM_FULL_DESC
+                        + " and a.shortDesc like :" + Patterns.PARAM_SHORT_DESC
+                        + " and ( :" + Patterns.PARAM_CLASSIFICATION_IDS + " > 0 "
+                        + "      and a.category.classification in :" + Patterns.PARAM_CATEGORY_IDS + " ) "
+                        + " and ( :" + Patterns.PARAM_NUM_ORGANISATIONIDS + " > 0 "
+                        + "      and a.owningOrganisation.id in :" + Patterns.PARAM_ORGANISATION_IDS + " ) "
+                        + " and a.address.careOfLine like :" + Patterns.PARAM_ADDRESSCAREOFLINE
+                        + " and a.address.city like :" + Patterns.PARAM_CITY
+                        + " and a.address.country like :" + Patterns.PARAM_COUNTRY
+                        + " and a.address.departmentName like :" + Patterns.PARAM_DEPARTMENT
+                        + " and a.address.description like :" + Patterns.PARAM_DESCRIPTION
+                        + " and a.address.number like :" + Patterns.PARAM_NUMBER
+                        + " and a.address.street like :" + Patterns.PARAM_STREET
+                        + " and a.address.zipCode like :" + Patterns.PARAM_ZIPCODE
+                        + " order by a.category.classification, a.shortDesc")
+
 })
 @Entity
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"address", "category"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CategorizedAddress extends Listable implements Comparable<CategorizedAddress> {
+
+    /**
+     * NamedQuery for getting CategorizedAddresses by information defined within a search parameters.
+     */
+    public static final String NAMEDQ_GET_BY_SEARCHPARAMETERS =
+            "CategorizedAddress.getBySearchParams";
+
+    /**
+     * NamedQuery for getting CategorizedAddresses by organisation and category ID.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_CATEGORY_ID =
+            "CategorizedAddress.getByOrganisationAndCategoryID";
 
     // Internal state
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
@@ -112,6 +139,16 @@ public class CategorizedAddress extends Listable implements Comparable<Categoriz
         // Assign internal state
         this.address = address;
         this.category = producer.getCategory();
+    }
+
+    /**
+     * Assigns the JPA ID of this CategorizedAddress.
+     *
+     * @param id the JPA ID of this CategorizedAddress.
+     */
+    @Override
+    public void setId(final long id) {
+        super.setId(id);
     }
 
     /**

@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.content.model.navigation;
 
+import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 
 import java.util.List;
@@ -108,4 +109,12 @@ public interface AuthorizedNavItem {
      * and is hence viewable by all Users.
      */
     SortedSet<AuthorizationPattern> getRequiredAuthorizationPatterns();
+
+    /**
+     * Retrieves the parent StandardMenu element of this AuthorizedNavItem.
+     * Parent-Child relations create a navigable tree of AuthorizedNavItems.
+     *
+     * @return the parent AuthorizedNavItem element of this AuthorizedNavItem. {@code null} only for the root menu.
+     */
+    StandardMenu getParent();
 }
