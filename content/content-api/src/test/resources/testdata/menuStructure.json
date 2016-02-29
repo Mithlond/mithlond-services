@@ -2,52 +2,108 @@
   "content.menuStructure" : {
     "realm" : "FooBar",
     "rootMenu" : {
-      "subMenu" : [ {
+      "jpaId" : 0,
+      "version" : 0,
+      "domId" : "rootMenu",
+      "enabled" : true,
+      "localizedTexts" : {
         "jpaId" : 0,
         "version" : 0,
-        "domId" : "firstMenu",
-        "children" : {
-          "menuItem" : [ {
-            "jpaId" : 0,
-            "version" : 0,
-            "cssClasses" : {
-              "cssClass" : [ "icon-fixed-width" ]
+        "texts" : {
+          "entry" : [ {
+            "key" : {
+              "jpaId" : 0,
+              "version" : 0,
+              "xmlID" : "sv..none..none"
             },
-            "authPatterns" : {
-              "pattern" : [ "/mithlond/members" ]
-            },
-            "iconIdentifier" : "cog",
-            "href" : "plainItemPage"
-          }, {
-            "jpaId" : 0,
-            "version" : 0,
-            "cssClasses" : {
-              "cssClass" : [ "icon-fixed-width" ]
-            },
-            "authPatterns" : {
-              "pattern" : [ "/mithlond/members" ]
-            },
-            "iconIdentifier" : "lightbulb",
-            "href" : "plainItemPage2"
-          } ],
-          "separator" : [ {
-            "jpaId" : 0,
-            "version" : 0
+            "value" : "Roooot"
           } ]
-        }
-      } ],
-      "menuItem" : [ {
-        "jpaId" : 0,
-        "version" : 0,
-        "cssClasses" : {
-          "cssClass" : [ "icon-fixed-width" ]
         },
-        "authPatterns" : {
-          "pattern" : [ "/forodrim/members", "/mithlond/members" ]
-        },
-        "iconIdentifier" : "calendar",
-        "href" : "plainItemPage3"
-      } ]
+        "defaultLocalization" : "sv..none..none"
+      },
+      "children" : {
+        "menu" : [ {
+          "jpaId" : 0,
+          "version" : 0,
+          "domId" : "firstMenu",
+          "tabIndex" : 1,
+          "enabled" : true,
+          "iconIdentifier" : "cog",
+          "href" : "/firstMenu",
+          "localizedTexts" : {
+            "jpaId" : 0,
+            "version" : 0,
+            "texts" : {
+              "entry" : [ {
+                "key" : {
+                  "jpaId" : 0,
+                  "version" : 0,
+                  "xmlID" : "sv..none..none"
+                },
+                "value" : "Första Menyn"
+              } ]
+            },
+            "defaultLocalization" : "sv..none..none"
+          },
+          "children" : {
+            "menuItem" : [ {
+              "jpaId" : 0,
+              "version" : 0,
+              "domId" : "membersPage",
+              "enabled" : true,
+              "authPatterns" : {
+                "pattern" : [ "/mithlond/members" ]
+              },
+              "iconIdentifier" : "man",
+              "href" : "/members/list",
+              "localizedTexts" : {
+                "jpaId" : 0,
+                "version" : 0,
+                "texts" : {
+                  "entry" : [ {
+                    "key" : {
+                      "jpaId" : 0,
+                      "version" : 0,
+                      "xmlID" : "sv..none..none"
+                    },
+                    "value" : "Medlemssida"
+                  } ]
+                },
+                "defaultLocalization" : "sv..none..none"
+              }
+            } ],
+            "separator" : [ {
+              "jpaId" : 0,
+              "version" : 0
+            } ]
+          }
+        } ],
+        "menuItem" : [ {
+          "jpaId" : 0,
+          "version" : 0,
+          "domId" : "plainItemPage3",
+          "enabled" : true,
+          "authPatterns" : {
+            "pattern" : [ "/forodrim/members", "/mithlond/members" ]
+          },
+          "href" : "/calendar",
+          "localizedTexts" : {
+            "jpaId" : 0,
+            "version" : 0,
+            "texts" : {
+              "entry" : [ {
+                "key" : {
+                  "jpaId" : 0,
+                  "version" : 0,
+                  "xmlID" : "sv..none..none"
+                },
+                "value" : "Aktivitetskalender"
+              } ]
+            },
+            "defaultLocalization" : "sv..none..none"
+          }
+        } ]
+      }
     }
   }
 }

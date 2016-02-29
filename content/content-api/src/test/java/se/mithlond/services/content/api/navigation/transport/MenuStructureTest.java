@@ -27,7 +27,7 @@ import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.AbstractEntityTest;
 import se.mithlond.services.content.api.transport.MenuStructure;
-import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
+import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
@@ -41,25 +41,57 @@ public class MenuStructureTest extends AbstractEntityTest {
 
     // Shared state
     private String realm;
+    private StandardMenu rootMenu;
     private StandardMenu firstMenu;
     private MenuStructure menuStructure;
 
     @Before
     public void setupSharedState() {
+
         realm = "FooBar";
-        menuStructure = new MenuStructure(realm);
+        rootMenu = StandardMenu.getBuilder()
+                .withDomId("rootMenu")
+                .withLocalizedText("sv", "Roooot")
+                .build();
+
+        menuStructure = new MenuStructure(realm, rootMenu);
         jaxb.add(MenuStructure.class);
 
-        firstMenu = new StandardMenu(null, "firstMenu", null, null, null, true, null, null);
-        final List<AuthorizedNavItem> children = firstMenu.getChildren();
-        children.add(new StandardMenuItem(null, null, null, null,
-                "/mithlond/members", true, "cog", "plainItemPage"));
-        children.add(new SeparatorMenuItem());
-        children.add(new StandardMenuItem(null, null, null, null,
-                "/mithlond/members", true, "lightbulb", "plainItemPage2"));
+        firstMenu = StandardMenu.getBuilder()
+                .withDomId("firstMenu")
+                .withLocalizedText("sv", "Första Menyn")
+                .withHref("/firstMenu")
+                .withIconIdentifier("cog")
+                .withTabIndex(1)
+                .build();
+        rootMenu.addChild(firstMenu);
 
-        menuStructure.add(firstMenu, new StandardMenuItem(null, null, null, null,
-                "/mithlond/members,/forodrim/members", true, "calendar", "plainItemPage3"));
+        firstMenu.addChild(StandardMenuItem.getBuilder()
+                .withAuthorizationPatterns("/mithlond/members")
+                .withDomId("membersPage")
+                .withHref("/members/list")
+                .withIconIdentifier("man")
+                .withLocalizedText("sv", "Medlemssida")
+                .build());
+
+        firstMenu.addChild(new SeparatorMenuItem());
+
+        firstMenu.addChild(StandardMenuItem.getBuilder()
+                .withDomId("membersIdeaPage")
+                .withHref("/mithlond/members/ideas")
+                .withLocalizedText("sv", "Idésida")
+                .withIconIdentifier("lightbulb")
+                .build());
+
+
+
+        rootMenu.addChild(StandardMenuItem.getBuilder()
+                .withAuthorizationPatterns("/mithlond/members,/forodrim/members")
+                .withLocalizedText("sv", "Aktivitetskalender")
+                .withEnabledStatus(true)
+                .withHref("/calendar")
+                .withDomId("plainItemPage3")
+                .build());
     }
 
     @Test
@@ -90,6 +122,7 @@ public class MenuStructureTest extends AbstractEntityTest {
         Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
     }
 
+
     @Test
     public void validateUnmarshalling() {
 
@@ -101,18 +134,19 @@ public class MenuStructureTest extends AbstractEntityTest {
 
         // Assert
         Assert.assertNotNull(resurrected);
-        final List<AuthorizedNavItem> rootMenu = resurrected.getRootMenu();
+        final List<AbstractAuthorizedNavItem> rootMenu = resurrected.getRootMenu().getChildren();
         Assert.assertEquals(2, rootMenu.size());
 
         final StandardMenu first = (StandardMenu) rootMenu.get(0);
         Assert.assertEquals("firstMenu", first.getIdAttribute());
 
-        final List<AuthorizedNavItem> firstChildren = first.getChildren();
+        final List<AbstractAuthorizedNavItem> firstChildren = first.getChildren();
         Assert.assertEquals(firstMenu.getChildren().size(), firstChildren.size());
         Assert.assertEquals("/mithlond/members/(\\p{javaLetterOrDigit}|_)*",
                 firstChildren.get(0).getRequiredAuthorizationPatterns().first().toString());
 
         final StandardMenuItem second = (StandardMenuItem) rootMenu.get(1);
-        Assert.assertEquals("calendar", second.getIconIdentifier());
+        Assert.assertEquals("/calendar", second.getHrefAttribute());
     }
+
 }

@@ -23,22 +23,16 @@ package se.mithlond.services.content.api.transport;
 
 import org.apache.commons.lang3.Validate;
 import se.mithlond.services.content.model.Patterns;
-import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
-import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
+import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
-import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Transportable menu structure holder.
@@ -53,44 +47,45 @@ public class MenuStructure implements Serializable {
     @XmlAttribute(required = true)
     private String realm;
 
-    @XmlElementWrapper(required = true, nillable = false)
-    @XmlElements(value = {
-            @XmlElement(name = "subMenu", type = StandardMenu.class),
-            @XmlElement(name = "menuItem", type = StandardMenuItem.class),
-            @XmlElement(name = "separator", type = SeparatorMenuItem.class)
-    })
-    private List<AuthorizedNavItem> rootMenu;
+    /**
+     * The single root menu of this MenuStructure.
+     */
+    @XmlElement(required = true)
+    private StandardMenu rootMenu;
 
     /**
      * JAXB-friendly constructor.
      */
     public MenuStructure() {
-        this.rootMenu = new ArrayList<>();
+        // Do nothing.
     }
 
     /**
      * Compound constructor, creating a MenuStructure for the supplied realm.
      *
-     * @param realm The realm name for which this MenuStructure is created.
+     * @param realm    The realm name for which this MenuStructure is created.
+     * @param rootMenu The non-null Root menu of this MenuStructure.
      */
-    public MenuStructure(final String realm) {
+    public MenuStructure(final String realm, final StandardMenu rootMenu) {
 
         // Delegate, and check sanity
         this();
         Validate.notEmpty(realm, "realm");
+        Validate.notNull(rootMenu, "rootMenu");
 
         // Assign
         this.realm = realm;
+        this.rootMenu = rootMenu;
     }
 
     /**
-     * Adds the supplied AuthorizedNavItems to this MenuStructure.
+     * Convenience method to add all the supplied AbstractAuthorizedNavItem - in order - to this MenuStructure.
      *
      * @param menuItems The menuItems to add to this MenuStructure.
      */
-    public void add(final AuthorizedNavItem ... menuItems) {
-        if(menuItems != null) {
-            Collections.addAll(rootMenu, menuItems);
+    public void add(final AbstractAuthorizedNavItem... menuItems) {
+        if (menuItems != null) {
+            Arrays.asList(menuItems).stream().forEach(item -> rootMenu.addChild(item));
         }
     }
 
@@ -104,9 +99,9 @@ public class MenuStructure implements Serializable {
     /**
      * Retrieves the root menu containing AuthorizedNavItems.
      *
-     * @return The list of AuthorizedNavItems within this MenuStructure.
+     * @return The root StandardMenu within this MenuStructure.
      */
-    public List<AuthorizedNavItem> getRootMenu() {
+    public StandardMenu getRootMenu() {
         return rootMenu;
     }
 }
