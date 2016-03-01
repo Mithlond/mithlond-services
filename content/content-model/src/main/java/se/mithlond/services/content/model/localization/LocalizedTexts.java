@@ -34,16 +34,21 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.Transient;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * A text translatable to several languages.
@@ -55,29 +60,36 @@ import java.util.TreeMap;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
-    /**
-     * A Map relating Localizations to texts.
-     */
+
     @ElementCollection
     @CollectionTable(name = "text_localizations", joinColumns = @JoinColumn(name = "localization_suite"))
     @Column(name = "localized_text")
     @MapKeyJoinColumn(name = "localization_id", referencedColumnName = "id")
+    @XmlTransient
+    private Map<Localization, String> data;
+
+    /**
+     * A sequence of LocalizedTextTuples holding the transported localized texts resources.
+     */
+    @Transient
     @XmlElementWrapper
-    @XmlElement(name = "localizedText")
-    private Map<Localization, String> texts;
+    @XmlElement(name = "localized")
+    private List<LocalizedTextTuple> texts;
 
     /**
      * The default Localization for this LocalizedTexts instance.
      */
     @ManyToOne
-    @XmlIDREF
+    @XmlElement(required = true)
     private Localization defaultLocalization;
 
     /**
      * JAXB/JPA-friendly constructor.
      */
     public LocalizedTexts() {
-        this.texts = new TreeMap<>();
+
+        this.texts = new ArrayList<>();
+        this.data = new TreeMap<>();
     }
 
     /**
@@ -106,7 +118,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
 
         final Localization effectiveLocalization = localization == null ? defaultLocalization : localization;
 
-        final Map.Entry<Localization, String> firstEntry = texts.entrySet().stream()
+        final Map.Entry<Localization, String> firstEntry = data.entrySet().stream()
                 .filter(entry -> entry.getKey().equals(effectiveLocalization))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No text localization for ["
@@ -131,7 +143,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         final String nonEmptyText = Validate.notEmpty(text, "text");
 
         // All done.
-        return texts.put(nonNullLocalization, nonEmptyText);
+        return data.put(nonNullLocalization, nonEmptyText);
     }
 
     /**
@@ -149,7 +161,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
             return false;
         }
         final LocalizedTexts that = (LocalizedTexts) o;
-        return Objects.equals(texts, that.texts)
+        return Objects.equals(data, that.data)
                 && Objects.equals(defaultLocalization, that.defaultLocalization);
     }
 
@@ -158,7 +170,14 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), texts, defaultLocalization);
+        return Objects.hash(super.hashCode(), data, defaultLocalization);
+    }
+
+    /**
+     * @return A List containing all Localizations found within this LocalizedTexts.
+     */
+    public List<Localization> getContainedLocalizations() {
+        return data.keySet().stream().collect(Collectors.toList());
     }
 
     /**
@@ -169,7 +188,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
 
         InternalStateValidationException.create()
                 .notNull(defaultLocalization, "defaultLocalization")
-                .notNullOrEmpty(texts, "texts")
+                .notNullOrEmpty(data, "data")
                 .endExpressionAndValidate();
     }
 
@@ -188,5 +207,39 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
 
         // Create the Localization and its LocalizedTexts
         return new LocalizedTexts(new Localization(language), text);
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * after it has created an instance of this Class.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("PMD")
+    private void beforeMarshal(final Marshaller marshaller) {
+
+        // Populate the transport tuple sequence
+        final List<LocalizedTextTuple> textSequence = data.entrySet()
+                .stream()
+                .map(current -> new LocalizedTextTuple(current.getKey(), current.getValue()))
+                .collect(Collectors.toList());
+        this.texts.clear();
+        this.texts.addAll(textSequence);
+    }
+
+    /**
+     * This method is called after all the properties (except IDREF) are unmarshalled for this object,
+     * but before this object is set to the parent object.
+     */
+    @SuppressWarnings("PMD")
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+
+        // Re-populate the data Map with the data from the transport tuple sequence
+        data.clear();
+        texts.stream().forEach(current -> data.put(current.getLocalization(), current.getText()));
     }
 }

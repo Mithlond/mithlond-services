@@ -36,6 +36,21 @@ public final class Patterns {
      */
     public static final String NAMESPACE = "http://www.jguru.se/mithlond/services/content";
 
+    /**
+     * NamedQuery parameter name for language.
+     */
+    public static final String PARAM_LANGUAGE = "language";
+
+    /**
+     * NamedQuery parameter name for country.
+     */
+    public static final String PARAM_COUNTRY = "country";
+
+    /**
+     * NamedQuery parameter name for variant.
+     */
+    public static final String PARAM_VARIANT = "variant";
+
     /*
      * Hide utility-class constructors.
      */

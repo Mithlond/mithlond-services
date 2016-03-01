@@ -24,6 +24,8 @@ package se.mithlond.services.content.model.navigation;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Specification for a text which can be localized into several languages.
  *
@@ -35,6 +37,7 @@ public interface Localizable {
     /**
      * Standard locale unless another is provided.
      */
+    @XmlTransient
     Localization DEFAULT_LOCALE = new Localization("sv", "SE", null);
 
     /**

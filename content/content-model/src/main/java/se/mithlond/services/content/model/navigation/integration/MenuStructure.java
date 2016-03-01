@@ -1,0 +1,207 @@
+package se.mithlond.services.content.model.navigation.integration;
+
+import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
+import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
+import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.organisation.model.Organisation;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * Helper class relating a (Root) StandardMenu to an Organisation.
+ *
+ * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
+ */
+@NamedQueries({
+        @NamedQuery(name = MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME,
+                query = "select ms from MenuStructure ms "
+                        + "where ms.owningOrganisation.organisationName like :"
+                        + se.mithlond.services.organisation.model.Patterns.PARAM_ORGANISATION_NAME)
+})
+@Entity
+@XmlRootElement(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"localizations", "organisationName", "rootMenu"})
+@XmlAccessorType(XmlAccessType.FIELD)
+public class MenuStructure extends NazgulEntity {
+
+    /**
+     * NamedQuery for getting a MenuStructure by an Organisation's name.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_NAME =
+            "MenuStructure.getByOrganisationName";
+
+    // Our Logger
+    @XmlTransient
+    private static final Logger log = LoggerFactory.getLogger(MenuStructure.class);
+
+    // Internal state
+
+    /**
+     * The Localizations for which this MenuStructure is provided.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "localization")
+    @Transient
+    private List<Localization> localizations;
+
+    /**
+     * The name of the Organisation for which this MenuStructure is defined.
+     */
+    @Transient
+    @XmlElement(required = true)
+    private String organisationName;
+
+    @OneToOne
+    @XmlTransient
+    private Organisation owningOrganisation;
+
+    /**
+     * The single root menu of this MenuStructure.
+     */
+    @XmlElement(required = true)
+    @OneToOne(orphanRemoval = true)
+    private StandardMenu rootMenu;
+
+    /**
+     * JAXB-friendly constructor.
+     */
+    public MenuStructure() {
+        localizations = new ArrayList<>();
+    }
+
+    /**
+     * Compound constructor, creating a MenuStructure for transport purposes only (and not for persistence).
+     *
+     * @param organisationName The non-empty organisationName of the Organisation owning this MenuStructure.
+     * @param rootMenu         The non-null Root menu of this MenuStructure.
+     */
+    public MenuStructure(final String organisationName, final StandardMenu rootMenu) {
+
+        // Delegate
+        this();
+
+        // Assign internal state
+        this.organisationName = organisationName;
+        this.rootMenu = rootMenu;
+    }
+
+    /**
+     * Compound constructor, creating a MenuStructure for the supplied realm. This is the only complete constructor,
+     * permitting both transport and storage.
+     *
+     * @param owningOrganisation The non-null Organisation owning this MenuStructure.
+     * @param rootMenu           The non-null Root menu of this MenuStructure.
+     */
+    public MenuStructure(final StandardMenu rootMenu, final Organisation owningOrganisation) {
+
+        // Delegate
+        this();
+
+        // Check sanity
+        Validate.notNull(owningOrganisation, "owningOrganisation");
+        Validate.notNull(rootMenu, "rootMenu");
+
+        // Assign internal state
+        this.rootMenu = rootMenu;
+        this.owningOrganisation = owningOrganisation;
+        this.organisationName = owningOrganisation.getOrganisationName();
+    }
+
+    /**
+     * @return The non-empty name of the organisation owning this MenuStructure.
+     */
+    public String getOrganisationName() {
+        return organisationName;
+    }
+
+    /**
+     * @return Retrieves the Organisation owning this MenuStructure, if invoked on the Server side. This instance is
+     * not marshalled for transport, and will hence not be available on the client side of a communications channel.
+     *
+     * @see #owningOrganisation
+     * @see javax.xml.bind.annotation.XmlTransient
+     */
+    public Organisation getOwningOrganisation() {
+        return owningOrganisation;
+    }
+
+    /**
+     * @return The non-null Root menu for this MenuStructure.
+     */
+    public StandardMenu getRootMenu() {
+        return rootMenu;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateEntityState() throws InternalStateValidationException {
+
+        // Check sanity
+        if (owningOrganisation != null && organisationName == null) {
+            this.organisationName = owningOrganisation.getOrganisationName();
+        } else {
+            log.warn("Could not assign 'organisationName' property, as the 'owningOrganisation' is not set. "
+                    + "Proceed with caution.");
+        }
+
+        InternalStateValidationException.create()
+                .notNull(rootMenu, "rootMenu")
+                .endExpressionAndValidate();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * immediately before this object is Marshalled.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("all")
+    private void beforeMarshal(final Marshaller marshaller) {
+        populateLocalizations(this.localizations, this.rootMenu);
+    }
+
+    private void populateLocalizations(final List<Localization> toPopulate, final StandardMenu menu) {
+
+        // Start with the locally known Localizations
+        menu.getLocalizedTexts().getContainedLocalizations()
+                .stream()
+                .filter(current -> !toPopulate.contains(current))
+                .forEach(toPopulate::add);
+
+        // Now find all StandardMenu children.
+        final List<StandardMenu> menus = menu.getChildren().stream()
+                .filter(current -> current instanceof StandardMenu)
+                .map(current -> (StandardMenu) current)
+                .collect(Collectors.toList());
+
+        // Descend into child level
+        for(StandardMenu current : menus) {
+            populateLocalizations(toPopulate, current);
+        }
+    }
+}

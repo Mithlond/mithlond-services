@@ -29,13 +29,14 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Locale;
@@ -47,22 +48,40 @@ import java.util.StringTokenizer;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@NamedQueries({
+        @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE,
+                query = "select l from Localization l "
+                        + " where l.language like :" + Patterns.PARAM_LANGUAGE),
+        @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY,
+                query = "select l from Localization l "
+                        + " where l.language like :" + Patterns.PARAM_LANGUAGE
+                        + " and l.country like :" + Patterns.PARAM_COUNTRY)
+})
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = "xmlID")
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = "compactStringForm")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localization extends NazgulEntity implements Comparable<Localization> {
+
+    /**
+     * NamedQuery for getting Localizations having a given language.
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE = "Localization.getByLanguage";
+
+    /**
+     * NamedQuery for getting Localizations having a given language.
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY = "Localization.getByLanguageAndCountry";
 
     private static final int COLUMN_WIDTH = 10;
     private static final String SEPARATOR = "..";
     private static final String NONE = "none";
 
     /**
-     * The XML identifier of this Localization, synthesized as [language]:[country]:[variant].
+     * The XML identifier/compact string form of this Localization, synthesized as [language]:[country]:[variant].
      */
     @Transient
-    @XmlID
     @XmlAttribute(required = true)
-    private String xmlID;
+    private String compactStringForm;
 
     /**
      * The language code for this Localization.
@@ -142,7 +161,7 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
      */
     @Override
     public String toString() {
-        return xmlID == null ? createXmlID() : xmlID;
+        return compactStringForm == null ? createCompactStringForm() : compactStringForm;
     }
 
     /**
@@ -217,7 +236,36 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
                 .endExpressionAndValidate();
 
         // Synthesize internal state
-        createXmlID();
+        createCompactStringForm();
+    }
+
+    /**
+     * Builder method creating a Localization from the supplied compactStringForm.
+     *
+     * @param compactStringForm A compact string form supplied on the form
+     *                          <code>[language]:[country]:[variant]</code>.
+     * @return A Localization created from the supplied compactForm.
+     */
+    public static Localization parse(final String compactStringForm) {
+
+        // Parse the compactStringForm to acquire the internal state variables
+        final StringTokenizer tok = new StringTokenizer(compactStringForm, SEPARATOR, false);
+        final String incorrectMessage = "Expected 'compactStringForm' on the form [country]" + SEPARATOR + "[language]"
+                + SEPARATOR + "[variant], where [language] and [variant] may be null, indicated by the value '"
+                + NONE + "'. Got incorrect toParse argument '" + compactStringForm
+                + "'. This implies an internal error.";
+        Validate.isTrue(tok.countTokens() == 3, incorrectMessage);
+
+        // Populate the internal state
+        final String language = tok.nextToken();
+        final String tmpCountry = tok.nextToken();
+        final String tmpVariant = tok.nextToken();
+
+        final String country = NONE.equalsIgnoreCase(tmpCountry) ? null : tmpCountry;
+        final String variant = NONE.equalsIgnoreCase(tmpVariant) ? null : tmpVariant;
+
+        // All done.
+        return new Localization(language, country, variant);
     }
 
     //
@@ -232,10 +280,10 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
      */
     @SuppressWarnings("PMD")
     private void beforeMarshal(final Marshaller marshaller) {
-        this.xmlID = createXmlID();
+        this.compactStringForm = createCompactStringForm();
     }
 
-    private String createXmlID() {
+    private String createCompactStringForm() {
 
         // Synthesize the XmlID
         final String countryString = country == null || country.isEmpty() ? NONE : country;
@@ -252,19 +300,9 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
     @SuppressWarnings("PMD")
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
-        // Parse the XmlID to acquire the internal state variables
-        final StringTokenizer tok = new StringTokenizer(xmlID, SEPARATOR, false);
-        final String incorrectMessage = "Expected 'XmlID' on the form [country]" + SEPARATOR + "[language]"
-                + SEPARATOR + "[variant], where [language] and [variant] may be null, indicated by the value '"
-                + NONE + "'. Got incorrect toParse argument '" + xmlID + "'. This implies an internal error.";
-        Validate.isTrue(tok.countTokens() == 3, incorrectMessage);
-
-        // Populate the internal state
-        this.language = tok.nextToken();
-        final String tmpCountry = tok.nextToken();
-        final String tmpVariant = tok.nextToken();
-
-        this.country = NONE.equalsIgnoreCase(tmpCountry) ? null : tmpCountry;
-        this.variant = NONE.equalsIgnoreCase(tmpVariant) ? null : tmpVariant;
+        final Localization parsed = parse(compactStringForm);
+        this.language = parsed.language;
+        this.country = parsed.country;
+        this.variant = parsed.variant;
     }
 }

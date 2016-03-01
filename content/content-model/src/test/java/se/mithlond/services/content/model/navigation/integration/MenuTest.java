@@ -24,6 +24,7 @@ package se.mithlond.services.content.model.navigation.integration;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.navigation.AbstractEntityTest;
 import se.mithlond.services.content.model.navigation.integration.helpers.MenuItems;
 
@@ -38,14 +39,13 @@ public class MenuTest extends AbstractEntityTest {
     @Before
     public void setupSharedState() {
         menuItems = new MenuItems();
-        jaxb.add(MenuItems.class);
     }
 
     @Test
     public void validateMarshallingToXML() {
 
         // Assemble
-        final String expected = XmlTestUtils.readFully("testdata/menuItems.xml");
+        final String expected = XmlTestUtils.readFully("testdata/menu.xml");
         final StandardMenu firstMenu = StandardMenu.getBuilder()
                 .withDomId("firstMenu")
                 .withLocalizedText("sv", "Medlemsmeny")
@@ -71,9 +71,9 @@ public class MenuTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToXML(menuItems);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
-        // validateIdenticalContent(expected, result);
+        validateIdenticalContent(expected, result);
     }
 }

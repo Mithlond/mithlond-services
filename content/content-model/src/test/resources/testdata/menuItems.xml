@@ -20,44 +20,66 @@
   limitations under the License.
   #L%
   -->
-
-<content:menuItems xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <rootMenu>
-        <subMenu domId="firstMenu" jpaId="0" version="0">
-            <children>
-                <menuItem jpaId="0" version="0">
-                    <cssClasses>
-                        <cssClass>icon-fixed-width</cssClass>
-                    </cssClasses>
-                    <authPatterns>
-                        <pattern>/mithlond/members</pattern>
-                    </authPatterns>
-                    <iconIdentifier>cog</iconIdentifier>
-                    <href>plainItemPage</href>
-                </menuItem>
-                <separator jpaId="0" version="0"/>
-                <menuItem jpaId="0" version="0">
-                    <cssClasses>
-                        <cssClass>icon-fixed-width</cssClass>
-                    </cssClasses>
-                    <authPatterns>
-                        <pattern>/mithlond/members</pattern>
-                    </authPatterns>
-                    <iconIdentifier>lightbulb</iconIdentifier>
-                    <href>plainItemPage2</href>
-                </menuItem>
-            </children>
-        </subMenu>
-        <menuItem jpaId="0" version="0">
-            <cssClasses>
-                <cssClass>icon-fixed-width</cssClass>
-            </cssClasses>
-            <authPatterns>
-                <pattern>/forodrim/members</pattern>
-                <pattern>/mithlond/members</pattern>
-            </authPatterns>
-            <iconIdentifier>calendar</iconIdentifier>
-            <href>plainItemPage3</href>
-        </menuItem>
+<content:menuStructure xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" jpaId="0" version="0">
+    <localizations>
+        <localization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+    </localizations>
+    <organisationName>name</organisationName>
+    <rootMenu jpaId="0" version="0" domId="rootMenu" enabled="true">
+        <localizedTexts jpaId="0" version="0">
+            <texts>
+                <localized locale="sv..none..none">
+                    <text>Roooot</text>
+                </localized>
+            </texts>
+            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+        </localizedTexts>
+        <children>
+            <menu jpaId="0" version="0" domId="firstMenu" tabIndex="1" enabled="true">
+                <iconIdentifier>cog</iconIdentifier>
+                <href>/firstMenu</href>
+                <localizedTexts jpaId="0" version="0">
+                    <texts>
+                        <localized locale="sv..none..none">
+                            <text>Första Menyn</text>
+                        </localized>
+                    </texts>
+                    <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                </localizedTexts>
+                <children>
+                    <menuItem jpaId="0" version="0" domId="membersPage" enabled="true">
+                        <authPatterns>
+                            <pattern>/mithlond/members</pattern>
+                        </authPatterns>
+                        <iconIdentifier>man</iconIdentifier>
+                        <href>/members/list</href>
+                        <localizedTexts jpaId="0" version="0">
+                            <texts>
+                                <localized locale="sv..none..none">
+                                    <text>Medlemssida</text>
+                                </localized>
+                            </texts>
+                            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                        </localizedTexts>
+                    </menuItem>
+                    <separator jpaId="0" version="0"/>
+                </children>
+            </menu>
+            <menuItem jpaId="0" version="0" domId="plainItemPage3" enabled="true">
+                <authPatterns>
+                    <pattern>/forodrim/members</pattern>
+                    <pattern>/mithlond/members</pattern>
+                </authPatterns>
+                <href>/calendar</href>
+                <localizedTexts jpaId="0" version="0">
+                    <texts>
+                        <localized locale="sv..none..none">
+                            <text>Aktivitetskalender</text>
+                        </localized>
+                    </texts>
+                    <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                </localizedTexts>
+            </menuItem>
+        </children>
     </rootMenu>
-</content:menuItems>
+</content:menuStructure>
