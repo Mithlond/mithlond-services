@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.api;
 
-import se.mithlond.services.content.api.transport.MenuStructure;
+import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
 import javax.ejb.Local;
@@ -46,6 +46,6 @@ public interface NavigationService {
      * @throws UnknownOrganisationException if the menuOwner was not the name of an existing organisation.
      */
     MenuStructure getMenuStructure(final String realm,
-            final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths)
             throws UnknownOrganisationException;
 }

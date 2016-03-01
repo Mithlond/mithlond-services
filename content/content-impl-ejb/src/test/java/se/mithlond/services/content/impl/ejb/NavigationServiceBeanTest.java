@@ -52,7 +52,7 @@ import java.util.SortedSet;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class MenuNavigationTest {
+public class NavigationServiceBeanTest {
 
     // Shared state
     private File menuRootDirectory;
@@ -90,7 +90,7 @@ public class MenuNavigationTest {
     public void validateExceptionOnMissingStorageRootProperty() {
 
         // Assemble
-        final MenuNavigation unitUnderTest = new MenuNavigation();
+        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
 
         // Act & Assert
         unitUnderTest.setupEnvironmentStorageRootDir();
@@ -101,7 +101,7 @@ public class MenuNavigationTest {
 
         // Assemble
         System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
-        final MenuNavigation unitUnderTest = new MenuNavigation();
+        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
 
         // Act & Assert
         unitUnderTest.setupEnvironmentStorageRootDir();
@@ -114,7 +114,7 @@ public class MenuNavigationTest {
         System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
         System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unittestdevelopment");
 
-        final MenuNavigation unitUnderTest = new MenuNavigation();
+        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
         unitUnderTest.setupEnvironmentStorageRootDir();
 
         // Act & Assert
@@ -128,7 +128,7 @@ public class MenuNavigationTest {
         System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
         System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unittestdevelopment");
 
-        final MenuNavigation unitUnderTest = new MenuNavigation();
+        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
         unitUnderTest.setupEnvironmentStorageRootDir();
 
         // Act
@@ -155,7 +155,7 @@ public class MenuNavigationTest {
         System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
         System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unitteststaging");
 
-        final MenuNavigation unitUnderTest = new MenuNavigation();
+        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
         unitUnderTest.setupEnvironmentStorageRootDir();
 
         // Act
@@ -187,7 +187,7 @@ public class MenuNavigationTest {
         System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
         System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unittestdevelopment");
 
-        final MenuNavigation unitUnderTest = new MenuNavigation();
+        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
         unitUnderTest.setupEnvironmentStorageRootDir();
 
         // Act

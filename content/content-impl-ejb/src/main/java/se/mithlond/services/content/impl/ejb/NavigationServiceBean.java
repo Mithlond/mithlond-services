@@ -25,27 +25,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
-import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
+import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
+import se.mithlond.services.organisation.model.Patterns;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.Deployment;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
@@ -57,40 +49,10 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Stateless
-public class MenuNavigation implements NavigationService {
+public class NavigationServiceBean extends AbstractJpaService implements NavigationService {
 
     // Our Logger
-    private static final Logger log = LoggerFactory.getLogger(MenuNavigation.class);
-
-    /**
-     * The file name of the raw Menu structure.
-     */
-    public static final String MENU_STRUCTURE_PATH = "navigation/menu_structure.xml";
-
-    // Internal state
-    private File environmentStorageRootDir;
-
-    /**
-     * Initialization method to configure the environmentStorageRootDir.
-     */
-    @PostConstruct
-    public void setupEnvironmentStorageRootDir() {
-
-        final File navRoot = new File(Deployment.getStorageRootDirectory(), Deployment.getDeploymentName());
-        if (navRoot.exists() && navRoot.isDirectory()) {
-
-            // All is well
-            environmentStorageRootDir = navRoot;
-
-            if (log.isInfoEnabled()) {
-                log.info("MenuNavigation configured to use environmentStorageRootDir ["
-                        + environmentStorageRootDir.getAbsolutePath() + "]");
-            }
-        } else {
-            throw new IllegalStateException("NavigationStorageRootDir [" + navRoot.getAbsolutePath()
-                    + "] must be an existing directory. Please create it and restart the application.");
-        }
-    }
+    private static final Logger log = LoggerFactory.getLogger(NavigationServiceBean.class);
 
     /**
      * {@inheritDoc}
@@ -109,11 +71,15 @@ public class MenuNavigation implements NavigationService {
                 ? new ArrayList<>()
                 : callersAuthPaths;
 
-        // Read the raw MenuStructure superstructure from disk.
+        // Read the raw MenuStructure superstructure from the database.
         final MenuStructure rawMenuStructure;
         try {
-            rawMenuStructure = readRawMenuStructure(realm);
-        } catch (IllegalStateException e) {
+
+            rawMenuStructure = entityManager.createNamedQuery(
+                    MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
+                    .setParameter(Patterns.PARAM_ORGANISATION_NAME, realm)
+                    .getSingleResult();
+        } catch (Exception e) {
             throw new UnknownOrganisationException(realm, e);
         }
 
@@ -124,24 +90,34 @@ public class MenuNavigation implements NavigationService {
         }
 
         // Populate the return menu structure
-        final MenuStructure toReturn = new MenuStructure(realm);
-        populate(toReturn.getRootMenu(), rawMenuStructure.getRootMenu(), paths);
+        final StandardMenu authorizationFilteredMenu = new StandardMenu(role,
+                domID,
+                tabIndex,
+                cssClasses,
+                authPatterns,
+                true,
+                iconIdentifier,
+                localizedTexts,
+                href,
+                null);
+        populate(authorizationFilteredMenu, rawMenuStructure.getRootMenu(), paths);
 
         // All done.
-        return toReturn;
+        return new MenuStructure(realm, authorizationFilteredMenu);
     }
 
     //
     // Private helpers
     //
 
-    private void populate(final List<AuthorizedNavItem> toPopulate,
-            final List<AuthorizedNavItem> sourceItems,
-            final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
+    private void populate(final StandardMenu toPopulate,
+                          final StandardMenu rawSourceItems,
+                          final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
 
+        // Perform a simple authorization.
         final Authorizer authorizer = SimpleAuthorizer.getInstance();
 
-        for (AuthorizedNavItem current : sourceItems) {
+        for (AuthorizedNavItem current : rawSourceItems) {
 
             // Does the supplied SemanticAuthorizationPaths imply that the caller
             // is authorized to view the current AuthorizedNavItem?
@@ -163,8 +139,8 @@ public class MenuNavigation implements NavigationService {
     }
 
     private StandardMenu complete(final StandardMenu rawMenu,
-            final boolean isAuthorized,
-            final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
+                                  final boolean isAuthorized,
+                                  final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
 
         // #1: Create the resulting StandardMenu
         final StandardMenu toReturn = new StandardMenu(
@@ -232,36 +208,5 @@ public class MenuNavigation implements NavigationService {
 
         // All done.
         return builder.toString();
-    }
-
-    private MenuStructure readRawMenuStructure(final String organisationName) {
-
-        // Check sanity
-        Validate.notEmpty(organisationName, "Cannot handle null or empty 'organisation' name.");
-
-        // Find the raw menustructure file.
-        final File rawMenuStructureFile = new File(environmentStorageRootDir,
-                organisationName + "/" + MENU_STRUCTURE_PATH);
-        final boolean menuStructureFound = rawMenuStructureFile.exists() && rawMenuStructureFile.isFile();
-
-        if (!menuStructureFound) {
-            throw new IllegalStateException("Could not find required menu structure file ["
-                    + rawMenuStructureFile.getAbsolutePath() + "]. Verify configuration and restart the application.");
-        }
-
-        JAXBContext jaxbContext = null;
-        try {
-            jaxbContext = JAXBContext.newInstance(MenuStructure.class);
-        } catch (JAXBException e) {
-            throw new IllegalArgumentException("Could not create JAXB context.", e);
-        }
-
-        try {
-            final Source source = new StreamSource(new FileReader(rawMenuStructureFile));
-            final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            return unmarshaller.unmarshal(source, MenuStructure.class).getValue();
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Could not Unmarshal MenuStructure", e);
-        }
     }
 }
