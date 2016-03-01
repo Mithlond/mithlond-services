@@ -25,12 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
+import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
 import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
@@ -90,17 +92,28 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         }
 
         // Populate the return menu structure
-        final StandardMenu authorizationFilteredMenu = new StandardMenu(role,
-                domID,
-                tabIndex,
-                cssClasses,
-                authPatterns,
+        final StandardMenu rawRootMenu = rawMenuStructure.getRootMenu();
+        final String requiredAuthPatterns = rawRootMenu.getRequiredAuthorizationPatterns().stream()
+                .map(AuthorizationPattern::toString)
+                .reduce((left, right) -> left + "," + right)
+                .orElse(null);
+
+        // Does the supplied SemanticAuthorizationPaths imply that the caller
+        // is authorized to view the current AuthorizedNavItem?
+        final boolean isAuthorized = SimpleAuthorizer.getInstance()
+                .isAuthorized(rawRootMenu.getRequiredAuthorizationPatterns(), paths);
+
+        final StandardMenu authorizationFilteredMenu = new StandardMenu(rawRootMenu.getRoleAttribute(),
+                rawRootMenu.getIdAttribute(),
+                rawRootMenu.getTabIndexAttribute(),
+                synthesizeCssClasses(rawRootMenu.getCssClasses(), isAuthorized),
+                requiredAuthPatterns,
                 true,
-                iconIdentifier,
-                localizedTexts,
-                href,
+                rawRootMenu.getIconIdentifier(),
+                rawRootMenu.getLocalizedTexts(),
+                rawRootMenu.getHrefAttribute(),
                 null);
-        populate(authorizationFilteredMenu, rawMenuStructure.getRootMenu(), paths);
+        populate(authorizationFilteredMenu, rawRootMenu, paths);
 
         // All done.
         return new MenuStructure(realm, authorizationFilteredMenu);
@@ -117,7 +130,9 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         // Perform a simple authorization.
         final Authorizer authorizer = SimpleAuthorizer.getInstance();
 
-        for (AuthorizedNavItem current : rawSourceItems) {
+        // TODO: Add yourself
+
+        for (AbstractAuthorizedNavItem current : rawSourceItems.getChildren()) {
 
             // Does the supplied SemanticAuthorizationPaths imply that the caller
             // is authorized to view the current AuthorizedNavItem?
