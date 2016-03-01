@@ -60,7 +60,6 @@ import java.util.stream.Collectors;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
-
     @ElementCollection
     @CollectionTable(name = "text_localizations", joinColumns = @JoinColumn(name = "localization_suite"))
     @Column(name = "localized_text")
@@ -72,8 +71,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * A sequence of LocalizedTextTuples holding the transported localized texts resources.
      */
     @Transient
-    @XmlElementWrapper
-    @XmlElement(name = "localized")
+    @XmlElement(name = "localizedText")
     private List<LocalizedTextTuple> texts;
 
     /**

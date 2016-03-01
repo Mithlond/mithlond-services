@@ -4,11 +4,7 @@
         <children>
             <menu jpaId="0" version="0" domId="firstMenu" enabled="true">
                 <localizedTexts jpaId="0" version="0">
-                    <texts>
-                        <localized locale="sv..none..none">
-                            <text>Medlemsmeny</text>
-                        </localized>
-                    </texts>
+                    <localizedText locale="sv..none..none">Medlemsmeny</localizedText>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                 </localizedTexts>
                 <children>
@@ -19,11 +15,7 @@
                         <iconIdentifier>cog</iconIdentifier>
                         <href>plainItemPage</href>
                         <localizedTexts jpaId="0" version="0">
-                            <texts>
-                                <localized locale="sv..none..none">
-                                    <text>Sök medlemmar</text>
-                                </localized>
-                            </texts>
+                            <localizedText locale="sv..none..none">Sök medlemmar</localizedText>
                             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                         </localizedTexts>
                     </menuItem>
@@ -38,11 +30,7 @@
                 <iconIdentifier>calendar</iconIdentifier>
                 <href>plainItemPage3</href>
                 <localizedTexts jpaId="0" version="0">
-                    <texts>
-                        <localized locale="sv..none..none">
-                            <text>Kalenderuppgifter</text>
-                        </localized>
-                    </texts>
+                    <localizedText locale="sv..none..none">Kalenderuppgifter</localizedText>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                 </localizedTexts>
             </menuItem>

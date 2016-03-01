@@ -27,11 +27,7 @@
     <organisationName>name</organisationName>
     <rootMenu jpaId="0" version="0" domId="rootMenu" enabled="true">
         <localizedTexts jpaId="0" version="0">
-            <texts>
-                <localized locale="sv..none..none">
-                    <text>Roooot</text>
-                </localized>
-            </texts>
+            <localizedText locale="sv..none..none">Roooot</localizedText>
             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
         </localizedTexts>
         <children>
@@ -39,11 +35,7 @@
                 <iconIdentifier>cog</iconIdentifier>
                 <href>/firstMenu</href>
                 <localizedTexts jpaId="0" version="0">
-                    <texts>
-                        <localized locale="sv..none..none">
-                            <text>Första Menyn</text>
-                        </localized>
-                    </texts>
+                    <localizedText locale="sv..none..none">Första Menyn</localizedText>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                 </localizedTexts>
                 <children>
@@ -54,11 +46,7 @@
                         <iconIdentifier>man</iconIdentifier>
                         <href>/members/list</href>
                         <localizedTexts jpaId="0" version="0">
-                            <texts>
-                                <localized locale="sv..none..none">
-                                    <text>Medlemssida</text>
-                                </localized>
-                            </texts>
+                            <localizedText locale="sv..none..none">Medlemssida</localizedText>
                             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                         </localizedTexts>
                     </menuItem>
@@ -72,11 +60,7 @@
                 </authPatterns>
                 <href>/calendar</href>
                 <localizedTexts jpaId="0" version="0">
-                    <texts>
-                        <localized locale="sv..none..none">
-                            <text>Aktivitetskalender</text>
-                        </localized>
-                    </texts>
+                    <localizedText locale="sv..none..none">Aktivitetskalender</localizedText>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                 </localizedTexts>
             </menuItem>

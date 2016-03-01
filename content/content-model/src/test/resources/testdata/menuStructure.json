@@ -20,14 +20,12 @@
       "localizedTexts": {
         "jpaId": 0,
         "version": 0,
-        "texts": {
-          "localized": [
-            {
-              "locale": "sv..none..none",
-              "text": "Roooot"
-            }
-          ]
-        },
+        "localizedText": [
+          {
+            "locale": "sv..none..none",
+            "value": "Roooot"
+          }
+        ],
         "defaultLocalization": {
           "jpaId": 0,
           "version": 0,
@@ -47,14 +45,12 @@
             "localizedTexts": {
               "jpaId": 0,
               "version": 0,
-              "texts": {
-                "localized": [
-                  {
-                    "locale": "sv..none..none",
-                    "text": "Första Menyn"
-                  }
-                ]
-              },
+              "localizedText": [
+                {
+                  "locale": "sv..none..none",
+                  "value": "Första Menyn"
+                }
+              ],
               "defaultLocalization": {
                 "jpaId": 0,
                 "version": 0,
@@ -78,14 +74,12 @@
                   "localizedTexts": {
                     "jpaId": 0,
                     "version": 0,
-                    "texts": {
-                      "localized": [
-                        {
-                          "locale": "sv..none..none",
-                          "text": "Medlemssida"
-                        }
-                      ]
-                    },
+                    "localizedText": [
+                      {
+                        "locale": "sv..none..none",
+                        "value": "Medlemssida"
+                      }
+                    ],
                     "defaultLocalization": {
                       "jpaId": 0,
                       "version": 0,
@@ -119,14 +113,12 @@
             "localizedTexts": {
               "jpaId": 0,
               "version": 0,
-              "texts": {
-                "localized": [
-                  {
-                    "locale": "sv..none..none",
-                    "text": "Aktivitetskalender"
-                  }
-                ]
-              },
+              "localizedText": [
+                {
+                  "locale": "sv..none..none",
+                  "value": "Aktivitetskalender"
+                }
+              ],
               "defaultLocalization": {
                 "jpaId": 0,
                 "version": 0,

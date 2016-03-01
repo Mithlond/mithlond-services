@@ -3,7 +3,7 @@ package se.mithlond.services.content.model.localization;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlValue;
 import java.util.Objects;
 
 /**
@@ -22,7 +22,7 @@ public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
     /**
      * The localized text.
      */
-    @XmlElement(required = true)
+    @XmlValue
     private String text;
 
     /**
