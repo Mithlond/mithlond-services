@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
-import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
@@ -55,6 +54,9 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(NavigationServiceBean.class);
+
+    // Internal state
+    private Authorizer authorizer = SimpleAuthorizer.getInstance();
 
     /**
      * {@inheritDoc}
@@ -127,29 +129,39 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                           final StandardMenu rawSourceItems,
                           final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
 
-        // Perform a simple authorization.
-        final Authorizer authorizer = SimpleAuthorizer.getInstance();
-
-        // TODO: Add yourself
-
+        // Add all children of the rawSourceItems to the toPopulate children.
+        // .... minding the Authorization, of course.
         for (AbstractAuthorizedNavItem current : rawSourceItems.getChildren()) {
+            addChildrenRecursivelyTo(toPopulate, authorizationPaths, current);
+        }
+    }
 
-            // Does the supplied SemanticAuthorizationPaths imply that the caller
-            // is authorized to view the current AuthorizedNavItem?
-            final boolean isAuthorized = authorizer.isAuthorized(current.getRequiredAuthorizationPatterns(),
-                    authorizationPaths);
+    private void addChildrenRecursivelyTo(final StandardMenu toPopulate,
+                                          final SortedSet<SemanticAuthorizationPath> authorizationPaths,
+                                          final AbstractAuthorizedNavItem current) {
 
-            // Uhm ... polymorphic impementation, anyone?
-            if (current instanceof StandardMenu) {
-                toPopulate.add(complete((StandardMenu) current, isAuthorized, authorizationPaths));
-            } else if (current instanceof StandardMenuItem) {
-                toPopulate.add(complete((StandardMenuItem) current, isAuthorized));
-            } else if (current instanceof SeparatorMenuItem) {
-                toPopulate.add(current);
-            } else {
-                throw new IllegalArgumentException("Cannot handle AuthorizedNavItem of type ["
-                        + current.getClass().getSimpleName() + "]");
-            }
+        // Does the supplied SemanticAuthorizationPaths imply that the caller
+        // is authorized to view the current AuthorizedNavItem?
+        final boolean isAuthorized = authorizer.isAuthorized(current.getRequiredAuthorizationPatterns(),
+                authorizationPaths);
+
+        // Polymorphic implementation ... anyone?
+        if (current instanceof StandardMenu) {
+
+            // Add the completed StandardMenu first.
+            final StandardMenu completed = complete((StandardMenu) current, isAuthorized, authorizationPaths);
+            toPopulate.addChild(completed);
+
+            // Recurse
+            populate(toPopulate, completed, authorizationPaths);
+
+        } else if (current instanceof StandardMenuItem) {
+            toPopulate.addChild(complete((StandardMenuItem) current, isAuthorized));
+        } else if (current instanceof SeparatorMenuItem) {
+            toPopulate.addChild(current);
+        } else {
+            throw new IllegalArgumentException("Cannot handle AuthorizedNavItem of type ["
+                    + current.getClass().getSimpleName() + "]");
         }
     }
 
@@ -158,7 +170,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                                   final SortedSet<SemanticAuthorizationPath> authorizationPaths) {
 
         // #1: Create the resulting StandardMenu
-        final StandardMenu toReturn = new StandardMenu(
+        return new StandardMenu(
                 rawMenu.getRoleAttribute(),
                 rawMenu.getIdAttribute(),
                 rawMenu.getTabIndexAttribute(),
@@ -166,20 +178,9 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                 null,
                 isAuthorized && rawMenu.isEnabled(),
                 rawMenu.getIconIdentifier(),
-                isAuthorized ? rawMenu.getHrefAttribute() : null);
-
-        // #2: Complete all children to the supplied StandardMenu - if we are authorized.
-        //     Otherwise, simply ignore processing the children.
-        if (isAuthorized) {
-            final List<AuthorizedNavItem> completedChildren = new ArrayList<>();
-            populate(completedChildren, rawMenu.getChildren(), authorizationPaths);
-
-            // ... and add the processed children.
-            toReturn.getChildren().addAll(completedChildren);
-        }
-
-        // All done.
-        return toReturn;
+                rawMenu.getLocalizedTexts(),
+                isAuthorized ? rawMenu.getHrefAttribute() : null,
+                null);
     }
 
     private StandardMenuItem complete(final StandardMenuItem rawMenuItem, final boolean isAuthorized) {
