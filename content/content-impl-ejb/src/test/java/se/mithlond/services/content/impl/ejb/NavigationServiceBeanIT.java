@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
+import se.jguru.nazgul.test.persistence.StandardPersistenceTest;
+import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
 import se.mithlond.services.content.api.transport.MenuStructure;
 import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
@@ -52,13 +54,18 @@ import java.util.SortedSet;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class NavigationServiceBeanTest {
+public class NavigationServiceBeanIT extends StandardPersistenceTest {
 
     // Shared state
-    private File menuRootDirectory;
+    private NavigationService unitUnderTest;
 
-    @Before
-    public void setupSharedState() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void doCustomSetup() {
+
+        unitUnderTest = new NavigationServiceBean();
 
         // Find the relative path to the menuroot directory
         final URL resource = getClass().getClassLoader().getResource("testdata/storageroot");

@@ -44,11 +44,25 @@ public interface Authorizer {
      * one of the requiredAuthorizationPatterns.
      * @see AuthorizationPattern#parse(String)
      */
-    boolean isAuthorized(final String requiredAuthorizationPatterns,
-                         final SortedSet<SemanticAuthorizationPath> possessedPrivileges);
+    default boolean isAuthorized(final String requiredAuthorizationPatterns,
+            final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
+
+        // No requirements == authorized.
+        if (requiredAuthorizationPatterns == null || requiredAuthorizationPatterns.isEmpty()) {
+            return true;
+        }
+
+        // Requirements, but no privileges == not authorized
+        if (possessedPrivileges == null || possessedPrivileges.isEmpty()) {
+            return false;
+        }
+
+        // Match each possessedPrivilege against all of the supplied privileges.
+        return isAuthorized(AuthorizationPattern.parse(requiredAuthorizationPatterns), possessedPrivileges);
+    }
 
     /**
-     * Validates if any of the provided SemanticAuthorizationPaths matches at least one of the
+     * Checks if any of the provided SemanticAuthorizationPaths matches at least one of the
      * supplied AuthorizationPattern instances.
      *
      * @param requiredAuthorizationPatterns A SortedSet of AuthorizationPatterns.
@@ -58,5 +72,72 @@ public interface Authorizer {
      * one of the requiredAuthorizationPatterns.
      */
     boolean isAuthorized(final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
-                         final SortedSet<SemanticAuthorizationPath> possessedPrivileges);
+            final SortedSet<SemanticAuthorizationPath> possessedPrivileges);
+
+    /**
+     * Checks if any of the provided SemanticAuthorizationPaths matches at least one of the supplied
+     * AuthorizationPattern instances. If not, throws an UnauthorizedException. This type of invocation should only
+     * be used if the normal caller's execution should be terminated and some other action taken (rather than the
+     * result of the invocation simply being ignored) by the caller. In all other cases, use the
+     * {@link #isAuthorized(SortedSet, SortedSet)} method instead.
+     *
+     * @param requiredAuthorizationPatterns A comma-separated string containing required AuthorizationPatterns.
+     * @param possessedPrivileges           A Set of SemanticAuthorizationPaths to be verified against the parsed
+     *                                      AuthorizationPattern instances from the requiredAuthorizationPatterns.
+     * @param operationDescription          A non-empty description of the operation which was potentially unauthorized.
+     *                                      This will be delivered into the
+     *                                      {@link UnauthorizedException#operationDescription} property in case the
+     *                                      underlying operation was unauthorized.
+     * @throws UnauthorizedException if the underlying operation was unauthorized given the supplied patterns and
+     *                               privileges.
+     */
+    default void validateAuthorization(final String requiredAuthorizationPatterns,
+            final SortedSet<SemanticAuthorizationPath> possessedPrivileges,
+            final String operationDescription) throws UnauthorizedException {
+
+        // No requirements == authorized.
+        if (requiredAuthorizationPatterns == null || requiredAuthorizationPatterns.isEmpty()) {
+            return;
+        }
+
+        // From here on, we need a SortedSet of AuthorizationPatterns.
+        final SortedSet<AuthorizationPattern> requiredPatterns =
+                AuthorizationPattern.parse(requiredAuthorizationPatterns);
+
+        // Requirements, but no privileges == not authorized
+        if (possessedPrivileges == null || possessedPrivileges.isEmpty()) {
+            throw new UnauthorizedException(
+                    operationDescription,
+                    possessedPrivileges,
+                    requiredPatterns);
+        }
+
+        // Delegate
+        validateAuthorization(
+                AuthorizationPattern.parse(requiredAuthorizationPatterns),
+                possessedPrivileges,
+                operationDescription);
+    }
+
+    /**
+     * Checks if any of the provided SemanticAuthorizationPaths matches at least one of the supplied
+     * AuthorizationPattern instances. If not, throws an UnauthorizedException. This type of invocation should only
+     * be used if the normal caller's execution should be terminated and some other action taken (rather than the
+     * result of the invocation simply being ignored) by the caller. In all other cases, use the
+     * {@link #isAuthorized(SortedSet, SortedSet)} method instead.
+     *
+     * @param requiredAuthorizationPatterns A SortedSet of AuthorizationPatterns.
+     * @param possessedPrivileges           A Set of SemanticAuthorizationPaths to be verified against the parsed
+     *                                      AuthorizationPattern instances from the requiredAuthorizationPatterns.
+     * @param operationDescription          A non-empty description of the operation which was potentially unauthorized.
+     *                                      This will be delivered into the
+     *                                      {@link UnauthorizedException#operationDescription} property in case the
+     *                                      underlying operation was unauthorized.
+     * @throws UnauthorizedException if the underlying operation was unauthorized given the supplied patterns and
+     *                               privileges.
+     */
+    void validateAuthorization(
+            final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+            final SortedSet<SemanticAuthorizationPath> possessedPrivileges,
+            final String operationDescription) throws UnauthorizedException;
 }

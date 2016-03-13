@@ -53,29 +53,9 @@ public final class SimpleAuthorizer implements Authorizer {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public boolean isAuthorized(final String requiredAuthorizationPatterns,
-                                final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
-
-        // No requirements == authorized.
-        if (requiredAuthorizationPatterns == null || requiredAuthorizationPatterns.isEmpty()) {
-            return true;
-        }
-
-        // Requirements, but no privileges == not authorized
-        if (possessedPrivileges == null || possessedPrivileges.isEmpty()) {
-            return false;
-        }
-
-        // Match each possessedPrivilege against all of the supplied privileges.
-        return isAuthorized(AuthorizationPattern.parse(requiredAuthorizationPatterns), possessedPrivileges);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @SuppressWarnings("all")
     public boolean isAuthorized(final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
-                                final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
+            final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
 
         // No requirements == authorized.
         if (requiredAuthorizationPatterns == null || requiredAuthorizationPatterns.isEmpty()) {
@@ -90,12 +70,29 @@ public final class SimpleAuthorizer implements Authorizer {
         for (AuthorizationPattern current : requiredAuthorizationPatterns) {
             for (SemanticAuthorizationPath currentPrivilege : possessedPrivileges) {
                 if (current.matches(currentPrivilege.toString())) {
+
+                    // Authorized!
                     return true;
                 }
             }
         }
 
-        // Nopes.
+        // Did not possess any of the required SemanticAuthorizationPaths.
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void validateAuthorization(
+            final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+            final SortedSet<SemanticAuthorizationPath> possessedPrivileges,
+            final String operationDescription) throws UnauthorizedException {
+
+        // Use the standard implementation to determine if the caller is not authorized.
+        if (!isAuthorized(requiredAuthorizationPatterns, possessedPrivileges)) {
+            throw new UnauthorizedException(operationDescription, possessedPrivileges, requiredAuthorizationPatterns);
+        }
     }
 }

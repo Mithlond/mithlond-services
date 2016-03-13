@@ -129,6 +129,28 @@ public class SimpleAuthorizerTest {
         Assert.assertTrue(unitUnderTest.isAuthorized(patterns3, possessedPrivileges));
     }
 
+    @Test(expected = UnauthorizedException.class)
+    public void validateUnauthorizedExceptionUsingPatterns() {
+
+        // Assemble
+        final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
+        final SortedSet<AuthorizationPattern> patterns1 = AuthorizationPattern.parse(
+                "/forodrim/members,/mithlond/members");
+
+        // Act & Assert
+        unitUnderTest.validateAuthorization(patterns1, possessedPrivileges, "Some Operations Description");
+    }
+
+    @Test
+    public void validateAuthorizedCallYieldsNoUnauthorizedExceptionUsingPatterns() {
+
+        // Assemble
+        final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
+
+        // Act & Assert
+        unitUnderTest.validateAuthorization("/mithlond/village_idiots/", possessedPrivileges, "Irrelevant");
+    }
+
     //
     // Private helpers
     //
