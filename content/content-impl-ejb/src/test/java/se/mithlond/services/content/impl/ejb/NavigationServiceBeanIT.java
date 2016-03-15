@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.content.impl.ejb;
 
+import org.dbunit.dataset.IDataSet;
 import org.junit.Assert;
 import org.junit.Test;
 import se.mithlond.services.content.api.NavigationService;
@@ -39,8 +40,11 @@ import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.test.entity.AbstractIntegrationTest;
 
+import javax.persistence.EntityManager;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -155,7 +159,9 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
         whichKingMifflondMembership.getGroupMemberships().add(whichKingEditor);
 
         // #5) Create the service to test.
-        unitUnderTest = new NavigationServiceBean();
+        final NavigationServiceBean bean = new NavigationServiceBean();
+        injectEntityManager(bean);
+        this.unitUnderTest = bean;
 
         rootMenu = StandardMenu.getBuilder()
                 .withDomId("rootMenu")
@@ -263,6 +269,7 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
     public void validatePersistingMenuStructure() throws Exception {
 
         // Assemble
+        final IDataSet expected = performStandardTestDbSetup();
         final List<SemanticAuthorizationPathProducer> producers = new ArrayList<>();
         producers.add(whichKingMifflondMembership);
 
@@ -276,6 +283,12 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
             entityManager.flush();
         }
 
+        /*
+        System.out.println(" ================== ");
+        System.out.println(extractFlatXmlDataSet(iDatabaseConnection.createDataSet()));
+        System.out.println(" ================== ");
+        */
+
         // Act
         unitUnderTest.createOrUpdate("Mifflond", templateMenuStructure, producers);
 
@@ -285,6 +298,25 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
                 .setParameter(Patterns.PARAM_ORGANISATION_NAME, "organisationName")
                 .getResultList();
         Assert.assertEquals(1, menuStructures.size());
+    }
+
+    //
+    // Private helpers
+    //
+
+    private void injectEntityManager(final NavigationServiceBean toBeInjected) {
+
+        try {
+            final Field entityManagerField = AbstractJpaService.class.getDeclaredField("entityManager");
+            Assert.assertNotNull(entityManagerField);
+            Assert.assertEquals(EntityManager.class, entityManagerField.getType());
+
+            entityManagerField.setAccessible(true);
+            entityManagerField.set(toBeInjected, entityManager);
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not inject EntityManager into ["
+                    + toBeInjected.getClass().getName() + "]", e);
+        }
     }
 
     /*

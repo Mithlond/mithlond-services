@@ -58,7 +58,7 @@ import java.util.StringTokenizer;
                         + " and l.country like :" + Patterns.PARAM_COUNTRY),
         @NamedQuery(name = Localization.NAMEDQ_GET_BY_PRIMARY_KEYS,
                 query = "select l from Localization l "
-                        + " where l.id in :" + Patterns.PARAM_LANGUAGE)
+                        + " where l.id in :" + Patterns.PARAM_IDS)
 })
 @Entity
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = "compactStringForm")

@@ -31,12 +31,19 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
+import se.mithlond.services.shared.authorization.api.Authorizer;
+import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -55,7 +62,7 @@ public class GroupAndGuildTest extends AbstractEntityTest {
 
         // Create the Organisations
         organisations = new Organisation[3];
-        for(int i = 0; i < organisations.length; i++) {
+        for (int i = 0; i < organisations.length; i++) {
             final Address currentAddress = new Address(
                     "careOfLine_" + i,
                     "departmentName_" + i,
@@ -79,19 +86,19 @@ public class GroupAndGuildTest extends AbstractEntityTest {
 
         // Create some categories
         categories = new Category[10];
-        for(int i = 0; i < categories.length; i++) {
+        for (int i = 0; i < categories.length; i++) {
             categories[i] = new Category("categoryID_" + i, "classification_" + i, "description_" + i);
         }
 
         // Create some Groups
         groups = new Group[5];
         guilds = new Guild[groups.length];
-        for(int i = 0; i < groups.length; i++) {
+        for (int i = 0; i < groups.length; i++) {
 
             groups[i] = new Group(
                     "groupName_" + i,
                     organisations[i % organisations.length],
-                    (i > 1 ? groups[i-1] : null),
+                    (i > 1 ? groups[i - 1] : null),
                     "emailList_" + i);
 
             guilds[i] = new Guild(
@@ -103,7 +110,7 @@ public class GroupAndGuildTest extends AbstractEntityTest {
         }
 
         groupsAndGuilds = new Group[groups.length + guilds.length];
-        for(int i = 0; i < groups.length; i++) {
+        for (int i = 0; i < groups.length; i++) {
             groupsAndGuilds[2 * i] = groups[i];
             groupsAndGuilds[(2 * i) + 1] = guilds[i];
         }
@@ -145,12 +152,76 @@ public class GroupAndGuildTest extends AbstractEntityTest {
         resurrected.forEach(x -> actual.put(x.getGroupName(), x));
         Arrays.asList(groupsAndGuilds).forEach(x -> expected.put(x.getGroupName(), x));
 
-        for(Map.Entry<String, Group> current : actual.entrySet()) {
+        for (Map.Entry<String, Group> current : actual.entrySet()) {
 
             final Group currentExpected = expected.get(current.getKey());
 
             Assert.assertNotSame(currentExpected, current.getValue());
             Assert.assertEquals(currentExpected, current.getValue());
         }
+    }
+
+    @Test
+    public void validateAuthorization() {
+
+        // Assemble
+        final Authorizer simpleAuthorizer = SimpleAuthorizer.getInstance();
+        final SortedSet<AuthorizationPattern> org1Patterns = AuthorizationPattern.parse("/name_1");
+        final SortedSet<AuthorizationPattern> org1Group1Patterns = AuthorizationPattern.parse("/name_1/groupName_1");
+
+        final Map<Integer, SemanticAuthorizationPathProducer> index2ProducerMap = new TreeMap<>();
+        final List<Group> groupsList = Arrays.asList(groupsAndGuilds);
+        for (int i = 0; i < groupsList.size(); i++) {
+            index2ProducerMap.put(i, getProducer(groupsList.get(i)));
+        }
+
+        // Act
+        /*
+        System.out.println("org1Patterns: " + org1Patterns.stream()
+                .map(AuthorizationPattern::toString)
+                .reduce((l,r) -> l + "," + r).get());
+        System.out.println("org1Group1Patterns: " + org1Group1Patterns.stream()
+                .map(AuthorizationPattern::toString)
+                .reduce((l,r) -> l + "," + r).get());
+        */
+
+        /*
+        index2ProducerMap.entrySet()
+                .stream()
+                .forEach(current -> {
+
+                    final int index = current.getKey();
+                    final SemanticAuthorizationPathProducer producer = current.getValue();
+
+                    System.out.println("[" + index + "]: " + producer.getPaths());
+                });
+        */
+
+        // Assert
+        Assert.assertTrue(simpleAuthorizer.isAuthorized(org1Patterns, index2ProducerMap.get(2).getPaths()));
+        Assert.assertFalse(simpleAuthorizer.isAuthorized(org1Patterns, index2ProducerMap.get(1).getPaths()));
+
+        Assert.assertTrue(simpleAuthorizer.isAuthorized(org1Group1Patterns, index2ProducerMap.get(2).getPaths()));
+        Assert.assertFalse(simpleAuthorizer.isAuthorized(org1Group1Patterns, index2ProducerMap.get(1).getPaths()));
+        Assert.assertFalse(simpleAuthorizer.isAuthorized(org1Group1Patterns, index2ProducerMap.get(7).getPaths()));
+    }
+
+    //
+    // Private helpers
+    //
+
+    private SemanticAuthorizationPathProducer getProducer(final Group... groupsOrGuilds) {
+        return () -> {
+            final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+
+            if (groupsOrGuilds != null) {
+                Arrays.asList(groupsOrGuilds)
+                        .stream()
+                        .map(Group::getPaths)
+                        .forEach(toReturn::addAll);
+            }
+
+            return toReturn;
+        };
     }
 }

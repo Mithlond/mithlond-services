@@ -50,7 +50,7 @@ public interface NavigationService {
      * gracefully handle {@code null} realmName values.
      */
     Function<String, SortedSet<AuthorizationPattern>> REALM_AUTHORIZATION_PATTERN_FUNCTION =
-            realmName -> AuthorizationPattern.parse("/" + realmName + "/" + UPDATE_GROUP + "/standard");
+            realmName -> AuthorizationPattern.parse("/" + realmName + "/" + UPDATE_GROUP);
 
     /**
      * Retrieves the MenuStructure available to a caller sporting the supplied Memberships.

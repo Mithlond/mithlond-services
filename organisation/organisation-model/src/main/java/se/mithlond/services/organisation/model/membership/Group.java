@@ -25,7 +25,6 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.Patterns;
-import se.mithlond.services.shared.authorization.api.Segmenter;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
@@ -313,11 +312,13 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
     @Override
     public SortedSet<SemanticAuthorizationPath> getPaths() {
 
+        // Create a non-null SortedSet to return.
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
-        toReturn.add(new AuthorizationPath(
-                organisation.getOrganisationName(),
-                groupName,
-                Segmenter.ANY));
+
+        // Create an AuthorizationPath for this Group, using an empty qualifier.
+        toReturn.add(new AuthorizationPath(organisation.getOrganisationName(), groupName, ""));
+
+        // All Done.
         return toReturn;
     }
 

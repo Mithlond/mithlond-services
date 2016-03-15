@@ -4,7 +4,6 @@ before_install:
   - export LC_ALL="sv_SE.UTF-8"
 language: java
 env:
-  - MAVEN_VERSION=3.0.5
   - MAVEN_VERSION=3.3.3
 jdk:
   - oraclejdk8

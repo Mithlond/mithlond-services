@@ -23,6 +23,7 @@ package se.mithlond.services.content.impl.ejb;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
 import se.mithlond.services.content.model.localization.Localization;
@@ -304,9 +305,13 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                     + "\n  Needs persisting : " + needsPersisting);
         }
 
+        final List<Long> alreadyPersistedIDs = alreadyPersisted.size() > 0
+                ? alreadyPersisted.stream().distinct().map(NazgulEntity::getId).collect(Collectors.toList())
+                : new ArrayList<>();
+
         final List<Localization> managedLocalizations = alreadyPersisted.size() > 0
                 ? entityManager.createNamedQuery(Localization.NAMEDQ_GET_BY_PRIMARY_KEYS, Localization.class)
-                .setParameter(se.mithlond.services.content.model.Patterns.PARAM_IDS, alreadyPersisted)
+                .setParameter(se.mithlond.services.content.model.Patterns.PARAM_IDS, alreadyPersistedIDs)
                 .getResultList()
                 : new ArrayList<>();
 
