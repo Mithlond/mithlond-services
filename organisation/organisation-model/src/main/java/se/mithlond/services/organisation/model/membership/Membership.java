@@ -581,10 +581,10 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
 
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
         if (groupMemberships != null) {
-            groupMemberships.forEach(current -> toReturn.addAll(current.getPaths()));
+            groupMemberships.stream().forEach(current -> toReturn.addAll(current.getPaths()));
         }
         if (orderLevelGrants != null) {
-            orderLevelGrants.forEach(current -> toReturn.addAll(current.getPaths()));
+            orderLevelGrants.stream().forEach(current -> toReturn.addAll(current.getPaths()));
         }
 
         // All done.

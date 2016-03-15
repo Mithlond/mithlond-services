@@ -24,7 +24,7 @@ package se.mithlond.services.backend.war.resources.content;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.Parameters;
 import se.mithlond.services.content.api.NavigationService;
-import se.mithlond.services.content.api.transport.MenuStructure;
+import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
 import javax.ejb.EJB;
@@ -56,10 +56,9 @@ public class NavigationResource extends AbstractResource {
 
         // Populate the SemanticAuthorizationPathProducer List with the active Membership.
         final List<SemanticAuthorizationPathProducer> sapp = new ArrayList<>();
-        sapp.add(getDisconnectedActiveMembership());
-
-        // TODO: Get all Memberships of the current user?
-        // activeMembership.getUser().getMemberships()
+        if (getDisconnectedActiveMembership().isPresent()) {
+            sapp.add(getDisconnectedActiveMembership().get());
+        }
 
         // All done.
         return navigationService.getMenuStructure(organisationName, sapp);
