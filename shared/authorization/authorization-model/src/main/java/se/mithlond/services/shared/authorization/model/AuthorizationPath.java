@@ -43,7 +43,8 @@ import java.util.StringTokenizer;
 
 /**
  * Immutable Entity implementation of a Path consisting of 3 named/semantic segments, realm, group and qualifier.
- * Any of these segments may be empty but not null.
+ * Any of these segments may be empty but not null. AuthorizationPaths constitute the definitions of which privileges
+ * should be held in order to perform a particular operation or access certain content.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */

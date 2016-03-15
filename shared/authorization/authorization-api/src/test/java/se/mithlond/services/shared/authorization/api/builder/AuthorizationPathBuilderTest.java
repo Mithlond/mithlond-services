@@ -27,9 +27,12 @@ import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -51,19 +54,53 @@ public class AuthorizationPathBuilderTest {
     }
 
     @Test
+    public void validateSplittingStrings() {
+
+        // Assemble
+        final String foobar = "/foo/bar/baz";
+        final String gnatgnus = "/gnat/gnus/gnarp";
+        final String hitme = "/hit/me";
+        final String tooLong = "/a/too/long/path";
+
+        final String unitUnderTest = foobar + "," + gnatgnus + "," + tooLong;
+        final String shorterString = hitme + "," + foobar + ",";
+        final String illegalEmpty = "";
+
+        // Act
+        final String[] okSplit = unitUnderTest.split(SemanticAuthorizationPath.PATTERN_SEPARATOR_STRING);
+        final String[] empty = illegalEmpty.split(SemanticAuthorizationPath.PATTERN_SEPARATOR_STRING);
+        final String[] shorter = shorterString.split(SemanticAuthorizationPath.PATTERN_SEPARATOR_STRING);
+
+        final List<List<String>> spliced = Arrays.asList(shorter).stream()
+                .map(current -> Arrays.asList(current.split(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING)))
+                .collect(Collectors.toList());
+
+        // Assert
+        Assert.assertEquals(3, okSplit.length);
+        Assert.assertEquals(1, empty.length);
+        Assert.assertEquals(2, shorter.length);
+
+        Assert.assertEquals(foobar, okSplit[0]);
+        Assert.assertEquals(gnatgnus, okSplit[1]);
+        Assert.assertEquals(tooLong, okSplit[2]);
+
+        Assert.assertEquals(spliced.size(), shorter.length);
+    }
+
+    @Test
     public void validateParsingAuthorizationPaths() {
 
         // Assemble
-        final String patterns = "/mithlond/foo,/mithlond/village_idiots/member";
+        final String mithlondFooPath = "/mithlond/foo/";
+        final String mithlondVillageIdiotsMemberPath = "/mithlond/village_idiots/member";
+
+        final String paths = mithlondFooPath + "," + mithlondVillageIdiotsMemberPath;
 
         // Act
-        final SortedSet<SemanticAuthorizationPath> result = AuthorizationPathBuilder.parse(patterns);
+        final SortedSet<SemanticAuthorizationPath> result = AuthorizationPathBuilder.parse(paths);
 
         // Assert
         Assert.assertEquals(2, result.size());
-        for(SemanticAuthorizationPath current : result) {
-            System.out.println("Got: " + current.toString());
-        }
     }
 
     @Test

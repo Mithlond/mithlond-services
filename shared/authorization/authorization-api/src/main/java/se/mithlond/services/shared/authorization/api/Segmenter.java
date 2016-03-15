@@ -97,8 +97,8 @@ public final class Segmenter {
         final String expectedFormat = "Expected patternString format: [/]realm/group/qualifier.";
         Validate.notNull(patternString, "patternString");
         Validate.isTrue(!patternString.contains(SemanticAuthorizationPath.PATTERN_SEPARATOR_STRING),
-                "Argument 'patternString' cannot contain '" + SemanticAuthorizationPath.PATTERN_SEPARATOR + "' " +
-                        "characters. " + expectedFormat);
+                "Argument 'patternString' cannot contain '" + SemanticAuthorizationPath.PATTERN_SEPARATOR + "' "
+                        + "characters. " + expectedFormat);
 
         // Launder the patternString, and find all indices within the effectivePattern containing segment separators.
         final String effectivePattern = launder(patternString);

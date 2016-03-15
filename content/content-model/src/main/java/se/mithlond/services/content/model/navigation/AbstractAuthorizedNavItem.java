@@ -37,7 +37,9 @@ import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -60,6 +62,9 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "simpleOrderingOfMenuChildren", columnNames = {"index", "parent"})
+})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "nav_item_type")
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"role", "domId", "tabIndex", "transportCssClasses",
@@ -328,6 +333,25 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
      */
     public void setIndex(final int index) {
         this.index = index;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "AbstractAuthorizedNavItem{"
+                + "role='" + role + '\''
+                + ", domId='" + domId + '\''
+                + ", tabIndex=" + tabIndex
+                + ", cssClasses='" + cssClasses + '\''
+                + ", transportCssClasses=" + transportCssClasses
+                + ", authorizationPatterns='" + authorizationPatterns + '\''
+                + ", transportAuthorizationPatterns=" + transportAuthorizationPatterns
+                + ", enabled=" + enabled
+                + ", parent=" + parent
+                + ", index=" + index
+                + '}';
     }
 
     /**

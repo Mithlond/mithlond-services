@@ -21,11 +21,12 @@
  */
 package se.mithlond.services.shared.authorization.api.builder;
 
-import se.mithlond.services.shared.authorization.api.Segmenter;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -139,8 +140,38 @@ public final class AuthorizationPathBuilder {
                     false);
 
             while (tok.hasMoreTokens()) {
-                final String[] segments = Segmenter.segment(tok.nextToken());
-                toReturn.add(new AuthorizationPath(segments[0], segments[1] , segments[2]));
+
+                // Trim away any edge whitespace.
+                final StringBuilder trimmedPath = new StringBuilder(tok.nextToken().trim());
+
+                // Expected pattern: [/]realm[/group[/qualifier]]
+                //
+                // ... so trim off any initial segment separator char.
+                if (trimmedPath.charAt(0) == SemanticAuthorizationPath.SEGMENT_SEPARATOR) {
+                    trimmedPath.deleteCharAt(0);
+                }
+
+                // Do we need to add any trailing slashes?
+                final StringTokenizer innerTokenizer = new StringTokenizer(
+                        trimmedPath.toString(),
+                        SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING,
+                        false);
+                final List<String> segments = new ArrayList<>();
+                while(innerTokenizer.hasMoreTokens()) {
+                    segments.add(innerTokenizer.nextToken());
+                }
+
+                // Extract the segments
+                final String realm = segments.size() > 0 ? segments.get(0) : "";
+                final String group = segments.size() > 1 ? segments.get(1) : "";
+                final String qualifier = segments.size() > 2 ? segments.get(2) : "";
+
+                // Use the builder's own mechanics.
+                toReturn.add(AuthorizationPathBuilder.create()
+                        .withRealm(realm)
+                        .withGroup(group)
+                        .withQualifier(qualifier)
+                        .build());
             }
         }
 

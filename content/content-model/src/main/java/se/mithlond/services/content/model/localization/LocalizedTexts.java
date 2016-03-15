@@ -40,13 +40,14 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -149,15 +150,16 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     @Override
     public boolean equals(final Object o) {
+
+        // Fail fast.
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        if (!super.equals(o)) {
-            return false;
-        }
+
+        // Delegate to internal state
         final LocalizedTexts that = (LocalizedTexts) o;
         return Objects.equals(data, that.data)
                 && Objects.equals(defaultLocalization, that.defaultLocalization);
@@ -168,7 +170,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), data, defaultLocalization);
+        return Objects.hash(data, defaultLocalization);
     }
 
     /**
@@ -176,6 +178,49 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     public List<Localization> getContainedLocalizations() {
         return data.keySet().stream().collect(Collectors.toList());
+    }
+
+    /**
+     * Merge-style method to call (on the server side only) whenever this LocalizedTexts instances
+     * needs to be merged into an existing EntityManager transaction. This implies that all Localizations within the
+     * internal data map should be replaced with their managed siblings as read from the local database.
+     *
+     * @param managedLocalizations The non-null set of managed Localizations found within the local database.
+     */
+    public void assignManagedLocalizations(final Collection<Localization> managedLocalizations) {
+
+        // Check sanity
+        Validate.notNull(managedLocalizations, "Cannot handle null 'managedLocalizations' argument.");
+
+        // Update the defaultLocalization
+        final Optional<Localization> managedDefaultLocalization = managedLocalizations
+                .stream()
+                .filter(current -> current.equals(defaultLocalization))
+                .findFirst();
+        if (!managedDefaultLocalization.isPresent()) {
+            throw new IllegalArgumentException("Required managedLocalization [" + defaultLocalization + "] not found.");
+        }
+        this.defaultLocalization = managedDefaultLocalization.get();
+
+        // Re-create the data map to hold the managed Localizations from the provided managedLocalizations Set.
+        this.data = data.entrySet().stream().collect(Collectors.toMap(current -> {
+
+            // Find the corresponding managed Localization within the 'managedLocalizations' Set.
+            final Localization key = current.getKey();
+            final Optional<Localization> managedLocalization = managedLocalizations
+                    .stream()
+                    .filter(aLoc -> aLoc.equals(key))
+                    .findFirst();
+
+            if (!managedLocalization.isPresent()) {
+                throw new IllegalArgumentException("Existing Localization [" + key
+                        + "] was not found within the supplied managedLocalizations: " + managedLocalizations);
+            }
+
+            // All done.
+            return managedLocalization.get();
+
+        }, Map.Entry::getValue));
     }
 
     /**

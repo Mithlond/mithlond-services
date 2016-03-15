@@ -22,10 +22,14 @@
 package se.mithlond.services.content.api;
 
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
+import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 
 import javax.ejb.Local;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.function.Function;
 
 /**
  * Service specification for navigating resources or sites.
@@ -34,6 +38,19 @@ import java.util.List;
  */
 @Local
 public interface NavigationService {
+
+    /**
+     * The standard group required to update Navigation structures.
+     */
+    String UPDATE_GROUP = "editors";
+
+    /**
+     * The standard Function returning the AuthorizationPattern required to create or update
+     * (i.e. perform write operations on) a MenuStructure. Note that this Function does not
+     * gracefully handle {@code null} realmName values.
+     */
+    Function<String, SortedSet<AuthorizationPattern>> REALM_AUTHORIZATION_PATTERN_FUNCTION =
+            realmName -> AuthorizationPattern.parse("/" + realmName + "/" + UPDATE_GROUP + "/standard");
 
     /**
      * Retrieves the MenuStructure available to a caller sporting the supplied Memberships.
@@ -46,6 +63,25 @@ public interface NavigationService {
      * @throws UnknownOrganisationException if the menuOwner was not the name of an existing organisation.
      */
     MenuStructure getMenuStructure(final String realm,
-                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+            final List<SemanticAuthorizationPathProducer> callersAuthPaths)
             throws UnknownOrganisationException;
+
+    /**
+     * Creates or updates the supplied MenuStructure for the supplied realm.
+     * Note that the {@code realm} value must be equal to the {@link MenuStructure#getOrganisationName()}
+     * value of the supplied MenuStructure.
+     *
+     * @param realm            a non-empty realm identifier/name.
+     * @param menuStructure    A non-null MenuStructure to set as the MenuStructure for the supplied
+     * @param callersAuthPaths The SemanticAuthorizationPathProducer of the caller, used to determine which
+     *                         MenuStructure items should be retrieved. Typically, each authPath is a Membership.
+     * @return The Persisted/Managed/Updated MenuStructure.
+     * @throws UnauthorizedException if the caller did not possess required privileges
+     *                               to update the supplied MenuStructure.
+     */
+    MenuStructure createOrUpdate(final String realm,
+            final MenuStructure menuStructure,
+            final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+            throws UnauthorizedException;
+
 }

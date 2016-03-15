@@ -28,6 +28,7 @@ import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.xml.bind.Marshaller;
@@ -35,6 +36,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 
 /**
  * Abstract implementation of a LinkedNavItem, forming the basis for Menus and MenuItems.
@@ -51,9 +53,15 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      */
     public static final String ICON_FIXED_WITH_CSS = "icon-fixed-width";
 
+    /**
+     * The icon identifier attribute of this AbstractLinkedNavItem.
+     */
     @XmlElement
     private String iconIdentifier;
 
+    /**
+     * The HREF attribute of this AbstractLinkedNavItem. Should contain an URL (or equivalent).
+     */
     @XmlElement
     private String href;
 
@@ -61,7 +69,7 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      * A Localized texts structure containing all texts for this AbstractLinkedNavItem.
      */
     @XmlElement
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
     private LocalizedTexts localizedTexts;
 
     /**
@@ -213,6 +221,35 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object o) {
+
+        // Fail fast
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractLinkedNavItem)) {
+            return false;
+        }
+
+        // Delegate to internal state.
+        final AbstractLinkedNavItem that = (AbstractLinkedNavItem) o;
+        return Objects.equals(iconIdentifier, that.iconIdentifier)
+                && Objects.equals(href, that.href)
+                && Objects.equals(localizedTexts, that.localizedTexts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(iconIdentifier, href, localizedTexts);
+    }
+
+    /**
      * Abstract builder implementation to be overridden/used by concrete sub-class builders.
      *
      * @param <T> the concrete subtype of AbstractLinkedNavItemBuilder.
@@ -337,19 +374,5 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
             this.parent = Validate.notNull(parent, "parent");
             return (T) this;
         }
-    }
-
-    //
-    // Private helpers
-    //
-
-    /**
-     * Standard JAXB class-wide listener method, automagically invoked
-     * after it has created an instance of this Class.
-     *
-     * @param marshaller The active Marshaller.
-     */
-    @SuppressWarnings("PMD")
-    private void beforeMarshal(final Marshaller marshaller) {
     }
 }

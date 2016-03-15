@@ -37,6 +37,11 @@ public final class Patterns {
     public static final String NAMESPACE = "http://www.jguru.se/mithlond/services/content";
 
     /**
+     * NamedQuery parameter name for primary keys ("IDs").
+     */
+    public static final String PARAM_IDS = "ids";
+
+    /**
      * NamedQuery parameter name for language.
      */
     public static final String PARAM_LANGUAGE = "language";

@@ -76,8 +76,13 @@ public class MenuStructure extends NazgulEntity {
 
     // Internal state
 
+    @XmlTransient
+    @Transient
+    private final Object[] lock = new Object[0];
+
     /**
-     * The Localizations for which this MenuStructure is provided.
+     * The Localizations encountered within this MenuStructure.
+     * There is no guarantee that all elements within this MenuStructure sports all collected Localizations.
      */
     @XmlElementWrapper
     @XmlElement(name = "localization")
@@ -99,7 +104,7 @@ public class MenuStructure extends NazgulEntity {
      * The single root menu of this MenuStructure.
      */
     @XmlElement(required = true)
-    @OneToOne(orphanRemoval = true)
+    @OneToOne
     private StandardMenu rootMenu;
 
     /**
@@ -157,12 +162,31 @@ public class MenuStructure extends NazgulEntity {
     /**
      * @return Retrieves the Organisation owning this MenuStructure, if invoked on the Server side. This instance is
      * not marshalled for transport, and will hence not be available on the client side of a communications channel.
-     *
      * @see #owningOrganisation
      * @see javax.xml.bind.annotation.XmlTransient
      */
     public Organisation getOwningOrganisation() {
         return owningOrganisation;
+    }
+
+    /**
+     * Assigns the Organisation of this MenuStructure, and also assigns the {@link #organisationName} of this
+     * MenuStructure to the name of the supplied owningOrganisation. This method should only be used on the Server
+     * side, to create/update MenuStructures.
+     *
+     * @param owningOrganisation A non-null Organisation using this MenuStructure.
+     * @see #owningOrganisation
+     */
+    public void setOwningOrganisation(final Organisation owningOrganisation) {
+
+        // Check sanity
+        Validate.notNull(owningOrganisation, "Cannot handle null 'owningOrganisation' argument.");
+
+        // Assign internal state
+        synchronized (lock) {
+            this.owningOrganisation = owningOrganisation;
+            this.organisationName = owningOrganisation.getOrganisationName();
+        }
     }
 
     /**
@@ -221,7 +245,7 @@ public class MenuStructure extends NazgulEntity {
                 .collect(Collectors.toList());
 
         // Descend into child level
-        for(StandardMenu current : menus) {
+        for (StandardMenu current : menus) {
             populateLocalizations(toPopulate, current);
         }
     }

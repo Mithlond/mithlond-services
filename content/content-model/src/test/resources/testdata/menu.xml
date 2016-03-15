@@ -20,17 +20,19 @@
   limitations under the License.
   #L%
   -->
-
 <content:menuItems xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <rootMenu jpaId="0" version="0" enabled="true">
+    <rootMenu jpaId="0" version="0">
         <children>
-            <menu jpaId="0" version="0" domId="firstMenu" enabled="true">
+            <menu jpaId="0" version="0" domId="firstMenu">
                 <localizedTexts jpaId="0" version="0">
                     <localizedText locale="sv..none..none">Medlemsmeny</localizedText>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
                 </localizedTexts>
                 <children>
-                    <menuItem jpaId="0" version="0" enabled="true">
+                    <menuItem jpaId="0" version="0">
+                        <cssClasses>
+                            <cssClass>icon-fixed-width</cssClass>
+                        </cssClasses>
                         <authPatterns>
                             <pattern>/mithlond/members</pattern>
                         </authPatterns>
@@ -42,9 +44,26 @@
                         </localizedTexts>
                     </menuItem>
                     <separator jpaId="0" version="0"/>
+                    <menuItem jpaId="0" version="0">
+                        <cssClasses>
+                            <cssClass>icon-fixed-width</cssClass>
+                        </cssClasses>
+                        <authPatterns>
+                            <pattern>/mithlond/members</pattern>
+                        </authPatterns>
+                        <iconIdentifier>lightbulb</iconIdentifier>
+                        <href>plainItemPage2</href>
+                        <localizedTexts jpaId="0" version="0">
+                            <localizedText locale="sv..none..none">Redigera medlemmar</localizedText>
+                            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                        </localizedTexts>
+                    </menuItem>
                 </children>
             </menu>
-            <menuItem jpaId="0" version="0" enabled="true">
+            <menuItem jpaId="0" version="0">
+                <cssClasses>
+                    <cssClass>icon-fixed-width</cssClass>
+                </cssClasses>
                 <authPatterns>
                     <pattern>/forodrim/members</pattern>
                     <pattern>/mithlond/members</pattern>

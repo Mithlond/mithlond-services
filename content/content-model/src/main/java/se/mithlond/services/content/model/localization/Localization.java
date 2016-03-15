@@ -55,7 +55,10 @@ import java.util.StringTokenizer;
         @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY,
                 query = "select l from Localization l "
                         + " where l.language like :" + Patterns.PARAM_LANGUAGE
-                        + " and l.country like :" + Patterns.PARAM_COUNTRY)
+                        + " and l.country like :" + Patterns.PARAM_COUNTRY),
+        @NamedQuery(name = Localization.NAMEDQ_GET_BY_PRIMARY_KEYS,
+                query = "select l from Localization l "
+                        + " where l.id in :" + Patterns.PARAM_LANGUAGE)
 })
 @Entity
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = "compactStringForm")
@@ -71,6 +74,11 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
      * NamedQuery for getting Localizations having a given language.
      */
     public static final String NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY = "Localization.getByLanguageAndCountry";
+
+    /**
+     * NamedQuery for getting Localizations with primary keys in a provided Collection of values.
+     */
+    public static final String NAMEDQ_GET_BY_PRIMARY_KEYS = "Localization.getByPrimaryKeys";
 
     private static final int COLUMN_WIDTH = 10;
     private static final String SEPARATOR = "..";

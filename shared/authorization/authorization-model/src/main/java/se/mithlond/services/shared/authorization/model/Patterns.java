@@ -35,4 +35,11 @@ public final class Patterns {
      * The XML namespace used by authorization model transport objects.
      */
     public static final String NAMESPACE = "http://xmlns.mithlond.se/xml/ns/authorization";
+
+    /*
+     * Hide constructor for utility classes.
+     */
+    private Patterns() {
+        // Do nothing.
+    }
 }

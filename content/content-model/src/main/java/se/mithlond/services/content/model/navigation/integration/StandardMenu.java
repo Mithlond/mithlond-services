@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
-import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
@@ -34,16 +33,20 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Transient;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>Simple JPA implementation of a Bootstrap-type Menu (button) which provides a dropdown containing MenuItems.</p>
@@ -72,7 +75,15 @@ public class StandardMenu extends AbstractLinkedNavItem {
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(StandardMenu.class);
 
-    // Internal state
+    @XmlTransient
+    @Transient
+    private final Object[] lock = new Object[0];
+
+    /**
+     * The AbstractAuthorizedNavItem children of this StandardMenu.
+     * Note that none of the children are JPA-Cascaded to persist/merge/delete operations, and hence
+     * have to be managed explicitly within service implementations.
+     */
     @XmlElementWrapper(required = true, nillable = false)
     @XmlElements(value = {
             @XmlElement(name = "menu", type = StandardMenu.class),
@@ -204,16 +215,15 @@ public class StandardMenu extends AbstractLinkedNavItem {
             return;
         }
 
-        // Add the child; update its parent and index properties.
-        child.setParent(this);
-        children.add(child);
+        synchronized (lock) {
 
-        final int index = children.indexOf(child);
-        if (index < 0) {
-            throw new IllegalStateException("Could not add child of type ["
-                    + child.getClass().getSimpleName() + "] to the list of children.");
+            // Add the child; update its parent and index properties.
+            child.setParent(this);
+            children.add(child);
+
+            // Ensure that we have a sane state of all Children.
+            updateIndexWithinChildren();
         }
-        child.setIndex(index);
     }
 
     /**
@@ -247,6 +257,32 @@ public class StandardMenu extends AbstractLinkedNavItem {
      * {@inheritDoc}
      */
     @Override
+    public boolean equals(final Object o) {
+
+        // Fail fast
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StandardMenu)) {
+            return false;
+        }
+
+        final StandardMenu that = (StandardMenu) o;
+        return Objects.equals(children, that.children);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), children);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void validateEntityState() throws InternalStateValidationException {
 
         // First, delegate
@@ -270,6 +306,24 @@ public class StandardMenu extends AbstractLinkedNavItem {
     //
     // Private helpers
     //
+
+    @PrePersist
+    private void updateIndexWithinChildren() {
+
+        // Check sanity
+        if(children != null && !children.isEmpty()) {
+
+            synchronized (lock) {
+
+                final int numChildren = children.size();
+
+                for(int i = 0; i < numChildren; i++) {
+                    final AbstractAuthorizedNavItem currentChild = children.get(i);
+                    currentChild.setIndex(i);
+                }
+            }
+        }
+    }
 
     /**
      * Simple builder class for StandardMenus.
