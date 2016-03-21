@@ -47,6 +47,8 @@ import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -169,8 +171,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                 .collect(Collectors.toMap(Localization::toString, current -> current));
 
         // Should we update the MenuStructure?
-        final List<MenuStructure> menuStructures = entityManager.createNamedQuery(MenuStructure
-                .NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
+        final List<MenuStructure> menuStructures = entityManager.createNamedQuery(
+                MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
                 .setParameter(Patterns.PARAM_ORGANISATION_NAME, realm)
                 .getResultList();
 
@@ -201,14 +203,17 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         MenuStructure toReturn;
         if (menuStructures == null || menuStructures.isEmpty()) {
 
-            // Persist the MenuStructure (nonexistent within the local database for the given Realm).
-            // This should be done
-            entityManager.persist(menuStructure);
-            entityManager.flush();
-
-            // Now persist all children recursively.
+            // First, persist all children recursively.
             final StandardMenu rootMenu = menuStructure.getRootMenu();
             persistOrUpdate(rootMenu, stringForm2LocalizationMap, entityManager);
+
+            if (log.isDebugEnabled()) {
+                log.debug("Persisting menuStructure for [" + menuStructure.getOrganisationName() + "]");
+            }
+
+            // Persist the MenuStructure (nonexistent within the local database for the given Realm).
+            entityManager.persist(menuStructure);
+            entityManager.flush();
 
             // Assign the toReturn value.
             toReturn = menuStructure;
@@ -338,35 +343,72 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                     })
                     .forEach(current -> {
 
-                        final Localization currentLocalization = (Localization) current;
+                        if (((Localization) current).getId() == 0L) {
 
-                        if (currentLocalization.getId() == 0L) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("About to persist [" + current.toString() + "]");
+                            }
 
                             // Persist the Localization
-                            entityManager.persist(currentLocalization);
+                            entityManager.persist(current);
                             entityManager.flush();
                         }
 
                         // Add the (now) managed Localization to the holder List.
-                        managedLocalizations.add(currentLocalization);
+                        managedLocalizations.add((Localization) current);
                     });
         }
 
         // Sort and return
         final SortedSet<Localization> toReturn = new TreeSet<>();
         toReturn.addAll(managedLocalizations);
+
+        if (log.isDebugEnabled()) {
+            final PersistenceUtil utils = Persistence.getPersistenceUtil();
+            final String loadedMsg = toReturn.stream()
+                    .map(c -> toReturn.toString() + " is loaded: " + utils.isLoaded(c))
+                    .reduce((l, r) -> l + "," + r)
+                    .orElse("<none>");
+            log.debug("Returning [" + toReturn.size() + "] Localizations. " + loadedMsg);
+        }
+
         return toReturn;
     }
 
     private void persistOrUpdate(
-            final StandardMenu menuStructure,
+            final StandardMenu currentStandardMenu,
             final Map<String, Localization> stringForm2LocalizationMap,
             final EntityManager entityManager) {
 
-        final List<AbstractAuthorizedNavItem> children = menuStructure.getChildren();
+        // Remove all Children from the supplied currentStandardMenu, to enable
+        // persisting it without yielding errors.
+        //
+        final List<AbstractAuthorizedNavItem> children = currentStandardMenu.removeAllChildren();
         final int numChildren = children.size();
 
-        // Persist or update all children found within the current menuStructure.
+        // Replace the Localization within the currentStandardMenu with managed Localizations
+        currentStandardMenu.getLocalizedTexts().assignManagedLocalizations(stringForm2LocalizationMap.values());
+
+        // Persist the StandardMenu if required.
+        if (currentStandardMenu.getId() == 0L) {
+
+            if (log.isDebugEnabled()) {
+                log.debug("About to persist [" + currentStandardMenu.getIdAttribute() + "]");
+            }
+
+            entityManager.persist(currentStandardMenu);
+            entityManager.flush();
+        }
+
+        // Re-attach the children after persisting
+        /*
+        for (AbstractAuthorizedNavItem current : children) {
+            currentStandardMenu.addChild(current);
+        }
+        */
+
+        // Persist or update all children found within the current currentStandardMenu.
+        // Ordering matters here, so don't use streams.
         for (int index = 0; index < numChildren; index++) {
 
             // Persist or update the current child?
@@ -374,14 +416,14 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
             final boolean isUpdateOperation = currentChild.getId() != 0L;
 
             // Move the current Child to another Parent?
-            if (!currentChild.getParent().equals(menuStructure)) {
+            if (!currentStandardMenu.equals(currentChild.getParent())) {
 
                 if (log.isDebugEnabled()) {
                     log.debug("Moving StandardMenu child [" + currentChild.getClass().getSimpleName()
-                            + "] to another Parent (" + menuStructure.toString() + ")");
+                            + "] to another Parent (" + currentStandardMenu.toString() + ")");
                 }
 
-                currentChild.setParent(menuStructure);
+                currentChild.setParent(currentStandardMenu);
             }
 
             // Ensure that any existing LocalizedTexts of the currentChild holds only managed Localizations.
@@ -395,17 +437,28 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
             // Update the index of the current child.
             currentChild.setIndex(index);
 
-            // Persist or update the current child?
-            if (!isUpdateOperation) {
-                entityManager.persist(currentChild);
-                entityManager.flush();
-            }
-
             // Descend?
             if (currentChild instanceof StandardMenu) {
 
-                final StandardMenu currentStandardMenu = (StandardMenu) currentChild;
-                persistOrUpdate(currentStandardMenu, stringForm2LocalizationMap, entityManager);
+                final StandardMenu subMenu = (StandardMenu) currentChild;
+                persistOrUpdate(subMenu, stringForm2LocalizationMap, entityManager);
+
+            } else {
+
+                // Re-attach the current child to the Parent
+                currentStandardMenu.addChild(currentChild);
+
+                // Persist or update the current child?
+                if (!isUpdateOperation) {
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("About to persist child of type [" + currentChild.getClass().getSimpleName()
+                                + "] with domId: " + currentChild.getIdAttribute());
+                    }
+
+                    entityManager.persist(currentChild);
+                    entityManager.flush();
+                }
             }
         }
     }

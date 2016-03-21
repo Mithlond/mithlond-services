@@ -30,6 +30,7 @@ import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -132,7 +133,7 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
     @XmlAttribute
     private Boolean enabled;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @XmlTransient
     private StandardMenu parent;
 
@@ -340,18 +341,17 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
      */
     @Override
     public String toString() {
-        return "AbstractAuthorizedNavItem{"
-                + "role='" + role + '\''
-                + ", domId='" + domId + '\''
-                + ", tabIndex=" + tabIndex
-                + ", cssClasses='" + cssClasses + '\''
-                + ", transportCssClasses=" + transportCssClasses
-                + ", authorizationPatterns='" + authorizationPatterns + '\''
-                + ", transportAuthorizationPatterns=" + transportAuthorizationPatterns
-                + ", enabled=" + enabled
-                + ", parent=" + parent
-                + ", index=" + index
-                + '}';
+        return getClass().getSimpleName()
+                + "\n  Role          : " + role
+                + "\n  DomID         : " + domId
+                + "\n  Index         : " + index
+                + "\n  Enabled       : " + enabled
+                + "\n  TabIndex      : " + tabIndex
+                + "\n  CSS Classes   : " + cssClasses
+                + "\n  Transport CSS : " + transportCssClasses
+                + "\n  Auth Patterns : " + authorizationPatterns
+                + "\n  Transport Auth: " + transportAuthorizationPatterns
+                + "\n  Parent        : " + (parent == null ? "null" : parent.getClass().getSimpleName());
     }
 
     /**

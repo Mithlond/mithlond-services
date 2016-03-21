@@ -31,7 +31,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -61,6 +63,11 @@ import java.util.StringTokenizer;
                         + " where l.id in :" + Patterns.PARAM_IDS)
 })
 @Entity
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                name = "enum_localizations",
+                columnNames = {"language", "country", "variant"})
+})
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = "compactStringForm")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localization extends NazgulEntity implements Comparable<Localization> {

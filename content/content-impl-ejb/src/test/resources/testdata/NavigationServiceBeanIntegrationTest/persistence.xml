@@ -65,5 +65,7 @@
         <class>se.mithlond.services.content.model.navigation.integration.StandardMenuItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.MenuStructure</class>
         <class>se.mithlond.services.content.model.articles.Article</class>
+
+        <properties></properties>
     </persistence-unit>
 </persistence>

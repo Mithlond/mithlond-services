@@ -21,12 +21,15 @@
  */
 package se.mithlond.services.content.model.localization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.Patterns;
 import se.mithlond.services.content.model.navigation.Localizable;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -34,6 +37,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceUtil;
 import javax.persistence.Transient;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -61,6 +66,9 @@ import java.util.stream.Collectors;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
+    // Our Logger
+    private static final Logger log = LoggerFactory.getLogger(LocalizedTexts.class);
+
     @ElementCollection
     @CollectionTable(name = "text_localizations", joinColumns = @JoinColumn(name = "localization_suite"))
     @Column(name = "localized_text")
@@ -78,7 +86,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     /**
      * The default Localization for this LocalizedTexts instance.
      */
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST})
     @XmlElement(required = true)
     private Localization defaultLocalization;
 
@@ -95,19 +103,19 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * Compound constructor creating a LocalizedTexts instance with the supplied Localization and Text.
      * The supplied Localization is also set to the default Localization of this LocalizedTexts.
      *
-     * @param localization The non-null Localization.
-     * @param text         The non-empty text.
+     * @param defaultLocalization The non-null Localization.
+     * @param text                The non-empty text.
      */
-    public LocalizedTexts(final Localization localization, final String text) {
+    public LocalizedTexts(final Localization defaultLocalization, final String text) {
 
         // First, delegate
         this();
 
-        // Assign the default localization.
-        this.defaultLocalization = localization;
+        // Assign the default defaultLocalization.
+        this.defaultLocalization = defaultLocalization;
 
         // ... and assign the Localization/Text pair.
-        this.setText(localization, text);
+        this.setText(defaultLocalization, text);
     }
 
     /**
@@ -221,6 +229,18 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
             return managedLocalization.get();
 
         }, Map.Entry::getValue));
+
+        if(log.isDebugEnabled()) {
+
+            final PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
+            log.debug("DefaultLocalization. IsLoaded: " + persistenceUtil.isLoaded(defaultLocalization));
+
+            final String dataMsg = data.keySet().stream()
+                    .map(c -> "Localization [" + c.toString() + "] IsLoaded: " + persistenceUtil.isLoaded(c))
+                    .reduce((l, r) -> l + "," + r)
+                    .orElse("<none>");
+            log.debug("Data Localizations: " + dataMsg);
+        }
     }
 
     /**
@@ -238,18 +258,18 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     /**
      * Factory method creating a LocalizedTexts instance for the supplied Language and the given Text.
      *
-     * @param language The language, corresponding to the {@link java.util.Locale} language code.
-     * @param text     The text to wrap in the returned LocalizedTexts instance for the supplied language.
-     * @return A newly created LocalizedTexts instance wrapping the supplied text for the given language (code).
+     * @param defaultLanguage The defaultLanguage, corresponding to the {@link java.util.Locale} language code.
+     * @param text            The text to wrap in the returned LocalizedTexts instance for the supplied defaultLanguage.
+     * @return A newly created LocalizedTexts instance wrapping the supplied text for the given defaultLanguage (code).
      */
-    public static LocalizedTexts build(final String language, final String text) {
+    public static LocalizedTexts build(final String defaultLanguage, final String text) {
 
         // Check sanity
-        Validate.notEmpty(language, "language");
+        Validate.notEmpty(defaultLanguage, "defaultLanguage");
         Validate.notEmpty(text, "text");
 
         // Create the Localization and its LocalizedTexts
-        return new LocalizedTexts(new Localization(language), text);
+        return new LocalizedTexts(new Localization(defaultLanguage), text);
     }
 
     //

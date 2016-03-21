@@ -24,6 +24,8 @@ package se.mithlond.services.content.impl.ejb;
 import org.dbunit.dataset.IDataSet;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
@@ -58,7 +60,10 @@ import java.util.stream.Collectors;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class NavigationServiceBeanIT extends AbstractIntegrationTest {
+public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTest {
+
+    // Our Log
+    private static final Logger log = LoggerFactory.getLogger(NavigationServiceBeanIntegrationTest.class);
 
     // Shared state
     private User silSalad, witchking;
@@ -75,6 +80,8 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
      */
     @Override
     public void doCustomSetup() {
+
+        log.debug("Starting custom setup.");
 
         // #1) Create the Mifflond organisation.
         final Address visitingAddress = new Address("C/O Sven Svensson", null, "Svengatan", "24 B", "Göteborg",
@@ -194,7 +201,6 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
                 .withIconIdentifier("lightbulb")
                 .build());
 
-
         rootMenu.addChild(StandardMenuItem.getBuilder()
                 .withAuthorizationPatterns("/mithlond/members,/forodrim/members")
                 .withLocalizedText("sv", "Aktivitetskalender")
@@ -203,7 +209,7 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
                 .withDomId("plainItemPage3")
                 .build());
 
-        templateMenuStructure = new MenuStructure(mifflond.getOrganisationName(), rootMenu);
+        templateMenuStructure = new MenuStructure(rootMenu, mifflond);
     }
 
     /**
@@ -282,22 +288,23 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
             entityManager.persist(current);
             entityManager.flush();
         }
-
-        /*
-        System.out.println(" ================== ");
-        System.out.println(extractFlatXmlDataSet(iDatabaseConnection.createDataSet()));
-        System.out.println(" ================== ");
-        */
+        rootMenu.getLocalizedTexts().assignManagedLocalizations(containedLocalizations);
 
         // Act
-        unitUnderTest.createOrUpdate("Mifflond", templateMenuStructure, producers);
+        final MenuStructure result = unitUnderTest.createOrUpdate("Mifflond", templateMenuStructure, producers);
 
         // Assert
         final List<MenuStructure> menuStructures = entityManager.createNamedQuery(
                 MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "organisationName")
+                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "Mifflond")
                 .getResultList();
+
+        Assert.assertNotNull(result);
         Assert.assertEquals(1, menuStructures.size());
+
+        System.out.println(" ================== ");
+        System.out.println(extractFlatXmlDataSet(iDatabaseConnection.createDataSet()));
+        System.out.println(" ================== ");
     }
 
     //
@@ -318,198 +325,4 @@ public class NavigationServiceBeanIT extends AbstractIntegrationTest {
                     + toBeInjected.getClass().getName() + "]", e);
         }
     }
-
-    /*
-    @Test(expected = UnknownOrganisationException.class)
-    public void validateExceptionOnRetrievingMenuStructureForNonexistentOwner() {
-
-        // Assemble
-        System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
-        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unittestdevelopment");
-
-        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
-        unitUnderTest.setupEnvironmentStorageRootDir();
-
-        // Act & Assert
-        unitUnderTest.getMenuStructure("NonExistent", new ArrayList<>());
-    }
-
-    @Test
-    public void validateRetrievingUnauthorizedMenuStructure() {
-
-        // Assemble
-        System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
-        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unittestdevelopment");
-
-        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
-        unitUnderTest.setupEnvironmentStorageRootDir();
-
-        // Act
-        final MenuStructure result = unitUnderTest.getMenuStructure("Foo", new ArrayList<>());
-        // System.out.println("Got: " + marshalToXML(result));
-
-        // Assert
-        Assert.assertNotNull(result);
-
-        final List<AuthorizedNavItem> rootMenu = result.getRootMenu();
-        Assert.assertEquals(2, rootMenu.size());
-
-        Assert.assertEquals("firstMenuInDevelopment", rootMenu.get(0).getIdAttribute());
-
-        final StandardMenuItem menuItem = (StandardMenuItem) rootMenu.get(1);
-        Assert.assertFalse(menuItem.isEnabled());
-        Assert.assertNull(menuItem.getHrefAttribute());
-    }
-
-    @Test
-    public void validateRetrievingUnauthorizedMenuStructureFromStagingEnvironment() {
-
-        // Assemble
-        System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
-        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unitteststaging");
-
-        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
-        unitUnderTest.setupEnvironmentStorageRootDir();
-
-        // Act
-        final MenuStructure result = unitUnderTest.getMenuStructure("Foo", new ArrayList<>());
-        // System.out.println("Got: " + marshalToXML(result));
-
-        // Assert
-        Assert.assertNotNull(result);
-
-        final List<AuthorizedNavItem> rootMenu = result.getRootMenu();
-        Assert.assertEquals(2, rootMenu.size());
-
-        Assert.assertEquals("firstMenuInStaging", rootMenu.get(0).getIdAttribute());
-
-        final StandardMenuItem menuItem = (StandardMenuItem) rootMenu.get(1);
-        Assert.assertFalse(menuItem.isEnabled());
-        Assert.assertNull(menuItem.getHrefAttribute());
-    }
-    */
-
-    /*
-    @Test
-    public void validateRetrievingAuthorizedMenuStructure() {
-
-        // Assemble
-        final SortedSet<SemanticAuthorizationPath> authorizationPaths
-                = AuthorizationPathBuilder.parse("/forodrim/members/village_idiots");
-        final List<SemanticAuthorizationPathProducer> authorizationPathProducerList = new ArrayList<>();
-        authorizationPathProducerList.add(() -> authorizationPaths);
-
-        System.setProperty(Deployment.FILE_STORAGE_ROOTDIR_KEY, menuRootDirectory.getAbsolutePath());
-        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, "unittestdevelopment");
-
-        final NavigationServiceBean unitUnderTest = new NavigationServiceBean();
-        unitUnderTest.setupEnvironmentStorageRootDir();
-
-        // Act
-        final MenuStructure result = unitUnderTest.getMenuStructure("Foo", authorizationPathProducerList);
-        // System.out.println("Got: " + marshalToXML(result));
-
-        // Assert
-        Assert.assertNotNull(result);
-
-        final List<AuthorizedNavItem> rootMenu = result.getRootMenu();
-        Assert.assertEquals(2, rootMenu.size());
-
-        / *
-        <menuItem jpaId="0" version="0">
-            <cssClasses>
-                <cssClass>icon-fixed-width</cssClass>
-            </cssClasses>
-            <authPatterns>
-                <pattern>/forodrim/members</pattern>   <---- Should match, and hence be authorized
-                <pattern>/mithlond/members</pattern>
-            </authPatterns>
-            <iconIdentifier>calendar</iconIdentifier>
-            <href>plainItemPage3</href>
-        </menuItem>
-         * /
-        final StandardMenuItem menuItem = (StandardMenuItem) rootMenu.get(1);
-        Assert.assertTrue(menuItem.isEnabled());
-        Assert.assertEquals("plainItemPage3", menuItem.getHrefAttribute());
-
-        / *
-        <subMenu domId="firstMenu" jpaId="0" version="0">
-            <children>
-                <menuItem jpaId="0" version="0">
-                    <cssClasses>
-                        <cssClass>icon-fixed-width</cssClass>
-                    </cssClasses>
-                    <authPatterns>
-                        <pattern>/mithlond/members</pattern>  <---- Should not match, and hence no children acquired.
-                    </authPatterns>
-                    <iconIdentifier>cog</iconIdentifier>
-                    <href>plainItemPage</href>
-                </menuItem>
-         * /
-        final StandardMenu firstMenu = (StandardMenu) rootMenu.get(0);
-        Assert.assertTrue(firstMenu.isEnabled());
-
-        final List<AuthorizedNavItem> children = firstMenu.getChildren();
-        Assert.assertEquals(3, children.size());
-
-        / *
-            First menuItem should be:
-
-            <menuItem enabled="false" jpaId="0" version="0">
-                    <cssClasses>
-                        <cssClass>icon-fixed-width</cssClass>
-                        <cssClass>disabled</cssClass>
-                    </cssClasses>
-                    <iconIdentifier>cog</iconIdentifier>
-                </menuItem>
-         * /
-        final StandardMenuItem firstChild = (StandardMenuItem) children.get(0);
-        Assert.assertFalse(firstChild.isEnabled());
-        Assert.assertNull(firstChild.getHrefAttribute());
-        Assert.assertEquals("cog", firstChild.getIconIdentifier());
-        Assert.assertTrue(firstChild.getCssClasses().contains("disabled"));
-        Assert.assertTrue(firstChild.getCssClasses().contains("icon-fixed-width"));
-
-        Assert.assertTrue(children.get(1) instanceof SeparatorMenuItem);
-
-        / *
-        This should be the 3rd child:
-        <menuItem jpaId="0" version="0">
-                    <cssClasses>
-                        <cssClass>icon-fixed-width</cssClass>
-                    </cssClasses>
-                    <iconIdentifier>lightbulb</iconIdentifier>
-                    <href>plainItemPage2</href>
-                </menuItem>
-         * /
-        final StandardMenuItem thirdChild = (StandardMenuItem) children.get(2);
-        Assert.assertTrue(thirdChild.isEnabled());
-        Assert.assertEquals("plainItemPage2", thirdChild.getHrefAttribute());
-        Assert.assertEquals("lightbulb", thirdChild.getIconIdentifier());
-        Assert.assertTrue(thirdChild.getCssClasses().contains("icon-fixed-width"));
-    }
-
-    //
-    // Private helpers
-    //
-
-    @SuppressWarnings("all")
-    private String marshal(final MenuStructure aMenuStructure) {
-
-        final StringWriter result;
-        try {
-            final JAXBContext context = JAXBContext.newInstance(MenuStructure.class);
-            final JaxbNamespacePrefixResolver prefixMapper = new JaxbNamespacePrefixResolver();
-            final Marshaller marshaller = JaxbUtils.getHumanReadableStandardMarshaller(context, prefixMapper, true);
-            result = new StringWriter();
-
-            marshaller.marshal(aMenuStructure, result);
-        } catch (JAXBException e) {
-            throw new IllegalStateException("Could not marshalToXML a MenuStructure to XML", e);
-        }
-
-        // All done.
-        return result.toString();
-    }
-    */
 }

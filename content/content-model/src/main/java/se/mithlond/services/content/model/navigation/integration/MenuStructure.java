@@ -203,11 +203,13 @@ public class MenuStructure extends NazgulEntity {
     protected void validateEntityState() throws InternalStateValidationException {
 
         // Check sanity
-        if (owningOrganisation != null && organisationName == null) {
-            this.organisationName = owningOrganisation.getOrganisationName();
-        } else {
-            log.warn("Could not assign 'organisationName' property, as the 'owningOrganisation' is not set. "
-                    + "Proceed with caution.");
+        if (organisationName == null) {
+            if (owningOrganisation != null) {
+                this.organisationName = owningOrganisation.getOrganisationName();
+            } else {
+                log.warn("Could not assign 'organisationName' property, as the 'owningOrganisation' is not set. "
+                        + "Proceed with caution.");
+            }
         }
 
         InternalStateValidationException.create()

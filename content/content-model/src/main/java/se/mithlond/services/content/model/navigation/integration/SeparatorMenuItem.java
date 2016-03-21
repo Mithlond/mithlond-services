@@ -107,10 +107,9 @@ public class SeparatorMenuItem extends AbstractAuthorizedNavItem {
     @Override
     public int hashCode() {
 
-        final String cssClasses = getCssClasses() == null ? "" : getCssClasses().stream()
-                .sorted()
-                .reduce((left, right) -> left + "," + right)
-                .get();
+        final String cssClasses = getCssClasses() == null
+                ? ""
+                : getCssClasses().stream().sorted().reduce((left, right) -> left + "," + right).get();
 
         return Objects.hash(getRoleAttribute(),
                 getIdAttribute(),
@@ -118,24 +117,6 @@ public class SeparatorMenuItem extends AbstractAuthorizedNavItem {
                 cssClasses,
                 isEnabled(),
                 getRoleAttribute());
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString() {
-        return "SeparatorMenuItem{"
-                + "role='" + getRoleAttribute() + '\''
-                + ", domId='" + getIdAttribute() + '\''
-                + ", tabIndex=" + getTabIndexAttribute()
-                + ", cssClasses='" + getCssClasses() + '\''
-                + ", authorizationPatterns='" + getRequiredAuthorizationPatterns() + '\''
-                + ", enabled=" + isEnabled()
-                + ", parent=" + getParent()
-                + ", index=" + getIndex()
-                + '}';
     }
 
     /**

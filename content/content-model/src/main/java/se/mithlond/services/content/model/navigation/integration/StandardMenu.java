@@ -254,6 +254,28 @@ public class StandardMenu extends AbstractLinkedNavItem {
     }
 
     /**
+     * Copies all Children to the returned value, and clears the internal 'children' List.
+     *
+     * @return A non-null List containing all {@link AbstractAuthorizedNavItem} childen of this {@link StandardMenu}
+     */
+    public List<AbstractAuthorizedNavItem> removeAllChildren() {
+
+        List<AbstractAuthorizedNavItem> toReturn;
+        synchronized (lock) {
+
+            // Copy all children
+            toReturn = new ArrayList<>();
+            toReturn.addAll(children);
+
+            // Clear internal state
+            this.children.clear();
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -311,13 +333,13 @@ public class StandardMenu extends AbstractLinkedNavItem {
     private void updateIndexWithinChildren() {
 
         // Check sanity
-        if(children != null && !children.isEmpty()) {
+        if (children != null && !children.isEmpty()) {
 
             synchronized (lock) {
 
                 final int numChildren = children.size();
 
-                for(int i = 0; i < numChildren; i++) {
+                for (int i = 0; i < numChildren; i++) {
                     final AbstractAuthorizedNavItem currentChild = children.get(i);
                     currentChild.setIndex(i);
                 }

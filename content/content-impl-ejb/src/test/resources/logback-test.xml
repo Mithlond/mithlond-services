@@ -37,11 +37,13 @@
     <!-- Lower the logging level for relevant classes -->
     <logger name="se.jguru.nazgul" level="WARN"/>
     <logger name="se.mithlond.services" level="WARN"/>
+    <logger name="se.jguru.nazgul.test.persistence" level="DEBUG"/>
     <logger name="se.mithlond.services.content.impl.ejb" level="DEBUG"/>
+    <!-- logger name="se.mithlond.services.content.model.localization" level="DEBUG"/ -->
 
     <!-- Make the frameworks shut up. -->
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.hibernate" level="WARN"/>
     <logger name="org.eclipselink" level="WARN"/>
-
+    <logger name="org.dbunit" level="WARN"/>
 </configuration>
