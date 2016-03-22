@@ -26,8 +26,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
@@ -178,6 +180,7 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
         StandardMenu firstMenu = StandardMenu.getBuilder()
                 .withDomId("firstMenu")
                 .withLocalizedText("sv", "Första Menyn")
+                .withLocalizedText("dk", "Først Menu")
                 .withHref("/firstMenu")
                 .withIconIdentifier("cog")
                 .withTabIndex(1)
@@ -302,9 +305,29 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
         Assert.assertNotNull(result);
         Assert.assertEquals(1, menuStructures.size());
 
+        final MenuStructure resurrected = menuStructures.get(0);
+        Assert.assertEquals(templateMenuStructure.getOrganisationName(), resurrected.getOrganisationName());
+        Assert.assertEquals(templateMenuStructure.getRootMenu(), resurrected.getRootMenu());
+
+        final List<AbstractAuthorizedNavItem> templateChildren = templateMenuStructure.getRootMenu().getChildren();
+        final List<AbstractAuthorizedNavItem> resurrectedChildren = resurrected.getRootMenu().getChildren();
+        Assert.assertEquals(templateChildren.size(), resurrectedChildren.size());
+        for (int i = 0; i < templateChildren.size(); i++) {
+            Assert.assertEquals(templateChildren.get(i), resurrectedChildren.get(i));
+        }
+
+        /*
+        System.out.println(" ================== ");
+        System.out.println(extractFlatXmlDataSet(expected));
+        System.out.println(" ================== ");
+
         System.out.println(" ================== ");
         System.out.println(extractFlatXmlDataSet(iDatabaseConnection.createDataSet()));
         System.out.println(" ================== ");
+        */
+
+        final String xmlMarshalled = marshalToXML(result);
+        XmlTestUtils.compareXmlIgnoringWhitespace(XmlTestUtils.readFully("testdata/menuStructure.xml"), xmlMarshalled);
     }
 
     //

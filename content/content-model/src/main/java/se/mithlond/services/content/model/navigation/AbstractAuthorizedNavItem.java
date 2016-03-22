@@ -52,6 +52,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -63,9 +64,10 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(name = "simpleOrderingOfMenuChildren", columnNames = {"index", "parent"})
-})
+@Table(name = "menu_items",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "simpleOrderingOfMenuChildren", columnNames = {"index", "parent"})
+        })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "nav_item_type")
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"role", "domId", "tabIndex", "transportCssClasses",
@@ -370,6 +372,46 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
         // Do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object o) {
+
+        // Fail fast
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AbstractAuthorizedNavItem)) {
+            return false;
+        }
+
+        // Delegate to internal state
+        final AbstractAuthorizedNavItem that = (AbstractAuthorizedNavItem) o;
+        return index == that.index
+                && Objects.equals(role, that.role)
+                && Objects.equals(domId, that.domId)
+                && Objects.equals(tabIndex, that.tabIndex)
+                && Objects.equals(cssClasses, that.cssClasses)
+                && Objects.equals(transportCssClasses, that.transportCssClasses)
+                && Objects.equals(authorizationPatterns, that.authorizationPatterns)
+                && Objects.equals(transportAuthorizationPatterns, that.transportAuthorizationPatterns)
+                && Objects.equals(enabled, that.enabled);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(role,
+                domId,
+                tabIndex,
+                cssClasses,
+                transportCssClasses,
+                authorizationPatterns,
+                transportAuthorizationPatterns,
+                enabled,
+                index);
+    }
+
     //
     // Private helpers
     //
@@ -384,7 +426,7 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
     private void beforeMarshal(final Marshaller marshaller) {
 
         // Only pass the 'enabled' flag if this AbstractAuthorizedNavItem is disabled.
-        if (enabled) {
+        if (Boolean.TRUE.equals(enabled)) {
             enabled = null;
         }
 
