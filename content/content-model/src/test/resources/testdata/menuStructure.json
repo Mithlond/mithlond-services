@@ -1,165 +1,135 @@
 {
   "content.menuStructure": {
-    "jpaId": 0,
-    "version": 0,
+    "jpaId": "0",
+    "version": "0",
     "localizations": {
-      "localization": [
-        {
-          "jpaId": 0,
-          "version": 0,
-          "compactStringForm": "sv..none..none"
-        }
-      ]
+      "localization": {
+        "jpaId": "0",
+        "version": "0",
+        "compactStringForm": "sv..none..none"
+      }
     },
     "organisationName": "name",
     "rootMenu": {
-      "jpaId": 0,
-      "version": 0,
+      "jpaId": "0",
+      "version": "0",
       "domId": "rootMenu",
       "localizedTexts": {
-        "jpaId": 0,
-        "version": 0,
-        "localizedText": [
-          {
-            "locale": "sv..none..none",
-            "value": "Roooot"
-          }
-        ],
+        "jpaId": "0",
+        "version": "0",
+        "localizedText": {
+          "locale": "sv..none..none",
+          "value": "Roooot"
+        },
         "defaultLocalization": {
-          "jpaId": 0,
-          "version": 0,
+          "jpaId": "0",
+          "version": "0",
           "compactStringForm": "sv..none..none"
         }
       },
       "children": {
-        "menu": [
-          {
-            "jpaId": 0,
-            "version": 0,
-            "domId": "firstMenu",
-            "tabIndex": 1,
-            "cssClasses": {
-              "cssClass": [
-                "icon-fixed-width"
-              ]
+        "menu": {
+          "jpaId": "0",
+          "version": "0",
+          "domId": "firstMenu",
+          "tabIndex": "1",
+          "cssClasses": {
+            "cssClass": "icon-fixed-width"
+          },
+          "iconIdentifier": "cog",
+          "href": "/firstMenu",
+          "localizedTexts": {
+            "jpaId": "0",
+            "version": "0",
+            "localizedText": {
+              "locale": "sv..none..none",
+              "value": "Första Menyn"
             },
-            "iconIdentifier": "cog",
-            "href": "/firstMenu",
-            "localizedTexts": {
-              "jpaId": 0,
-              "version": 0,
-              "localizedText": [
-                {
+            "defaultLocalization": {
+              "jpaId": "0",
+              "version": "0",
+              "compactStringForm": "sv..none..none"
+            }
+          },
+          "children": {
+            "menuItem": {
+              "jpaId": "0",
+              "version": "0",
+              "domId": "membersPage",
+              "cssClasses": {
+                "cssClass": "icon-fixed-width"
+              },
+              "authPatterns": {
+                "pattern": "/mithlond/members"
+              },
+              "iconIdentifier": "man",
+              "href": "/members/list",
+              "localizedTexts": {
+                "jpaId": "0",
+                "version": "0",
+                "localizedText": {
                   "locale": "sv..none..none",
-                  "value": "Första Menyn"
-                }
-              ],
-              "defaultLocalization": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
-              }
-            },
-            "children": {
-              "menuItem": [
-                {
-                  "jpaId": 0,
-                  "version": 0,
-                  "domId": "membersPage",
-                  "cssClasses": {
-                    "cssClass": [
-                      "icon-fixed-width"
-                    ]
-                  },
-                  "authPatterns": {
-                    "pattern": [
-                      "/mithlond/members"
-                    ]
-                  },
-                  "iconIdentifier": "man",
-                  "href": "/members/list",
-                  "localizedTexts": {
-                    "jpaId": 0,
-                    "version": 0,
-                    "localizedText": [
-                      {
-                        "locale": "sv..none..none",
-                        "value": "Medlemssida"
-                      }
-                    ],
-                    "defaultLocalization": {
-                      "jpaId": 0,
-                      "version": 0,
-                      "compactStringForm": "sv..none..none"
-                    }
-                  }
+                  "value": "Medlemssida"
                 },
-                {
-                  "jpaId": 0,
-                  "version": 0,
-                  "domId": "membersIdeaPage",
-                  "cssClasses": {
-                    "cssClass": [
-                      "icon-fixed-width"
-                    ]
-                  },
-                  "iconIdentifier": "lightbulb",
-                  "href": "/mithlond/members/ideas",
-                  "localizedTexts": {
-                    "jpaId": 0,
-                    "version": 0,
-                    "localizedText": [
-                      {
-                        "locale": "sv..none..none",
-                        "value": "Idésida"
-                      }
-                    ],
-                    "defaultLocalization": {
-                      "jpaId": 0,
-                      "version": 0,
-                      "compactStringForm": "sv..none..none"
-                    }
-                  }
+                "defaultLocalization": {
+                  "jpaId": "0",
+                  "version": "0",
+                  "compactStringForm": "sv..none..none"
                 }
-              ],
-              "separator": [
-                {
-                  "jpaId": 0,
-                  "version": 0
-                }
-              ]
-            }
-          }
-        ],
-        "menuItem": [
-          {
-            "jpaId": 0,
-            "version": 0,
-            "domId": "plainItemPage3",
-            "authPatterns": {
-              "pattern": [
-                "/forodrim/members",
-                "/mithlond/members"
-              ]
-            },
-            "href": "/calendar",
-            "localizedTexts": {
-              "jpaId": 0,
-              "version": 0,
-              "localizedText": [
-                {
-                  "locale": "sv..none..none",
-                  "value": "Aktivitetskalender"
-                }
-              ],
-              "defaultLocalization": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
               }
+            },
+            "menuItem": {
+              "jpaId": "0",
+              "version": "0",
+              "domId": "membersIdeaPage",
+              "cssClasses": {
+                "cssClass": "icon-fixed-width"
+              },
+              "iconIdentifier": "lightbulb",
+              "href": "/mithlond/members/ideas",
+              "localizedTexts": {
+                "jpaId": "0",
+                "version": "0",
+                "localizedText": {
+                  "locale": "sv..none..none",
+                  "value": "Idésida"
+                },
+                "defaultLocalization": {
+                  "jpaId": "0",
+                  "version": "0",
+                  "compactStringForm": "sv..none..none"
+                }
+              }
+            },
+            "separator": {
+              "jpaId": "0",
+              "version": "0"
             }
           }
-        ]
+        },
+        "menuItem": {
+          "jpaId": "0",
+          "version": "0",
+          "domId": "plainItemPage3",
+          "authPatterns": {
+            "pattern": "/forodrim/members",
+            "pattern": "/mithlond/members"
+          },
+          "href": "/calendar",
+          "localizedTexts": {
+            "jpaId": "0",
+            "version": "0",
+            "localizedText": {
+              "locale": "sv..none..none",
+              "value": "Aktivitetskalender"
+            },
+            "defaultLocalization": {
+              "jpaId": "0",
+              "version": "0",
+              "compactStringForm": "sv..none..none"
+            }
+          }
+        }
       }
     }
   }

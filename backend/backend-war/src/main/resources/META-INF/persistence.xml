@@ -104,6 +104,17 @@
         -->
         <properties>
             <!--
+                Standard JPA properties
+            -->
+            <property name="javax.persistence.schema-generation.database.action" value="none"/>
+            <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+            <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
+            <property name="javax.persistence.schema-generation.scripts.create-target"
+                      value="create_mithlond_database.sql"/>
+            <property name="javax.persistence.schema-generation.scripts.drop-target"
+                      value="drop_mithlond_database.sql"/>
+            <property name="javax.persistence.sql-load-script-source" value="META-INF/standard_population.sql"/>
+            <!--
                 OpenJPA2 custom properties.
             -->
             <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.PostgresDictionary"/>
@@ -133,9 +144,9 @@
             <property name="eclipselink.logging.logger" value="ServerLogger"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="both"/>
+            <!-- property name="eclipselink.ddl-generation.output-mode" value="both"/>
             <property name="eclipselink.create-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
-            <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/>
+            <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/ -->
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>
         </properties>
