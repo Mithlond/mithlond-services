@@ -23,7 +23,7 @@ package se.mithlond.services.content.model.localization;
 
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
@@ -53,14 +53,14 @@ import java.util.StringTokenizer;
 @NamedQueries({
         @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE,
                 query = "select l from Localization l "
-                        + " where l.language like :" + Patterns.PARAM_LANGUAGE),
+                        + " where l.language like :" + ContentPatterns.PARAM_LANGUAGE),
         @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY,
                 query = "select l from Localization l "
-                        + " where l.language like :" + Patterns.PARAM_LANGUAGE
-                        + " and l.country like :" + Patterns.PARAM_COUNTRY),
+                        + " where l.language like :" + ContentPatterns.PARAM_LANGUAGE
+                        + " and l.country like :" + ContentPatterns.PARAM_COUNTRY),
         @NamedQuery(name = Localization.NAMEDQ_GET_BY_PRIMARY_KEYS,
                 query = "select l from Localization l "
-                        + " where l.id in :" + Patterns.PARAM_IDS)
+                        + " where l.id in :" + ContentPatterns.PARAM_IDS)
 })
 @Entity
 @Table(uniqueConstraints = {
@@ -68,7 +68,7 @@ import java.util.StringTokenizer;
                 name = "enum_localizations",
                 columnNames = {"language", "country", "variant"})
 })
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = "compactStringForm")
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = "compactStringForm")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localization extends NazgulEntity implements Comparable<Localization> {
 

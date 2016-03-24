@@ -81,50 +81,60 @@
     <groups>
         <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0">
             <groupName>groupName_0</groupName>
+            <description>groupDescription_0</description>
             <emailList>emailList_0</emailList>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="group_name_1_groupName_1">
             <groupName>groupName_1</groupName>
+            <description>groupDescription_1</description>
             <emailList>emailList_1</emailList>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2">
             <groupName>groupName_2</groupName>
+            <description>groupDescription_2</description>
             <emailList>emailList_2</emailList>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3">
             <groupName>groupName_3</groupName>
+            <description>groupDescription_3</description>
             <emailList>emailList_3</emailList>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4">
             <groupName>groupName_4</groupName>
+            <description>groupDescription_4</description>
             <emailList>emailList_4</emailList>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_0" xsi:type="organisation:guild">
             <groupName>guildName_0</groupName>
+            <description>guildDescription_0</description>
             <emailList>emailList_0</emailList>
             <quenyaName>quenyaName_0</quenyaName>
             <quenyaPrefix>quenyaPrefix_0</quenyaPrefix>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_1" xsi:type="organisation:guild">
             <groupName>guildName_1</groupName>
+            <description>guildDescription_1</description>
             <emailList>emailList_1</emailList>
             <quenyaName>quenyaName_1</quenyaName>
             <quenyaPrefix>quenyaPrefix_1</quenyaPrefix>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_2" xmlID="guild_name_2_guildName_2" xsi:type="organisation:guild">
             <groupName>guildName_2</groupName>
+            <description>guildDescription_2</description>
             <emailList>emailList_2</emailList>
             <quenyaName>quenyaName_2</quenyaName>
             <quenyaPrefix>quenyaPrefix_2</quenyaPrefix>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3" xsi:type="organisation:guild">
             <groupName>guildName_3</groupName>
+            <description>guildDescription_3</description>
             <emailList>emailList_3</emailList>
             <quenyaName>quenyaName_3</quenyaName>
             <quenyaPrefix>quenyaPrefix_3</quenyaPrefix>
         </group>
         <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_4" xsi:type="organisation:guild">
             <groupName>guildName_4</groupName>
+            <description>guildDescription_4</description>
             <emailList>emailList_4</emailList>
             <quenyaName>quenyaName_4</quenyaName>
             <quenyaPrefix>quenyaPrefix_4</quenyaPrefix>

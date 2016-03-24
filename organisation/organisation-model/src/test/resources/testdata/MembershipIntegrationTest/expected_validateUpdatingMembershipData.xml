@@ -36,10 +36,39 @@
     <GROUPMEMBERSHIP DTYPE="GroupMembership" VERSION="1" GROUP_ID="4" MEMBERSHIP_ID="6"/>
     <GROUPMEMBERSHIP DTYPE="GroupMembership" VERSION="1" GROUP_ID="4" MEMBERSHIP_ID="8"/>
     <GROUPMEMBERSHIP DTYPE="GroupMembership" VERSION="1" GROUP_ID="4" MEMBERSHIP_ID="10"/>
-    <INTERNALGROUPS ID="1" DISCRIMINATOR="group" EMAILLIST="administratorer" GROUPNAME="Administrat&#246;rer" VERSION="1" ORGANISATION_ID="1"/>
-    <INTERNALGROUPS ID="2" DISCRIMINATOR="guild" EMAILLIST="fekalion" GROUPNAME="Skitsnackargillet" VERSION="1" ORGANISATION_ID="1" QUENYANAME="Fekalion" QUENYAPREFIX="Mellonath"/>
-    <INTERNALGROUPS ID="3" DISCRIMINATOR="guild" EMAILLIST="alver" GROUPNAME="Alvgillet" VERSION="1" ORGANISATION_ID="2" QUENYANAME="Eldar" QUENYAPREFIX="Mellonath"/>
-    <INTERNALGROUPS ID="4" DISCRIMINATOR="group" EMAILLIST="members" GROUPNAME="Medlemmar" VERSION="1" ORGANISATION_ID="1" PARENT_ID="1"/>
+    <INTERNALGROUPS ID="1"
+                    DESCRIPTION="Administrat&#246;rer f&#246;r Mithlond"
+                    DISCRIMINATOR="group"
+                    EMAILLIST="administratorer"
+                    GROUPNAME="Administrat&#246;rer"
+                    VERSION="1"
+                    ORGANISATION_ID="1"/>
+    <INTERNALGROUPS ID="2"
+                    DESCRIPTION="Gillet samlar alla Skitsnackare."
+                    DISCRIMINATOR="guild"
+                    EMAILLIST="fekalion"
+                    GROUPNAME="Skitsnackargillet"
+                    VERSION="1"
+                    ORGANISATION_ID="1"
+                    QUENYANAME="Fekalion"
+                    QUENYAPREFIX="Mellonath"/>
+    <INTERNALGROUPS ID="3"
+                    DESCRIPTION="Gillet samlar alla Alver."
+                    DISCRIMINATOR="guild"
+                    EMAILLIST="alver"
+                    GROUPNAME="Alvgillet"
+                    VERSION="1"
+                    ORGANISATION_ID="2"
+                    QUENYANAME="Eldar"
+                    QUENYAPREFIX="Mellonath"/>
+    <INTERNALGROUPS ID="4"
+                    DESCRIPTION="Samtliga medlemmar."
+                    DISCRIMINATOR="group"
+                    EMAILLIST="members"
+                    GROUPNAME="Medlemmar"
+                    VERSION="1"
+                    ORGANISATION_ID="1"
+                    PARENT_ID="1"/>
     <MEMBERSHIP ID="1" ALIAS="alias_0" EMAILALIAS="emailAlias_0" LOGINPERMITTED="true" SUBALIAS="subAlias_0" VERSION="1" ORGANISATION_ID="1" USER_ID="1"/>
     <MEMBERSHIP ID="2" ALIAS="alias_1" EMAILALIAS="emailAlias_1" LOGINPERMITTED="true" SUBALIAS="subAlias_1" VERSION="1" ORGANISATION_ID="1" USER_ID="2"/>
     <MEMBERSHIP ID="3" ALIAS="alias_2" EMAILALIAS="emailAlias_2" LOGINPERMITTED="false" SUBALIAS="subAlias_2" VERSION="2" ORGANISATION_ID="1" USER_ID="3"/>

@@ -84,7 +84,7 @@ public class OrganisationIntegrationTest extends AbstractIntegrationTest {
         final List<Organisation> resultList2 = entityManager.createNamedQuery(
                 Organisation.NAMEDQ_GET_BY_NAME,
                 Organisation.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "%_2")
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "%_2")
                 .getResultList();
 
         // Assert #2
@@ -94,7 +94,7 @@ public class OrganisationIntegrationTest extends AbstractIntegrationTest {
         // Act #3
         final Organisation org2 = resultList2.get(0);
         final List<Group> groupsInOrg2 = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_ORGANISATION, Group.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, org2.getOrganisationName())
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, org2.getOrganisationName())
                 .getResultList();
 
         /*

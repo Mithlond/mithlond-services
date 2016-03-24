@@ -24,7 +24,7 @@ package se.mithlond.services.organisation.model.membership;
 import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -49,14 +49,14 @@ import java.util.TreeMap;
  */
 @NamedQueries({
         @NamedQuery(name = PersonalSettings.NAMEDQ_GET_BY_MEMBERSHIP_ID,
-                query = "select a from PersonalSettings a where a.membership = :" + Patterns.PARAM_MEMBERSHIP_ID),
+                query = "select a from PersonalSettings a where a.membership = :" + OrganisationPatterns.PARAM_MEMBERSHIP_ID),
         @NamedQuery(name = PersonalSettings.NAMEDQ_GET_BY_ORGNAME_AND_ALIAS,
                 query = "select a from PersonalSettings a"
-                        + " where a.membership.organisation.organisationName = :" + Patterns.PARAM_ORGANISATION_NAME
-                        + " and a.membership.alias = :" + Patterns.PARAM_ALIAS)
+                        + " where a.membership.organisation.organisationName = :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " and a.membership.alias = :" + OrganisationPatterns.PARAM_ALIAS)
 })
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PersonalSettings extends NazgulEntity {
 

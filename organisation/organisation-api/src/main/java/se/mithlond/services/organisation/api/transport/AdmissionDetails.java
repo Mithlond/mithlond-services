@@ -22,7 +22,7 @@
 package se.mithlond.services.organisation.api.transport;
 
 import org.apache.commons.lang3.Validate;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,7 +36,7 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializable {
 

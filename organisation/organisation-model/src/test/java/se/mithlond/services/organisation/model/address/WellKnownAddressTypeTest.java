@@ -27,7 +27,7 @@ import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.helpers.WellKnownAddressTypes;
 
 import java.util.Map;
@@ -44,7 +44,7 @@ public class WellKnownAddressTypeTest extends AbstractEntityTest {
 
     @Before
     public void setupSharedState() {
-        jaxb.mapXmlNamespacePrefix(Patterns.NAMESPACE, "organisation");
+        jaxb.mapXmlNamespacePrefix(OrganisationPatterns.NAMESPACE, "organisation");
 
         map = new TreeMap<>();
         for (WellKnownAddressType current : WellKnownAddressType.values()) {

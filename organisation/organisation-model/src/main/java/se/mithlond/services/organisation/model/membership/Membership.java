@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.membership.order.OrderLevel;
@@ -72,31 +72,31 @@ import java.util.TreeSet;
 @NamedQueries({
         @NamedQuery(name = Membership.NAMEDQ_GET_BY_ALIAS_ORGANISATION,
                 query = "select a from Membership a "
-                        + " where a.alias like :" + Patterns.PARAM_ALIAS
-                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " where a.alias like :" + OrganisationPatterns.PARAM_ALIAS
+                        + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.alias"),
         @NamedQuery(name = Membership.NAMEDQ_GET_BY_NAME_ORGANISATION,
                 query = "select a from Membership a "
-                        + " where a.user.firstName like :" + Patterns.PARAM_FIRSTNAME
-                        + " and a.user.lastName like :" + Patterns.PARAM_LASTNAME
-                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " where a.user.firstName like :" + OrganisationPatterns.PARAM_FIRSTNAME
+                        + " and a.user.lastName like :" + OrganisationPatterns.PARAM_LASTNAME
+                        + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.alias"),
         @NamedQuery(name = Membership.NAMEDQ_GET_BY_GROUP_ORGANISATION_LOGINPERMITTED,
                 query = "select a from Membership a, in(a.groupMemberships) groupMemberships "
-                        + " where groupMemberships.group.groupName like :" + Patterns.PARAM_GROUP_NAME
-                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
-                        + " and a.loginPermitted = :" + Patterns.PARAM_LOGIN_PERMITTED
+                        + " where groupMemberships.group.groupName like :" + OrganisationPatterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " and a.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
                         + " order by a.alias"),
         @NamedQuery(name = Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED,
                 query = "select a from Membership a"
-                        + " where a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
-                        + " and a.loginPermitted = :" + Patterns.PARAM_LOGIN_PERMITTED
+                        + " where a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " and a.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
                         + " order by a.alias")
 })
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "aliasAndOrganisationIsUnique", columnNames = {"alias", "organisation_id"})})
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"alias", "subAlias", "emailAlias",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"alias", "subAlias", "emailAlias",
         "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Membership extends NazgulEntity implements Comparable<Membership>, SemanticAuthorizationPathProducer {

@@ -28,7 +28,7 @@ import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearch
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.address.WellKnownAddressType;
@@ -71,7 +71,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         final List<Organisation> resultList = entityManager.createNamedQuery(
                 Organisation.NAMEDQ_GET_BY_NAME, Organisation.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, organisationName)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
                 .getResultList();
 
         if(resultList == null || resultList.isEmpty()) {
@@ -115,12 +115,12 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         // Fire, and add all results to the return List.
         final List<Group> groups = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_SEARCHPARAMETERS, Group.class)
-                .setParameter(Patterns.PARAM_NUM_GROUPIDS, groupIDsSize)
-                .setParameter(Patterns.PARAM_GROUP_IDS, groupIDs)
-                .setParameter(Patterns.PARAM_NUM_ORGANISATIONIDS, organisationIDsSize)
-                .setParameter(Patterns.PARAM_ORGANISATION_IDS, organisationIDs)
-                .setParameter(Patterns.PARAM_NUM_CLASSIFICATIONIDS, classifierIDsSize)
-                .setParameter(Patterns.PARAM_CLASSIFICATION_IDS, classifierIDs)
+                .setParameter(OrganisationPatterns.PARAM_NUM_GROUPIDS, groupIDsSize)
+                .setParameter(OrganisationPatterns.PARAM_GROUP_IDS, groupIDs)
+                .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, organisationIDsSize)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs)
+                .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONIDS, classifierIDsSize)
+                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION_IDS, classifierIDs)
                 .getResultList();
         toReturn.addAll(groups);
 
@@ -152,20 +152,20 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
         // Fire, and add all results to the return List.
         final List<CategorizedAddress> categorizedAddresses = entityManager.createNamedQuery(
                 CategorizedAddress.NAMEDQ_GET_BY_SEARCHPARAMETERS, CategorizedAddress.class)
-                .setParameter(Patterns.PARAM_FULL_DESC, searchParameters.getFullDescPattern())
-                .setParameter(Patterns.PARAM_SHORT_DESC, searchParameters.getShortDescPattern())
-                .setParameter(Patterns.PARAM_NUM_ORGANISATIONIDS, organisationIDs.size())
-                .setParameter(Patterns.PARAM_ORGANISATION_IDS, organisationIDs)
-                .setParameter(Patterns.PARAM_NUM_CLASSIFICATIONS, classifiersSize)
-                .setParameter(Patterns.PARAM_CLASSIFICATIONS, classifiers)
-                .setParameter(Patterns.PARAM_ADDRESSCAREOFLINE, searchParameters.getAddressCareOfLinePattern())
-                .setParameter(Patterns.PARAM_CITY, searchParameters.getCityPattern())
-                .setParameter(Patterns.PARAM_COUNTRY, searchParameters.getCountryPattern())
-                .setParameter(Patterns.PARAM_DEPARTMENT, searchParameters.getDepartmentNamePattern())
-                .setParameter(Patterns.PARAM_DESCRIPTION, searchParameters.getDescriptionPattern())
-                .setParameter(Patterns.PARAM_NUMBER, searchParameters.getNumberPattern())
-                .setParameter(Patterns.PARAM_STREET, searchParameters.getStreetPattern())
-                .setParameter(Patterns.PARAM_ZIPCODE, searchParameters.getZipCodePattern())
+                .setParameter(OrganisationPatterns.PARAM_FULL_DESC, searchParameters.getFullDescPattern())
+                .setParameter(OrganisationPatterns.PARAM_SHORT_DESC, searchParameters.getShortDescPattern())
+                .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, organisationIDs.size())
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs)
+                .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONS, classifiersSize)
+                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATIONS, classifiers)
+                .setParameter(OrganisationPatterns.PARAM_ADDRESSCAREOFLINE, searchParameters.getAddressCareOfLinePattern())
+                .setParameter(OrganisationPatterns.PARAM_CITY, searchParameters.getCityPattern())
+                .setParameter(OrganisationPatterns.PARAM_COUNTRY, searchParameters.getCountryPattern())
+                .setParameter(OrganisationPatterns.PARAM_DEPARTMENT, searchParameters.getDepartmentNamePattern())
+                .setParameter(OrganisationPatterns.PARAM_DESCRIPTION, searchParameters.getDescriptionPattern())
+                .setParameter(OrganisationPatterns.PARAM_NUMBER, searchParameters.getNumberPattern())
+                .setParameter(OrganisationPatterns.PARAM_STREET, searchParameters.getStreetPattern())
+                .setParameter(OrganisationPatterns.PARAM_ZIPCODE, searchParameters.getZipCodePattern())
                 .getResultList();
         toReturn.addAll(categorizedAddresses);
 

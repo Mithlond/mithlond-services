@@ -26,7 +26,7 @@ import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.CascadeType;
@@ -51,8 +51,8 @@ import javax.xml.bind.annotation.XmlType;
 @NamedQueries({
         @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_AND_CATEGORY_ID,
                 query = "select a from CategorizedAddress a "
-                        + "where a.owningOrganisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
-                        + " and a.category.categoryID like :" + Patterns.PARAM_CATEGORY_ID
+                        + "where a.owningOrganisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " and a.category.categoryID like :" + OrganisationPatterns.PARAM_CATEGORY_ID
                         + " order by a.shortDesc"),
         @NamedQuery(name = "CategorizedAddress.getByOrganisationAndClassification",
                 query = "select a from CategorizedAddress a "
@@ -64,25 +64,25 @@ import javax.xml.bind.annotation.XmlType;
                         + "and a.shortDesc like :shortDesc order by a.shortDesc"),
         @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_SEARCHPARAMETERS,
                 query = "select a from CategorizedAddress a "
-                        + "where a.fullDesc like :" + Patterns.PARAM_FULL_DESC
-                        + " and a.shortDesc like :" + Patterns.PARAM_SHORT_DESC
-                        + " and ( :" + Patterns.PARAM_CLASSIFICATION_IDS + " > 0 "
-                        + "      and a.category.classification in :" + Patterns.PARAM_CATEGORY_IDS + " ) "
-                        + " and ( :" + Patterns.PARAM_NUM_ORGANISATIONIDS + " > 0 "
-                        + "      and a.owningOrganisation.id in :" + Patterns.PARAM_ORGANISATION_IDS + " ) "
-                        + " and a.address.careOfLine like :" + Patterns.PARAM_ADDRESSCAREOFLINE
-                        + " and a.address.city like :" + Patterns.PARAM_CITY
-                        + " and a.address.country like :" + Patterns.PARAM_COUNTRY
-                        + " and a.address.departmentName like :" + Patterns.PARAM_DEPARTMENT
-                        + " and a.address.description like :" + Patterns.PARAM_DESCRIPTION
-                        + " and a.address.number like :" + Patterns.PARAM_NUMBER
-                        + " and a.address.street like :" + Patterns.PARAM_STREET
-                        + " and a.address.zipCode like :" + Patterns.PARAM_ZIPCODE
+                        + "where a.fullDesc like :" + OrganisationPatterns.PARAM_FULL_DESC
+                        + " and a.shortDesc like :" + OrganisationPatterns.PARAM_SHORT_DESC
+                        + " and ( :" + OrganisationPatterns.PARAM_CLASSIFICATION_IDS + " > 0 "
+                        + "      and a.category.classification in :" + OrganisationPatterns.PARAM_CATEGORY_IDS + " ) "
+                        + " and ( :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS + " > 0 "
+                        + "      and a.owningOrganisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
+                        + " and a.address.careOfLine like :" + OrganisationPatterns.PARAM_ADDRESSCAREOFLINE
+                        + " and a.address.city like :" + OrganisationPatterns.PARAM_CITY
+                        + " and a.address.country like :" + OrganisationPatterns.PARAM_COUNTRY
+                        + " and a.address.departmentName like :" + OrganisationPatterns.PARAM_DEPARTMENT
+                        + " and a.address.description like :" + OrganisationPatterns.PARAM_DESCRIPTION
+                        + " and a.address.number like :" + OrganisationPatterns.PARAM_NUMBER
+                        + " and a.address.street like :" + OrganisationPatterns.PARAM_STREET
+                        + " and a.address.zipCode like :" + OrganisationPatterns.PARAM_ZIPCODE
                         + " order by a.category.classification, a.shortDesc")
 
 })
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"address", "category"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"address", "category"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CategorizedAddress extends Listable implements Comparable<CategorizedAddress> {
 

@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.localization.helpers;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.Localization;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,8 +36,8 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = "localizations")
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = "localizations")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localizations {
 

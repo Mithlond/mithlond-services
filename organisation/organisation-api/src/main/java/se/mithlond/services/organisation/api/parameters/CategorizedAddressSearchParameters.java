@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.api.parameters;
 
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.validation.constraints.NotNull;
@@ -40,7 +40,7 @@ import java.util.SortedMap;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"organisationID", "classifiers", "shortDescPattern",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisationID", "classifiers", "shortDescPattern",
         "fullDescPattern", "addressCareOfLinePattern", "departmentNamePattern", "streetPattern", "numberPattern",
         "cityPattern", "zipCodePattern", "countryPattern", "descriptionPattern"})
 @XmlAccessorType(XmlAccessType.FIELD)

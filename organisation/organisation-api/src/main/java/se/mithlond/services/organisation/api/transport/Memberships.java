@@ -22,7 +22,7 @@
 package se.mithlond.services.organisation.api.transport;
 
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -48,8 +48,8 @@ import java.util.Set;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"organisations", "groups", "users", "memberships"})
+@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisations", "groups", "users", "memberships"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Memberships {
 

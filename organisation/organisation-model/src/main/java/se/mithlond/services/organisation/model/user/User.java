@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -72,7 +72,7 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken", "firstName", "lastName",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken", "firstName", "lastName",
         "birthday", "personalNumberLast4Digits", "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
 @Table(uniqueConstraints = {

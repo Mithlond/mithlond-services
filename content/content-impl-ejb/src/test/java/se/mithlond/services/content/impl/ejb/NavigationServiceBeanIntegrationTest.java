@@ -35,7 +35,7 @@ import se.mithlond.services.content.model.navigation.integration.SeparatorMenuIt
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
@@ -98,8 +98,9 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
                 "mifflond.se");
 
         // #2) Create the Groups.
-        mithlondMembers = new Group("members", mifflond, null, "mithlondMembers");
-        mifflondEditors = new Group("editors", mifflond, mithlondMembers, "mifflondEditors");
+        mithlondMembers = new Group("members", "Medlemmar i sällskapet Mithlond.", mifflond, null, "mithlondMembers");
+        mifflondEditors = new Group("editors", "Redaktörer i sällskapet Mithlond.", mifflond, mithlondMembers,
+                "mifflondEditors");
 
         // #3) Create the Users.
         final ZonedDateTime silSaladBirthday = ZonedDateTime.of(1978, 5, 1, 13, 15, 0, 0, TimeFormat.SWEDISH_TIMEZONE);
@@ -271,7 +272,7 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
         performStandardTestDbSetup();
 
         // Act & Assert
-        unitUnderTest.createOrUpdate("Mifflond", templateMenuStructure, null);
+        unitUnderTest.createOrUpdate(templateMenuStructure, null);
     }
 
     @Test
@@ -294,12 +295,12 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
         rootMenu.getLocalizedTexts().assignManagedLocalizations(containedLocalizations);
 
         // Act
-        final MenuStructure result = unitUnderTest.createOrUpdate("Mifflond", templateMenuStructure, producers);
+        final MenuStructure result = unitUnderTest.createOrUpdate(templateMenuStructure, producers);
 
         // Assert
         final List<MenuStructure> menuStructures = entityManager.createNamedQuery(
                 MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "Mifflond")
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "Mifflond")
                 .getResultList();
 
         Assert.assertNotNull(result);

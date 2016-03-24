@@ -23,7 +23,7 @@ package se.mithlond.services.organisation.model.activity;
 
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -59,7 +59,7 @@ import java.util.Objects;
  */
 @Entity
 @Access(value = AccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {
 		"admitted", "admissionTimestamp", "admissionNote", "responsible"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Admission implements Serializable, Comparable<Admission>, Validatable {

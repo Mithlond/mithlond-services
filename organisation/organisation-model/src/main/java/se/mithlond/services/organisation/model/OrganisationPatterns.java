@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlTransient
-public final class Patterns {
+public final class OrganisationPatterns {
 
     /**
      * The XML namespace used by content model transport objects.

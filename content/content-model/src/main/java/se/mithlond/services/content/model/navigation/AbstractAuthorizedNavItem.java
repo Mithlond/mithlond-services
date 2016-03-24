@@ -24,7 +24,7 @@ package se.mithlond.services.content.model.navigation;
 import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
@@ -70,7 +70,7 @@ import java.util.TreeSet;
         })
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "nav_item_type")
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"role", "domId", "tabIndex", "transportCssClasses",
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"role", "domId", "tabIndex", "transportCssClasses",
         "enabled", "transportAuthorizationPatterns"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements AuthorizedNavItem {

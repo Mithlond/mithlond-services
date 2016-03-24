@@ -52,35 +52,35 @@ import java.io.StringWriter;
 @XmlTransient
 public class MarkupDomAdapter implements DomHandler<String, StreamResult> {
 
-	// Our Logger
-	private static final Logger log = LoggerFactory.getLogger(MarkupDomAdapter.class);
+    // Our Logger
+    private static final Logger log = LoggerFactory.getLogger(MarkupDomAdapter.class);
 
-	// Internal state
-	private static DocumentBuilder DOCUMENT_BUILDER;
-	private static Transformer DECLARATION_PEELING_TRANSFORMER;
-	private StringWriter writer = new StringWriter();
+    // Internal state
+    private static DocumentBuilder documentBuilder;
+    private static Transformer declarationPeelingTransformer;
+    private StringWriter writer = new StringWriter();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public StreamResult createUnmarshaller(final ValidationEventHandler errorHandler) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public StreamResult createUnmarshaller(final ValidationEventHandler errorHandler) {
 
-		// Reset the writer buffer
-		writer.getBuffer().setLength(0);
+        // Reset the writer buffer
+        writer.getBuffer().setLength(0);
 
-		// All done.
-		return new StreamResult(writer);
-	}
+        // All done.
+        return new StreamResult(writer);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getElement(final StreamResult rt) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getElement(final StreamResult rt) {
 
-		// For some reason, an XML PI is prepended to the Unmarshalled content.
-		/*
+        // For some reason, an XML PI is prepended to the Unmarshalled content.
+        /*
 		<?xml version="1.0" encoding="UTF-8"?> <-- This!
 		<div>
 			<strong>ArticleTitle_1</strong>
@@ -88,87 +88,87 @@ public class MarkupDomAdapter implements DomHandler<String, StreamResult> {
          </div>
 		 */
 
-		// Just extract the Markup text.
-		return peelOffXmlDeclaration(rt.getWriter().toString());
-	}
+        // Just extract the Markup text.
+        return peelOffXmlDeclaration(rt.getWriter().toString());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Source marshal(final String markupToMarshal, final ValidationEventHandler errorHandler) {
-		try {
-			final String xml = markupToMarshal.trim();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Source marshal(final String markupToMarshal, final ValidationEventHandler errorHandler) {
+        try {
+            final String xml = markupToMarshal.trim();
 
-			if (log.isDebugEnabled()) {
-				log.debug("Marshalling: " + xml);
-			}
+            if (log.isDebugEnabled()) {
+                log.debug("Marshalling: " + xml);
+            }
 
-			// Pack the XML into a StreamSource.
-			return new StreamSource(new StringReader(xml));
+            // Pack the XML into a StreamSource.
+            return new StreamSource(new StringReader(xml));
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			final String msg = "Could not marshalToXML markup of size ["
-					+ (markupToMarshal == null ? "<null/0>" : markupToMarshal.length()) + "]";
-			throw new RuntimeException(msg, e);
-		}
-	}
+            final String msg = "Could not marshalToXML markup of size ["
+                    + (markupToMarshal == null ? "<null/0>" : markupToMarshal.length()) + "]";
+            throw new RuntimeException(msg, e);
+        }
+    }
 
-	//
-	// Private helpers
-	//
+    //
+    // Private helpers
+    //
 
-	private String peelOffXmlDeclaration(final String data) {
+    private String peelOffXmlDeclaration(final String data) {
 
-		// Handle internal state
-		if (DOCUMENT_BUILDER == null) {
-			try {
+        // Handle internal state
+        if (documentBuilder == null) {
+            try {
 
-				final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-				documentBuilderFactory.setNamespaceAware(true);
-				documentBuilderFactory.setIgnoringElementContentWhitespace(true);
-				DOCUMENT_BUILDER = documentBuilderFactory.newDocumentBuilder();
+                final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+                documentBuilderFactory.setNamespaceAware(true);
+                documentBuilderFactory.setIgnoringElementContentWhitespace(true);
+                documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-			} catch (ParserConfigurationException e) {
-				throw new IllegalStateException("Could not create default DocumentBuilder", e);
-			}
+            } catch (ParserConfigurationException e) {
+                throw new IllegalStateException("Could not create default DocumentBuilder", e);
+            }
 
-			try {
+            try {
 
-				DECLARATION_PEELING_TRANSFORMER = TransformerFactory.newInstance().newTransformer();
-				DECLARATION_PEELING_TRANSFORMER.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+                declarationPeelingTransformer = TransformerFactory.newInstance().newTransformer();
+                declarationPeelingTransformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
-			} catch (TransformerConfigurationException e) {
-				throw new IllegalStateException("Could not create Transformer", e);
-			}
-		}
+            } catch (TransformerConfigurationException e) {
+                throw new IllegalStateException("Could not create Transformer", e);
+            }
+        }
 
-		// Parse the inbound data as an InputSource
-		final InputSource is = new InputSource(new StringReader(data));
-		// is.setEncoding("UTF-8");
-		// log.info("InputSource encoding: " + is.getEncoding());
+        // Parse the inbound data as an InputSource
+        final InputSource is = new InputSource(new StringReader(data));
+        // is.setEncoding("UTF-8");
+        // log.info("InputSource encoding: " + is.getEncoding());
 
-		try {
+        try {
 
-			// Use some DOM weird magic to find the XML content of the element.
-			// ... "because this is simple" ...
-			final Document document = DOCUMENT_BUILDER.parse(is);
+            // Use some DOM weird magic to find the XML content of the element.
+            // ... "because this is simple" ...
+            final Document document = documentBuilder.parse(is);
 
-			// This is the JAXB RI way of doing things ...
-			// final Element docElement = (Element) document.getDocumentElement().getFirstChild();
+            // This is the JAXB RI way of doing things ...
+            // final Element docElement = (Element) document.getDocumentElement().getFirstChild();
 
-			// This is the EclipseLink MOXy way of doing things ...
-			final Element docElement = document.getDocumentElement();
+            // This is the EclipseLink MOXy way of doing things ...
+            final Element docElement = document.getDocumentElement();
 
-			final StringWriter buf = new StringWriter();
-			DECLARATION_PEELING_TRANSFORMER.transform(new DOMSource(docElement), new StreamResult(buf));
+            final StringWriter buf = new StringWriter();
+            declarationPeelingTransformer.transform(new DOMSource(docElement), new StreamResult(buf));
 
-			// All done.
-			return buf.toString();
+            // All done.
+            return buf.toString();
 
-		} catch (Exception e) {
-			throw new IllegalStateException("Could not acquire markup XML", e);
-		}
-	}
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not acquire markup XML", e);
+        }
+    }
 }

@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.navigation.integration;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 
@@ -49,7 +49,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @DiscriminatorValue("menu_item")
 @Access(AccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StandardMenuItem extends AbstractLinkedNavItem {
 

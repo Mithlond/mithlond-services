@@ -54,11 +54,11 @@ import javax.xml.bind.annotation.XmlType;
                 query = "select a from Organisation a"
                         + " order by a.organisationName"),
         @NamedQuery(name = Organisation.NAMEDQ_GET_BY_NAME,
-                query = "select a from Organisation a where a.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                query = "select a from Organisation a where a.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.organisationName")
 })
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
         "postAccountInfo", "emailSuffix", "visitingAddress"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation extends NazgulEntity implements Comparable<Organisation> {

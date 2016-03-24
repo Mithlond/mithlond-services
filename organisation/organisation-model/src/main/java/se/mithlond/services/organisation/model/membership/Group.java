@@ -24,7 +24,7 @@ package se.mithlond.services.organisation.model.membership;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
@@ -39,6 +39,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -53,6 +54,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -74,26 +76,26 @@ import java.util.TreeSet;
 @NamedQueries({
         @NamedQuery(name = Group.NAMEDQ_GET_BY_NAME_ORGANISATION,
                 query = "select a from Group a "
-                        + " where a.groupName like :" + Patterns.PARAM_GROUP_NAME
-                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " where a.groupName like :" + OrganisationPatterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.groupName"),
         @NamedQuery(name = Group.NAMEDQ_GET_BY_NAME_ORGANISATION,
                 query = "select a from Group a "
-                        + " where a.groupName like :" + Patterns.PARAM_GROUP_NAME
-                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " where a.groupName like :" + OrganisationPatterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.groupName"),
         @NamedQuery(name = Group.NAMEDQ_GET_BY_PARENTGROUPNAME_ORGANISATION,
                 query = "select a from Group a "
-                        + " where a.parent.groupName like :" + Patterns.PARAM_GROUP_NAME
-                        + " and a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " where a.parent.groupName like :" + OrganisationPatterns.PARAM_GROUP_NAME
+                        + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.groupName"),
         @NamedQuery(name = Group.NAMEDQ_GET_BY_ORGANISATION,
                 query = "select a from Group a "
-                        + " where a.organisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+                        + " where a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.groupName")
 })
-@XmlType(namespace = Patterns.NAMESPACE,
-        propOrder = {"groupName", "organisation", "parent", "emailList"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"groupName", "description", "organisation", "parent", "emailList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group extends NazgulEntity implements Comparable<Group>, SemanticAuthorizationPathProducer {
 
@@ -126,8 +128,16 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      */
     @Basic(optional = false)
     @Column(nullable = false, length = 128)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String groupName;
+
+    /**
+     * A short description of this Group, which must be non-empty.
+     */
+    @Basic(optional = false)
+    @Column(nullable = false, length = 1024)
+    @XmlElement(required = true)
+    private String description;
 
     /**
      * An optional electronic mail list which delivers elecronic mail to all members of this Group.
@@ -135,7 +145,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      * appended to form the full mail address of [emailList]@[organisation email suffix].
      */
     @Basic
-    @XmlElement(nillable = true, required = false)
+    @XmlElement
     private String emailList;
 
     /**
@@ -156,6 +166,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
     @ManyToOne(optional = false,
             fetch = FetchType.EAGER,
             cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(nullable = false)
     @XmlIDREF
     @XmlAttribute(required = true, name = "organisationReference")
     private Organisation organisation;
@@ -165,9 +176,9 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      * Groups are structured in a Tree, which means that each Group may have (a single) parent Group.
      * Effective settings for a Group is the aggregation of all settings inherited from all its parent Groups.
      */
-    @ManyToOne(optional = true)
+    @ManyToOne
     @XmlIDREF
-    @XmlAttribute(required = false)
+    @XmlAttribute
     private Group parent;
 
     /**
@@ -180,6 +191,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      * Compound constructor creating a Group, wrapping the supplied data.
      *
      * @param groupName    Name of this Group, which must be non-empty and unique within each Organisation.
+     * @param description  Description of this Group, which must be non-empty.
      * @param organisation The non-null Organisation in which this Group exists.
      * @param parent       An optional parent to this Group. Groups are structured in a Tree, which means that each
      *                     Group may have (a single) parent Group. Effective settings for a Group is the aggregation
@@ -189,7 +201,9 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      *                     Organisation will be appended to form the full mail address of
      *                     <code>[emailList]@[organisation email suffix]</code>.
      */
-    public Group(final String groupName,
+    public Group(
+            final String groupName,
+            final String description,
             final Organisation organisation,
             final Group parent,
             final String emailList) {
@@ -199,6 +213,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
         this.organisation = organisation;
         this.parent = parent;
         this.emailList = emailList;
+        this.description = description;
         setXmlID();
     }
 
@@ -209,6 +224,17 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      */
     public String getGroupName() {
         return groupName;
+    }
+
+    /**
+     * The description of this Group, such as "I musikgillet träffas vi i instrumentbeprydda hem, där vi spelar
+     * och sjunger glada visor i Midgårda anda. När gillet tidigare var mer aktivt, brukade vi börja varje gille
+     * med att baka en kaka som fick stå i ugnen medan vi musicerade."
+     *
+     * @return A non-empty description of this Group.
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -232,14 +258,20 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
     }
 
     /**
-     * An optional electronic mail list which delivers elecronic mail to all members of this Group.
+     * An optional electronic mail list which delivers electronic mail to all members of this Group.
      *
      * @return If the emailList property does not contain a full email address, the email suffix of the
      * Organisation will be appended to form the full mail address of
      * <code>[emailList]@[organisation email suffix]</code>.
      */
     public String getEmailList() {
-        return emailList;
+
+        if(emailList.contains("@")) {
+            return emailList;
+        }
+
+        // Append the organisation's mailing suffix.
+        return emailList + "@" + getOrganisation().getEmailSuffix();
     }
 
     /**
@@ -250,6 +282,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
 
         InternalStateValidationException.create()
                 .notNullOrEmpty(groupName, "groupName")
+                .notNullOrEmpty(description, "description")
                 .notNull(organisation, "organisation")
                 .notTrue(parent == this, "parent == this")
                 .endExpressionAndValidate();
@@ -259,28 +292,34 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      * {@inheritDoc}
      */
     @Override
-    public int hashCode() {
-        return groupName.hashCode() + organisation.hashCode();
+    public boolean equals(final Object o) {
+
+        // Fail fast.
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Group)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        // Delegate to internal state validation. Ignore the parent Group.
+        final Group that = (Group) o;
+        return Objects.equals(groupName, that.groupName)
+                && Objects.equals(description, that.description)
+                && Objects.equals(emailList, that.emailList);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(final Object obj) {
+    public int hashCode() {
 
-        // Check sanity
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof Group)) {
-            return false;
-        }
-
-        // Delegate
-        final Group that = (Group) obj;
-        return groupName.equals(that.groupName)
-                && organisation.equals(that.organisation);
+        // Ignore the NazgulEntity properties.
+        return Objects.hash(groupName, description, emailList);
     }
 
     /**

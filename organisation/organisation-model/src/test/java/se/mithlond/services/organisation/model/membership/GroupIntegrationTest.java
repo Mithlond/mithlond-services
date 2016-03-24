@@ -26,7 +26,7 @@ import org.dbunit.dataset.IDataSet;
 import org.junit.Assert;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
 import se.mithlond.services.shared.test.entity.AbstractIntegrationTest;
 
@@ -107,12 +107,12 @@ public class GroupIntegrationTest extends AbstractIntegrationTest {
         }
 
         final Group modifiedGroup = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_NAME_ORGANISATION, Group.class)
-                .setParameter(Patterns.PARAM_GROUP_NAME, "groupName_0")
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "name_0")
+                .setParameter(OrganisationPatterns.PARAM_GROUP_NAME, "groupName_0")
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "name_0")
                 .getSingleResult();
 
         // Assert
-        Assert.assertEquals("modifiedEmailList", modifiedGroup.getEmailList());
+        Assert.assertEquals("modifiedEmailList@emailSuffix_0", modifiedGroup.getEmailList());
         Assert.assertEquals(2, modifiedGroup.getVersion());
 
         Assertion.assertEquals(expected, iDatabaseConnection.createDataSet());

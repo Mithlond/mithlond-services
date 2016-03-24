@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.localization.helpers;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
 
@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"localizations", "localizedTextsList"})
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"localizations", "localizedTextsList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTextsHolder {
 

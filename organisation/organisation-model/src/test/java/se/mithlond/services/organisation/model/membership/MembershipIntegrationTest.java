@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -129,7 +129,7 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
 
         // Act #1: Find the Groups.
         List<Group> resultList = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_ORGANISATION, Group.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "Mith%")
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "Mith%")
                 .getResultList();
 
         // Assert #1: Assert groups and organisation
@@ -174,7 +174,7 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
 
             // Re-acquire the managed versions of Groups and Organisations.
             resultList = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_ORGANISATION, Group.class)
-                    .setParameter(Patterns.PARAM_ORGANISATION_NAME, "Mith%")
+                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "Mith%")
                     .getResultList();
 
             administrators = resultList.get(0);
@@ -186,8 +186,8 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
 
         final List<Membership> memberships = entityManager.createNamedQuery(
                 Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, "Mit%")
-                .setParameter(Patterns.PARAM_LOGIN_PERMITTED, true)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "Mit%")
+                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
         Assert.assertEquals(10, memberships.size());
 

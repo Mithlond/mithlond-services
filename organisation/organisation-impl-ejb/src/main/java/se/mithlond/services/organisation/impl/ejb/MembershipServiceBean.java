@@ -24,7 +24,7 @@ package se.mithlond.services.organisation.impl.ejb;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.MembershipService;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.shared.spi.algorithms.Validate;
@@ -55,8 +55,8 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         final List<Membership> loginPermittedMemberships = entityManager.createNamedQuery(
                 Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, organisation)
-                .setParameter(Patterns.PARAM_LOGIN_PERMITTED, true)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisation)
+                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
         toReturn.addAll(loginPermittedMemberships);
 
@@ -64,8 +64,8 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
         if (includeLoginNotPermitted) {
             final List<Membership> loginNotPermittedMemberships = entityManager.createNamedQuery(
                     Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
-                    .setParameter(Patterns.PARAM_ORGANISATION_NAME, organisation)
-                    .setParameter(Patterns.PARAM_LOGIN_PERMITTED, false)
+                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisation)
+                    .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, false)
                     .getResultList();
             toReturn.addAll(loginNotPermittedMemberships);
         }
@@ -82,8 +82,8 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         final List<Membership> result = entityManager.createNamedQuery(
                 Membership.NAMEDQ_GET_BY_ALIAS_ORGANISATION, Membership.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, organisationName)
-                .setParameter(Patterns.PARAM_ALIAS, alias)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
+                .setParameter(OrganisationPatterns.PARAM_ALIAS, alias)
                 .getResultList();
 
         if (result.size() > 1) {
@@ -107,10 +107,10 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         final List<Membership> loginPermittedMemberships = entityManager.createNamedQuery(
                 Membership.NAMEDQ_GET_BY_NAME_ORGANISATION, Membership.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, organisationName)
-                .setParameter(Patterns.PARAM_FIRSTNAME, firstName)
-                .setParameter(Patterns.PARAM_LASTNAME, lastName)
-                .setParameter(Patterns.PARAM_LOGIN_PERMITTED, true)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
+                .setParameter(OrganisationPatterns.PARAM_FIRSTNAME, firstName)
+                .setParameter(OrganisationPatterns.PARAM_LASTNAME, lastName)
+                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
         toReturn.addAll(loginPermittedMemberships);
 
@@ -129,7 +129,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         // All done.
         return entityManager.createNamedQuery(PersonalSettings.NAMEDQ_GET_BY_MEMBERSHIP_ID, PersonalSettings.class)
-                .setParameter(Patterns.PARAM_MEMBERSHIP_ID, membership.getId())
+                .setParameter(OrganisationPatterns.PARAM_MEMBERSHIP_ID, membership.getId())
                 .getSingleResult();
     }
 }

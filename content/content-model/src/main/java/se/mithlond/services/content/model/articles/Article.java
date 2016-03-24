@@ -25,12 +25,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
+import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -50,180 +56,220 @@ import java.util.GregorianCalendar;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"title", "author", "createdAt", "lastModified", "content"})
+@NamedQueries({
+        @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE,
+                query = "select a from Article a "
+                        + " where a.owner.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " and a.lastModified > :" + ContentPatterns.PARAM_LAST_MODIFIED)
+})
+@Entity
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "author", "createdAt", "lastModified", "content"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends NazgulEntity {
 
-	// Our Logger
-	private static final Logger log = LoggerFactory.getLogger(Article.class);
+    // Our Logger
+    private static final Logger log = LoggerFactory.getLogger(Article.class);
 
-	// Internal state
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlElement(required = true)
-	private String title;
+    /**
+     * NamedQuery for getting Localizations having a given language.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE
+            = "Article.getByOrgAndLastModDate";
 
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlElement(required = true)
-	private String author;
+    // Internal state
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true)
+    private String title;
 
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
-	@XmlElement(required = true)
-	private Calendar createdAt;
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true)
+    private String author;
 
-	@Basic(optional = true)
-	@Column(nullable = true)
-	@Temporal(TemporalType.TIMESTAMP)
-	@XmlElement
-	private Calendar lastModified;
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @XmlElement(required = true)
+    private Calendar createdAt;
 
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@Lob
-	@XmlTransient
-	private String markup;
+    @Basic(optional = true)
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    @XmlElement
+    private Calendar lastModified;
 
-	@Transient
-	@XmlElement(required = true)
-	private Markup content;
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Lob
+    @XmlTransient
+    private String markup;
 
-	/**
-	 * JPA/JAXB-friendly constructor.
-	 */
-	public Article() {
-	}
+    @Transient
+    @XmlElement(required = true)
+    private Markup content;
 
-	/**
-	 * Convenience constructor, creating an Article using the supplied data and
-	 * using the current timestamp ("now") for createdAt.
-	 *
-	 * @param title   The title of this Article.
-	 * @param author  The Article author.
-	 * @param content The Article content.
-	 */
-	public Article(final String title, final String author, final String content) {
-		this(title, author, ZonedDateTime.now(), content);
-	}
+    @ManyToOne(optional = false)
+    @XmlTransient
+    private Organisation owner;
 
-	/**
-	 * Compound constructor creating an Article wrapping the supplied data.
-	 *
-	 * @param title     The title of this Article.
-	 * @param author    The Article author.
-	 * @param createdAt The timestamp when this article was created.
-	 * @param markup    The Article markup content.
-	 */
-	public Article(final String title,
-				   final String author,
-				   final ZonedDateTime createdAt,
-				   final String markup) {
-		this.title = title;
-		this.author = author;
-		this.createdAt = GregorianCalendar.from(createdAt);
-		this.markup = markup;
-	}
+    /**
+     * JPA/JAXB-friendly constructor.
+     */
+    public Article() {
+    }
 
-	/**
-	 * Reassigns the title and updates the lastModified timestamp.
-	 *
-	 * @param title a non-empty new title for this Article.
-	 */
-	public void setTitle(final String title) {
+    /**
+     * Convenience constructor, creating an Article using the supplied data and
+     * using the current timestamp ("now") for createdAt.
+     *
+     * @param title   The title of this Article.
+     * @param author  The Article author.
+     * @param content The Article content.
+     * @param owner   The Organisation owning (the content of) this Article.
+     */
+    public Article(
+            final String title,
+            final String author,
+            final String content,
+            final Organisation owner) {
+        this(title, author, ZonedDateTime.now(), content, owner);
+    }
 
-		// Assign internal state
-		this.title = Validate.notEmpty(title, "title");
-		this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
-	}
+    /**
+     * Compound constructor creating an Article wrapping the supplied data.
+     *
+     * @param title     The title of this Article.
+     * @param author    The Article author.
+     * @param createdAt The timestamp when this article was created.
+     * @param markup    The Article markup content.
+     * @param owner     The Organisation owning (the content of) this Article.
+     */
+    public Article(
+            final String title,
+            final String author,
+            final ZonedDateTime createdAt,
+            final String markup,
+            final Organisation owner) {
 
-	/**
-	 * Reassigns the markup content and updates the lastModified timestamp.
-	 *
-	 * @param markup a non-empty new markup content for this Article.
-	 */
-	public void setMarkup(final String markup) {
+        // Assign internal state
+        this.title = title;
+        this.author = author;
+        this.createdAt = GregorianCalendar.from(createdAt);
+        this.markup = markup;
+        this.owner = owner;
+    }
 
-		// Assign internal state
-		this.markup = Validate.notEmpty(markup, "markup");
-		this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
-	}
+    /**
+     * Reassigns the title and updates the lastModified timestamp.
+     *
+     * @param title a non-empty new title for this Article.
+     */
+    public void setTitle(final String title) {
 
-	/**
-	 * @return The title of this Article. Never null or empty.
-	 */
-	public String getTitle() {
-		return title;
-	}
+        // Assign internal state
+        this.title = Validate.notEmpty(title, "title");
+        this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
+    }
 
-	/**
-	 * @return The Article author. Never null or empty.
-	 */
-	public String getAuthor() {
-		return author;
-	}
+    /**
+     * Reassigns the markup content and updates the lastModified timestamp.
+     *
+     * @param markup a non-empty new markup content for this Article.
+     */
+    public void setMarkup(final String markup) {
 
-	/**
-	 * @return The ZonedDateTime when this Article was created. Never null.
-	 */
-	public ZonedDateTime getCreatedAt() {
-		return ((GregorianCalendar) createdAt).toZonedDateTime();
-	}
+        // Assign internal state
+        this.markup = Validate.notEmpty(markup, "markup");
+        this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
+    }
 
-	/**
-	 * @return The ZonedDateTime when this Article was last modified, or {@code null} if not modified after creation.
-	 */
-	public ZonedDateTime getLastModified() {
-		return lastModified == null ? null : ((GregorianCalendar) lastModified).toZonedDateTime();
-	}
+    /**
+     * @return The title of this Article. Never null or empty.
+     */
+    public String getTitle() {
+        return title;
+    }
 
-	/**
-	 * @return The full markup content of this article.
-	 */
-	public String getMarkup() {
-		return markup;
-	}
+    /**
+     * @return The Article author. Never null or empty.
+     */
+    public String getAuthor() {
+        return author;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void validateEntityState() throws InternalStateValidationException {
+    /**
+     * @return The ZonedDateTime when this Article was created. Never null.
+     */
+    public ZonedDateTime getCreatedAt() {
+        return ((GregorianCalendar) createdAt).toZonedDateTime();
+    }
 
-		InternalStateValidationException.create()
-				.notNullOrEmpty(author, "author")
-				.notNullOrEmpty(title, "title")
-				.notNullOrEmpty(markup, "markup")
-				.notNull(createdAt, "createdAt")
-				.endExpressionAndValidate();
-	}
+    /**
+     * @return The ZonedDateTime when this Article was last modified, or {@code null} if not modified after creation.
+     */
+    public ZonedDateTime getLastModified() {
+        return lastModified == null ? null : ((GregorianCalendar) lastModified).toZonedDateTime();
+    }
 
-	//
-	// Private helpers
-	//
+    /**
+     * @return The Organisation owning the content of this Article.
+     */
+    public Organisation getOwner() {
+        return owner;
+    }
 
-	/**
-	 * Standard JAXB class-wide listener method, automagically invoked
-	 * after it has created an instance of this Class.
-	 *
-	 * @param marshaller The active Marshaller.
-	 */
-	@SuppressWarnings("PMD")
-	private void beforeMarshal(final Marshaller marshaller) {
-		this.content = new Markup(markup);
-	}
+    /**
+     * @return The full markup content of this article.
+     */
+    public String getMarkup() {
+        return markup;
+    }
 
-	/**
-	 * This method is called after all the properties (except IDREF) are unmarshalled for this object,
-	 * but before this object is set to the parent object.
-	 */
-	@SuppressWarnings("PMD")
-	private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateEntityState() throws InternalStateValidationException {
 
-		// Log somewhat
-		final String contentType = content == null ? "<null>" : content.getClass().getName();
-		log.info("Got content [" + contentType + "]: " + content);
-		markup = content.getContent();
-	}
+        InternalStateValidationException.create()
+                .notNullOrEmpty(author, "author")
+                .notNullOrEmpty(title, "title")
+                .notNullOrEmpty(markup, "markup")
+                .notNull(createdAt, "createdAt")
+                .notNull(owner, "owner")
+                .endExpressionAndValidate();
+    }
+
+    //
+    // Private helpers
+    //
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * after it has created an instance of this Class.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("PMD")
+    private void beforeMarshal(final Marshaller marshaller) {
+        this.content = new Markup(markup);
+    }
+
+    /**
+     * This method is called after all the properties (except IDREF) are unmarshalled for this object,
+     * but before this object is set to the parent object.
+     */
+    @SuppressWarnings("PMD")
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+
+        // Log somewhat
+        if (log.isDebugEnabled()) {
+            final String contentType = content == null ? "<null>" : content.getClass().getName();
+            log.info("Got content [" + contentType + "]: " + content);
+        }
+
+        // Assign the markup content.
+        markup = content.getContent();
+    }
 }

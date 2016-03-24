@@ -23,7 +23,7 @@ package se.mithlond.services.organisation.model.membership.order;
 
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
@@ -64,7 +64,7 @@ import java.util.TreeSet;
  */
 @Entity
 @Access(value = AccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"orderLevel", "dateGranted", "note"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"orderLevel", "dateGranted", "note"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OrderLevelGrant implements Serializable, Comparable<OrderLevelGrant>,
         Validatable, SemanticAuthorizationPathProducer {

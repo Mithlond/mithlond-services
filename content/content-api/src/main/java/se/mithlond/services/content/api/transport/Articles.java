@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.api.transport;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
@@ -41,8 +41,8 @@ import java.util.List;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"realm", "selectionPath", "articleList"})
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"realm", "selectionPath", "articleList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Articles implements Serializable {
 

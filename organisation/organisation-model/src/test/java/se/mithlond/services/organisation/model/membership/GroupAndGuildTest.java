@@ -97,12 +97,14 @@ public class GroupAndGuildTest extends AbstractEntityTest {
 
             groups[i] = new Group(
                     "groupName_" + i,
+                    "groupDescription_" + i,
                     organisations[i % organisations.length],
                     (i > 1 ? groups[i - 1] : null),
                     "emailList_" + i);
 
             guilds[i] = new Guild(
                     "guildName_" + i,
+                    "guildDescription_" + i,
                     organisations[i % organisations.length],
                     "emailList_" + i,
                     "quenyaName_" + i,

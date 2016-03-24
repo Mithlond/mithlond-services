@@ -23,7 +23,7 @@ package se.mithlond.services.organisation.model.finance;
 
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -42,7 +42,7 @@ import java.math.BigDecimal;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Embeddable
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Amount implements Validatable, Comparable<Amount>, Serializable {
 

@@ -24,7 +24,7 @@ package se.mithlond.services.content.model.navigation.integration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
@@ -68,7 +68,7 @@ import java.util.Objects;
  */
 @Entity
 @DiscriminatorValue("menu")
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"children"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"children"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StandardMenu extends AbstractLinkedNavItem {
 

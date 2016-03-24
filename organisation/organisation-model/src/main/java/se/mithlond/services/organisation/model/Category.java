@@ -47,12 +47,12 @@ import javax.xml.bind.annotation.XmlType;
 @NamedQueries({
         @NamedQuery(name = Category.NAMEDQ_GET_BY_CLASSIFICATION,
                 query = "select a from Category a"
-                        + " where a.classification like :" + Patterns.PARAM_CLASSIFICATION
+                        + " where a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
                         + " order by a.categoryID"),
         @NamedQuery(name = Category.NAMEDQ_GET_BY_ID_CLASSIFICATION,
                 query = "select a from Category a"
-                        + " where a.categoryID like :" + Patterns.PARAM_CATEGORY_ID
-                        + " and a.classification like :" + Patterns.PARAM_CLASSIFICATION
+                        + " where a.categoryID like :" + OrganisationPatterns.PARAM_CATEGORY_ID
+                        + " and a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
                         + " order by a.categoryID")
 })
 @Entity
@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
         @UniqueConstraint(
                 name = "categoryIdAndClassificationIsUnique",
                 columnNames = {"category", "classification"})})
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "classification", "categoryID", "description"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
 

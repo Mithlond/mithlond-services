@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 @Table(uniqueConstraints = {
 		@UniqueConstraint(name = "oneShortDescPerOrganisation", columnNames = {"shortDesc", "owningorganisation_id"})
 })
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"shortDesc", "fullDesc", "owningOrganisation"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"shortDesc", "fullDesc", "owningOrganisation"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Listable extends NazgulEntity {
 

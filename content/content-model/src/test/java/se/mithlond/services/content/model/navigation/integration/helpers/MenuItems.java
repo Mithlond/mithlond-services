@@ -21,10 +21,9 @@
  */
 package se.mithlond.services.content.model.navigation.integration.helpers;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
-import se.mithlond.services.content.model.navigation.AuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
@@ -32,18 +31,13 @@ import se.mithlond.services.content.model.navigation.integration.StandardMenuIte
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({StandardMenuItem.class, SeparatorMenuItem.class, LocalizedTexts.class, Localization.class})
 public class MenuItems {

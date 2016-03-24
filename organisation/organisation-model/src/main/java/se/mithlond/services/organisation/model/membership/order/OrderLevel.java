@@ -24,7 +24,7 @@ package se.mithlond.services.organisation.model.membership.order;
 import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
@@ -62,7 +62,7 @@ import java.util.TreeSet;
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(name = "orderNameAndIndexIsUnique",
         columnNames = {"index", "order_id"})})
-@XmlType(namespace = Patterns.NAMESPACE,
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"orderLevelXmlID", "index", "name", "shortDesc", "fullDesc", "order"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class OrderLevel extends NazgulEntity implements SemanticAuthorizationPathProducer {

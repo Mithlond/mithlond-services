@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.api.parameters;
 
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
@@ -44,7 +44,7 @@ import java.util.SortedMap;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"startPeriod", "endPeriod",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"startPeriod", "endPeriod",
         "organisationIDs", "activityIDs", "membershipIDs", "freeTextSearch"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ActivitySearchParameters

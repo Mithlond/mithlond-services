@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
@@ -35,7 +36,7 @@ import se.mithlond.services.content.model.navigation.integration.SeparatorMenuIt
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
@@ -94,7 +95,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
 
             rawMenuStructure = entityManager.createNamedQuery(
                     MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
-                    .setParameter(Patterns.PARAM_ORGANISATION_NAME, realm)
+                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, realm)
                     .getSingleResult();
         } catch (Exception e) {
             throw new UnknownOrganisationException(realm, e);
@@ -139,16 +140,11 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
      */
     @Override
     public MenuStructure createOrUpdate(
-            final String realm,
             final MenuStructure menuStructure,
             final List<SemanticAuthorizationPathProducer> callersAuthPaths) throws UnauthorizedException {
 
         // Check sanity
-        Validate.notEmpty(realm, "Cannot handle null or empty 'realm' argument.");
         Validate.notNull(menuStructure, "Cannot handle null or empty 'menuStructure' argument.");
-        Validate.isTrue(realm.equals(menuStructure.getOrganisationName()), "Realm value [" + realm
-                + "] must be equal to the OrganisationName within the supplied menuStructure ["
-                + menuStructure.getOrganisationName() + "]");
         final List<SemanticAuthorizationPathProducer> effectiveAuthorizationPaths = callersAuthPaths == null
                 ? new ArrayList<>()
                 : callersAuthPaths;
@@ -157,12 +153,16 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         final SortedSet<SemanticAuthorizationPath> possessedAuthPaths = new TreeSet<>();
         effectiveAuthorizationPaths.stream().forEach(current -> possessedAuthPaths.addAll(current.getPaths()));
 
+        final String realm = menuStructure.getOwningOrganisation() != null
+                ? menuStructure.getOwningOrganisation().getOrganisationName()
+                : menuStructure.getOrganisationName();
+
         // Is the caller authorized to create or update the MenuStructure for the supplied realm?
         final SortedSet<AuthorizationPattern> requiredPatterns = REALM_AUTHORIZATION_PATTERN_FUNCTION.apply(realm);
         simpleAuthorizer.validateAuthorization(
                 requiredPatterns,
                 possessedAuthPaths,
-                "MenuStructure for realm [" + realm + "] could not be created/updated. "
+                "MenuStructure for organisation [" + realm + "] could not be created/updated. "
                         + "Caller lacks required AuthorizationPattern (" + requiredPatterns + ").");
 
         // Create or Retrieve all Localizations within the LocalizedTexts within the MenuStructure.
@@ -173,13 +173,13 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         // Should we update the MenuStructure?
         final List<MenuStructure> menuStructures = entityManager.createNamedQuery(
                 MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME, MenuStructure.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, realm)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, realm)
                 .getResultList();
 
         // Find the Organization for the supplied realm (i.e. OrganisationName).
         final List<Organisation> organisationList = entityManager.createNamedQuery(
                 Organisation.NAMEDQ_GET_BY_NAME, Organisation.class)
-                .setParameter(Patterns.PARAM_ORGANISATION_NAME, menuStructure.getOrganisationName())
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, menuStructure.getOrganisationName())
                 .getResultList();
         if (organisationList.size() != 1) {
             throw new IllegalArgumentException("Organisation name [" + menuStructure.getOrganisationName()
@@ -316,7 +316,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
 
         final List<Localization> managedLocalizations = alreadyPersisted.size() > 0
                 ? entityManager.createNamedQuery(Localization.NAMEDQ_GET_BY_PRIMARY_KEYS, Localization.class)
-                .setParameter(se.mithlond.services.content.model.Patterns.PARAM_IDS, alreadyPersistedIDs)
+                .setParameter(ContentPatterns.PARAM_IDS, alreadyPersistedIDs)
                 .getResultList()
                 : new ArrayList<>();
 
@@ -334,8 +334,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         // Find the Localization in question.
                         final List<Localization> resultList = entityManager.createNamedQuery(
                                 Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY, Localization.class)
-                                .setParameter(se.mithlond.services.content.model.Patterns.PARAM_COUNTRY, country)
-                                .setParameter(se.mithlond.services.content.model.Patterns.PARAM_LANGUAGE, language)
+                                .setParameter(ContentPatterns.PARAM_COUNTRY, country)
+                                .setParameter(ContentPatterns.PARAM_LANGUAGE, language)
                                 .getResultList();
 
                         // All Done.

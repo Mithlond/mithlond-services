@@ -22,7 +22,7 @@
 package se.mithlond.services.content.model.navigation;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
@@ -31,7 +31,6 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import javax.persistence.CascadeType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -44,7 +43,7 @@ import java.util.Objects;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @MappedSuperclass
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"iconIdentifier", "href", "localizedTexts"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"iconIdentifier", "href", "localizedTexts"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem implements LinkedNavItem {
 

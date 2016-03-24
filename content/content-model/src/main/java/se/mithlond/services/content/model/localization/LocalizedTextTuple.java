@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.localization;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,7 +36,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"locale", "text"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"locale", "text"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
 

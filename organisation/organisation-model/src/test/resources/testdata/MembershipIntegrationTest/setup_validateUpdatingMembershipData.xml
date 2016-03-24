@@ -21,34 +21,59 @@
   #L%
   -->
 <dataset>
-  <ORGANISATION ID="1" BANKACCOUNTINFO="bankAccountInfo_0" EMAILSUFFIX="mithlond.se" ORGANISATIONNAME="Mithlond"
-                PHONE="031987654" POSTACCOUNTINFO="823-234-234" SUFFIX="mithlond.se" VERSION="1"
-                CAREOFLINE="Lennart Jörelid" CITY="Mölnlycke" COUNTRY="Sverige"
-                DEPARTMENTNAME="Löjlighetsdepartementet"
-                DESCRIPTION="Göteborgs Tolkiensällskap" NUMBER="3" STREET="Stenflisavägen" ZIPCODE="435 56"/>
-  <ORGANISATION ID="2" BANKACCOUNTINFO="bankAccountInfo_1" EMAILSUFFIX="fjodjim.org" ORGANISATIONNAME="Fjodjim"
-                PHONE="0812345678" POSTACCOUNTINFO="5059-2020" SUFFIX="fjodjim.org" VERSION="1"
-                CAREOFLINE="Carolina Agered" CITY="Farsta" COUNTRY="Sverige"
-                DESCRIPTION="Tokholms Tolkiensällskap" NUMBER="28A" STREET="Tjabbavägen"
-                ZIPCODE="153 43"/>
-  <INTERNALGROUPS ID="1" DISCRIMINATOR="group" EMAILLIST="administratorer" GROUPNAME="Administratörer" VERSION="1"
-                  ORGANISATION_ID="1"/>
-  <INTERNALGROUPS ID="2" DISCRIMINATOR="guild" EMAILLIST="fekalion" GROUPNAME="Skitsnackargillet" VERSION="1"
-                  ORGANISATION_ID="1" QUENYANAME="Fekalion" QUENYAPREFIX="Mellonath"/>
-  <INTERNALGROUPS ID="3" DISCRIMINATOR="guild" EMAILLIST="alver" GROUPNAME="Alvgillet" VERSION="1"
-                  ORGANISATION_ID="2" QUENYANAME="Eldar" QUENYAPREFIX="Mellonath"/>
-  <INTERNALGROUPS ID="4" DISCRIMINATOR="group" EMAILLIST="members" GROUPNAME="Medlemmar" VERSION="1"
-                  ORGANISATION_ID="1" PARENT_ID="1"/>
-  <CATEGORIZEDADDRESS/>
-  <CATEGORY/>
-  <GROUPMEMBERSHIP/>
-  <MEMBERSHIP/>
-  <MEMBERSHIP_GROUPMEMBERSHIP/>
-  <NAZGULORDER/>
-  <ORDERLEVEL/>
-  <ORDERLEVELGRANT/>
-  <PERSONALSETTINGS/>
-  <PERSONALSETTINGS_SETTINGS/>
-  <USER/>
-  <USER_CONTACTDETAILS/>
+    <ORGANISATION ID="1" BANKACCOUNTINFO="bankAccountInfo_0" EMAILSUFFIX="mithlond.se" ORGANISATIONNAME="Mithlond"
+                  PHONE="031987654" POSTACCOUNTINFO="823-234-234" SUFFIX="mithlond.se" VERSION="1"
+                  CAREOFLINE="Lennart Jörelid" CITY="Mölnlycke" COUNTRY="Sverige"
+                  DEPARTMENTNAME="Löjlighetsdepartementet"
+                  DESCRIPTION="Göteborgs Tolkiensällskap" NUMBER="3" STREET="Stenflisavägen" ZIPCODE="435 56"/>
+    <ORGANISATION ID="2" BANKACCOUNTINFO="bankAccountInfo_1" EMAILSUFFIX="fjodjim.org" ORGANISATIONNAME="Fjodjim"
+                  PHONE="0812345678" POSTACCOUNTINFO="5059-2020" SUFFIX="fjodjim.org" VERSION="1"
+                  CAREOFLINE="Carolina Agered" CITY="Farsta" COUNTRY="Sverige"
+                  DESCRIPTION="Tokholms Tolkiensällskap" NUMBER="28A" STREET="Tjabbavägen"
+                  ZIPCODE="153 43"/>
+    <INTERNALGROUPS ID="1"
+                    DESCRIPTION="Administrat&#246;rer f&#246;r Mithlond"
+                    DISCRIMINATOR="group"
+                    EMAILLIST="administratorer"
+                    GROUPNAME="Administratörer"
+                    VERSION="1"
+                    ORGANISATION_ID="1"/>
+    <INTERNALGROUPS ID="2"
+                    DESCRIPTION="Gillet samlar alla Skitsnackare."
+                    DISCRIMINATOR="guild"
+                    EMAILLIST="fekalion"
+                    GROUPNAME="Skitsnackargillet"
+                    VERSION="1"
+                    ORGANISATION_ID="1"
+                    QUENYANAME="Fekalion"
+                    QUENYAPREFIX="Mellonath"/>
+    <INTERNALGROUPS ID="3"
+                    DESCRIPTION="Gillet samlar alla Alver."
+                    DISCRIMINATOR="guild"
+                    EMAILLIST="alver"
+                    GROUPNAME="Alvgillet"
+                    VERSION="1"
+                    ORGANISATION_ID="2"
+                    QUENYANAME="Eldar"
+                    QUENYAPREFIX="Mellonath"/>
+    <INTERNALGROUPS ID="4"
+                    DESCRIPTION="Samtliga medlemmar."
+                    DISCRIMINATOR="group"
+                    EMAILLIST="members"
+                    GROUPNAME="Medlemmar"
+                    VERSION="1"
+                    ORGANISATION_ID="1"
+                    PARENT_ID="1"/>
+    <CATEGORIZEDADDRESS/>
+    <CATEGORY/>
+    <GROUPMEMBERSHIP/>
+    <MEMBERSHIP/>
+    <MEMBERSHIP_GROUPMEMBERSHIP/>
+    <NAZGULORDER/>
+    <ORDERLEVEL/>
+    <ORDERLEVELGRANT/>
+    <PERSONALSETTINGS/>
+    <PERSONALSETTINGS_SETTINGS/>
+    <USER/>
+    <USER_CONTACTDETAILS/>
 </dataset>

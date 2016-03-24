@@ -26,7 +26,7 @@ import se.jguru.nazgul.tools.validation.api.expression.ExpressionBuilder;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
@@ -73,13 +73,13 @@ import java.util.TreeSet;
 @NamedQueries({
 		@NamedQuery(name = Activity.NAMEDQ_GET_BY_ORGANISATION_AND_DATERANGE,
 				query = "select a from Activity a "
-						+ " where a.owningOrganisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
-						+ " and a.startTime between :" + Patterns.PARAM_START_TIME
-						+ " and :" + Patterns.PARAM_END_TIME
+						+ " where a.owningOrganisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+						+ " and a.startTime between :" + OrganisationPatterns.PARAM_START_TIME
+						+ " and :" + OrganisationPatterns.PARAM_END_TIME
 						+ " order by a.startTime")
 })
 @Entity
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"cancelled", "responsible", "admissions",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"cancelled", "responsible", "admissions",
 		"startTime", "endTime", "cost", "currency", "lateAdmissionCost", "lateAdmissionDate",
 		"lastAdmissionDate", "location", "addressCategory", "addressShortDescription", "dressCode",
 		"openToGeneralPublic"})

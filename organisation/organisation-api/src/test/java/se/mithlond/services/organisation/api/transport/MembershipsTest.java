@@ -49,224 +49,226 @@ import java.util.TreeSet;
  */
 public class MembershipsTest extends AbstractPlainJaxbTest {
 
-	// Shared state
-	private Organisation[] organisations;
-	private Category[] categories;
-	private Group[] groups;
-	private Guild[] guilds;
-	private Group[] groupsAndGuilds;
-	private User[] users;
-	private Set<Membership> memberships;
+    // Shared state
+    private Organisation[] organisations;
+    private Category[] categories;
+    private Group[] groups;
+    private Guild[] guilds;
+    private Group[] groupsAndGuilds;
+    private User[] users;
+    private Set<Membership> memberships;
 
-	@Before
-	public void setupSharedState() {
+    @Before
+    public void setupSharedState() {
 
-		// Create the Organisations
-		organisations = new Organisation[3];
-		for (int i = 0; i < organisations.length; i++) {
-			final Address currentAddress = new Address(
-					"careOfLine_" + i,
-					"departmentName_" + i,
-					"street_" + i,
-					"number_" + i,
-					"city_" + i,
-					"zipCode_" + i,
-					"country_" + i,
-					"description_" + i);
+        // Create the Organisations
+        organisations = new Organisation[3];
+        for (int i = 0; i < organisations.length; i++) {
+            final Address currentAddress = new Address(
+                    "careOfLine_" + i,
+                    "departmentName_" + i,
+                    "street_" + i,
+                    "number_" + i,
+                    "city_" + i,
+                    "zipCode_" + i,
+                    "country_" + i,
+                    "description_" + i);
 
-			organisations[i] = new Organisation(
-					"name_" + i,
-					"suffix_" + i,
-					"phone_" + i,
-					"bankAccountInfo_" + i,
-					"postAccountInfo_" + i,
-					currentAddress,
-					"emailSuffix_" + i);
+            organisations[i] = new Organisation(
+                    "name_" + i,
+                    "suffix_" + i,
+                    "phone_" + i,
+                    "bankAccountInfo_" + i,
+                    "postAccountInfo_" + i,
+                    currentAddress,
+                    "emailSuffix_" + i);
 
-			JpaIdMutator.setId(organisations[i], 10 + i);
-		}
+            JpaIdMutator.setId(organisations[i], 10 + i);
+        }
 
 
-		// Create some categories
-		categories = new Category[10];
-		for (int i = 0; i < categories.length; i++) {
-			categories[i] = new Category("categoryID_" + i, "classification_" + i, "description_" + i);
-			JpaIdMutator.setId(categories[i], 20 + i);
-		}
+        // Create some categories
+        categories = new Category[10];
+        for (int i = 0; i < categories.length; i++) {
+            categories[i] = new Category("categoryID_" + i, "classification_" + i, "description_" + i);
+            JpaIdMutator.setId(categories[i], 20 + i);
+        }
 
-		// Create some Groups
-		groups = new Group[5];
-		guilds = new Guild[groups.length];
-		for (int i = 0; i < groups.length; i++) {
+        // Create some Groups
+        groups = new Group[5];
+        guilds = new Guild[groups.length];
+        for (int i = 0; i < groups.length; i++) {
 
-			// 'group_name_1_groupName_1'
-			groups[i] = new Group(
-					"groupName_" + i,
-					organisations[i % organisations.length],
-					(i > 1 ? groups[i - 1] : null),
-					"emailList_" + i);
+            // 'group_name_1_groupName_1'
+            groups[i] = new Group(
+                    "groupName_" + i,
+                    "description_" + i,
+                    organisations[i % organisations.length],
+                    (i > 1 ? groups[i - 1] : null),
+                    "emailList_" + i);
 
-			JpaIdMutator.setId(groups[i], 30 + i);
+            JpaIdMutator.setId(groups[i], 30 + i);
 
-			guilds[i] = new Guild(
-					"guildName_" + i,
-					organisations[i % organisations.length],
-					"emailList_" + i,
-					"quenyaName_" + i,
-					"quenyaPrefix_" + i);
+            guilds[i] = new Guild(
+                    "guildName_" + i,
+                    "description_" + i,
+                    organisations[i % organisations.length],
+                    "emailList_" + i,
+                    "quenyaName_" + i,
+                    "quenyaPrefix_" + i);
 
-			JpaIdMutator.setId(guilds[i], 40 + i);
-		}
+            JpaIdMutator.setId(guilds[i], 40 + i);
+        }
 
-		groupsAndGuilds = new Group[groups.length + guilds.length];
-		for (int i = 0; i < groups.length; i++) {
-			groupsAndGuilds[2 * i] = groups[i];
-			groupsAndGuilds[(2 * i) + 1] = guilds[i];
-		}
+        groupsAndGuilds = new Group[groups.length + guilds.length];
+        for (int i = 0; i < groups.length; i++) {
+            groupsAndGuilds[2 * i] = groups[i];
+            groupsAndGuilds[(2 * i) + 1] = guilds[i];
+        }
 
-		users = new User[5];
-		for (int i = 0; i < users.length; i++) {
+        users = new User[5];
+        for (int i = 0; i < users.length; i++) {
 
-			final ZonedDateTime birthday = ZonedDateTime.of(
-					1975 + i,
-					5 + i,
-					1 + i,
-					13 + i,
-					15 + i,
-					i,
-					5 + i,
-					TimeFormat.SWEDISH_TIMEZONE);
+            final ZonedDateTime birthday = ZonedDateTime.of(
+                    1975 + i,
+                    5 + i,
+                    1 + i,
+                    13 + i,
+                    15 + i,
+                    i,
+                    5 + i,
+                    TimeFormat.SWEDISH_TIMEZONE);
 
-			final Address homeAddress = new Address(
-					null,
-					null,
-					"homeStreet_" + i,
-					"homeNumber_" + i,
-					"homeCity_" + i,
-					"homeZipCode_" + i,
-					"homeCountry_" + i,
-					"homeAddress_" + i);
+            final Address homeAddress = new Address(
+                    null,
+                    null,
+                    "homeStreet_" + i,
+                    "homeNumber_" + i,
+                    "homeCity_" + i,
+                    "homeZipCode_" + i,
+                    "homeCountry_" + i,
+                    "homeAddress_" + i);
 
-			final Map<String, String> contactDetails = new TreeMap<>();
-			contactDetails.put("cell_phone", "0312345" + i);
+            final Map<String, String> contactDetails = new TreeMap<>();
+            contactDetails.put("cell_phone", "0312345" + i);
 
-			users[i] = new User(
-					"firstName_" + i,
-					"lastName_" + i,
-					birthday.toLocalDate(),
-					(short) (101 + i),
-					homeAddress,
-					new ArrayList<>(),
-					contactDetails,
-					"userIdentifierToken_" + i);
+            users[i] = new User(
+                    "firstName_" + i,
+                    "lastName_" + i,
+                    birthday.toLocalDate(),
+                    (short) (101 + i),
+                    homeAddress,
+                    new ArrayList<>(),
+                    contactDetails,
+                    "userIdentifierToken_" + i);
 
-			JpaIdMutator.setId(users[i], 50 + i);
-		}
+            JpaIdMutator.setId(users[i], 50 + i);
+        }
 
-		memberships = new TreeSet<>();
-		for (int i = 0; i < 15; i++) {
+        memberships = new TreeSet<>();
+        for (int i = 0; i < 15; i++) {
 
-			final Membership currentMembership = new Membership(
-					"alias_" + i,
-					"subAlias_" + i,
-					"emailAlias_" + i,
-					!(i % 3 == 0),
-					users[i % users.length],
-					organisations[i % organisations.length]);
-			JpaIdMutator.setId(currentMembership, 90 + i);
+            final Membership currentMembership = new Membership(
+                    "alias_" + i,
+                    "subAlias_" + i,
+                    "emailAlias_" + i,
+                    !(i % 3 == 0),
+                    users[i % users.length],
+                    organisations[i % organisations.length]);
+            JpaIdMutator.setId(currentMembership, 90 + i);
 
-			memberships.add(currentMembership);
+            memberships.add(currentMembership);
 
-			for (int j = 0; j < i; j += 2) {
+            for (int j = 0; j < i; j += 2) {
 
-				if (j % 3 != 0) {
-					currentMembership.addOrGetGroupMembership(groups[j % groups.length]);
-				}
+                if (j % 3 != 0) {
+                    currentMembership.addOrGetGroupMembership(groups[j % groups.length]);
+                }
 
-				if (j % 3 == 0) {
-					currentMembership.addOrUpdateGuildMembership(guilds[j % guilds.length], false, false, false);
-				}
-			}
-		}
-	}
+                if (j % 3 == 0) {
+                    currentMembership.addOrUpdateGuildMembership(guilds[j % guilds.length], false, false, false);
+                }
+            }
+        }
+    }
 
-	@Test
-	public void validateMarshalling() throws Exception {
+    @Test
+    public void validateMarshalling() throws Exception {
 
-		// Assemble
-		final String expected = XmlTestUtils.readFully("testdata/memberships.xml");
-		final Memberships unitUnderTest = new Memberships();
-		unitUnderTest.addOrganisations(organisations);
-		unitUnderTest.addGroups(groupsAndGuilds);
-		memberships.forEach(unitUnderTest::addMembership);
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/memberships.xml");
+        final Memberships unitUnderTest = new Memberships();
+        unitUnderTest.addOrganisations(organisations);
+        unitUnderTest.addGroups(groupsAndGuilds);
+        memberships.forEach(unitUnderTest::addMembership);
 
-		// Act
-		final String result = marshalToXML(unitUnderTest);
-		// System.out.println("Got:  " + result);
+        // Act
+        final String result = marshalToXML(unitUnderTest);
+        // System.out.println("Got:  " + result);
 
-		// Assert
-		Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
-	}
+        // Assert
+        Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
+    }
 
-	@Test
-	public void validateUnmarshalling() throws Exception {
+    @Test
+    public void validateUnmarshalling() throws Exception {
 
-		// Assemble
-		final String data = XmlTestUtils.readFully("testdata/memberships.xml");
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/memberships.xml");
 
-		final Memberships expected = new Memberships();
-		expected.addOrganisations(organisations);
-		expected.addGroups(groupsAndGuilds);
-		memberships.forEach(expected::addMembership);
+        final Memberships expected = new Memberships();
+        expected.addOrganisations(organisations);
+        expected.addGroups(groupsAndGuilds);
+        memberships.forEach(expected::addMembership);
 
-		jaxb.add(Memberships.class);
+        jaxb.add(Memberships.class);
 
-		// Act
-		final Memberships unmarshalled = unmarshalFromXML(Memberships.class, data);
+        // Act
+        final Memberships unmarshalled = unmarshalFromXML(Memberships.class, data);
 
-		// Assert
-		Assert.assertNotNull(unmarshalled);
+        // Assert
+        Assert.assertNotNull(unmarshalled);
 
-		final Map<String, Organisation> actualOrgMap = getOrganisationMap(unmarshalled);
-		final Map<String, Organisation> expectedOrgMap = getOrganisationMap(expected);
-		Assert.assertEquals(expectedOrgMap.size(), actualOrgMap.size());
+        final Map<String, Organisation> actualOrgMap = getOrganisationMap(unmarshalled);
+        final Map<String, Organisation> expectedOrgMap = getOrganisationMap(expected);
+        Assert.assertEquals(expectedOrgMap.size(), actualOrgMap.size());
 
-		for(Map.Entry<String, Organisation> current : expectedOrgMap.entrySet()) {
-			Assert.assertEquals(current.getValue(), actualOrgMap.get(current.getKey()));
-		}
+        for (Map.Entry<String, Organisation> current : expectedOrgMap.entrySet()) {
+            Assert.assertEquals(current.getValue(), actualOrgMap.get(current.getKey()));
+        }
 
-		final SortedMap<String, Membership> actualMbMap = getMembershipMap(unmarshalled);
-		final SortedMap<String, Membership> expectedMbMap = getMembershipMap(expected);
+        final SortedMap<String, Membership> actualMbMap = getMembershipMap(unmarshalled);
+        final SortedMap<String, Membership> expectedMbMap = getMembershipMap(expected);
 
-		for(Map.Entry<String, Membership> current : expectedMbMap.entrySet()) {
-			Assert.assertEquals(0, current.getValue().compareTo(actualMbMap.get(current.getKey())));
-		}
-	}
+        for (Map.Entry<String, Membership> current : expectedMbMap.entrySet()) {
+            Assert.assertEquals(0, current.getValue().compareTo(actualMbMap.get(current.getKey())));
+        }
+    }
 
-	//
-	// Private helpers
-	//
+    //
+    // Private helpers
+    //
 
-	private SortedMap<String, Membership> getMembershipMap(final Memberships memberships) {
+    private SortedMap<String, Membership> getMembershipMap(final Memberships memberships) {
 
-		final SortedMap<String, Membership> toReturn = new TreeMap<>();
+        final SortedMap<String, Membership> toReturn = new TreeMap<>();
 
-		for(Membership current : memberships.getMemberships()) {
-			toReturn.put(current.getAlias(), current);
-		}
+        for (Membership current : memberships.getMemberships()) {
+            toReturn.put(current.getAlias(), current);
+        }
 
-		return toReturn;
-	}
+        return toReturn;
+    }
 
-	private SortedMap<String, Organisation> getOrganisationMap(final Memberships memberships) {
+    private SortedMap<String, Organisation> getOrganisationMap(final Memberships memberships) {
 
-		final SortedMap<String, Organisation> toReturn = new TreeMap<>();
+        final SortedMap<String, Organisation> toReturn = new TreeMap<>();
 
-		for(Organisation current : memberships.getOrganisations()) {
-			toReturn.put(current.getOrganisationName(), current);
-		}
+        for (Organisation current : memberships.getOrganisations()) {
+            toReturn.put(current.getOrganisationName(), current);
+        }
 
-		// All Done.
-		return toReturn;
-	}
+        // All Done.
+        return toReturn;
+    }
 }

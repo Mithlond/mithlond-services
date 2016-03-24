@@ -36,26 +36,31 @@
     <CATEGORIZEDADDRESS/>
     <CATEGORY/>
     <GROUPMEMBERSHIP/>
-    <INTERNALGROUPS ID="1" DISCRIMINATOR="group" EMAILLIST="modifiedEmailList" GROUPNAME="groupName_0" VERSION="2"
-                    ORGANISATION_ID="1"/>
+    <INTERNALGROUPS ID="1" DISCRIMINATOR="group" EMAILLIST="modifiedEmailList@emailSuffix_0" GROUPNAME="groupName_0"
+                    VERSION="2" ORGANISATION_ID="1" DESCRIPTION="groupDescription_0" />
     <INTERNALGROUPS ID="2" DISCRIMINATOR="group" EMAILLIST="emailList_1" GROUPNAME="groupName_1" VERSION="1"
-                    ORGANISATION_ID="2"/>
+                    ORGANISATION_ID="2" DESCRIPTION="groupDescription_1"/>
     <INTERNALGROUPS ID="3" DISCRIMINATOR="group" EMAILLIST="emailList_2" GROUPNAME="groupName_2" VERSION="1"
-                    ORGANISATION_ID="3" PARENT_ID="2"/>
+                    ORGANISATION_ID="3" PARENT_ID="2" DESCRIPTION="groupDescription_2"/>
     <INTERNALGROUPS ID="4" DISCRIMINATOR="group" EMAILLIST="emailList_3" GROUPNAME="groupName_3" VERSION="1"
-                    ORGANISATION_ID="1" PARENT_ID="3"/>
+                    ORGANISATION_ID="1" PARENT_ID="3" DESCRIPTION="groupDescription_3"/>
     <INTERNALGROUPS ID="5" DISCRIMINATOR="group" EMAILLIST="emailList_4" GROUPNAME="groupName_4" VERSION="1"
-                    ORGANISATION_ID="2" PARENT_ID="4"/>
+                    ORGANISATION_ID="2" PARENT_ID="4" DESCRIPTION="groupDescription_4"/>
     <INTERNALGROUPS ID="6" DISCRIMINATOR="guild" EMAILLIST="emailList_0" GROUPNAME="guildName_0" VERSION="1"
-                    ORGANISATION_ID="1" QUENYANAME="quenyaName_0" QUENYAPREFIX="quenyaPrefix_0"/>
+                    ORGANISATION_ID="1" QUENYANAME="quenyaName_0" QUENYAPREFIX="quenyaPrefix_0"
+                    DESCRIPTION="guildDescription_0"/>
     <INTERNALGROUPS ID="7" DISCRIMINATOR="guild" EMAILLIST="emailList_1" GROUPNAME="guildName_1" VERSION="1"
-                    ORGANISATION_ID="2" QUENYANAME="quenyaName_1" QUENYAPREFIX="quenyaPrefix_1"/>
+                    ORGANISATION_ID="2" QUENYANAME="quenyaName_1" QUENYAPREFIX="quenyaPrefix_1"
+                    DESCRIPTION="guildDescription_1"/>
     <INTERNALGROUPS ID="8" DISCRIMINATOR="guild" EMAILLIST="emailList_2" GROUPNAME="guildName_2" VERSION="1"
-                    ORGANISATION_ID="3" QUENYANAME="quenyaName_2" QUENYAPREFIX="quenyaPrefix_2"/>
+                    ORGANISATION_ID="3" QUENYANAME="quenyaName_2" QUENYAPREFIX="quenyaPrefix_2"
+                    DESCRIPTION="guildDescription_2"/>
     <INTERNALGROUPS ID="9" DISCRIMINATOR="guild" EMAILLIST="emailList_3" GROUPNAME="guildName_3" VERSION="1"
-                    ORGANISATION_ID="1" QUENYANAME="quenyaName_3" QUENYAPREFIX="quenyaPrefix_3"/>
+                    ORGANISATION_ID="1" QUENYANAME="quenyaName_3" QUENYAPREFIX="quenyaPrefix_3"
+                    DESCRIPTION="guildDescription_3"/>
     <INTERNALGROUPS ID="10" DISCRIMINATOR="guild" EMAILLIST="emailList_4" GROUPNAME="guildName_4" VERSION="1"
-                    ORGANISATION_ID="2" QUENYANAME="quenyaName_4" QUENYAPREFIX="quenyaPrefix_4"/>
+                    ORGANISATION_ID="2" QUENYANAME="quenyaName_4" QUENYAPREFIX="quenyaPrefix_4"
+                    DESCRIPTION="guildDescription_4"/>
     <MEMBERSHIP/>
     <MEMBERSHIP_GROUPMEMBERSHIP/>
     <NAZGULORDER/>

@@ -30,15 +30,15 @@ import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.api.AbstractEntityTest;
 import se.mithlond.services.content.api.transport.Articles;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.content.model.articles.Markup;
+import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -59,6 +59,8 @@ public class ArticlesTest {
     private String realm;
     private Articles articles;
     private String content1, content2;
+    private Organisation organisation;
+    private Address address;
 
     private Marshaller marshaller;
     private Unmarshaller unmarshaller;
@@ -69,17 +71,22 @@ public class ArticlesTest {
         // Use Moxy as the JAXB implementation
         System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
+        address = new Address("careOfLine", "departmentName", "street", "number",
+                "city", "zipCode", "country", "description");
+        organisation = new Organisation("FooBar", "suffix", "phone", "bankAccountInfo",
+                "postAccountInfo", address, "emailSuffix");
+        realm = organisation.getOrganisationName();
+
         try {
             final JAXBContext ctx = JAXBContext.newInstance(Articles.class, Article.class, Markup.class);
             final JaxbNamespacePrefixResolver prefixResolver = new JaxbNamespacePrefixResolver();
-            prefixResolver.put(Patterns.NAMESPACE, "content");
+            prefixResolver.put(ContentPatterns.NAMESPACE, "content");
             marshaller = JaxbUtils.getHumanReadableStandardMarshaller(ctx, prefixResolver, false);
             unmarshaller = ctx.createUnmarshaller();
         } catch (JAXBException e) {
             throw new IllegalStateException("Could not setup JAXB marshaller/unmarshaller", e);
         }
 
-        realm = "FooBar";
         List<Article> articleList = new ArrayList<>();
         articles = new Articles(realm, "/news/latest", articleList);
 
@@ -89,13 +96,13 @@ public class ArticlesTest {
 
         // Populate the Articles.
         articleList.add(new Article("News_1",
-                                    "ERF Häxxxxmästaren",
-                                    ZonedDateTime.of(2015, 12, 12, 5, 2, 3, 0, TimeFormat.SWEDISH_TIMEZONE),
-                                    content1));
+                "ERF Häxxxxmästaren",
+                ZonedDateTime.of(2015, 12, 12, 5, 2, 3, 0, TimeFormat.SWEDISH_TIMEZONE),
+                content1, organisation));
         articleList.add(new Article("News_2",
-                                    "ERF Häxxmästaren",
-                                    ZonedDateTime.of(2015, 11, 11, 15, 22, 33, 0, TimeFormat.SWEDISH_TIMEZONE),
-                                    content2));
+                "ERF Häxxmästaren",
+                ZonedDateTime.of(2015, 11, 11, 15, 22, 33, 0, TimeFormat.SWEDISH_TIMEZONE),
+                content2, organisation));
     }
 
     @After

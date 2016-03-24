@@ -26,9 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -56,11 +57,11 @@ import java.util.stream.Collectors;
         @NamedQuery(name = MenuStructure.NAMEDQ_GET_BY_ORGANISATION_NAME,
                 query = "select ms from MenuStructure ms "
                         + "where ms.owningOrganisation.organisationName like :"
-                        + se.mithlond.services.organisation.model.Patterns.PARAM_ORGANISATION_NAME)
+                        + OrganisationPatterns.PARAM_ORGANISATION_NAME)
 })
 @Entity
-@XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"localizations", "organisationName", "rootMenu"})
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"localizations", "organisationName", "rootMenu"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MenuStructure extends NazgulEntity {
 

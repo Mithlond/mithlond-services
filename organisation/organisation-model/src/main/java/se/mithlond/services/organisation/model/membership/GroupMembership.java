@@ -25,8 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
-import se.mithlond.services.shared.authorization.api.Segmenter;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
@@ -56,7 +55,7 @@ import java.util.TreeSet;
  */
 @Entity
 @Access(value = AccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"group"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"group"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupMembership implements Serializable, Comparable<GroupMembership>,
         Validatable, SemanticAuthorizationPathProducer {

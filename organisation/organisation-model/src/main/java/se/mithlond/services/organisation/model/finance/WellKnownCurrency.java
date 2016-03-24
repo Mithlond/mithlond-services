@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.finance;
 
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE)
 @XmlEnum(String.class)
 @XmlAccessorType(XmlAccessType.FIELD)
 public enum WellKnownCurrency {

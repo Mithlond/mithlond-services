@@ -21,9 +21,9 @@
   #L%
   -->
 
-<organisation:groupsAndGuilds xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<organisation:groupsAndGuilds xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
-        <organisation xmlID="organisation_name_0" jpaId="0" version="0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_0">
             <organisationName>name_0</organisationName>
             <suffix>suffix_0</suffix>
             <phone>phone_0</phone>
@@ -41,7 +41,7 @@
                 <description>description_0</description>
             </visitingAddress>
         </organisation>
-        <organisation xmlID="organisation_name_1" jpaId="0" version="0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_1">
             <organisationName>name_1</organisationName>
             <suffix>suffix_1</suffix>
             <phone>phone_1</phone>
@@ -59,7 +59,7 @@
                 <description>description_1</description>
             </visitingAddress>
         </organisation>
-        <organisation xmlID="organisation_name_2" jpaId="0" version="0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_2">
             <organisationName>name_2</organisationName>
             <suffix>suffix_2</suffix>
             <phone>phone_2</phone>
@@ -79,52 +79,62 @@
         </organisation>
     </organisations>
     <groupsAndGuilds>
-        <group organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="group_name_0_groupName_0">
             <groupName>groupName_0</groupName>
+            <description>groupDescription_0</description>
             <emailList>emailList_0</emailList>
         </group>
-        <group organisationReference="organisation_name_1" xmlID="group_name_1_groupName_1" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="group_name_1_groupName_1">
             <groupName>groupName_1</groupName>
+            <description>groupDescription_1</description>
             <emailList>emailList_1</emailList>
         </group>
-        <group organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2">
             <groupName>groupName_2</groupName>
+            <description>groupDescription_2</description>
             <emailList>emailList_2</emailList>
         </group>
-        <group organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3">
             <groupName>groupName_3</groupName>
+            <description>groupDescription_3</description>
             <emailList>emailList_3</emailList>
         </group>
-        <group organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4" jpaId="0" version="0">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4">
             <groupName>groupName_4</groupName>
+            <description>groupDescription_4</description>
             <emailList>emailList_4</emailList>
         </group>
-        <guild organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_0" jpaId="0" version="0">
+        <guild jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_0">
             <groupName>guildName_0</groupName>
+            <description>guildDescription_0</description>
             <emailList>emailList_0</emailList>
             <quenyaName>quenyaName_0</quenyaName>
             <quenyaPrefix>quenyaPrefix_0</quenyaPrefix>
         </guild>
-        <guild organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_1" jpaId="0" version="0">
+        <guild jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_1">
             <groupName>guildName_1</groupName>
+            <description>guildDescription_1</description>
             <emailList>emailList_1</emailList>
             <quenyaName>quenyaName_1</quenyaName>
             <quenyaPrefix>quenyaPrefix_1</quenyaPrefix>
         </guild>
-        <guild organisationReference="organisation_name_2" xmlID="guild_name_2_guildName_2" jpaId="0" version="0">
+        <guild jpaId="0" version="0" organisationReference="organisation_name_2" xmlID="guild_name_2_guildName_2">
             <groupName>guildName_2</groupName>
+            <description>guildDescription_2</description>
             <emailList>emailList_2</emailList>
             <quenyaName>quenyaName_2</quenyaName>
             <quenyaPrefix>quenyaPrefix_2</quenyaPrefix>
         </guild>
-        <guild organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3" jpaId="0" version="0">
+        <guild jpaId="0" version="0" organisationReference="organisation_name_0" xmlID="guild_name_0_guildName_3">
             <groupName>guildName_3</groupName>
+            <description>guildDescription_3</description>
             <emailList>emailList_3</emailList>
             <quenyaName>quenyaName_3</quenyaName>
             <quenyaPrefix>quenyaPrefix_3</quenyaPrefix>
         </guild>
-        <guild organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_4" jpaId="0" version="0">
+        <guild jpaId="0" version="0" organisationReference="organisation_name_1" xmlID="guild_name_1_guildName_4">
             <groupName>guildName_4</groupName>
+            <description>guildDescription_4</description>
             <emailList>emailList_4</emailList>
             <quenyaName>quenyaName_4</quenyaName>
             <quenyaPrefix>quenyaPrefix_4</quenyaPrefix>

@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlTransient
-public final class Patterns {
+public final class ContentPatterns {
 
     /**
      * The XML namespace used by content model transport objects.
@@ -56,10 +56,15 @@ public final class Patterns {
      */
     public static final String PARAM_VARIANT = "variant";
 
+    /**
+     * NamedQuery parameter name for last modified timestamp.
+     */
+    public static final String PARAM_LAST_MODIFIED = "last_modified";
+
     /*
      * Hide utility-class constructors.
      */
-    private Patterns() {
+    private ContentPatterns() {
         // Do nothing.
     }
 }

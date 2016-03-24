@@ -24,7 +24,7 @@ package se.mithlond.services.organisation.model.membership.order;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
@@ -65,7 +65,7 @@ import java.util.List;
 })
 @Entity
 @Table(name = "NazgulOrder")
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"orderName", "levels", "owningGuild"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"orderName", "levels", "owningGuild"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Order extends Listable {
 

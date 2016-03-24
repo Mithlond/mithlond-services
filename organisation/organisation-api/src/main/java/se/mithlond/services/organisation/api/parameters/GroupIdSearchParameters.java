@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.api.parameters;
 
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,7 +38,7 @@ import java.util.SortedMap;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"groupIDs", "organisationIDs", "classifierIDs"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"groupIDs", "organisationIDs", "classifierIDs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupIdSearchParameters
         extends AbstractSearchParameters<GroupIdSearchParameters.GroupIdSearchParametersBuilder> {

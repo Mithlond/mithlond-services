@@ -28,7 +28,7 @@ import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -63,7 +63,7 @@ public class MarkupTest {
 		try {
 			final JAXBContext ctx = JAXBContext.newInstance(Markup.class);
 			final JaxbNamespacePrefixResolver prefixResolver = new JaxbNamespacePrefixResolver();
-			prefixResolver.put(Patterns.NAMESPACE, "content");
+			prefixResolver.put(ContentPatterns.NAMESPACE, "content");
 			marshaller = JaxbUtils.getHumanReadableStandardMarshaller(ctx, prefixResolver, false);
 			unmarshaller = ctx.createUnmarshaller();
 

@@ -27,7 +27,7 @@ package se.mithlond.services.organisation.model.finance;
 
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 
 import javax.persistence.Basic;
@@ -56,7 +56,7 @@ import java.util.Objects;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Embeddable
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"comment", "actor", "timestamp"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"comment", "actor", "timestamp"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuditData implements Validatable, Serializable, Comparable<AuditData> {
 

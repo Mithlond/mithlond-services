@@ -71,7 +71,6 @@ public interface NavigationService {
      * Note that the {@code realm} value must be equal to the {@link MenuStructure#getOrganisationName()}
      * value of the supplied MenuStructure.
      *
-     * @param realm            a non-empty realm identifier/name.
      * @param menuStructure    A non-null MenuStructure to set as the MenuStructure for the supplied
      * @param callersAuthPaths The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                         MenuStructure items should be retrieved. Typically, each authPath is a Membership.
@@ -79,8 +78,7 @@ public interface NavigationService {
      * @throws UnauthorizedException if the caller did not possess required privileges
      *                               to update the supplied MenuStructure.
      */
-    MenuStructure createOrUpdate(final String realm,
-            final MenuStructure menuStructure,
+    MenuStructure createOrUpdate(final MenuStructure menuStructure,
             final List<SemanticAuthorizationPathProducer> callersAuthPaths)
             throws UnauthorizedException;
 

@@ -22,7 +22,7 @@
 package se.mithlond.services.content.model.navigation.integration;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 
 import javax.persistence.DiscriminatorValue;
@@ -42,7 +42,7 @@ import java.util.Objects;
  */
 @Entity
 @DiscriminatorValue("separator")
-@XmlType(namespace = Patterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SeparatorMenuItem extends AbstractAuthorizedNavItem {
 

@@ -23,7 +23,7 @@ package se.mithlond.services.organisation.model.helpers;
 
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 
 import javax.xml.bind.Unmarshaller;
@@ -43,7 +43,7 @@ import java.util.TreeMap;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
+@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
 @XmlType(propOrder = {"organisations", "categories", "categorizedAddresses"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CategorizedAddresses {

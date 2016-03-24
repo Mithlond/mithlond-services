@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.helpers;
 
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
+@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
 public class WellKnownAddressTypes {
 
     // Internal state

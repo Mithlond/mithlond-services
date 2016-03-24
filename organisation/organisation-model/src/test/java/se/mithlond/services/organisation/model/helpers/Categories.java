@@ -22,8 +22,7 @@
 package se.mithlond.services.organisation.model.helpers;
 
 import se.mithlond.services.organisation.model.Category;
-import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,7 +36,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
+@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Categories {
 

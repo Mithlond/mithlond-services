@@ -23,7 +23,7 @@ package se.mithlond.services.organisation.model.helpers;
 
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
@@ -44,7 +44,7 @@ import java.util.TreeMap;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
+@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
 @XmlType(propOrder = {"organisations", "groups", "users", "memberships"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Users {

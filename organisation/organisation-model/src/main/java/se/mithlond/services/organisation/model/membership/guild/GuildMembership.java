@@ -22,7 +22,7 @@
 */
 package se.mithlond.services.organisation.model.membership.guild;
 
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
@@ -47,7 +47,7 @@ import java.util.TreeSet;
  */
 @Entity
 @Access(value = AccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"guildMaster", "deputyGuildMaster", "auditor"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"guildMaster", "deputyGuildMaster", "auditor"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GuildMembership extends GroupMembership {
 

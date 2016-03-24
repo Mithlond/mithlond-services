@@ -26,7 +26,7 @@
  */
 @XmlSchema(
         xmlns = {
-                @XmlNs(prefix = "organisation", namespaceURI = Patterns.NAMESPACE),
+                @XmlNs(prefix = "organisation", namespaceURI = OrganisationPatterns.NAMESPACE),
                 @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
                 @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
                 @XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning")

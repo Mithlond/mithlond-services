@@ -24,7 +24,7 @@ package se.mithlond.services.organisation.model.activity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.Patterns;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 @NamedQueries({
 		@NamedQuery(name = DressCode.NAMEDQ_GET_BY_ORGANISATION,
 				query = "select d from DressCode d "
-						+ " where d.owningOrganisation.organisationName like :" + Patterns.PARAM_ORGANISATION_NAME
+						+ " where d.owningOrganisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
 						+ " order by d.dressCode")
 })
 @Entity
@@ -55,7 +55,7 @@ import javax.xml.bind.annotation.XmlType;
 		@UniqueConstraint(
 				name = "dresscodeIsUniquePerOrganisation",
 				columnNames = {"dressCode", "owningorganisation_id"})})
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"dressCode"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"dressCode"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DressCode extends Listable {
 

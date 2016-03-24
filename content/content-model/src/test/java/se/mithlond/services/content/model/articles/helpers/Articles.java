@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.articles.helpers;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.content.model.articles.Markup;
 
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE, name = "ArticleList")
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE, name = "ArticleList")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso(Markup.class)
 public class Articles {

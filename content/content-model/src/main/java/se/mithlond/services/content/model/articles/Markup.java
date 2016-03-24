@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.articles;
 
-import se.mithlond.services.content.model.Patterns;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,8 +38,8 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = Patterns.NAMESPACE)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"content"})
+@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"content"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Markup {
 
