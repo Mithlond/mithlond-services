@@ -26,7 +26,7 @@ package se.mithlond.services.backend.war.resources;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public final class Parameters {
+public final class RestfulParameters {
 
     /**
      * The prefix of all outbound custom headers.
@@ -37,4 +37,14 @@ public final class Parameters {
      * Parameter name for the name of an organisation.
      */
     public static final String ORGANISATION_NAME = "org";
+
+    /**
+     * Parameter name for the (marshalled) data of a MenuStructure.
+     */
+    public static final String MENUSTRUCTURE_DATA = "menustructure";
+
+    /**
+     * Parameter name for deciding if inbound data is in XML or JSON form.
+     */
+    public static final String ISXML = "isxml";
 }

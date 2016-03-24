@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.backend.war.providers.exceptions;
 
-import se.mithlond.services.backend.war.resources.Parameters;
+import se.mithlond.services.backend.war.resources.RestfulParameters;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -46,17 +46,17 @@ public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException
     /**
      * Header where the internal error is bound.
      */
-    public static final String INTERNAL_ERROR_TYPE_HEADER = Parameters.OUTBOUND_HEADER_PREFIX + "RuntimeException";
+    public static final String INTERNAL_ERROR_TYPE_HEADER = RestfulParameters.OUTBOUND_HEADER_PREFIX + "RuntimeException";
 
     /**
      * Header where the cause of the internal error is bound.
      */
-    public static final String ERROR_CAUSE_HEADER = Parameters.OUTBOUND_HEADER_PREFIX + "Cause";
+    public static final String ERROR_CAUSE_HEADER = RestfulParameters.OUTBOUND_HEADER_PREFIX + "Cause";
 
     /**
      * Header where the cause chain of the internal error is bound.
      */
-    public static final String CAUSE_CHAIN_HEADER = Parameters.OUTBOUND_HEADER_PREFIX + "CauseChain";
+    public static final String CAUSE_CHAIN_HEADER = RestfulParameters.OUTBOUND_HEADER_PREFIX + "CauseChain";
 
     /**
      * {@inheritDoc}

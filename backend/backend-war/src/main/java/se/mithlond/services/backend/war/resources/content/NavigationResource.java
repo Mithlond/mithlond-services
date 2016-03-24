@@ -24,7 +24,7 @@ package se.mithlond.services.backend.war.resources.content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
-import se.mithlond.services.backend.war.resources.Parameters;
+import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
@@ -35,6 +35,7 @@ import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathPr
 import javax.ejb.EJB;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -71,9 +72,9 @@ public class NavigationResource extends AbstractResource {
      * @param organisationName The name of the organisation for which the MenuStructure should be retrieved.
      * @return The fully populated MenuStructure for the supplied organisationName and the active Membership.
      */
-    @Path("/{" + Parameters.ORGANISATION_NAME + "}")
+    @Path("/{" + RestfulParameters.ORGANISATION_NAME + "}")
     @GET
-    public MenuStructure getMenuStructure(@PathParam(Parameters.ORGANISATION_NAME) final String organisationName) {
+    public MenuStructure getMenuStructure(@PathParam(RestfulParameters.ORGANISATION_NAME) final String organisationName) {
 
         // Populate the SemanticAuthorizationPathProducer List with the active Membership.
         final List<SemanticAuthorizationPathProducer> sapp = new ArrayList<>();
@@ -94,12 +95,17 @@ public class NavigationResource extends AbstractResource {
      * @param newMenuStructure The new MenuStructure in its marshalled String form.
      * @return The fully populated MenuStructure for the supplied organisationName and the active Membership.
      */
-    @Path("/{" + Parameters.ORGANISATION_NAME + "}/update")
+    @Path("/{" + RestfulParameters.ORGANISATION_NAME + "}/update")
     @POST
     public MenuStructure updateMenuStructure(
-            @PathParam(Parameters.ORGANISATION_NAME) final String organisationName,
-            @QueryParam("menustructure") final String newMenuStructure,
-            @QueryParam("isxml") @DefaultValue("true") final boolean isXml) {
+            @PathParam(RestfulParameters.ORGANISATION_NAME) final String organisationName,
+            @HeaderParam(RestfulParameters.MENUSTRUCTURE_DATA) final String newMenuStructure,
+            @QueryParam(RestfulParameters.ISXML) @DefaultValue("true") final boolean isXml) {
+
+        if(log.isDebugEnabled()) {
+            log.debug("Starting " + (isXml ? "XML" : "JSON")
+                    + " update of MenuStructure for [" + organisationName + "]");
+        }
 
         // Populate the SemanticAuthorizationPathProducer List with the active Membership.
         final List<SemanticAuthorizationPathProducer> sapp = new ArrayList<>();

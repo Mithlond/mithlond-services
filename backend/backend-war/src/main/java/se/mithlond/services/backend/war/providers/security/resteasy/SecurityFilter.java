@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.providers.security.AbstractSecurityFilter;
 import se.mithlond.services.backend.war.providers.security.OrganisationAndAlias;
+import se.mithlond.services.shared.spi.algorithms.Deployment;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
@@ -63,6 +64,12 @@ public class SecurityFilter extends AbstractSecurityFilter {
     @Override
     protected OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx) {
 
+        // Development mode?
+        if(isDevelopmentEnvironment()) {
+            return getDevelopmentOrganisationAndAlias();
+        }
+
+        // Production mode.
         final KeycloakSecurityContext securityContext = (KeycloakSecurityContext)
                 httpRequest.getAttribute(KeycloakSecurityContext.class.getName());
         final AccessToken accessToken = securityContext.getToken();
@@ -114,5 +121,36 @@ public class SecurityFilter extends AbstractSecurityFilter {
         // Dig out the invoked resource method.
         final ResourceMethodInvoker methodInvoker = (ResourceMethodInvoker) ctx.getProperty(METHOD_INVOKER_KEY);
         return methodInvoker.getMethod();
+    }
+
+    //
+    // Private helpers
+    //
+
+    private boolean isDevelopmentEnvironment() {
+
+        final String deploymentName = Deployment.getDeploymentName();
+
+        if(log.isDebugEnabled()) {
+            log.debug("Got DeploymentName: " + deploymentName);
+        }
+
+        // All Done.
+        return deploymentName != null && deploymentName.equalsIgnoreCase("development");
+    }
+
+    private OrganisationAndAlias getDevelopmentOrganisationAndAlias() {
+        return new OrganisationAndAlias(getProperty("dev.organisation"), getProperty("dev.alias"));
+    }
+
+    private static String getProperty(final String propertyName) {
+
+        String toReturn = System.getProperty(propertyName);
+        if (toReturn == null) {
+            toReturn = System.getenv(propertyName);
+        }
+
+        // All done.
+        return toReturn;
     }
 }
