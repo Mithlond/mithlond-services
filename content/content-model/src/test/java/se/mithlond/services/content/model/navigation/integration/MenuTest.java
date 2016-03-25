@@ -47,14 +47,14 @@ public class MenuTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/menu.xml");
         final StandardMenu firstMenu = StandardMenu.getBuilder()
                 .withDomId("firstMenu")
-                .withLocalizedText("sv", "Medlemsmeny")
+                .withLocalizedText("firstMenuTexts", "sv", "Medlemsmeny")
                 .build();
 
         firstMenu.addChild(StandardMenuItem.getBuilder()
                 .withAuthorizationPatterns("/mithlond/members")
                 .withIconIdentifier("cog")
                 .withHref("plainItemPage")
-                .withLocalizedText("sv", "Sök medlemmar")
+                .withLocalizedText("plainItemPageTexts", "sv", "Sök medlemmar")
                 .build());
         firstMenu.addChild(new SeparatorMenuItem());
         firstMenu.addChild(new StandardMenuItem(null, null, null, null,
@@ -65,7 +65,7 @@ public class MenuTest extends AbstractEntityTest {
                 .withAuthorizationPatterns("/mithlond/members,/forodrim/members")
                 .withIconIdentifier("calendar")
                 .withHref("plainItemPage3")
-                .withLocalizedText("sv", "Kalenderuppgifter")
+                .withLocalizedText("calendarPageTexts","sv", "Kalenderuppgifter")
                 .build());
 
         // Act

@@ -59,14 +59,14 @@ public class MenuStructureTest extends AbstractEntityTest {
 
         rootMenu = StandardMenu.getBuilder()
                 .withDomId("rootMenu")
-                .withLocalizedText("sv", "Roooot")
+                .withLocalizedText("rootMenuTexts", "sv", "Roooot")
                 .build();
 
         menuStructure = new MenuStructure(rootMenu, organisation);
 
         firstMenu = StandardMenu.getBuilder()
                 .withDomId("firstMenu")
-                .withLocalizedText("sv", "Första Menyn")
+                .withLocalizedText("firstMenuTexts", "sv", "Första Menyn")
                 .withHref("/firstMenu")
                 .withIconIdentifier("cog")
                 .withTabIndex(1)
@@ -78,7 +78,7 @@ public class MenuStructureTest extends AbstractEntityTest {
                 .withDomId("membersPage")
                 .withHref("/members/list")
                 .withIconIdentifier("man")
-                .withLocalizedText("sv", "Medlemssida")
+                .withLocalizedText("membersPageTexts", "sv", "Medlemssida")
                 .build());
 
         firstMenu.addChild(new SeparatorMenuItem());
@@ -86,14 +86,14 @@ public class MenuStructureTest extends AbstractEntityTest {
         firstMenu.addChild(StandardMenuItem.getBuilder()
                 .withDomId("membersIdeaPage")
                 .withHref("/mithlond/members/ideas")
-                .withLocalizedText("sv", "Idésida")
+                .withLocalizedText("membersIdeaPageTexts", "sv", "Idésida")
                 .withIconIdentifier("lightbulb")
                 .build());
 
 
         rootMenu.addChild(StandardMenuItem.getBuilder()
                 .withAuthorizationPatterns("/mithlond/members,/forodrim/members")
-                .withLocalizedText("sv", "Aktivitetskalender")
+                .withLocalizedText("calendarPageTexts", "sv", "Aktivitetskalender")
                 .withEnabledStatus(true)
                 .withHref("/calendar")
                 .withDomId("plainItemPage3")

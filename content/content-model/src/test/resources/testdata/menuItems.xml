@@ -27,8 +27,9 @@
     <organisationName>name</organisationName>
     <rootMenu jpaId="0" version="0" domId="rootMenu">
         <localizedTexts jpaId="0" version="0">
-            <localizedText locale="sv..none..none">Roooot</localizedText>
+            <suiteIdentifier>rootMenuTexts</suiteIdentifier>
             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+            <localizedText locale="sv..none..none">Roooot</localizedText>
         </localizedTexts>
         <children>
             <menu jpaId="0" version="0" domId="firstMenu" tabIndex="1">
@@ -38,8 +39,9 @@
                 <iconIdentifier>cog</iconIdentifier>
                 <href>/firstMenu</href>
                 <localizedTexts jpaId="0" version="0">
-                    <localizedText locale="sv..none..none">Första Menyn</localizedText>
+                    <suiteIdentifier>firstMenuTexts</suiteIdentifier>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <localizedText locale="sv..none..none">Första Menyn</localizedText>
                 </localizedTexts>
                 <children>
                     <menuItem jpaId="0" version="0" domId="membersPage">
@@ -52,8 +54,9 @@
                         <iconIdentifier>man</iconIdentifier>
                         <href>/members/list</href>
                         <localizedTexts jpaId="0" version="0">
-                            <localizedText locale="sv..none..none">Medlemssida</localizedText>
+                            <suiteIdentifier>membersPageTexts</suiteIdentifier>
                             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                            <localizedText locale="sv..none..none">Medlemssida</localizedText>
                         </localizedTexts>
                     </menuItem>
                     <separator jpaId="0" version="0"/>
@@ -64,8 +67,9 @@
                         <iconIdentifier>lightbulb</iconIdentifier>
                         <href>/mithlond/members/ideas</href>
                         <localizedTexts jpaId="0" version="0">
-                            <localizedText locale="sv..none..none">Idésida</localizedText>
+                            <suiteIdentifier>membersIdeaPageTexts</suiteIdentifier>
                             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                            <localizedText locale="sv..none..none">Idésida</localizedText>
                         </localizedTexts>
                     </menuItem>
                 </children>
@@ -77,8 +81,9 @@
                 </authPatterns>
                 <href>/calendar</href>
                 <localizedTexts jpaId="0" version="0">
-                    <localizedText locale="sv..none..none">Aktivitetskalender</localizedText>
+                    <suiteIdentifier>calendarPageTexts</suiteIdentifier>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <localizedText locale="sv..none..none">Aktivitetskalender</localizedText>
                 </localizedTexts>
             </menuItem>
         </children>

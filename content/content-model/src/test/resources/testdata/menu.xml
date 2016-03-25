@@ -25,8 +25,9 @@
         <children>
             <menu jpaId="0" version="0" domId="firstMenu">
                 <localizedTexts jpaId="0" version="0">
-                    <localizedText locale="sv..none..none">Medlemsmeny</localizedText>
+                    <suiteIdentifier>firstMenuTexts</suiteIdentifier>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <localizedText locale="sv..none..none">Medlemsmeny</localizedText>
                 </localizedTexts>
                 <children>
                     <menuItem jpaId="0" version="0">
@@ -39,8 +40,9 @@
                         <iconIdentifier>cog</iconIdentifier>
                         <href>plainItemPage</href>
                         <localizedTexts jpaId="0" version="0">
-                            <localizedText locale="sv..none..none">Sök medlemmar</localizedText>
+                            <suiteIdentifier>plainItemPageTexts</suiteIdentifier>
                             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                            <localizedText locale="sv..none..none">Sök medlemmar</localizedText>
                         </localizedTexts>
                     </menuItem>
                     <separator jpaId="0" version="0"/>
@@ -54,8 +56,9 @@
                         <iconIdentifier>lightbulb</iconIdentifier>
                         <href>plainItemPage2</href>
                         <localizedTexts jpaId="0" version="0">
-                            <localizedText locale="sv..none..none">Redigera medlemmar</localizedText>
+                            <suiteIdentifier>StandardMenuItem_-2029894920</suiteIdentifier>
                             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                            <localizedText locale="sv..none..none">Redigera medlemmar</localizedText>
                         </localizedTexts>
                     </menuItem>
                 </children>
@@ -71,8 +74,9 @@
                 <iconIdentifier>calendar</iconIdentifier>
                 <href>plainItemPage3</href>
                 <localizedTexts jpaId="0" version="0">
-                    <localizedText locale="sv..none..none">Kalenderuppgifter</localizedText>
+                    <suiteIdentifier>calendarPageTexts</suiteIdentifier>
                     <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <localizedText locale="sv..none..none">Kalenderuppgifter</localizedText>
                 </localizedTexts>
             </menuItem>
         </children>

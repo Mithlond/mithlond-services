@@ -19,17 +19,18 @@
       "localizedTexts": {
         "jpaId": 0,
         "version": 0,
+        "suiteIdentifier": "rootMenuTexts",
+        "defaultLocalization": {
+          "jpaId": 0,
+          "version": 0,
+          "compactStringForm": "sv..none..none"
+        },
         "localizedText": [
           {
             "locale": "sv..none..none",
             "value": "Roooot"
           }
-        ],
-        "defaultLocalization": {
-          "jpaId": 0,
-          "version": 0,
-          "compactStringForm": "sv..none..none"
-        }
+        ]
       },
       "children": {
         "menu": [
@@ -48,17 +49,18 @@
             "localizedTexts": {
               "jpaId": 0,
               "version": 0,
+              "suiteIdentifier": "firstMenuTexts",
+              "defaultLocalization": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "sv..none..none"
+              },
               "localizedText": [
                 {
                   "locale": "sv..none..none",
                   "value": "Första Menyn"
                 }
-              ],
-              "defaultLocalization": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
-              }
+              ]
             },
             "children": {
               "menuItem": [
@@ -81,17 +83,18 @@
                   "localizedTexts": {
                     "jpaId": 0,
                     "version": 0,
+                    "suiteIdentifier": "membersPageTexts",
+                    "defaultLocalization": {
+                      "jpaId": 0,
+                      "version": 0,
+                      "compactStringForm": "sv..none..none"
+                    },
                     "localizedText": [
                       {
                         "locale": "sv..none..none",
                         "value": "Medlemssida"
                       }
-                    ],
-                    "defaultLocalization": {
-                      "jpaId": 0,
-                      "version": 0,
-                      "compactStringForm": "sv..none..none"
-                    }
+                    ]
                   }
                 },
                 {
@@ -108,17 +111,18 @@
                   "localizedTexts": {
                     "jpaId": 0,
                     "version": 0,
+                    "suiteIdentifier": "membersIdeaPageTexts",
+                    "defaultLocalization": {
+                      "jpaId": 0,
+                      "version": 0,
+                      "compactStringForm": "sv..none..none"
+                    },
                     "localizedText": [
                       {
                         "locale": "sv..none..none",
                         "value": "Idésida"
                       }
-                    ],
-                    "defaultLocalization": {
-                      "jpaId": 0,
-                      "version": 0,
-                      "compactStringForm": "sv..none..none"
-                    }
+                    ]
                   }
                 }
               ],
@@ -146,17 +150,18 @@
             "localizedTexts": {
               "jpaId": 0,
               "version": 0,
+              "suiteIdentifier": "calendarPageTexts",
+              "defaultLocalization": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "sv..none..none"
+              },
               "localizedText": [
                 {
                   "locale": "sv..none..none",
                   "value": "Aktivitetskalender"
                 }
-              ],
-              "defaultLocalization": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
-              }
+              ]
             }
           }
         ]
