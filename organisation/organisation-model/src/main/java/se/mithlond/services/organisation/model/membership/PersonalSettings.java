@@ -29,12 +29,14 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -74,11 +76,18 @@ public class PersonalSettings extends NazgulEntity {
     @ElementCollection
     @MapKeyJoinColumn(name = "settings_key")
     @Column(name = "setting_value")
-    @JoinTable(name = "personalsettings_setting", joinColumns = @JoinColumn(name = "settings_id"))
+    @JoinTable(name = "personalsettings_setting",
+            joinColumns = @JoinColumn(name = "personalsettings_id"),
+            uniqueConstraints = {
+                    @UniqueConstraint(
+                            name = "one_type_per_membership",
+                            columnNames = {"settings_key", "personalsettings_id"})
+            })
     private Map<String, String> settings;
 
     @XmlElement(nillable = false, required = true)
     @OneToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Membership membership;
 
     /**
