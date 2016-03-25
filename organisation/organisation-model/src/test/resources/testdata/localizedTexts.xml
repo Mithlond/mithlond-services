@@ -8,11 +8,12 @@
     </localizations>
     <localizedTextsList>
         <localization jpaId="0" version="0">
+            <suiteIdentifier>Hello</suiteIdentifier>
+            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
             <localizedText locale="en..none..none">Hello</localizedText>
             <localizedText locale="en..US..none">Hi</localizedText>
             <localizedText locale="no..none..none">Morrn Da</localizedText>
             <localizedText locale="sv..none..none">Hejsan</localizedText>
-            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
         </localization>
     </localizedTextsList>
 </organisation:localizedTextsHolder>

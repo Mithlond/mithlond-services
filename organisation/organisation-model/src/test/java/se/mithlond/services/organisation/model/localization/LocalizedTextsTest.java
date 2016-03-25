@@ -43,7 +43,7 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
     @Before
     public void setupSharedState() {
 
-        unitUnderTest = new LocalizedTexts(new Localization("sv"), "Hejsan");
+        unitUnderTest = new LocalizedTexts("Hello", new Localization("sv"), "Hejsan");
         unitUnderTest.setText(new Localization("no"), "Morrn Da");
         unitUnderTest.setText(new Localization("en"), "Hello");
         unitUnderTest.setText(new Localization("en", "US", null), "Hi");

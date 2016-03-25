@@ -28,6 +28,7 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -61,7 +62,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"texts", "defaultLocalization"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocalization", "texts"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
@@ -90,6 +91,15 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     private Localization defaultLocalization;
 
     /**
+     * A human-readable identifier for the suite of LocalizedTexts.
+     * Should typically be in english.
+     */
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true)
+    private String suiteIdentifier;
+
+    /**
      * JAXB/JPA-friendly constructor.
      */
     public LocalizedTexts() {
@@ -102,18 +112,20 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * Compound constructor creating a LocalizedTexts instance with the supplied Localization and Text.
      * The supplied Localization is also set to the default Localization of this LocalizedTexts.
      *
+     * @param suiteIdentifier     The human-readable suiteIdentifier of this LocalizedTexts instance.
      * @param defaultLocalization The non-null Localization.
      * @param text                The non-empty text.
      */
-    public LocalizedTexts(final Localization defaultLocalization, final String text) {
+    public LocalizedTexts(final String suiteIdentifier,
+                          final Localization defaultLocalization,
+                          final String text) {
 
         // First, delegate
         this();
 
-        // Assign the default defaultLocalization.
+        // Assign internal state
         this.defaultLocalization = defaultLocalization;
-
-        // ... and assign the Localization/Text pair.
+        this.suiteIdentifier = suiteIdentifier;
         this.setText(defaultLocalization, text);
     }
 
@@ -153,6 +165,27 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     }
 
     /**
+     * @return The non-empty identifier for this LocalizedTexts.
+     */
+    public String getSuiteIdentifier() {
+        return suiteIdentifier;
+    }
+
+    /**
+     * Updates the non-empty suiteIdentifier for this {@link LocalizedTexts} bundle.
+     *
+     * @param suiteIdentifier The identifier for this Suite of Localized Texts.
+     */
+    public void setSuiteIdentifier(final String suiteIdentifier) {
+
+        // Check sanity
+        Validate.notEmpty(suiteIdentifier, "Cannot handle null or empty 'suiteIdentifier' argument.");
+
+        // Assign internal state
+        this.suiteIdentifier = suiteIdentifier;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -169,7 +202,8 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         // Delegate to internal state
         final LocalizedTexts that = (LocalizedTexts) o;
         return Objects.equals(data, that.data)
-                && Objects.equals(defaultLocalization, that.defaultLocalization);
+                && Objects.equals(defaultLocalization, that.defaultLocalization)
+                && Objects.equals(suiteIdentifier, that.suiteIdentifier);
     }
 
     /**
@@ -177,7 +211,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(data, defaultLocalization);
+        return Objects.hash(data, defaultLocalization, suiteIdentifier);
     }
 
     /**
@@ -251,6 +285,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         InternalStateValidationException.create()
                 .notNull(defaultLocalization, "defaultLocalization")
                 .notNullOrEmpty(data, "data")
+                .notNullOrEmpty(suiteIdentifier, "suiteIdentifier")
                 .endExpressionAndValidate();
     }
 
@@ -261,14 +296,15 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * @param text            The text to wrap in the returned LocalizedTexts instance for the supplied defaultLanguage.
      * @return A newly created LocalizedTexts instance wrapping the supplied text for the given defaultLanguage (code).
      */
-    public static LocalizedTexts build(final String defaultLanguage, final String text) {
+    public static LocalizedTexts build(final String suiteIdentifier, final String defaultLanguage, final String text) {
 
         // Check sanity
         Validate.notEmpty(defaultLanguage, "defaultLanguage");
         Validate.notEmpty(text, "text");
+        Validate.notEmpty(suiteIdentifier, "suiteIdentifier");
 
         // Create the Localization and its LocalizedTexts
-        return new LocalizedTexts(new Localization(defaultLanguage), text);
+        return new LocalizedTexts(suiteIdentifier, new Localization(defaultLanguage), text);
     }
 
     //
