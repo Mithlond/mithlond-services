@@ -162,7 +162,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     @XmlIDREF
     private Organisation organisation;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "membership")
     @XmlElementWrapper(name = "memberships", nillable = true, required = false)
     @XmlElements(value = {
             @XmlElement(name = "groupMembership", type = GroupMembership.class),

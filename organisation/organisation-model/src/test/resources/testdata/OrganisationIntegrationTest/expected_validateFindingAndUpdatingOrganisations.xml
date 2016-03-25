@@ -45,7 +45,6 @@
     <INTERNALGROUPS ID="10" DISCRIMINATOR="guild" EMAILLIST="emailList_4" GROUPNAME="guildName_4" VERSION="1"
                     ORGANISATION_ID="2" QUENYANAME="quenyaName_4" QUENYAPREFIX="quenyaPrefix_4"/>
     <MEMBERSHIP/>
-    <MEMBERSHIP_GROUPMEMBERSHIP/>
     <NAZGULORDER/>
     <ORDERLEVEL/>
     <ORDERLEVELGRANT/>
@@ -63,6 +62,6 @@
                   DESCRIPTION="description_2" NUMBER="number_2" STREET="street_2" ZIPCODE="zipCode_2"/>
     <PERSONALSETTINGS/>
     <PERSONALSETTINGS_SETTINGS/>
-    <USER/>
+    <INTERNALUSERS/>
     <USER_CONTACTDETAILS/>
 </dataset>

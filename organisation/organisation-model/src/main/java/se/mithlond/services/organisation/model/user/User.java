@@ -75,7 +75,7 @@ import java.util.TreeMap;
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken", "firstName", "lastName",
         "birthday", "personalNumberLast4Digits", "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(uniqueConstraints = {
+@Table(name="InternalUsers", uniqueConstraints = {
         @UniqueConstraint(name = "userIdentifierTokenIsUnique", columnNames = "userIdentifierToken")
 })
 public class User extends NazgulEntity {
