@@ -162,9 +162,19 @@ public final class OrganisationPatterns {
     public static final String PARAM_CITY = "city";
 
     /**
-     * NamedQuery parameter name for a pattern matching the country in an Address.
+     * NamedQuery parameter name for language.
+     */
+    public static final String PARAM_LANGUAGE = "language";
+
+    /**
+     * NamedQuery parameter name for a pattern matching the country in an Address or Localization.
      */
     public static final String PARAM_COUNTRY = "country";
+
+    /**
+     * NamedQuery parameter name for variant.
+     */
+    public static final String PARAM_VARIANT = "variant";
 
     /**
      * NamedQuery parameter name for a pattern matching the department in an Address.
@@ -200,4 +210,9 @@ public final class OrganisationPatterns {
      * NamedQuery parameter name for a zip code (typically within an Address)
      */
     public static final String PARAM_ZIPCODE = "zipcode";
+
+    /**
+     * NamedQuery parameter name for primary keys ("IDs").
+     */
+    public static final String PARAM_IDS = "ids";
 }

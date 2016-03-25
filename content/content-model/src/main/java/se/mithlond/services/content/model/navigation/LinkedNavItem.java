@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.content.model.navigation;
 
+import se.mithlond.services.organisation.model.localization.Localizable;
+
 /**
  * <p>Specification for AuthorizedNavItems which contain Anchors/Hyperlinks.
  * The standard structure to render for a Bootstrap-esque MenuItem corresponds

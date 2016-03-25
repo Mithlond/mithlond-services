@@ -19,21 +19,18 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.model.localization;
+package se.mithlond.services.organisation.model.localization;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.localization.helpers.Localizations;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
+import se.mithlond.services.organisation.model.localization.helpers.Localizations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB

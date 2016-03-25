@@ -37,26 +37,6 @@ public final class ContentPatterns {
     public static final String NAMESPACE = "http://www.jguru.se/mithlond/services/content";
 
     /**
-     * NamedQuery parameter name for primary keys ("IDs").
-     */
-    public static final String PARAM_IDS = "ids";
-
-    /**
-     * NamedQuery parameter name for language.
-     */
-    public static final String PARAM_LANGUAGE = "language";
-
-    /**
-     * NamedQuery parameter name for country.
-     */
-    public static final String PARAM_COUNTRY = "country";
-
-    /**
-     * NamedQuery parameter name for variant.
-     */
-    public static final String PARAM_VARIANT = "variant";
-
-    /**
      * NamedQuery parameter name for last modified timestamp.
      */
     public static final String PARAM_LAST_MODIFIED = "last_modified";

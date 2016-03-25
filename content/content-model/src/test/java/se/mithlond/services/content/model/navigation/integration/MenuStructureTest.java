@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.localization.LocalizedTexts;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;

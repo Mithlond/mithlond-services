@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.NavigationService;
-import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.Localization;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;

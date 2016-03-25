@@ -23,8 +23,8 @@ package se.mithlond.services.content.model.navigation;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.Localization;
-import se.mithlond.services.content.model.localization.LocalizedTexts;
+import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 

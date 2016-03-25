@@ -19,14 +19,13 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.model.localization;
+package se.mithlond.services.organisation.model.localization;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.navigation.Localizable;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.CascadeType;
@@ -62,7 +61,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"texts", "defaultLocalization"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"texts", "defaultLocalization"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
@@ -230,7 +229,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
 
         }, Map.Entry::getValue));
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
 
             final PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
             log.debug("DefaultLocalization. IsLoaded: " + persistenceUtil.isLoaded(defaultLocalization));

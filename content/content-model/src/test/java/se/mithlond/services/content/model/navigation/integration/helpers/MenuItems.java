@@ -22,8 +22,8 @@
 package se.mithlond.services.content.model.navigation.integration.helpers;
 
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.Localization;
-import se.mithlond.services.content.model.localization.LocalizedTexts;
+import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;

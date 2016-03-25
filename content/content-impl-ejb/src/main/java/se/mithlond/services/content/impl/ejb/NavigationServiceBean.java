@@ -26,9 +26,6 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
-import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.Localization;
-import se.mithlond.services.content.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
@@ -37,6 +34,8 @@ import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
@@ -238,8 +237,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
     //
 
     private <T> void findAll(final List<T> resultHolder,
-            final StandardMenu currentMenu,
-            final Function<AbstractAuthorizedNavItem, T> visitorFunction) {
+                             final StandardMenu currentMenu,
+                             final Function<AbstractAuthorizedNavItem, T> visitorFunction) {
 
         // Check sanity
         Validate.notNull(resultHolder, "Cannot handle null 'resultHolder' argument.");
@@ -316,7 +315,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
 
         final List<Localization> managedLocalizations = alreadyPersisted.size() > 0
                 ? entityManager.createNamedQuery(Localization.NAMEDQ_GET_BY_PRIMARY_KEYS, Localization.class)
-                .setParameter(ContentPatterns.PARAM_IDS, alreadyPersistedIDs)
+                .setParameter(OrganisationPatterns.PARAM_IDS, alreadyPersistedIDs)
                 .getResultList()
                 : new ArrayList<>();
 
@@ -334,8 +333,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         // Find the Localization in question.
                         final List<Localization> resultList = entityManager.createNamedQuery(
                                 Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY, Localization.class)
-                                .setParameter(ContentPatterns.PARAM_COUNTRY, country)
-                                .setParameter(ContentPatterns.PARAM_LANGUAGE, language)
+                                .setParameter(OrganisationPatterns.PARAM_COUNTRY, country)
+                                .setParameter(OrganisationPatterns.PARAM_LANGUAGE, language)
                                 .getResultList();
 
                         // All Done.

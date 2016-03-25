@@ -24,7 +24,6 @@ package se.mithlond.services.content.model.navigation.integration;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.content.model.navigation.AbstractEntityTest;
 import se.mithlond.services.content.model.navigation.integration.helpers.MenuItems;
 

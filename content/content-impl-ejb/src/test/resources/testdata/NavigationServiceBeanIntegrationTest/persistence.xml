@@ -56,8 +56,8 @@
         <!-- ===============================================
           |  Content Model Entities
           +============================================== -->
-        <class>se.mithlond.services.content.model.localization.Localization</class>
-        <class>se.mithlond.services.content.model.localization.LocalizedTexts</class>
+        <class>se.mithlond.services.organisation.model.localization.Localization</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
         <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem</class>

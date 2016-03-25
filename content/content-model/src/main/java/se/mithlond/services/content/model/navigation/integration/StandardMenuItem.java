@@ -22,7 +22,7 @@
 package se.mithlond.services.content.model.navigation.integration;
 
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.LocalizedTexts;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 
 import javax.persistence.Access;

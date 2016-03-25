@@ -19,10 +19,10 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.model.localization.helpers;
+package se.mithlond.services.organisation.model.localization.helpers;
 
-import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.localization.Localization;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,8 +36,8 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = "localizations")
+@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = "localizations")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localizations {
 

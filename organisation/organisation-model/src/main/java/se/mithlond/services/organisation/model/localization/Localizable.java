@@ -19,9 +19,8 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.model.navigation;
+package se.mithlond.services.organisation.model.localization;
 
-import se.mithlond.services.content.model.localization.Localization;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlTransient;

@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.LocalizedTexts;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
 import se.mithlond.services.shared.spi.algorithms.Validate;

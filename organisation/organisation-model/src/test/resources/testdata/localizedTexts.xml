@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<content:localizedTextsHolder xmlns:content="http://www.jguru.se/mithlond/services/content" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<organisation:localizedTextsHolder xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <localizations>
         <localization jpaId="0" version="0" compactStringForm="en..none..none"/>
         <localization jpaId="0" version="0" compactStringForm="en..US..none"/>
@@ -15,4 +15,4 @@
             <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
         </localization>
     </localizedTextsList>
-</content:localizedTextsHolder>
+</organisation:localizedTextsHolder>

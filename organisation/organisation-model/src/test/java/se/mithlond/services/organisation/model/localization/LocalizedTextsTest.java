@@ -19,13 +19,13 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.model.localization;
+package se.mithlond.services.organisation.model.localization;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.localization.helpers.LocalizedTextsHolder;
+import se.mithlond.services.organisation.model.localization.helpers.LocalizedTextsHolder;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.List;

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.Localization;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 
