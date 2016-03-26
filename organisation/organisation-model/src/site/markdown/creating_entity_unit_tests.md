@@ -185,7 +185,7 @@ method to see the marshalled result of  the CategorizedAddress object in the exa
 When running the validateMarshalling method, an XML structure is emitted onto the system console, as illustrated in 
 the XML snippet below. While the entire structure is relevant, please be aware that all elements which contain an 
 `@XMLID`-annotated element must be marshalled **before** elements that refer to them using an `@XMLIDREF`-annotated 
-member: 
+user: 
 
 <pre class="brush: xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
