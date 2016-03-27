@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-content-model
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2015 - 2016 Mithlond
  * %%

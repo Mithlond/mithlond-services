@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-organisation-model
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2010 - 2014 jGuru Europe AB
  * %%
@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.food;
 
-import se.jguru.nazgul.mithlond.service.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -41,7 +41,7 @@ import java.io.Serializable;
 @Embeddable
 @Access(value = AccessType.FIELD)
 @XmlTransient
-@XmlType(namespace = Organisation.NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AllergyId implements Serializable {
 
@@ -51,8 +51,8 @@ public class AllergyId implements Serializable {
     @Column(name = "food_id")
     public long foodId;
 
-    @Column(name = "member_id")
-    public long memberId;
+    @Column(name = "internalusers_id")
+    public long userId;
 
     /**
      * JAXB/JPA-friendly constructor.
@@ -64,11 +64,11 @@ public class AllergyId implements Serializable {
      * Compound key creating a GuildMembershipId object from the supplied keys.
      *
      * @param foodId   The id of the Food to which a Member has an allergy.
-     * @param memberId The id of the Member having an allergy to the given FoodId.
+     * @param userId The id of the Member having an allergy to the given FoodId.
      */
-    public AllergyId(final long foodId, final long memberId) {
+    public AllergyId(final long foodId, final long userId) {
         this.foodId = foodId;
-        this.memberId = memberId;
+        this.userId = userId;
     }
 
     /**
@@ -80,7 +80,7 @@ public class AllergyId implements Serializable {
         if (obj instanceof AllergyId) {
 
             final AllergyId that = (AllergyId) obj;
-            return foodId == that.foodId && memberId == that.memberId;
+            return foodId == that.foodId && userId == that.userId;
         }
 
         // All done.
@@ -92,7 +92,7 @@ public class AllergyId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return (int) (foodId + memberId) % Integer.MAX_VALUE;
+        return (int) (foodId + userId) % Integer.MAX_VALUE;
     }
 
     /**
@@ -100,6 +100,6 @@ public class AllergyId implements Serializable {
      */
     @Override
     public String toString() {
-        return "AllergyId [Food: " + foodId + ", Member: " + memberId + "]";
+        return "AllergyId [Food: " + foodId + ", User: " + userId + "]";
     }
 }

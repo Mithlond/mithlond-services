@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-organisation-model
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2010 - 2014 jGuru Europe AB
  * %%
@@ -83,7 +83,7 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
     private Food food;
 
     @ManyToOne(optional = false)
-    @MapsId("memberId")
+    @MapsId("userId")
     @XmlIDREF
     private User user;
 

@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-organisation-model
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2010 - 2014 jGuru Europe AB
  * %%
@@ -92,11 +92,11 @@ public class Food extends NazgulEntity implements Comparable<Food> {
     private String foodName;
 
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @XmlElement(nillable = false, required = true)
+    @XmlElement(required = true)
     private Category category;
 
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @XmlElement(nillable = false, required = true)
+    @XmlElement(required = true)
     private Category subCategory;
 
     /**
