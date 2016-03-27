@@ -66,6 +66,14 @@
         <class>se.mithlond.services.organisation.model.address.Address</class>
         <class>se.mithlond.services.organisation.model.address.CategorizedAddress</class>
         <class>se.mithlond.services.organisation.model.address.WellKnownAddressType</class>
+        <class>se.mithlond.services.organisation.model.food.AllergySeverity</class>
+        <class>se.mithlond.services.organisation.model.food.Allergy</class>
+        <class>se.mithlond.services.organisation.model.food.AllergyId</class>
+        <class>se.mithlond.services.organisation.model.food.Food</class>
+        <class>se.mithlond.services.organisation.model.food.FoodPreference</class>
+        <class>se.mithlond.services.organisation.model.food.FoodPreferenceId</class>
+        <class>se.mithlond.services.organisation.model.localization.Localization</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
         <class>se.mithlond.services.organisation.model.membership.Membership</class>
         <class>se.mithlond.services.organisation.model.membership.PersonalSettings</class>
         <class>se.mithlond.services.organisation.model.membership.Group</class>
@@ -81,8 +89,6 @@
         <!-- ===============================================
           |  Content Model Entities
           +============================================== -->
-        <class>se.mithlond.services.organisation.model.localization.Localization</class>
-        <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
         <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem</class>
@@ -106,7 +112,7 @@
             <!--
                 Standard JPA properties
             -->
-            <property name="javax.persistence.schema-generation.database.action" value="create"/>
+            <property name="javax.persistence.schema-generation.database.action" value="none"/>
             <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
             <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
             <property name="javax.persistence.schema-generation.scripts.create-target"
