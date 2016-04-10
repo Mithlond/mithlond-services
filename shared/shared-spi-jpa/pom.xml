@@ -10,7 +10,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-api-parent</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <relativePath/>
     </parent>
 
@@ -42,6 +42,17 @@
     <!-- | Section 2:  Dependency (management) settings   -->
     <!-- +=============================================== -->
     <dependencies>
+        <!--
+            Internal dependencies.
+        -->
+        <dependency>
+            <groupId>se.mithlond.services.shared.spi.algorithms</groupId>
+            <artifactId>mithlond-services-shared-spi-algorithms</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <!--
+            External dependencies.
+        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

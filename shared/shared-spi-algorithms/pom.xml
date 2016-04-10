@@ -10,7 +10,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-api-parent</artifactId>
-        <version>1.4.0</version>
+        <version>1.4.1</version>
         <relativePath/>
     </parent>
 
@@ -46,10 +46,20 @@
             External dependencies.
         -->
         <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.runtime.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>se.jguru.nazgul.core.persistence.model</groupId>
+            <artifactId>nazgul-core-persistence-model</artifactId>
         </dependency>
         <!--
             Test-scope dependencies.
@@ -68,6 +78,11 @@
             <groupId>se.jguru.nazgul.test.xmlbinding</groupId>
             <artifactId>nazgul-core-xmlbinding-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>se.jguru.nazgul.core.persistence.model</groupId>
+            <artifactId>nazgul-core-persistence-model</artifactId>
+            <version>1.8.0</version>
         </dependency>
     </dependencies>
 
@@ -119,43 +134,4 @@
         <url>${scm.url}</url>
         <tag>HEAD</tag>
     </scm>
-
-    <!-- +=============================================== -->
-    <!-- | Section 5:  Profiles                           -->
-    <!-- +=============================================== -->
-    <profiles>
-        <profile>
-            <id>wildfly9_jee7</id>
-            <activation>
-                <property>
-                    <name>!jee.container</name>
-                </property>
-            </activation>
-
-            <!-- dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jboss.spec</groupId>
-                        <artifactId>jboss-javaee-7.0</artifactId>
-                        <version>${version.jboss.spec.javaee.7.0}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement -->
-
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.spec.javax.ejb</groupId>
-                    <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.spec.javax.xml.bind</groupId>
-                    <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 </project>

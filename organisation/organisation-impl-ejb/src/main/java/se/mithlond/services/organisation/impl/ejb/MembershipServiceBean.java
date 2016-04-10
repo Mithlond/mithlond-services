@@ -87,8 +87,8 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                 .getResultList();
 
         if (result.size() > 1) {
-            log.warn("Got [" + result.size() + "] number of Memberships for organisation [" + organisationName +
-                    "] and alias [" + alias + "]. Returning the first result.");
+            log.warn("Got [" + result.size() + "] number of Memberships for organisation ["
+                    + organisationName + "] and alias [" + alias + "]. Returning the first result.");
         }
 
         // All done.
