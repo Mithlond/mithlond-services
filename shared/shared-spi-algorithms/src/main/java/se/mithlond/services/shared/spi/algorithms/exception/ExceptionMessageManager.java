@@ -21,9 +21,10 @@
  */
 package se.mithlond.services.shared.spi.algorithms.exception;
 
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,8 @@ public final class ExceptionMessageManager {
     /*
      * Hide constructor for utility classes.
      */
-    private ExceptionMessageManager(){}
+    private ExceptionMessageManager() {
+    }
 
     /**
      * Extracts a printable string stacktrace from the supplied Throwable.

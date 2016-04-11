@@ -79,11 +79,6 @@
             <artifactId>nazgul-core-xmlbinding-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>se.jguru.nazgul.core.persistence.model</groupId>
-            <artifactId>nazgul-core-persistence-model</artifactId>
-            <version>1.8.0</version>
-        </dependency>
     </dependencies>
 
     <!-- +=============================================== -->
