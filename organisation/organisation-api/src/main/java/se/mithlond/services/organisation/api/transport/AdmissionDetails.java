@@ -30,37 +30,79 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Convenience transport holder of Admission details.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializable {
 
-    // Internal state
+    /**
+     * Default ActivityID value, indicating that this {@link AdmissionDetails} instance is not yet
+     * associated with an {@link se.mithlond.services.organisation.model.activity.Activity} in terms of database
+     * persistence.
+     */
+    public static final Long UNINITIALIZED = -1L;
+
+    /**
+     * The JPA ID of an Activity to which this AdmissionDetails pertains.
+     */
     @XmlAttribute
     private Long activityID;
 
+    /**
+     * The Alias of the Member to admit to an Activity.
+     */
     @XmlElement(required = true)
     private String alias;
 
+    /**
+     * The Organisation name where the Alias exists; must not necessarily be
+     * identical to the Organisation of the Activity to which this AdmissionDetails instance is tied.
+     */
     @XmlElement(required = true)
     private String organisation;
 
-    @XmlElement(required = false, nillable = false)
+    /**
+     * An optional admission note from the admitted Alias to the organizers of the Activity.
+     */
+    @XmlElement
     private String note;
 
-    @XmlAttribute(required = false)
+    /**
+     * A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
+     */
+    @XmlAttribute
     private boolean responsible;
 
     /**
      * JAXB-friendly constructor.
      */
     public AdmissionDetails() {
-        // Do nothing.
+        activityID = UNINITIALIZED;
+    }
+
+    /**
+     * Convenience constructor creating a new AdmissionDetails instance with an {@link #UNINITIALIZED} activityID.
+     *
+     * @param alias        The alias to admit.
+     * @param organisation The organisation where the alias exists; must not necessarily be
+     *                     identical to the organisation of the Activity to which this ProtoAdmission is tied.
+     * @param note         An optional admission note from teh Alias to the organizer(s) of the Activity.
+     * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
+     */
+    public AdmissionDetails(final String alias,
+                            final String organisation,
+                            final String note,
+                            final boolean responsible) {
+
+        this(UNINITIALIZED, alias, organisation, note, responsible);
     }
 
     /**
@@ -70,14 +112,14 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
      * @param alias        The alias to admit.
      * @param organisation The organisation where the alias exists; must not necessarily be
      *                     identical to the organisation of the Activity to which this ProtoAdmission is tied.
-     * @param note         An optional admission note.
-     * @param responsible  The
+     * @param note         An optional admission note from teh Alias to the organizer(s) of the Activity.
+     * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
     public AdmissionDetails(final Long activityID,
-            final String alias,
-            final String organisation,
-            final String note,
-            final boolean responsible) {
+                            final String alias,
+                            final String organisation,
+                            final String note,
+                            final boolean responsible) {
 
         // Check sanity
         Validate.notEmpty(alias, "Cannot handle null or empty alias argument.");
@@ -115,10 +157,10 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
     }
 
     /**
-     * @return An optional admission note. May be {@code null}.
+     * @return An optional admission note.
      */
-    public String getNote() {
-        return note;
+    public Optional<String> getNote() {
+        return note == null ? Optional.empty() : Optional.of(note);
     }
 
     /**
@@ -132,10 +174,31 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
      * {@inheritDoc}
      */
     @Override
+    public boolean equals(final Object that) {
+
+        // Fail fast
+        if (this == that) {
+            return true;
+        }
+        if (!(that instanceof AdmissionDetails)) {
+            return false;
+        }
+
+        // Delegate to internal state
+        final AdmissionDetails details = (AdmissionDetails) that;
+        return responsible == details.responsible &&
+                Objects.equals(activityID, details.activityID) &&
+                Objects.equals(alias, details.alias) &&
+                Objects.equals(organisation, details.organisation) &&
+                Objects.equals(note, details.note);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public int hashCode() {
-        final int responsibleHash = isResponsible() ? 1 : 0;
-        final int noteHash = note == null ? 0 : note.hashCode();
-        return alias.hashCode() + organisation.hashCode() + responsibleHash + noteHash;
+        return Objects.hash(activityID, alias, organisation, note, responsible);
     }
 
     /**
@@ -158,8 +221,8 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
         }
         if (toReturn == 0) {
 
-            final String thisNote = getNote() == null ? "" : getNote();
-            final String thatNote = that.getNote() == null ? "" : that.getNote();
+            final String thisNote = this.getNote().orElse("");
+            final String thatNote = that.getNote().orElse("");
             toReturn = thisNote.compareTo(thatNote);
         }
         if (toReturn == 0) {

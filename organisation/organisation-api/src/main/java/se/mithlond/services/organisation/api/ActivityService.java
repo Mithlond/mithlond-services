@@ -52,7 +52,7 @@ public interface ActivityService {
      * @param parameters A non-null ActivitySearchParameters instance detailing which Activities should be retrieved.
      * @return all Activities within the supplied organisationName within the supplied Period.
      */
-    List<Activity> getActivities(ActivitySearchParameters parameters);
+    List<Activity> getActivities(final ActivitySearchParameters parameters);
 
     /**
      * Retrieves the Activity with the supplied activityID primary key.

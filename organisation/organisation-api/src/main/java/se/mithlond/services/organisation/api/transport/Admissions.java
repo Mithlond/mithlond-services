@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A transport wrapper for multiple Region objects.
+ * A transport wrapper for multiple AdmissionDetails objects.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -43,8 +43,8 @@ import java.util.List;
 public class Admissions {
 
     // Internal state
-    @XmlElementWrapper(required = true, nillable = false)
-    @XmlElement(nillable = false, required = false, name = "admissionDetails")
+    @XmlElementWrapper(required = true)
+    @XmlElement(name = "admissionDetails")
     private List<AdmissionDetails> details;
 
     /**

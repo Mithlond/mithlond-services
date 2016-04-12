@@ -60,6 +60,7 @@
         <dependency>
             <groupId>se.jguru.nazgul.core.persistence.model</groupId>
             <artifactId>nazgul-core-persistence-model</artifactId>
+            <version>${nazgul-core.version}</version>
         </dependency>
         <!--
             Test-scope dependencies.

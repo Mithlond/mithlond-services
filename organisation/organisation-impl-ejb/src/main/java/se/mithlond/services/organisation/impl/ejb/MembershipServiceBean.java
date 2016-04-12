@@ -29,6 +29,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
+import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -100,8 +101,8 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
      */
     @Override
     public List<Membership> getActiveMemberships(final String organisationName,
-            final String firstName,
-            final String lastName) {
+                                                 final String firstName,
+                                                 final String lastName) {
 
         final List<Membership> toReturn = new ArrayList<>();
 

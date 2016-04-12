@@ -98,6 +98,11 @@ public class CategorizedAddress extends Listable implements Comparable<Categoriz
     public static final String NAMEDQ_GET_BY_ORGANISATION_AND_CATEGORY_ID =
             "CategorizedAddress.getByOrganisationAndCategoryID";
 
+    /**
+     * The constant value indicating that a {@link CategorizedAddress} is for Activities.
+     */
+    public static final String ACTIVITY_CLASSIFICATION = "activity_locale";
+
     // Internal state
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @XmlIDREF

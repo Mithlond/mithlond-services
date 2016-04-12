@@ -50,175 +50,176 @@ import java.time.ZoneId;
 @NamedQueries({
 		@NamedQuery(name = EventCalendar.NAMEDQ_GET_BY_ORGANISATION_RUNTIME_AND_IDENTIFIER,
 				query = "select a from EventCalendar a "
-						+ " where a.owningOrganisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+						+ " where a.owningOrganisation.organisationName like :"
+                        + OrganisationPatterns.PARAM_ORGANISATION_NAME
 						+ " and a.runtimeEnvironment like :" + OrganisationPatterns.PARAM_ENVIRONMENT_ID
 						+ " and a.calendarIdentifier like :" + OrganisationPatterns.PARAM_EVENT_CALENDAR
 						+ " order by a.fullDesc")
 })
 @Entity
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
-		propOrder = {"timeZoneID", "isMondayFirstDayOfWeek", "calendarIdentifier", "runtimeEnvironment"})
+        propOrder = {"timeZoneID", "isMondayFirstDayOfWeek", "calendarIdentifier", "runtimeEnvironment"})
 @Table(uniqueConstraints = {
-		@UniqueConstraint(
-				name = "calendarIdAndEnvironmentIsUnique",
-				columnNames = {"calendarIdentifier", "runtimeEnvironment"})})
+        @UniqueConstraint(
+                name = "calendarIdAndEnvironmentIsUnique",
+                columnNames = {"calendarIdentifier", "runtimeEnvironment"})})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EventCalendar extends Listable {
 
-	/**
-	 * NamedQuery for getting EventCalendars by organisation name, as well as runtimeIdentifier and eventCalendarID.
-	 */
-	public static final String NAMEDQ_GET_BY_ORGANISATION_RUNTIME_AND_IDENTIFIER =
-			"EventCalendar.getByOrganisationRuntimeAndIdentifier";
+    /**
+     * NamedQuery for getting EventCalendars by organisation name, as well as runtimeIdentifier and eventCalendarID.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_RUNTIME_AND_IDENTIFIER =
+            "EventCalendar.getByOrganisationRuntimeAndIdentifier";
 
-	/**
-	 * The default TimeZone of this EventCalendar, used whenever
-	 * explicit TimeZone information is not available.
-	 */
-	@NotNull
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlElement(required = true, nillable = false)
-	private String timeZoneID;
+    /**
+     * The default TimeZone of this EventCalendar, used whenever
+     * explicit TimeZone information is not available.
+     */
+    @NotNull
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true, nillable = false)
+    private String timeZoneID;
 
-	/**
-	 * "true" to indicate that monday is the first day of the week,
-	 * and "false" to indicate that sunday is the first day of the week
-	 * for this EventCalendar.
-	 */
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlAttribute(required = true)
-	private boolean isMondayFirstDayOfWeek;
+    /**
+     * "true" to indicate that monday is the first day of the week,
+     * and "false" to indicate that sunday is the first day of the week
+     * for this EventCalendar.
+     */
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlAttribute(required = true)
+    private boolean isMondayFirstDayOfWeek;
 
-	/**
-	 * An identifier of this EventCalendar, such as "mithlond.official@gmail.com".
-	 * This identifier can be used to identify this EventCalendar to the corresponding event
-	 * storage, such as Yahoo or Google; in that sense it works as a primary key of the
-	 * EventCalendar in the remote system.
-	 */
-	@NotNull
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlElement(required = true, nillable = false)
-	private String calendarIdentifier;
+    /**
+     * An identifier of this EventCalendar, such as "mithlond.official@gmail.com".
+     * This identifier can be used to identify this EventCalendar to the corresponding event
+     * storage, such as Yahoo or Google; in that sense it works as a primary key of the
+     * EventCalendar in the remote system.
+     */
+    @NotNull
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true, nillable = false)
+    private String calendarIdentifier;
 
-	/**
-	 * The runtime environment for which this EventCalendar should be visible/accessible.
-	 * Corresponds to "Deployment.deploymentName".
-	 */
-	@NotNull
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlElement(required = true, nillable = false)
-	private String runtimeEnvironment;
+    /**
+     * The runtime environment for which this EventCalendar should be visible/accessible.
+     * Corresponds to "Deployment.deploymentName".
+     */
+    @NotNull
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true, nillable = false)
+    private String runtimeEnvironment;
 
-	/**
-	 * JAXB/JPA-friendly constructor.
-	 */
-	public EventCalendar() {
-	}
+    /**
+     * JAXB/JPA-friendly constructor.
+     */
+    public EventCalendar() {
+    }
 
-	/**
-	 * Convenience constructor, creating a Calendar containing the supplied data,
-	 * and using {@code TimeFormat.SWEDISH_TIMEZONE} for timezone identifier, and using monday
-	 * as the first day within the week.
-	 *
-	 * @param shortDesc          The short description of this Calendar.
-	 * @param fullDesc           The full/long description of this Calendar.
-	 * @param organisation       The Organisation owning this Calendar.
-	 * @param calendarIdentifier The remote identifier (or type) of the calendar used,
-	 *                           such as "mithlond.official@gmail.com".
-	 * @param runtimeEnvironment The runtime environment for which this EventCalendar should be visible/accessible.
-	 * @see TimeFormat#SWEDISH_TIMEZONE
-	 */
-	public EventCalendar(final String shortDesc,
-						 final String fullDesc,
-						 final Organisation organisation,
-						 final String calendarIdentifier,
-						 final String runtimeEnvironment) {
+    /**
+     * Convenience constructor, creating a Calendar containing the supplied data,
+     * and using {@code TimeFormat.SWEDISH_TIMEZONE} for timezone identifier, and using monday
+     * as the first day within the week.
+     *
+     * @param shortDesc          The short description of this Calendar.
+     * @param fullDesc           The full/long description of this Calendar.
+     * @param organisation       The Organisation owning this Calendar.
+     * @param calendarIdentifier The remote identifier (or type) of the calendar used,
+     *                           such as "mithlond.official@gmail.com".
+     * @param runtimeEnvironment The runtime environment for which this EventCalendar should be visible/accessible.
+     * @see TimeFormat#SWEDISH_TIMEZONE
+     */
+    public EventCalendar(final String shortDesc,
+                         final String fullDesc,
+                         final Organisation organisation,
+                         final String calendarIdentifier,
+                         final String runtimeEnvironment) {
 
-		this(shortDesc,
-				fullDesc,
-				organisation,
-				TimeFormat.SWEDISH_TIMEZONE,
-				true,
-				calendarIdentifier,
-				runtimeEnvironment);
-	}
+        this(shortDesc,
+                fullDesc,
+                organisation,
+                TimeFormat.SWEDISH_TIMEZONE,
+                true,
+                calendarIdentifier,
+                runtimeEnvironment);
+    }
 
-	/**
-	 * Compound constructor, creating a Calendar containing the supplied data.
-	 *
-	 * @param shortDesc              The short description of this EventCalendar.
-	 * @param fullDesc               The full/long description of this EventCalendar.
-	 * @param organisation           The Organisation owning this EventCalendar.
-	 * @param timeZoneID             The default TimeZone of this EventCalendar.
-	 * @param calendarIdentifier     The remote identifier (or type) of the calendar used,
-	 *                               such as "mithlond.official@gmail.com".
-	 * @param isMondayFirstDayOfWeek {@code true} to indicate that the weeks in this EventCalendar starts with Monday.
-	 *                               Otherwise, weeks are assumed to start with Sunday.
-	 * @param runtimeEnvironment     The runtime environment for which this EventCalendar should be visible/accessible.
-	 */
-	public EventCalendar(final String shortDesc,
-						 final String fullDesc,
-						 final Organisation organisation,
-						 final ZoneId timeZoneID,
-						 final boolean isMondayFirstDayOfWeek,
-						 final String calendarIdentifier,
-						 final String runtimeEnvironment) {
+    /**
+     * Compound constructor, creating a Calendar containing the supplied data.
+     *
+     * @param shortDesc              The short description of this EventCalendar.
+     * @param fullDesc               The full/long description of this EventCalendar.
+     * @param organisation           The Organisation owning this EventCalendar.
+     * @param timeZoneID             The default TimeZone of this EventCalendar.
+     * @param calendarIdentifier     The remote identifier (or type) of the calendar used,
+     *                               such as "mithlond.official@gmail.com".
+     * @param isMondayFirstDayOfWeek {@code true} to indicate that the weeks in this EventCalendar starts with Monday.
+     *                               Otherwise, weeks are assumed to start with Sunday.
+     * @param runtimeEnvironment     The runtime environment for which this EventCalendar should be visible/accessible.
+     */
+    public EventCalendar(final String shortDesc,
+                         final String fullDesc,
+                         final Organisation organisation,
+                         final ZoneId timeZoneID,
+                         final boolean isMondayFirstDayOfWeek,
+                         final String calendarIdentifier,
+                         final String runtimeEnvironment) {
 
-		super(shortDesc, fullDesc, organisation);
+        super(shortDesc, fullDesc, organisation);
 
-		// Assign internal state
-		this.timeZoneID = timeZoneID.getId();
-		this.isMondayFirstDayOfWeek = isMondayFirstDayOfWeek;
-		this.calendarIdentifier = calendarIdentifier;
-		this.runtimeEnvironment = runtimeEnvironment;
-	}
+        // Assign internal state
+        this.timeZoneID = timeZoneID.getId();
+        this.isMondayFirstDayOfWeek = isMondayFirstDayOfWeek;
+        this.calendarIdentifier = calendarIdentifier;
+        this.runtimeEnvironment = runtimeEnvironment;
+    }
 
-	/**
-	 * @return The default TimeZone of this Calendar.
-	 */
-	public ZoneId getTimeZoneID() {
-		return ZoneId.of(timeZoneID);
-	}
+    /**
+     * @return The default TimeZone of this Calendar.
+     */
+    public ZoneId getTimeZoneID() {
+        return ZoneId.of(timeZoneID);
+    }
 
-	/**
-	 * @return {@code true} if monday is the first day of the week, and {@code false} to
-	 * indicate that sunday is the first day of the week.
-	 */
-	public boolean isMondayFirstDayOfWeek() {
-		return isMondayFirstDayOfWeek;
-	}
+    /**
+     * @return {@code true} if monday is the first day of the week, and {@code false} to
+     * indicate that sunday is the first day of the week.
+     */
+    public boolean isMondayFirstDayOfWeek() {
+        return isMondayFirstDayOfWeek;
+    }
 
-	/**
-	 * @return The type of calendar used, such as "Google Calendar".
-	 */
-	public String getCalendarIdentifier() {
-		return calendarIdentifier;
-	}
+    /**
+     * @return The type of calendar used, such as "Google Calendar".
+     */
+    public String getCalendarIdentifier() {
+        return calendarIdentifier;
+    }
 
-	/**
-	 * @return The runtime environment for which this EventCalendar should be visible/accessible.
-	 * Must match the system or environment property defining the runtime environment type of a
-	 * web application.
-	 */
-	public String getRuntimeEnvironment() {
-		return runtimeEnvironment;
-	}
+    /**
+     * @return The runtime environment for which this EventCalendar should be visible/accessible.
+     * Must match the system or environment property defining the runtime environment type of a
+     * web application.
+     */
+    public String getRuntimeEnvironment() {
+        return runtimeEnvironment;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void validateListableEntityState() throws InternalStateValidationException {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void validateListableEntityState() throws InternalStateValidationException {
 
-		// Check sanity
-		InternalStateValidationException.create()
-				.notNullOrEmpty(timeZoneID, "timeZoneID")
-				.notNullOrEmpty(calendarIdentifier, "calendarIdentifier")
-				.notNullOrEmpty(runtimeEnvironment, "runtimeEnvironment")
-				.endExpressionAndValidate();
-	}
+        // Check sanity
+        InternalStateValidationException.create()
+                .notNullOrEmpty(timeZoneID, "timeZoneID")
+                .notNullOrEmpty(calendarIdentifier, "calendarIdentifier")
+                .notNullOrEmpty(runtimeEnvironment, "runtimeEnvironment")
+                .endExpressionAndValidate();
+    }
 }
