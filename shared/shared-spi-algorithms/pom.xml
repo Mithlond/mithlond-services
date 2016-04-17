@@ -18,7 +18,7 @@
     <artifactId>mithlond-services-shared-spi-algorithms</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Shared (SPI, version ${project.version})</description>
+    <description>Mithlond Service: Shared Algorithms (SPI, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>

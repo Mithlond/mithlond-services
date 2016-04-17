@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.shared.spi.jpa;
 
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.mithlond.services.shared.spi.algorithms.exception.ExceptionMessageManager;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 /**
  * Utility class holding helper methods to simplify working with JPA-based databases.
@@ -69,9 +69,9 @@ public final class JpaUtilities {
             final QueryDecorator optionalDecorator) {
 
         // Check sanity
-        final String nonNull = Validate.notEmpty(jpqlOrNamedQuery, "Cannot handle null or empty 'jpql' argument.");
-        final EntityManager em = Validate.notNull(entityManager, "Cannot handle null 'entityManager' argument.");
-        final Class<T> expectedType = Validate.notNull(resultType, "Cannot handle null 'resultType' argument.");
+        final String nonNull = Validate.notEmpty(jpqlOrNamedQuery, "jpqlOrNamedQuery");
+        final EntityManager em = Validate.notNull(entityManager, "entityManager");
+        final Class<T> expectedType = Validate.notNull(resultType, "resultType");
 
         // #1) Create the TypedQuery
         final TypedQuery<T> query = namedQuery
@@ -118,8 +118,8 @@ public final class JpaUtilities {
             final QueryDecorator optionalDecorator) {
 
         // Check sanity
-        final List<T> persistAll = Validate.notEmpty(toPersist, "Cannot handle null or empty 'toPersist' argument.");
-        final EntityManager em = Validate.notNull(entityManager, "Cannot handle null 'entityManager' argument.");
+        final List<T> persistAll = Validate.notNull(toPersist, "toPersist");
+        final EntityManager em = Validate.notNull(entityManager, "entityManager");
 
         // #1) Persist all supplied entities
         for (T current : persistAll) {
