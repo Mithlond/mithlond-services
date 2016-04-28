@@ -126,6 +126,8 @@ public class AuthorizationPatternTest {
         for (Map.Entry<String, AuthorizationPattern> current : actual.entrySet()) {
             Assert.assertEquals(expected.get(current.getKey()), current.getValue().toString());
         }
+
+        System.out.println("Got:  " + actual);
     }
 
     @Test

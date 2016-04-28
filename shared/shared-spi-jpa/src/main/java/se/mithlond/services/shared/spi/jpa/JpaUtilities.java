@@ -23,6 +23,8 @@ package se.mithlond.services.shared.spi.jpa;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.algorithms.exception.ExceptionMessageManager;
 
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -30,9 +32,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
-
-import se.mithlond.services.shared.spi.algorithms.exception.ExceptionMessageManager;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Utility class holding helper methods to simplify working with JPA-based databases.
@@ -47,7 +48,8 @@ public final class JpaUtilities {
     /*
      * Hide the constructor in utility classes.
      */
-    private JpaUtilities() {}
+    private JpaUtilities() {
+    }
 
     /**
      * Convenience method to find entities within the database.
@@ -109,6 +111,7 @@ public final class JpaUtilities {
      * @param <T>               The type of Entity to retrieve.
      * @return The result of the JPQL query being fired against the database.
      */
+    @SuppressWarnings("all")
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public static <T> List<T> persistAndRetrieveEntities(final Class<T> resultType,
             final List<T> toPersist,
@@ -135,5 +138,56 @@ public final class JpaUtilities {
 
         // #3) Delegate and return
         return findEntities(resultType, jpqlOrNamedQuery, namedQuery, em, optionalDecorator);
+    }
+
+    /**
+     * Retrieves an Optional single instance out of a List of T instances, provided that
+     * the {@code entities} List is non-null and contains at least one element.
+     *
+     * @param entities               The list of T entities.
+     * @param entityName             The name of the Entity type, in singular.
+     * @param entityToStringFunction A function reference to a method converting T type entities to a debug string.
+     * @param <T>                    The type of instances provided within the supplied list of Entities.
+     * @return An Optional T instance.
+     */
+    public static <T> Optional<T> getSingleInstance(final List<T> entities,
+            final String entityName,
+            final Function<T, String> entityToStringFunction) {
+
+        if (entities == null) {
+            return Optional.empty();
+        }
+
+        final int numEntities = entities.size();
+        T toReturn = null;
+        switch (numEntities) {
+            case 0:
+                log.warn("Received no " + entityName + "s.");
+                break;
+
+            case 1:
+                toReturn = entities.get(0);
+                break;
+
+            default:
+
+                toReturn = entities.get(0);
+
+                // Find the effective convert-to-string function.
+                final Function<T, String> toStringFunction = entityToStringFunction == null
+                        ? T::toString
+                        : entityToStringFunction;
+
+                final String msg = entities.stream()
+                        .map(toStringFunction)
+                        .reduce((l, r) -> l + "," + r)
+                        .orElse("<none>");
+                log.warn("Received [" + numEntities + "] " + entityName + "s. Returning ["
+                        + toStringFunction.apply(toReturn) + "] out of " + msg);
+                break;
+        }
+
+        // All Done.
+        return toReturn == null ? Optional.empty() : Optional.of(toReturn);
     }
 }

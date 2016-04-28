@@ -27,25 +27,31 @@ import se.mithlond.services.organisation.api.ActivityService;
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
 import se.mithlond.services.organisation.api.transport.AdmissionDetails;
 import se.mithlond.services.organisation.model.Category;
+import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.finance.Amount;
+import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
+import se.mithlond.services.shared.spi.jpa.PersistenceOperationFailedException;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * ActivityService Stateless EJB implementation.
@@ -89,23 +95,125 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * {@inheritDoc}
      */
     @Override
+    @RequireAuthorization(authorizationPatterns = "/Mithlond/Inbyggare/,/Forodrim/Allmoge/")
     public Activity createActivity(final String organisationName,
-                                   final String shortDesc,
-                                   final String fullDesc,
-                                   final ZonedDateTime startTime,
-                                   final ZonedDateTime endTime,
-                                   final Amount cost,
-                                   final Amount lateAdmissionCost,
-                                   final LocalDate lateAdmissionDate,
-                                   final LocalDate lastAdmissionDate,
-                                   final boolean cancelled,
-                                   final String dressCode,
-                                   final String addressCategory,
-                                   final Address location,
-                                   final String addressShortDescription,
-                                   final String responsibleGuildName,
-                                   final Set<AdmissionDetails> admissions,
-                                   final boolean isOpenToGeneralPublic) {
+            final String shortDesc,
+            final String fullDesc,
+            final ZonedDateTime startTime,
+            final ZonedDateTime endTime,
+            final Amount cost,
+            final Amount lateAdmissionCost,
+            final LocalDate lateAdmissionDate,
+            final LocalDate lastAdmissionDate,
+            final boolean cancelled,
+            final String dressCode,
+            final String addressCategory,
+            final Address location,
+            final String addressShortDescription,
+            final String responsibleGroupName,
+            final Set<AdmissionDetails> admissions,
+            final boolean isOpenToGeneralPublic) {
+
+        // Check sanity
+        validateActivityData(organisationName,
+                shortDesc,
+                fullDesc,
+                startTime,
+                endTime,
+                addressCategory,
+                location,
+                addressShortDescription,
+                admissions);
+
+        // #1) Find the Category with the supplied 'category'
+        final Category locationCategory = getAddressLocationCategory(addressCategory, entityManager)
+                .orElseThrow(() -> new IllegalArgumentException("Address location category ["
+                        + addressCategory + "] not found within persistent storage."));
+
+        // #2) Find the owner/responsible for the Activity.
+        final Group responsibleGroup = responsibleGroupName != null && !responsibleGroupName.isEmpty()
+                ? getGroup(responsibleGroupName, organisationName, entityManager).orElse(null)
+                : null;
+        final List<AdmissionDetails> responsibleAdmissions = admissions.stream()
+                .filter(AdmissionDetails::isResponsible)
+                .collect(Collectors.toList());
+
+        // Check sanity
+        if(responsibleGroup == null && responsibleAdmissions == null || responsibleAdmissions.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Cannot create an Activity without having a responsible Group or Membership.");
+        }
+
+        // #3) Get the Organisation
+        final Organisation owningOrganisation = getOrganisation(organisationName, entityManager)
+                .orElseThrow(() -> new RuntimeException("Cannot find an Organisation with the name ["
+                        + organisationName + "]"));
+
+        // #4) Create the Activity instance
+        Activity toCreate = new Activity(shortDesc,
+                fullDesc,
+                startTime,
+                endTime,
+                cost,
+                lateAdmissionCost,
+                lateAdmissionDate,
+                lastAdmissionDate,
+                cancelled,
+                dressCode,
+                locationCategory,
+                location,
+                addressShortDescription,
+                owningOrganisation,
+                responsibleGroup,
+                isOpenToGeneralPublic);
+
+
+        final Map<ProtoAdmission, Membership> admission2Membership = wrapAdmissions(admissions);
+
+        Activity toCreate = null;
+        try {
+
+            // First, create the activity object.
+            toCreate = new Activity(shortDesc,
+                    fullDesc,
+                    startTime,
+                    endTime,
+                    cost,
+                    lateAdmissionCost,
+                    lateAdmissionDate,
+                    lastAdmissionDate,
+                    cancelled,
+                    dressCode,
+                    category,
+                    location,
+                    addressShortDescription,
+                    organisation,
+                    responsibleGuildOrNull,
+                    isOpenToGeneralPublic);
+            final Set<Admission> admissionSet = toCreate.getAdmissions();
+
+            // Now add the Admissions given.
+            for (Map.Entry<ProtoAdmission, Membership> current : admission2Membership.entrySet()) {
+
+                final ProtoAdmission protoAdmission = current.getKey();
+                Admission admission = new Admission(toCreate,
+                        current.getValue(),
+                        DateTime.now(),
+                        protoAdmission.getNote(),
+                        protoAdmission.isResponsible());
+                admissionSet.add(admission);
+            }
+
+            // ... and persist the Activity.
+            create(toCreate);
+
+        } catch (PersistenceOperationFailedException e) {
+            log.error("Could not create Activity [" + shortDesc + "]", e);
+            throw e;
+        }
+
+        // All done.
+        return toCreate;
     }
 
     /**
@@ -113,23 +221,23 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public Activity updateActivity(final long activityId,
-                                   final String organisationName,
-                                   final String shortDesc,
-                                   final String fullDesc,
-                                   final ZonedDateTime startTime,
-                                   final ZonedDateTime endTime,
-                                   final Amount cost,
-                                   final Amount lateAdmissionCost,
-                                   final LocalDate lateAdmissionDate,
-                                   final LocalDate lastAdmissionDate,
-                                   final boolean cancelled,
-                                   final String dressCode,
-                                   final String addressCategory,
-                                   final Address location,
-                                   final String addressShortDescription,
-                                   final String responsibleGuildName,
-                                   final Set<AdmissionDetails> admissions,
-                                   final boolean isOpenToGeneralPublic) {
+            final String organisationName,
+            final String shortDesc,
+            final String fullDesc,
+            final ZonedDateTime startTime,
+            final ZonedDateTime endTime,
+            final Amount cost,
+            final Amount lateAdmissionCost,
+            final LocalDate lateAdmissionDate,
+            final LocalDate lastAdmissionDate,
+            final boolean cancelled,
+            final String dressCode,
+            final String addressCategory,
+            final Address location,
+            final String addressShortDescription,
+            final String responsibleGuildName,
+            final Set<AdmissionDetails> admissions,
+            final boolean isOpenToGeneralPublic) {
 
         // Check sanity
         validateActivityData(organisationName,
@@ -155,7 +263,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 q -> q.setParameter(
                         OrganisationPatterns.PARAM_CLASSIFICATION,
                         CategorizedAddress.ACTIVITY_CLASSIFICATION));
-        if(categories.size() != 1) {
+        if (categories.size() != 1) {
             throw new IllegalArgumentException("Expected exactly 1 Category [" + addressCategory + "], but got ["
                     + categories.size() + "]");
         }
@@ -254,10 +362,10 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public boolean addOrAlterAdmission(final long activityId,
-                                       final Membership membership,
-                                       final boolean responsible,
-                                       final String admissionNote,
-                                       final boolean onlyUpdateAdmissionNote) {
+            final Membership membership,
+            final boolean responsible,
+            final String admissionNote,
+            final boolean onlyUpdateAdmissionNote) {
         return false;
     }
 
@@ -273,16 +381,70 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     // Private helpers
     //
 
+    private static Optional<Organisation> getOrganisation(final String organisationName,
+            final EntityManager entityManager) {
+
+        final List<Organisation> organisations = JpaUtilities.findEntities(Organisation.class,
+                Organisation.NAMEDQ_GET_BY_NAME,
+                true,
+                entityManager,
+                aQuery -> aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName));
+
+        // All Done.
+        return JpaUtilities.getSingleInstance(organisations, "Organisation", Organisation::getOrganisationName);
+    }
+
+    private static Optional<Group> getGroup(final String groupName,
+            final String organisationName,
+            final EntityManager entityManager) {
+
+        final List<Group> groups = JpaUtilities.findEntities(Group.class,
+                Group.NAMEDQ_GET_BY_NAME_ORGANISATION,
+                true,
+                entityManager,
+                aQuery -> {
+                    aQuery.setParameter(OrganisationPatterns.PARAM_GROUP_NAME, groupName);
+                    aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName);
+                });
+
+        // All Done.
+        return JpaUtilities.getSingleInstance(groups, "Group", Group::getGroupName);
+    }
+
+    /**
+     * Retrieves a persisted Category corresponding to the supplied categoryID.
+     *
+     * @param categoryID    The non-empty category ID for which to retrieve the (persisted) address-location Category.
+     * @param entityManager The non-null {@link EntityManager}
+     * @return an Optional and persisted address location Category.
+     */
+    private static Optional<Category> getAddressLocationCategory(final String categoryID,
+            final EntityManager entityManager) {
+
+        final List<Category> categories = JpaUtilities.findEntities(Category.class,
+                Category.NAMEDQ_GET_BY_ID_CLASSIFICATION,
+                true,
+                entityManager,
+                aQuery -> {
+                    aQuery.setParameter(OrganisationPatterns.PARAM_CATEGORY_ID, categoryID);
+                    aQuery.setParameter(OrganisationPatterns.PARAM_CLASSIFICATION,
+                            CategorizedAddress.ACTIVITY_CLASSIFICATION);
+                });
+
+        // All Done.
+        return JpaUtilities.getSingleInstance(categories, "Category", Category::getCategoryID);
+    }
+
     @SuppressWarnings("all")
     private void validateActivityData(final String organisationName,
-                                      final String shortDesc,
-                                      final String fullDesc,
-                                      final ZonedDateTime startTime,
-                                      final ZonedDateTime endTime,
-                                      final String addressCategory,
-                                      final Address location,
-                                      final String addressShortDescription,
-                                      final Set<AdmissionDetails> admissions) {
+            final String shortDesc,
+            final String fullDesc,
+            final ZonedDateTime startTime,
+            final ZonedDateTime endTime,
+            final String addressCategory,
+            final Address location,
+            final String addressShortDescription,
+            final Set<AdmissionDetails> admissions) {
 
         Validate.notEmpty(organisationName, "organisationName");
         Validate.notEmpty(shortDesc, "shortDesc");

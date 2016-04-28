@@ -51,15 +51,15 @@ import javax.xml.bind.annotation.XmlType;
                         + " order by a.categoryID"),
         @NamedQuery(name = Category.NAMEDQ_GET_BY_ID_CLASSIFICATION,
                 query = "select a from Category a"
-                        + " where a.categoryID like :" + OrganisationPatterns.PARAM_CATEGORY_ID
-                        + " and a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
+                        + " where lower(a.categoryID) like lower(:" + OrganisationPatterns.PARAM_CATEGORY_ID
+                        + ") and a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
                         + " order by a.categoryID")
 })
 @Entity
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 name = "categoryIdAndClassificationIsUnique",
-                columnNames = {"category", "classification"})})
+                columnNames = {"categoryID", "classification"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
@@ -81,15 +81,15 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
 
     // Internal state
     @Basic(optional = false)
-    @Column(nullable = false, length = 255, name = "category")
+    @Column(nullable = false, name = "category")
     private String categoryID;
 
     @Basic(optional = false)
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String classification;
 
     @Basic(optional = false)
-    @Column(nullable = false, length = 2048)
+    @Column(nullable = false)
     private String description;
 
     /**

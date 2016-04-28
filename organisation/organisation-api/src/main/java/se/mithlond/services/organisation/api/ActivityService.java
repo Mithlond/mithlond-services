@@ -83,9 +83,9 @@ public interface ActivityService {
      * @param addressCategory         The address-classification category of the address supplied.
      * @param addressShortDescription The short description of the location for this Activity,
      *                                such as "Stadsbiblioteket".
-     * @param responsibleGuildName    The name of the Guild organizing this Activity. Optional.
+     * @param responsibleGroupName    The name of the Group organizing this Activity. Optional.
      * @param admissions              A Set holding all initial admissions to the activity to create. Optional,
-     *                                but should contain at least one responsible ProtoAdmission, unless a guild
+     *                                but should contain at least one responsible AdmissionDetails, unless a Group
      *                                organizes the Activity.
      * @param isOpenToGeneralPublic   If {@code true}, the activity is flagged as being open to the general public
      *                                (as opposed to being available to members of the supplied organisation only).
@@ -106,7 +106,7 @@ public interface ActivityService {
             final String addressCategory,
             final Address location,
             final String addressShortDescription,
-            final String responsibleGuildName,
+            final String responsibleGroupName,
             final Set<AdmissionDetails> admissions,
             final boolean isOpenToGeneralPublic);
 

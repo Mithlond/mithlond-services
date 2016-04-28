@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.model.activity;
 
+import org.apache.commons.lang3.time.DateUtils;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.jguru.nazgul.tools.validation.api.expression.ExpressionBuilder;
 import se.mithlond.services.organisation.model.Category;
@@ -30,6 +31,7 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
+import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -60,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Set;
@@ -106,18 +109,18 @@ public class Activity extends Listable {
      * The end time of the Activity. Must not be null, and must also be after startTime.
      */
     @NotNull
-    @Basic(optional = true)
+    @Basic
     @Temporal(value = TemporalType.TIMESTAMP)
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private Calendar endTime;
 
     /**
      * The optional cost of the activity. Must not be negative.
      */
     @Min(value = 0, message = "Cannot handle negative 'cost'.")
-    @Basic(optional = true)
-    @Column(nullable = true)
-    @XmlElement(required = false)
+    @Basic
+    @Column
+    @XmlElement
     private BigDecimal cost;
 
     /**
@@ -131,35 +134,35 @@ public class Activity extends Listable {
     /**
      * The dress code of the activity, if applicable.
      */
-    @Basic(optional = true)
-    @Column(nullable = true)
-    @XmlElement(required = false)
+    @Basic
+    @Column
+    @XmlElement
     private String dressCode;
 
     /**
      * The cost if admission after the lateAdmissionDate.
      * Optional, but recommended to be higher than the (standard) cost.
      */
-    @Basic(optional = true)
-    @Column(nullable = true)
-    @XmlElement(required = false)
+    @Basic
+    @Column
+    @XmlElement
     private BigDecimal lateAdmissionCost;
 
     /**
      * The optional date before which the activity costs {@code cost}.
      * After this date, the activity admission costs {@code lateAdmissionCost}.
      */
-    @Basic(optional = true)
+    @Basic
     @Temporal(value = TemporalType.DATE)
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private Calendar lateAdmissionDate;
 
     /**
      * The last date of admissions to the Activity.
      */
-    @Basic(optional = true)
+    @Basic
     @Temporal(value = TemporalType.DATE)
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private Calendar lastAdmissionDate;
 
     /**
@@ -184,7 +187,7 @@ public class Activity extends Listable {
     @NotNull
     @Basic(optional = false)
     @Column(nullable = false)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String addressShortDescription;
 
     /**
@@ -192,16 +195,16 @@ public class Activity extends Listable {
      */
     @NotNull
     @Embedded
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private Address location;
 
     /**
      * The Guild organizing this Activity. Optional.
      */
     @XmlIDREF
-    @ManyToOne(optional = true, fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
-    @XmlElement(required = false, nillable = true)
-    private Guild responsible;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @XmlElement
+    private Group responsible;
 
     /**
      * All current Admissions to this Activity. May be empty - but not null.
@@ -218,7 +221,7 @@ public class Activity extends Listable {
      */
     @Basic(optional = false)
     @Column(nullable = false)
-    @XmlAttribute(required = false)
+    @XmlAttribute
     private boolean openToGeneralPublic;
 
     /**
@@ -259,15 +262,15 @@ public class Activity extends Listable {
             final ZonedDateTime endTime,
             final Amount cost,
             final Amount lateAdmissionCost,
-            final ZonedDateTime lateAdmissionDate,
-            final ZonedDateTime lastAdmissionDate,
+            final LocalDate lateAdmissionDate,
+            final LocalDate lastAdmissionDate,
             final boolean cancelled,
             final String dressCode,
             final Category addressCategory,
             final Address location,
             final String addressShortDescription,
             final Organisation organisation,
-            final Guild responsible,
+            final Group responsible,
             final boolean isOpenToGeneralPublic) {
 
         // Delegate
@@ -296,7 +299,9 @@ public class Activity extends Listable {
             currency = WellKnownCurrency.SEK.toString();
         }
 
-        this.lateAdmissionDate = lateAdmissionDate == null ? null : GregorianCalendar.from(lateAdmissionDate);
+        this.lateAdmissionDate = lateAdmissionDate == null
+                ? null
+                : Date.from(lateAdmissionDate.atStartOfDay().atZone(TimeFormat.SWEDISH_TIMEZONE).toInstant());
         this.lastAdmissionDate = lastAdmissionDate == null ? null : GregorianCalendar.from(lastAdmissionDate);
         this.cancelled = cancelled;
         this.addressCategory = addressCategory;
@@ -384,9 +389,9 @@ public class Activity extends Listable {
     }
 
     /**
-     * @return The Guild organizing this Activity. May be {@code null}.
+     * @return The Group organizing this Activity. May be {@code null}.
      */
-    public Guild getResponsible() {
+    public Group getResponsible() {
         return responsible;
     }
 
