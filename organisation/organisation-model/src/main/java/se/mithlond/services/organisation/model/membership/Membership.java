@@ -58,6 +58,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -109,6 +110,32 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     private static final long serialVersionUID = 8829990028L;
 
     /**
+     * Standard comparator using the Alias and Organisation.OrganisationName properties of Memberships for comparison.
+     */
+    @XmlTransient
+    public static final Comparator<Membership> ALIAS_AND_ORG_COMPARATOR = (l, r) -> {
+
+        final boolean nullLeft = l == null;
+        final boolean nullRight = r == null;
+
+        if (nullLeft) {
+            return nullRight ? 0 : 1;
+        }
+        if (nullRight) {
+            return -1;
+        }
+
+        int toReturn = l.getOrganisation().getOrganisationName()
+                .compareTo(r.getOrganisation().getOrganisationName());
+        if (toReturn == 0) {
+            toReturn = l.getAlias().compareTo(r.getAlias());
+        }
+
+        // All Done.
+        return toReturn;
+    };
+
+    /**
      * NamedQuery for getting Memberships by alias and organisation name.
      * Found Memberships are retrieved irrespective of their LoginPermitted flag.
      */
@@ -136,17 +163,17 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     // Internal state
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String alias;
 
-    @Basic(optional = true)
-    @Column(nullable = true, length = 1024)
-    @XmlElement(nillable = true, required = false)
+    @Basic
+    @Column(length = 1024)
+    @XmlElement
     private String subAlias;
 
-    @Basic(optional = true)
-    @Column(nullable = true, length = 64)
-    @XmlElement(required = false, nillable = true)
+    @Basic
+    @Column(length = 64)
+    @XmlElement
     private String emailAlias;
 
     @Basic
@@ -198,11 +225,12 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @param organisation   The organisation of this Membership, i.e. where the user belongs.
      */
     public Membership(final String alias,
-                      final String subAlias,
-                      final String emailAlias,
-                      final boolean loginPermitted,
-                      final User user,
-                      final Organisation organisation) {
+            final String subAlias,
+            final String emailAlias,
+            final boolean loginPermitted,
+            final User user,
+            final Organisation organisation) {
+
         this(alias,
                 subAlias,
                 emailAlias,
@@ -228,13 +256,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      *                         user of this membership belongs.
      */
     public Membership(final String alias,
-                      final String subAlias,
-                      final String emailAlias,
-                      final boolean loginPermitted,
-                      final User user,
-                      final Organisation organisation,
-                      final Set<OrderLevelGrant> orderLevelGrants,
-                      final Set<GroupMembership> groupMemberships) {
+            final String subAlias,
+            final String emailAlias,
+            final boolean loginPermitted,
+            final User user,
+            final Organisation organisation,
+            final Set<OrderLevelGrant> orderLevelGrants,
+            final Set<GroupMembership> groupMemberships) {
 
         this();
 
@@ -440,9 +468,9 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @see #addOrGetGroupMembership(Group)
      */
     public GuildMembership addOrUpdateGuildMembership(final Guild guild,
-                                                      final boolean guildMaster,
-                                                      final boolean deputyGuildMaster,
-                                                      final boolean auditor) {
+            final boolean guildMaster,
+            final boolean deputyGuildMaster,
+            final boolean auditor) {
 
         // Check sanity
         Validate.notNull(guild, "Cannot handle null guild argument.");
@@ -481,8 +509,8 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @return The added or updated OrderLevelGrant.
      */
     public OrderLevelGrant addOrUpdateOrderLevelGrant(final OrderLevel orderLevel,
-                                                      final ZonedDateTime grantedDate,
-                                                      final String note) {
+            final ZonedDateTime grantedDate,
+            final String note) {
 
         // Check sanity
         Validate.notNull(orderLevel, "Cannot handle null orderLevel argument.");
@@ -513,7 +541,16 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      */
     @Override
     public int compareTo(final Membership that) {
-        return emailAlias.compareTo(that.emailAlias);
+
+        // Fail fast
+        if(that == null) {
+            return -1;
+        } else if (that == this) {
+            return 0;
+        }
+
+        // Delegate.
+        return ALIAS_AND_ORG_COMPARATOR.compare(this, that);
     }
 
     /**
@@ -615,7 +652,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
         }
 
         for (GroupMembership current : groupMemberships) {
-            if(current != null) {
+            if (current != null) {
                 current.setMembership(this);
             }
         }

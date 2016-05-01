@@ -22,7 +22,9 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
-import se.mithlond.services.organisation.api.transport.AdmissionDetails;
+import se.mithlond.services.organisation.api.transport.activity.ActivityVO;
+import se.mithlond.services.organisation.api.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.api.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.address.Address;
@@ -32,6 +34,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 
 import javax.ejb.Local;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +48,22 @@ import java.util.Set;
  */
 @Local
 public interface ActivityService {
+
+    /**
+     * Change type enumeration definition.
+     */
+    enum ChangeType {
+
+        /**
+         * A change implying an addition or modification.
+         */
+        ADD_OR_MODIFY,
+
+        /**
+         * A change implying a deletion.
+         */
+        DELETE
+    }
 
     /**
      * Retrieves all Activities within the supplied organisationName within the supplied range of dates.
@@ -89,26 +108,11 @@ public interface ActivityService {
      *                                organizes the Activity.
      * @param isOpenToGeneralPublic   If {@code true}, the activity is flagged as being open to the general public
      *                                (as opposed to being available to members of the supplied organisation only).
+     * @param activeMembership        The Membership executing this call.
      * @return The created Activity
      */
     @SuppressWarnings("all")
-    Activity createActivity(final String organisationName,
-            final String shortDesc,
-            final String fullDesc,
-            final ZonedDateTime startTime,
-            final ZonedDateTime endTime,
-            final Amount cost,
-            final Amount lateAdmissionCost,
-            final LocalDate lateAdmissionDate,
-            final LocalDate lastAdmissionDate,
-            final boolean cancelled,
-            final String dressCode,
-            final String addressCategory,
-            final Address location,
-            final String addressShortDescription,
-            final String responsibleGroupName,
-            final Set<AdmissionDetails> admissions,
-            final boolean isOpenToGeneralPublic);
+    Activity createActivity(final ActivityVO activityVO, final Membership activeMembership);
 
     /**
      * Updates the given Activity to the database/calendar shared by the organisation.
@@ -130,7 +134,7 @@ public interface ActivityService {
      * @param dressCode               An optional dress code description for the Activity.
      * @param location                The location of the Activity.
      * @param addressCategory         The address-classification category of the address supplied.
-     * @param responsibleGuildName    The name of the Guild organizing this Activity. Optional.
+     * @param responsibleGroupName    The name of the Group organizing this Activity. Optional.
      * @param admissions              A Set holding all initial admissions to the activity to create. Optional,
      *                                but should contain at least one responsible ProtoAdmission, unless a guild
      *                                organizes the Activity.
@@ -138,8 +142,9 @@ public interface ActivityService {
      *                                such as "Stadsbiblioteket".
      * @param isOpenToGeneralPublic   If {@code true}, the activity is flagged as being open to the general public
      *                                (as opposed to being available to members of the supplied organisation only).
+     * @param activeMembership        The Membership executing this call.
      * @return The updated Activity
-     * @throws RuntimeException if any parameter is {@code null} or the activityId did not correspond
+     * @throws RuntimeException if any required parameter is {@code null} or the activityId did not correspond
      *                          to an existing Activity.
      */
     @SuppressWarnings("all")
@@ -158,31 +163,26 @@ public interface ActivityService {
             final String addressCategory,
             final Address location,
             final String addressShortDescription,
-            final String responsibleGuildName,
-            final Set<AdmissionDetails> admissions,
-            final boolean isOpenToGeneralPublic);
+            final String responsibleGroupName,
+            final Set<AdmissionVO> admissions,
+            final boolean isOpenToGeneralPublic,
+            final Membership activeMembership);
 
     /**
-     * Adds the given admission to the Activity with the supplied ID if the supplied Membership is
-     * not already admitted to the Activity. In that case the Admission holding the supplied Membership
-     * will be removed from the Activity with the supplied ID - unless the Membership is
-     * the only responsible for the Activity.
+     * Modifies the Admissions to a particular Activity, as indicated by the supplied
+     * arguments to this method.
      *
-     * @param activityId              The id of the Activity to which the Admission should be added.
-     * @param membership              The Membership to admit to the supplied Activity.
-     * @param responsible             If {@code true}, the given Membership should be admitted as responsible
-     *                                for the activity with the supplied activityId.
-     * @param admissionNote           An optional note to the admission.
-     * @param onlyUpdateAdmissionNote If {@code true} and the supplied Membership is already admitted to the
-     *                                activity, the admissionNote will be updated (as opposed to the Membership
-     *                                Admission being dropped from the given Activity).
-     * @return {@code true} if the instruction could be carried out properly, and {@code false} otherwise.
+     * @param changeType       The type of change to perform.
+     * @param admissionDetails The non-null AdmissionDetails instance containing the desired state for an admission.
+     * @param actingMembership The acting Membership performing the change.
+     * @return {@code true} if the admission was changed as requested, and false otherwise.
+     * @throws IllegalStateException if the supplied {@link AdmissionVO} did not contain sufficient information
+     * to modify an Admission.
      */
-    boolean addOrAlterAdmission(final long activityId,
-            final Membership membership,
-            final boolean responsible,
-            final String admissionNote,
-            final boolean onlyUpdateAdmissionNote);
+    boolean modifyAdmission(
+            final ChangeType changeType,
+            final AdmissionVO admissionDetails,
+            final Membership actingMembership) throws IllegalStateException;
 
     /**
      * Retrieves a Map relating Category to CategorizedAddress for all Location addresses

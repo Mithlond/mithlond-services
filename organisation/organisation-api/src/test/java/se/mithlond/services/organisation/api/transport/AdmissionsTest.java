@@ -28,6 +28,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+import se.mithlond.services.organisation.api.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.api.transport.activity.Admissions;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.List;
@@ -46,9 +48,9 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
 
         admissions = new Admissions();
 
-        final List<AdmissionDetails> details = admissions.getDetails();
+        final List<AdmissionVO> details = admissions.getDetails();
         for (int i = 0; i < 5; i++) {
-            details.add(new AdmissionDetails((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
+            details.add(new AdmissionVO((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
         }
     }
 

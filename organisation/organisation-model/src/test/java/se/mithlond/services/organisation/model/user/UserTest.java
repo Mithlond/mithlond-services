@@ -35,6 +35,9 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +49,10 @@ import java.util.TreeSet;
  */
 public class UserTest extends AbstractEntityTest {
 
-    private ZonedDateTime firstOfMay2014 = ZonedDateTime.of(2014, 5, 1, 13, 15, 0, 0, TimeFormat.SWEDISH_TIMEZONE);
-
+    private ZonedDateTime firstOfMay2014 = ZonedDateTime.of(
+            LocalDate.of(2014, Month.MAY, 1),
+            LocalTime.of(13, 15, 0),
+            TimeFormat.SWEDISH_TIMEZONE);
 
     // Shared state
     private User[] users;
@@ -103,9 +108,9 @@ public class UserTest extends AbstractEntityTest {
                     new TreeSet<>(),
                     new TreeSet<>());
 
-            for(Group currentGroupOrGuild : groupsAndGuilds.getGroupsAndGuilds()) {
-                if(i % 2 == 0) {
-                    if(currentGroupOrGuild instanceof Guild) {
+            for (Group currentGroupOrGuild : groupsAndGuilds.getGroupsAndGuilds()) {
+                if (i % 2 == 0) {
+                    if (currentGroupOrGuild instanceof Guild) {
                         membership.addOrUpdateGuildMembership((Guild) currentGroupOrGuild, false, false, false);
                     } else {
                         membership.addOrGetGroupMembership(currentGroupOrGuild);
@@ -117,6 +122,17 @@ public class UserTest extends AbstractEntityTest {
         }
     }
 
+    /**
+     * NOTE!
+     *
+     * It is vital that the package-info.java file is present in the helpers directory
+     * to inform the JAXB engine that the locally crafted XML type converters for Java 8 should be used.
+     *
+     * @see se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter
+     * @see se.mithlond.services.shared.spi.jaxb.adapter.LocalTimeAdapter
+     * @see se.mithlond.services.shared.spi.jaxb.adapter.LocalDateTimeAdapter
+     * @see se.mithlond.services.shared.spi.jaxb.adapter.ZonedDateTimeAdapter
+     */
     @Test
     public void validateMarshalling() throws Exception {
 
@@ -149,7 +165,7 @@ public class UserTest extends AbstractEntityTest {
         Assert.assertNotNull(users);
         Assert.assertEquals(this.users.length, users.size());
 
-        for(int i = 0; i < this.users.length; i++) {
+        for (int i = 0; i < this.users.length; i++) {
 
             final User expectedUser = this.users[i];
             final User actualUser = users.get(i);

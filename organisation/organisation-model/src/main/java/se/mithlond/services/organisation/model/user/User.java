@@ -41,8 +41,6 @@ import javax.persistence.Entity;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
@@ -55,9 +53,8 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,10 +69,11 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken", "firstName", "lastName",
-        "birthday", "personalNumberLast4Digits", "homeAddress", "memberships", "contactDetails"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken",
+        "firstName", "lastName", "birthday", "personalNumberLast4Digits",
+        "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
-@Table(name="InternalUsers", uniqueConstraints = {
+@Table(name = "InternalUsers", uniqueConstraints = {
         @UniqueConstraint(name = "userIdentifierTokenIsUnique", columnNames = "userIdentifierToken")
 })
 public class User extends NazgulEntity {
@@ -90,24 +88,23 @@ public class User extends NazgulEntity {
     // Internal state
     @Basic(optional = false)
     @Column(nullable = false)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String userIdentifierToken;
 
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String firstName;
 
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String lastName;
 
     @Basic(optional = false)
-    @Temporal(value = TemporalType.DATE)
     @Column(nullable = false)
-    @XmlElement(required = true, nillable = false)
-    private Calendar birthday;
+    @XmlElement(required = true)
+    private LocalDate birthday;
 
     @Basic(optional = false)
     @Column(nullable = false, length = 4)
@@ -115,10 +112,10 @@ public class User extends NazgulEntity {
     private short personalNumberLast4Digits;
 
     @Embedded
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private Address homeAddress;
 
-    @XmlElementWrapper(name = "memberships", nillable = false, required = true)
+    @XmlElementWrapper(name = "memberships", required = true)
     @XmlElement(name = "membership")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Membership> memberships;
@@ -193,13 +190,13 @@ public class User extends NazgulEntity {
      *                                  this User to the Authentication system managing User logins.
      */
     public User(final String firstName,
-                final String lastName,
-                final LocalDate birthday,
-                final short personalNumberLast4Digits,
-                final Address homeAddress,
-                final List<Membership> memberships,
-                final Map<String, String> contactDetails,
-                final String userIdentifierToken) {
+            final String lastName,
+            final LocalDate birthday,
+            final short personalNumberLast4Digits,
+            final Address homeAddress,
+            final List<Membership> memberships,
+            final Map<String, String> contactDetails,
+            final String userIdentifierToken) {
 
         // Check sanity
         Validate.notNull(birthday, "birthday");
@@ -211,9 +208,7 @@ public class User extends NazgulEntity {
         this.memberships = memberships;
         this.userIdentifierToken = userIdentifierToken;
         this.contactDetails = contactDetails == null ? new TreeMap<>() : contactDetails;
-
-        // Convert the birthday to a Calendar
-        this.birthday = GregorianCalendar.from(birthday.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));
+        this.birthday = birthday;
         setXmlID();
     }
 
@@ -263,7 +258,7 @@ public class User extends NazgulEntity {
      * @return The birthday of this AbstractUser.
      */
     public LocalDate getBirthday() {
-        return ((GregorianCalendar) birthday).toZonedDateTime().toLocalDate();
+        return birthday;
     }
 
     /**
@@ -454,11 +449,10 @@ public class User extends NazgulEntity {
      */
     private void setXmlID() {
 
-        final LocalDate localDate = ((GregorianCalendar) birthday).toZonedDateTime().toLocalDate();
         final String hopefullyUniqueString = "user_" + getId()
                 + "_" + firstName
                 + "_" + lastName
-                + "_" + TimeFormat.YEAR_MONTH_DATE.print(localDate).replaceAll("-", "_");
+                + "_" + DateTimeFormatter.ISO_LOCAL_DATE.format(birthday).replaceAll("-", "_");
         this.xmlID = hopefullyUniqueString.replaceAll("\\s+", "_");
     }
 }

@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.organisation.model.activity;
 
-import org.apache.commons.lang3.time.DateUtils;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.jguru.nazgul.tools.validation.api.expression.ExpressionBuilder;
 import se.mithlond.services.organisation.model.Category;
@@ -66,6 +65,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
 /**
@@ -115,7 +115,7 @@ public class Activity extends Listable {
     private Calendar endTime;
 
     /**
-     * The optional cost of the activity. Must not be negative.
+     * The optional cost of the activity. Never negative.
      */
     @Min(value = 0, message = "Cannot handle negative 'cost'.")
     @Basic
@@ -126,13 +126,13 @@ public class Activity extends Listable {
     /**
      * The optional currency for the optional cost of the activity.
      */
-    @Basic(optional = true)
-    @Column(nullable = true)
-    @XmlAttribute(required = false)
+    @Basic
+    @Column
+    @XmlAttribute
     private String currency;
 
     /**
-     * The dress code of the activity, if applicable.
+     * The optional dress code of the activity, if applicable.
      */
     @Basic
     @Column
@@ -140,9 +140,10 @@ public class Activity extends Listable {
     private String dressCode;
 
     /**
-     * The cost if admission after the lateAdmissionDate.
+     * The cost if admission after the lateAdmissionDate. Never negative.
      * Optional, but recommended to be higher than the (standard) cost.
      */
+    @Min(value = 0, message = "Cannot handle negative 'cost'.")
     @Basic
     @Column
     @XmlElement
@@ -299,10 +300,31 @@ public class Activity extends Listable {
             currency = WellKnownCurrency.SEK.toString();
         }
 
-        this.lateAdmissionDate = lateAdmissionDate == null
-                ? null
-                : Date.from(lateAdmissionDate.atStartOfDay().atZone(TimeFormat.SWEDISH_TIMEZONE).toInstant());
-        this.lastAdmissionDate = lastAdmissionDate == null ? null : GregorianCalendar.from(lastAdmissionDate);
+        // Find the TimeZone of the startTime; fallback to Swedish TimeZone.
+        final TimeZone timeZone = startTime == null
+                ? TimeZone.getTimeZone(TimeFormat.SWEDISH_TIMEZONE)
+                : TimeZone.getTimeZone(startTime.getZone());
+
+        if(lateAdmissionDate != null) {
+
+            this.lateAdmissionDate = Calendar.getInstance(timeZone, TimeFormat.SWEDISH_LOCALE);
+
+            final Date tmp = Date.from(lateAdmissionDate.atStartOfDay()
+                    .atZone(TimeFormat.SWEDISH_TIMEZONE)
+                    .toInstant());
+            this.lateAdmissionDate.setTime(tmp);
+        }
+
+        if(lastAdmissionDate != null) {
+
+            this.lastAdmissionDate = Calendar.getInstance(timeZone, TimeFormat.SWEDISH_LOCALE);
+
+            final Date tmp = Date.from(lastAdmissionDate.atStartOfDay()
+                    .atZone(TimeFormat.SWEDISH_TIMEZONE)
+                    .toInstant());
+            this.lastAdmissionDate.setTime(tmp);
+        }
+
         this.cancelled = cancelled;
         this.addressCategory = addressCategory;
         this.location = location;
@@ -529,11 +551,11 @@ public class Activity extends Listable {
     }
 
     /**
-     * Assigns the Guild organizing this Activity. Optional value.
+     * Assigns the Group organizing this Activity. Optional value.
      *
-     * @param responsible The Guild organizing this Activity. Optional.
+     * @param responsible The Group organizing this Activity. Optional.
      */
-    public void setResponsible(final Guild responsible) {
+    public void setResponsible(final Group responsible) {
         this.responsible = responsible;
     }
 

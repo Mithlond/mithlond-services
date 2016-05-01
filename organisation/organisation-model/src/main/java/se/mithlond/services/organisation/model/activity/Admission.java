@@ -26,6 +26,7 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -46,11 +47,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.TimeZone;
 
 /**
  * Holds all data for an Admission to an Activity.
@@ -60,274 +61,363 @@ import java.util.Objects;
 @Entity
 @Access(value = AccessType.FIELD)
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {
-		"admitted", "admissionTimestamp", "admissionNote", "responsible"})
+        "admitted", "admissionTimestamp", "lastModifiedAt", "admissionNote", "responsible", "admittedBy"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Admission implements Serializable, Comparable<Admission>, Validatable {
 
-	// Internal state
-	@EmbeddedId
-	@XmlTransient
-	private AdmissionId admissionId;
+    // Internal state
+    @EmbeddedId
+    @XmlTransient
+    private AdmissionId admissionId;
 
-	// This must be XmlTransient to avoid a cyclic graph in the XSD.
-	// Handled by a callback method from the Activity side.
-	@ManyToOne
-	@MapsId("activityId")
-	@XmlTransient
-	private Activity activity;
+    // This must be XmlTransient to avoid a cyclic graph in the XSD.
+    // Handled by a callback method from the Activity side.
+    @ManyToOne
+    @MapsId("activityId")
+    @XmlTransient
+    private Activity activity;
 
-	/**
-	 * The Membership admitted to the corresponding Activity.
-	 */
-	@NotNull
-	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
-	@MapsId("membershipId")
-	@XmlElement(required = true, nillable = false)
-	private Membership admitted;
+    /**
+     * The Membership admitted to the corresponding Activity.
+     */
+    @NotNull
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
+    @MapsId("membershipId")
+    @XmlElement(required = true)
+    private Membership admitted;
 
-	/**
-	 * The timestamp when the Membership was admitted.
-	 */
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@Temporal(value = TemporalType.TIMESTAMP)
-	@XmlElement(required = true, nillable = false)
-	private Calendar admissionTimestamp;
+    /**
+     * An Optional Membership indicating who created this Admission, if not the admitted Membership itself.
+     */
+    @ManyToOne
+    @XmlElement
+    private Membership admittedBy;
 
-	/**
-	 * An optional note of this Admission.
-	 */
-	@Basic(optional = true)
-	@Column(nullable = true)
-	@XmlElement(required = false, nillable = true)
-	private String admissionNote;
+    /**
+     * The timestamp when this Admission was created.
+     */
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @XmlElement(required = true)
+    private Calendar admissionTimestamp;
 
-	/**
-	 * If "true" the admitted Membership is considered responsible for the activity to which this Admission is linked.
-	 */
-	@Basic(optional = false)
-	@Column(nullable = false)
-	@XmlAttribute(required = true)
-	private boolean responsible;
+    /**
+     * The timestamp when this Admission was last modified.
+     */
+    @Basic
+    @Column
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @XmlElement
+    private Calendar lastModifiedAt;
 
-	/**
-	 * JAXB/JPA-friendly constructor.
-	 */
-	public Admission() {
-	}
+    /**
+     * An optional note of this Admission.
+     */
+    @Basic
+    @Column
+    @XmlElement
+    private String admissionNote;
 
-	/**
-	 * <p>Convenience constructor creating an Admission with the current timestamp
-	 * and otherwise the supplied data. Note that the Activity field is not set
-	 * after calling this constructor, implying the following required call pattern:</p>
-	 * <pre>
-	 *     <code>
-	 *         final Admission incomplete = new Admission(someMembership, null);
-	 *         final Activity someActivity = new Activity(....);
-	 *
-	 *         // Now make the Admission complete.
-	 *         incomplete.setActivity(someActivity);
-	 *     </code>
-	 * </pre>
-	 *
-	 * @param admitted      The membership admitted.
-	 * @param admissionNote An optional admission note, holding
-	 *                      information about the admission.
-	 */
-	public Admission(final Membership admitted,
-					 final String admissionNote) {
-		this(null, admitted, null, admissionNote, false);
-	}
+    /**
+     * If "true" the admitted Membership is considered responsible for
+     * the activity to which this Admission is linked.
+     */
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlAttribute(required = true)
+    private boolean responsible;
 
-	/**
-	 * Creates a new Admission instance wrapping the supplied data.
-	 *
-	 * @param activity           The Activity to which the supplied Membership is admitted.
-	 * @param admitted           The membership admitted.
-	 * @param admissionTimestamp The timestamp of admission.
-	 * @param admissionNote      An optional admission note, holding
-	 *                           information about the admission.
-	 * @param responsible        If {@code true}, the admitted Membership is considered responsible for the
-	 *                           activity to which this Admission is linked.
-	 */
-	public Admission(final Activity activity,
-					 final Membership admitted,
-					 final LocalDateTime admissionTimestamp,
-					 final String admissionNote,
-					 final boolean responsible) {
+    /**
+     * JAXB/JPA-friendly constructor.
+     */
+    public Admission() {
+    }
 
-		// Assign internal state
-		this.admissionId = new AdmissionId(activity.getId(), admitted.getId());
+    /**
+     * <p>Convenience constructor creating an Admission with the current timestamp
+     * and otherwise the supplied data. Note that the Activity field is not set
+     * after calling this constructor, implying the following required call pattern:</p>
+     * <pre>
+     *     <code>
+     *         final Admission incomplete = new Admission(someMembership, null);
+     *         final Activity someActivity = new Activity(....);
+     *
+     *         // Now make the Admission complete.
+     *         incomplete.setActivity(someActivity);
+     *     </code>
+     * </pre>
+     *
+     * @param admitted      The membership admitted.
+     * @param admissionNote An optional admission note, holding
+     *                      information about the admission.
+     * @param admittedBy      The membership creating this Admission.
+     */
+    public Admission(final Membership admitted,
+            final String admissionNote,
+            final Membership admittedBy) {
+        this(null, admitted, null, null, admissionNote, false, admittedBy);
+    }
 
-		this.activity = activity;
-		this.admitted = admitted;
-		this.admissionTimestamp = admissionTimestamp == null
-				? Calendar.getInstance()
-				: GregorianCalendar.from(admissionTimestamp.atZone(activity.getStartTime().getZone()));
-		this.admissionNote = admissionNote;
-		this.responsible = responsible;
-	}
+    /**
+     * Creates a new Admission instance wrapping the supplied data.
+     *
+     * @param activity           The Activity to which the supplied Membership is admitted.
+     * @param admitted           The membership admitted.
+     * @param admissionTimestamp The timestamp when this Admission was initially created.
+     * @param latestModifiedTime The timestamp when this Admission was latest updated.
+     *                           This timestamp is updated whenever some other state in this Admission is updated.
+     * @param admissionNote      An optional admission note, holding information about this Admission, such as a
+     *                           message from the Admitted Membership to those arranging the Activity.
+     * @param responsible        If {@code true}, the admitted Membership is considered responsible for the
+     *                           activity to which this Admission is linked.
+     * @param admittedBy           The membership creating this Admission. Only non-null if a Membership other than the Admitted
+     *                           Membership actually was creating this Admission.
+     */
+    public Admission(final Activity activity,
+            final Membership admitted,
+            final ZonedDateTime admissionTimestamp,
+            final ZonedDateTime latestModifiedTime,
+            final String admissionNote,
+            final boolean responsible,
+            final Membership admittedBy) {
 
-	/**
-	 * @return The Id (primary key) of this Admission.
-	 */
-	public AdmissionId getAdmissionId() {
+        // Assign internal state
+        this.admissionId = new AdmissionId(activity.getId(), admitted.getId());
 
-		// Handle JAXB unmarshalling
-		recreateAdmissionIdIfRequired();
+        this.activity = activity;
+        this.admitted = admitted;
+        this.admissionNote = admissionNote;
+        this.responsible = responsible;
+        this.admittedBy = admittedBy;
 
-		// All done
-		return admissionId;
-	}
+        // Handle the ZonedDateTime --> Calendar conversion
+        final Calendar now = Calendar.getInstance();
+        this.lastModifiedAt = lastModifiedAt == null
+                ? now
+                : GregorianCalendar.from(latestModifiedTime);
+        this.admissionTimestamp = admissionTimestamp == null
+                ? now
+                : GregorianCalendar.from(admissionTimestamp);
+    }
 
-	/**
-	 * @return The Membership admitted.
-	 */
-	public Membership getAdmitted() {
+    /**
+     * @return The Id (primary key) of this Admission.
+     */
+    public AdmissionId getAdmissionId() {
 
-		// Handle JAXB unmarshalling
-		recreateAdmissionIdIfRequired();
+        // Handle JAXB unmarshalling
+        recreateAdmissionIdIfRequired();
 
-		// All done.
-		return admitted;
-	}
+        // All done
+        return admissionId;
+    }
 
-	/**
-	 * @return The timestamp of this Admission.
-	 */
-	public ZonedDateTime getAdmissionTimestamp() {
+    /**
+     * @return The Membership admitted.
+     */
+    public Membership getAdmitted() {
 
-		return ZonedDateTime.ofInstant(
-				admissionTimestamp.toInstant(),
-				admissionTimestamp.getTimeZone().toZoneId());
-	}
+        // Handle JAXB unmarshalling
+        recreateAdmissionIdIfRequired();
 
-	/**
-	 * @return The optional note of this Admission. Can be {@code null}.
-	 */
-	public String getAdmissionNote() {
-		return admissionNote;
-	}
+        // All done.
+        return admitted;
+    }
 
-	/**
-	 * @return {@code true} if the Admitted is considered responsible for the activity to which this Admission relates.
-	 */
-	public boolean isResponsible() {
-		return responsible;
-	}
+    /**
+     * @return The timestamp of this Admission.
+     */
+    public ZonedDateTime getAdmissionTimestamp() {
 
-	/**
-	 * Assigns the responsible flag to the Admitted of this Admission, implying that the
-	 * Membership of this Admission is considered responsible for the Activity to which this Admission refers.
-	 *
-	 * @param responsible {@code true} if the Admitted is considered responsible for the activity to which this
-	 *                    Admission relates.
-	 */
-	public void setResponsible(final boolean responsible) {
-		this.responsible = responsible;
-	}
+        return ZonedDateTime.ofInstant(
+                admissionTimestamp.toInstant(),
+                admissionTimestamp.getTimeZone().toZoneId());
+    }
 
-	/**
-	 * Assigns the note of this Admission.
-	 *
-	 * @param admissionNote The new admissionNote. Cannot be {@code null}.
-	 */
-	public void setAdmissionNote(final String admissionNote) {
-		this.admissionNote = Objects.requireNonNull(admissionNote, "Cannot handle null 'admissionNote' argument.");
-	}
+    /**
+     * @return The optional note of this Admission. Can be {@code null}.
+     */
+    public String getAdmissionNote() {
+        return admissionNote;
+    }
 
-	/**
-	 * @return The Activity to which this Admission is tied.
-	 */
-	public Activity getActivity() {
+    /**
+     * @return {@code true} if the Admitted is considered responsible for the activity to which this Admission relates.
+     */
+    public boolean isResponsible() {
+        return responsible;
+    }
 
-		// Handle JAXB unmarshalling
-		recreateAdmissionIdIfRequired();
+    /**
+     * Assigns the responsible flag to the Admitted of this Admission, implying that the
+     * Membership of this Admission is considered responsible for the Activity to which this Admission refers.
+     *
+     * @param responsible {@code true} if the Admitted is considered responsible for the activity to which this
+     *                    Admission relates.
+     */
+    public void setResponsible(final boolean responsible) {
 
-		// All done.
-		return activity;
-	}
+        if (this.responsible != responsible) {
+            this.responsible = responsible;
+            updateLastModifiedTimestamp();
+        }
+    }
 
-	/**
-	 * <p><strong>Note!</strong> This method is not part of the public API of the Admission.
-	 * Instead, it is intended to be used after unmarshalling an Activity from XML, since
-	 * the double-linked nature of the relationship between Activity and Admissions cannot
-	 * be mapped by normal JAXB annotations.</p>
-	 * <p>Therefore - this method should only be called by frameworks; never by users.</p>
-	 *
-	 * @param activity The Activity to which this Admission points.
-	 */
-	public void setActivity(final Activity activity) {
-		this.activity = Objects.requireNonNull(activity, "Cannot handle null 'activity' argument.");
-		if (admissionId != null) {
-			admissionId.activityId = activity.getId();
-		}
-	}
+    /**
+     * Assigns the note of this Admission.
+     *
+     * @param admissionNote The new admissionNote. Ignored if the value is {@code null}.
+     */
+    public void setAdmissionNote(final String admissionNote) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int compareTo(final Admission that) {
+        if(admissionNote != null && (this.admissionNote == null || !admissionNote.equals(this.admissionNote))) {
 
-		// Check sanity
-		if (that == null) {
-			return -1;
-		} else if (that == this) {
-			return 0;
-		}
+            this.admissionNote = admissionNote;
+            updateLastModifiedTimestamp();
+        }
+    }
 
-		// Start by comparing the dates.
-		int toReturn = getAdmissionTimestamp().compareTo(that.getAdmissionTimestamp());
-		if (toReturn == 0) {
-			toReturn = getAdmitted().getEmailAlias().compareTo(that.getAdmitted().getEmailAlias());
-		}
-		if (toReturn == 0) {
-			final String thisAdmissionNote = admissionNote == null ? "" : admissionNote;
-			final String thatAdmissionNote = that.getAdmissionNote() == null ? "" : that.getAdmissionNote();
-			toReturn = thisAdmissionNote.compareTo(thatAdmissionNote);
-		}
+    /**
+     * @return The timestamp when this Admission was last modified.
+     */
+    public ZonedDateTime getLastModifiedAt() {
+        return ZonedDateTime.ofInstant(
+                lastModifiedAt.toInstant(),
+                lastModifiedAt.getTimeZone().toZoneId());
+    }
 
-		// All done.
-		return toReturn;
-	}
+    /**
+     * @return The Activity to which this Admission is tied.
+     */
+    public Activity getActivity() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void validateInternalState() throws InternalStateValidationException {
+        // Handle JAXB unmarshalling
+        recreateAdmissionIdIfRequired();
 
-		// Check sanity
-		InternalStateValidationException.create()
-				.notNull(admitted, "admitted")
-				.notNull(admissionTimestamp, "admissionTimestamp")
-				.endExpressionAndValidate();
-	}
+        // All done.
+        return activity;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
+    /**
+     * <p><strong>Note!</strong> This method is not part of the public API of the Admission.
+     * Instead, it is intended to be used after unmarshalling an Activity from XML, since
+     * the double-linked nature of the relationship between Activity and Admissions cannot
+     * be mapped by normal JAXB annotations.</p>
+     * <p>Therefore - this method should only be called by frameworks; never by users.</p>
+     *
+     * @param activity The Activity to which this Admission points.
+     */
+    public void setActivity(final Activity activity) {
 
-		final String responsible = "\nResponsible: " + (isResponsible() ? "true" : "false");
+        this.activity = Objects.requireNonNull(activity, "Cannot handle null 'activity' argument.");
 
-		// All done.
-		String alias = getAdmitted() == null ? "<null admitted, so no alias>" : getAdmitted().getAlias();
-		return "Admission [" + activity.getId() + "->" + admitted.getId() + "]: "
-				+ alias + ", " + TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(getAdmissionTimestamp())
-				+ responsible
-				+ "\nNote: " + getAdmissionNote();
-	}
+        // Admissions can never change activities, but we need to invoke this method during Unmarshalling.
+        if (admissionId != null) {
+            admissionId.activityId = activity.getId();
+        }
+    }
 
-	//
-	// Private helpers
-	//
+    /**
+     * @return The Membership creating this Admission. Only non-null if different from the admitted
+     * Membership (i.e. if a Membership other than the admitted Membership created this Admission).
+     */
+    public Membership getAdmittedBy() {
+        return admittedBy;
+    }
 
-	private void recreateAdmissionIdIfRequired() {
-		if (admissionId == null && (admitted != null && activity != null)) {
-			admissionId = new AdmissionId(activity.getId(), admitted.getId());
-		}
-	}
+    /**
+     * (Re-)assigns the AdmittedBy Membership.
+     *
+     * @param admittedBy the Membership who created or last modified this Admission.
+     */
+    public void setAdmittedBy(final Membership admittedBy) {
+
+        final boolean isAdmittedByChanged =
+                (this.admittedBy != null && (admittedBy == null || !this.admittedBy.equals(admittedBy)))
+                || this.admittedBy == null && admittedBy != null;
+
+        if(isAdmittedByChanged) {
+            this.admittedBy = admittedBy;
+            updateLastModifiedTimestamp();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(final Admission that) {
+
+        // Check sanity
+        if (that == null) {
+            return -1;
+        } else if (that == this) {
+            return 0;
+        }
+
+        // Start by comparing the dates.
+        int toReturn = getAdmissionTimestamp().compareTo(that.getAdmissionTimestamp());
+        if (toReturn == 0) {
+            toReturn = getAdmitted().getEmailAlias().compareTo(that.getAdmitted().getEmailAlias());
+        }
+        if (toReturn == 0) {
+            final String thisAdmissionNote = admissionNote == null ? "" : admissionNote;
+            final String thatAdmissionNote = that.getAdmissionNote() == null ? "" : that.getAdmissionNote();
+            toReturn = thisAdmissionNote.compareTo(thatAdmissionNote);
+        }
+
+        // All done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void validateInternalState() throws InternalStateValidationException {
+
+        // Check sanity
+        InternalStateValidationException.create()
+                .notNull(admitted, "admitted")
+                .notNull(admissionTimestamp, "admissionTimestamp")
+                .endExpressionAndValidate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+
+        final String responsible = "\nResponsible: " + (isResponsible() ? "true" : "false");
+
+        // All done.
+        String alias = getAdmitted() == null ? "<null admitted, so no alias>" : getAdmitted().getAlias();
+        return "Admission [" + activity.getId() + "->" + admitted.getId() + "]: "
+                + alias + ", " + TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(getAdmissionTimestamp())
+                + responsible
+                + "\nNote: " + getAdmissionNote();
+    }
+
+    //
+    // Private helpers
+    //
+
+    void updateLastModifiedTimestamp() {
+
+        // Extract the TimeZone from the Activity.
+        final ZonedDateTime activityStartTime = activity.getStartTime();
+
+        // Use Swedish Locale to set the Calendar.
+        this.lastModifiedAt = Calendar.getInstance(
+                TimeZone.getTimeZone(activityStartTime.getZone()),
+                TimeFormat.SWEDISH_LOCALE);
+    }
+
+    private void recreateAdmissionIdIfRequired() {
+        if (admissionId == null && (admitted != null && activity != null)) {
+            admissionId = new AdmissionId(activity.getId(), admitted.getId());
+        }
+    }
 }

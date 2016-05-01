@@ -186,11 +186,11 @@ public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
 
         // Delegate to internal state
         final AdmissionVO details = (AdmissionVO) that;
-        return responsible == details.responsible &&
-                Objects.equals(activityID, details.activityID) &&
-                Objects.equals(alias, details.alias) &&
-                Objects.equals(organisation, details.organisation) &&
-                Objects.equals(note, details.note);
+        return responsible == details.responsible
+                && Objects.equals(activityID, details.activityID)
+                && Objects.equals(alias, details.alias)
+                && Objects.equals(organisation, details.organisation)
+                && Objects.equals(note, details.note);
     }
 
     /**

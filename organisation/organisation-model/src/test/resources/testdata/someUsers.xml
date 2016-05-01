@@ -20,8 +20,7 @@
   limitations under the License.
   #L%
   -->
-
-<organisation:users xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<organisation:users xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
         <organisation jpaId="0" version="0" xmlID="organisation_name_0">
             <organisationName>name_0</organisationName>
@@ -145,7 +144,7 @@
             <userIdentifierToken>userIdentiferToken_0</userIdentifierToken>
             <firstName>firstName_0</firstName>
             <lastName>lastName_0</lastName>
-            <birthday>2014-05-01T00:00:00+02:00</birthday>
+            <birthday>2014-05-01</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_0</careOfLine>
                 <departmentName>departmentName_0</departmentName>
@@ -203,7 +202,7 @@
             <userIdentifierToken>userIdentiferToken_1</userIdentifierToken>
             <firstName>firstName_1</firstName>
             <lastName>lastName_1</lastName>
-            <birthday>2014-05-02T00:00:00+02:00</birthday>
+            <birthday>2014-05-02</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_1</careOfLine>
                 <departmentName>departmentName_1</departmentName>
@@ -230,7 +229,7 @@
             <userIdentifierToken>userIdentiferToken_2</userIdentifierToken>
             <firstName>firstName_2</firstName>
             <lastName>lastName_2</lastName>
-            <birthday>2014-05-03T00:00:00+02:00</birthday>
+            <birthday>2014-05-03</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_2</careOfLine>
                 <departmentName>departmentName_2</departmentName>
@@ -288,7 +287,7 @@
             <userIdentifierToken>userIdentiferToken_3</userIdentifierToken>
             <firstName>firstName_3</firstName>
             <lastName>lastName_3</lastName>
-            <birthday>2014-05-04T00:00:00+02:00</birthday>
+            <birthday>2014-05-04</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_3</careOfLine>
                 <departmentName>departmentName_3</departmentName>
@@ -315,7 +314,7 @@
             <userIdentifierToken>userIdentiferToken_4</userIdentifierToken>
             <firstName>firstName_4</firstName>
             <lastName>lastName_4</lastName>
-            <birthday>2014-05-05T00:00:00+02:00</birthday>
+            <birthday>2014-05-05</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_4</careOfLine>
                 <departmentName>departmentName_4</departmentName>
@@ -373,7 +372,7 @@
             <userIdentifierToken>userIdentiferToken_5</userIdentifierToken>
             <firstName>firstName_5</firstName>
             <lastName>lastName_5</lastName>
-            <birthday>2014-05-06T00:00:00+02:00</birthday>
+            <birthday>2014-05-06</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_5</careOfLine>
                 <departmentName>departmentName_5</departmentName>
@@ -400,7 +399,7 @@
             <userIdentifierToken>userIdentiferToken_6</userIdentifierToken>
             <firstName>firstName_6</firstName>
             <lastName>lastName_6</lastName>
-            <birthday>2014-05-07T00:00:00+02:00</birthday>
+            <birthday>2014-05-07</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_6</careOfLine>
                 <departmentName>departmentName_6</departmentName>
@@ -458,7 +457,7 @@
             <userIdentifierToken>userIdentiferToken_7</userIdentifierToken>
             <firstName>firstName_7</firstName>
             <lastName>lastName_7</lastName>
-            <birthday>2014-05-08T00:00:00+02:00</birthday>
+            <birthday>2014-05-08</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_7</careOfLine>
                 <departmentName>departmentName_7</departmentName>
@@ -485,7 +484,7 @@
             <userIdentifierToken>userIdentiferToken_8</userIdentifierToken>
             <firstName>firstName_8</firstName>
             <lastName>lastName_8</lastName>
-            <birthday>2014-05-09T00:00:00+02:00</birthday>
+            <birthday>2014-05-09</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_8</careOfLine>
                 <departmentName>departmentName_8</departmentName>
@@ -543,7 +542,7 @@
             <userIdentifierToken>userIdentiferToken_9</userIdentifierToken>
             <firstName>firstName_9</firstName>
             <lastName>lastName_9</lastName>
-            <birthday>2014-05-10T00:00:00+02:00</birthday>
+            <birthday>2014-05-10</birthday>
             <homeAddress>
                 <careOfLine>careOfLine_9</careOfLine>
                 <departmentName>departmentName_9</departmentName>

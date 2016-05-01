@@ -21,11 +21,10 @@
  */
 package se.mithlond.services.organisation.impl.ejb;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
+import se.mithlond.services.organisation.api.transport.organisation.OrganisationVO;
 import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -35,12 +34,14 @@ import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
+import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.ejb.Stateless;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * OrganisationService Stateless EJB implementation.
@@ -50,46 +51,31 @@ import java.util.Optional;
 @Stateless
 public class OrganisationServiceBean extends AbstractJpaService implements OrganisationService {
 
-    // Our Logger
-    private static final Logger log = LoggerFactory.getLogger(OrganisationServiceBean.class);
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Organisation> getOrganisations() {
+    public List<OrganisationVO> getOrganisations() {
 
-        return entityManager.createNamedQuery(Organisation.NAMEDQ_GET_ALL, Organisation.class)
+        final List<Organisation> allOrganisations = entityManager.createNamedQuery(
+                Organisation.NAMEDQ_GET_ALL, Organisation.class)
                 .getResultList();
+
+        // Convert to OrganizationVOs and return.
+        return allOrganisations.stream()
+                .map(c -> new OrganisationVO(
+                        c.getId(),
+                        c.getOrganisationName(),
+                        c.getSuffix()))
+                .collect(Collectors.toList());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Organisation> getOrganisation(@NotNull final String organisationName) {
-
-        final List<Organisation> resultList = entityManager.createNamedQuery(
-                Organisation.NAMEDQ_GET_BY_NAME, Organisation.class)
-                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
-                .getResultList();
-
-        if(resultList == null || resultList.isEmpty()) {
-
-            // Warn some.
-            log.warn("Found no organisations for the name [" + organisationName + "]");
-
-            // All done.
-            return Optional.empty();
-        } else if (resultList.size() > 1) {
-
-            // This should really never happen...
-            log.warn("Found [" + resultList.size() + "] organisations with the name ["
-                    + organisationName + "]. Returning the first one.");
-        }
-
-        // All done.
-        return Optional.of(resultList.get(0));
+    public Organisation getOrganisationDetails(final long jpaID) {
+        return entityManager.find(Organisation.class, jpaID);
     }
 
     /**
@@ -186,7 +172,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         // Retrieve an existing CategorizedAddress
         final CategorizedAddress existingCA = entityManager.find(CategorizedAddress.class, (Long) nonNull.getId());
-        if(existingCA == null) {
+        if (existingCA == null) {
             throw new IllegalArgumentException("No existing CategorizedAddress with JPA ID [" + id + "]");
         }
 
@@ -211,8 +197,17 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
             final String category,
             final String organisation) {
 
-        final Optional<Organisation> potentialOrganisation = getOrganisation(organisation);
-        if(!potentialOrganisation.isPresent()) {
+        final List<Organisation> organisations = JpaUtilities.findEntities(Organisation.class,
+                Organisation.NAMEDQ_GET_BY_NAME,
+                true,
+                entityManager,
+                aQuery -> aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisation));
+
+        final Optional<Organisation> potentialOrganisation = JpaUtilities.getSingleInstance(
+                organisations,
+                "Organisation",
+                Organisation::getOrganisationName);
+        if (!potentialOrganisation.isPresent()) {
             throw new IllegalArgumentException("No organisation '" + organisation + "' found.");
         }
 

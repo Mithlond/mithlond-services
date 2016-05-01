@@ -26,18 +26,39 @@
  */
 @XmlSchema(
         xmlns = {
+                @XmlNs(prefix = "shared", namespaceURI = SharedJaxbPatterns.NAMESPACE),
                 @XmlNs(prefix = "organisation", namespaceURI = OrganisationPatterns.NAMESPACE),
                 @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
                 @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
                 @XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning")
         }
 )
+@XmlJavaTypeAdapters({
+        @XmlJavaTypeAdapter(type = LocalDate.class, value = LocalDateAdapter.class),
+        @XmlJavaTypeAdapter(type = LocalTime.class, value = LocalTimeAdapter.class),
+        @XmlJavaTypeAdapter(type = LocalDateTime.class, value = LocalDateTimeAdapter.class),
+        @XmlJavaTypeAdapter(type = ZonedDateTime.class, value = ZonedDateTimeAdapter.class),
+        @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
+})
 @XmlAccessorType(XmlAccessType.FIELD)
 package se.mithlond.services.organisation.model.helpers;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.shared.spi.jaxb.SharedJaxbPatterns;
+import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
+import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateTimeAdapter;
+import se.mithlond.services.shared.spi.jaxb.adapter.LocalTimeAdapter;
+import se.mithlond.services.shared.spi.jaxb.adapter.TimeZoneAdapter;
+import se.mithlond.services.shared.spi.jaxb.adapter.ZonedDateTimeAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlNs;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.util.TimeZone;

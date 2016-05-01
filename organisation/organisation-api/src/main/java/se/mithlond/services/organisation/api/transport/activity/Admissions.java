@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.transport;
+package se.mithlond.services.organisation.api.transport.activity;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 
@@ -45,7 +45,7 @@ public class Admissions {
     // Internal state
     @XmlElementWrapper(required = true)
     @XmlElement(name = "admissionDetails")
-    private List<AdmissionDetails> details;
+    private List<AdmissionVO> details;
 
     /**
      * JAXB-friendly constructor.
@@ -59,7 +59,7 @@ public class Admissions {
      *
      * @return The List of AdmissionDetails wrapped by this Admissions.
      */
-    public List<AdmissionDetails> getDetails() {
+    public List<AdmissionVO> getDetails() {
         return details;
     }
 }

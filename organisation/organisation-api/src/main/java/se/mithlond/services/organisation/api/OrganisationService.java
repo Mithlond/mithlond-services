@@ -23,7 +23,7 @@ package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
-import se.mithlond.services.organisation.model.Category;
+import se.mithlond.services.organisation.api.transport.organisation.OrganisationVO;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
@@ -33,7 +33,6 @@ import se.mithlond.services.shared.spi.jpa.JpaCudService;
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * <p>Service specification for queries extracting information from Organisations - without
@@ -47,20 +46,21 @@ import java.util.Optional;
 public interface OrganisationService extends JpaCudService {
 
     /**
-     * Retrieves all known Organisations.
+     * Retrieves VOs for all known Organisations.
      *
-     * @return all known Organisations.
+     * @return A List of VOs of all known Organisations.
      */
-    List<Organisation> getOrganisations();
+    List<OrganisationVO> getOrganisations();
 
     /**
-     * Retrieves the organisation with the supplied name.
+     * Retrieves detailed information about a particular organisation.
      *
-     * @param organisationName The name of the organisation that should be retrieved.
-     * @return the organisation with the supplied name, or an empty Optional if no organisation
-     * with the supplied name was found.
+     * @param jpaID The JPA ID of the {@link Organisation} which should be retrieved.
+     *              The value can be retrieved from the {@link #getOrganisations()} method.
+     * @return The full Organisation entity, or {@code null} if no organisation with a matching JPA ID was found.
+     * @see #getOrganisations()
      */
-    Optional<Organisation> getOrganisation(@NotNull String organisationName);
+    Organisation getOrganisationDetails(final long jpaID);
 
     /**
      * Retrieves all Groups matching the supplied searchParameters.

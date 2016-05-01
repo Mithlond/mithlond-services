@@ -43,15 +43,12 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>java:global/datasources/ServicesDS</jta-data-source>
 
-        <!--
-            Comment out the persistence provider class to use the default provider from the AppServer.
-            For Wildfly 8.2, the persistence provider is Hibernate 4.3+, implying that eclipselink
-            features are not used/do not work.
-
-            C.f. https://docs.jboss.org/author/display/WFLY8/JPA+Reference+Guide#JPAReferenceGuide-Introduction
-            for a guide to replacing the default Hibernate JPA provider with - say - Eclipselink.
-        -->
-        <!-- provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider -->
+        <!-- ===============================================
+          |  JPA Converters
+          +============================================== -->
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocalDateAttributeConverter</class>
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocalDateTimeAttributeConverter</class>
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocalTimeAttributeConverter</class>
 
         <!-- ===============================================
           |  Nazgul Core Entities
