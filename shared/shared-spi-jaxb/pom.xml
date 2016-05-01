@@ -14,18 +14,18 @@
         <relativePath/>
     </parent>
 
-    <groupId>se.mithlond.services.shared.spi.jpa</groupId>
-    <artifactId>mithlond-services-shared-spi-jpa</artifactId>
+    <groupId>se.mithlond.services.shared.spi.jaxb</groupId>
+    <artifactId>mithlond-services-shared-spi-jaxb</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Shared Persistence (SPI, version ${project.version})</description>
+    <description>Mithlond Service: Shared Transport (SPI, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>shared/shared-spi-jpa</path.in.reactor>
+        <path.in.reactor>shared/shared-spi-jaxb</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
 
         <!-- Reduce coverage requirements -->
@@ -60,12 +60,13 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>se.jguru.nazgul.core.xmlbinding.spi.jaxb</groupId>
+            <artifactId>nazgul-core-xmlbinding-spi-jaxb</artifactId>
+            <version>${nazgul-core.version}</version>
         </dependency>
         <dependency>
-            <groupId>se.jguru.nazgul.core.persistence.model</groupId>
-            <artifactId>nazgul-core-persistence-model</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -80,6 +81,12 @@
         <dependency>
             <groupId>se.jguru.nazgul.test.xmlbinding</groupId>
             <artifactId>nazgul-core-xmlbinding-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>se.mithlond.services.shared.test.entity</groupId>
+            <artifactId>mithlond-services-shared-entity-test</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

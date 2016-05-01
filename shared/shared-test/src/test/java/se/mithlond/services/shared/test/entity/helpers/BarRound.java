@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.test.entity.helpers;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,6 +36,7 @@ import java.util.List;
  */
 @XmlRootElement(namespace = "mithlond:shared:test:event")
 @XmlType(propOrder = {"identifier", "customers"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BarRound {
 
     // Internal state

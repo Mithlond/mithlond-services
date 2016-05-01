@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.transport;
+package se.mithlond.services.organisation.api.transport.activity;
 
 import org.apache.commons.lang3.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -41,10 +41,10 @@ import java.util.Optional;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializable {
+public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
 
     /**
-     * Default ActivityID value, indicating that this {@link AdmissionDetails} instance is not yet
+     * Default ActivityID value, indicating that this {@link AdmissionVO} instance is not yet
      * associated with an {@link se.mithlond.services.organisation.model.activity.Activity} in terms of database
      * persistence.
      */
@@ -84,7 +84,7 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
     /**
      * JAXB-friendly constructor.
      */
-    public AdmissionDetails() {
+    public AdmissionVO() {
         activityID = UNINITIALIZED;
     }
 
@@ -97,7 +97,7 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
      * @param note         An optional admission note from teh Alias to the organizer(s) of the Activity.
      * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
-    public AdmissionDetails(final String alias,
+    public AdmissionVO(final String alias,
                             final String organisation,
                             final String note,
                             final boolean responsible) {
@@ -115,7 +115,7 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
      * @param note         An optional admission note from teh Alias to the organizer(s) of the Activity.
      * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
-    public AdmissionDetails(final Long activityID,
+    public AdmissionVO(final Long activityID,
                             final String alias,
                             final String organisation,
                             final String note,
@@ -180,12 +180,12 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
         if (this == that) {
             return true;
         }
-        if (!(that instanceof AdmissionDetails)) {
+        if (!(that instanceof AdmissionVO)) {
             return false;
         }
 
         // Delegate to internal state
-        final AdmissionDetails details = (AdmissionDetails) that;
+        final AdmissionVO details = (AdmissionVO) that;
         return responsible == details.responsible &&
                 Objects.equals(activityID, details.activityID) &&
                 Objects.equals(alias, details.alias) &&
@@ -205,7 +205,7 @@ public class AdmissionDetails implements Comparable<AdmissionDetails>, Serializa
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(final AdmissionDetails that) {
+    public int compareTo(final AdmissionVO that) {
 
         // Check sanity
         if (that == null) {

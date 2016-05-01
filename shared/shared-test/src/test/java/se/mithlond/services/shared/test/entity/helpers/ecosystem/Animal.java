@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.test.entity.helpers.ecosystem;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -34,6 +36,7 @@ import java.util.List;
  */
 @XmlType(namespace = "mithlond:shared:test:ecosystem",
         propOrder = {"name", "fishList"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Animal implements Comparable<Animal> {
 
     // Internal state

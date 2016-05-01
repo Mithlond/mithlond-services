@@ -1,8 +1,8 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-shared-entity-test
+ * Nazgul Project: mithlond-services-shared-spi-jaxb
  * %%
- * Copyright (C) 2015 Mithlond
+ * Copyright (C) 2015 - 2016 Mithlond
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -19,47 +19,29 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.shared.test.entity.helpers;
+package se.mithlond.services.shared.spi.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 
 /**
+ * Abstract skeleton for a transporter which has an annotated XmlRootElement and implements Serializable.
+ *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = "mithlond:shared:test:products",
-        propOrder = {"name", "producer"})
+@XmlRootElement(namespace = SharedJaxbPatterns.NAMESPACE)
+@XmlType(namespace = SharedJaxbPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Beverage implements Comparable<Beverage> {
+public abstract class AbstractSimpleTransporter implements Serializable {
 
-    // Internal state
-    private String name;
-    private String producer;
-
-    public Beverage() {
-    }
-
-    public Beverage(final String name, final String producer) {
-        this.name = name;
-        this.producer = producer;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public int compareTo(final Beverage that) {
-        int result = this.getName().compareTo(that.getName());
-        if (result == 0) {
-            result = this.getProducer().compareTo(that.getProducer());
-        }
-
-        return result;
+    public String toString() {
+        return "[" + getClass().getSimpleName() + "]";
     }
 }

@@ -32,6 +32,7 @@
     <modules>
         <module>shared-test</module>
         <module>shared-spi-algorithms</module>
+        <module>shared-spi-jaxb</module>
         <module>shared-spi-jpa</module>
         <module>authorization</module>
     </modules>

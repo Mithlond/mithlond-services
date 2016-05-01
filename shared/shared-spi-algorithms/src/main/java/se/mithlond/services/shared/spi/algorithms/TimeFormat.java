@@ -30,6 +30,7 @@ import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * <p>Helper utility to manage formatting and parsing dates and times.</p>
@@ -168,12 +169,22 @@ public enum TimeFormat {
         return parse(toParse, null, null);
     }
 
-    public Date convert(final LocalDate aLocalDate) {
+    /**
+     * Converts a LocalDate to a Calendar
+     * @param aLocalDate
+     * @return
+     */
+    @SuppressWarnings("all")
+    public Calendar convert(final LocalDate aLocalDate) {
         if(aLocalDate == null) {
             return null;
         }
 
-        Instant instant = aLocalDate.(TimeFormat.SWEDISH_TIMEZONE).toInstant();
-        Date res = Date.from(instant);
+        final Instant instant = aLocalDate.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE).toInstant();
+        final Calendar toReturn = Calendar.getInstance(TimeZone.getTimeZone(TimeFormat.SWEDISH_TIMEZONE));
+        toReturn.setTime(Date.from(instant));
+
+        // All done.
+        return toReturn;
     }
 }

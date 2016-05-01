@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.test.entity.helpers.ecosystem;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -35,6 +37,7 @@ import java.util.TreeSet;
 @XmlRootElement()
 @XmlType(namespace = "mithlond:shared:test:ecosystem",
         propOrder = {"fish", "animals"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class EcoSystem {
 
     @XmlElementWrapper(nillable = true, name = "fish")

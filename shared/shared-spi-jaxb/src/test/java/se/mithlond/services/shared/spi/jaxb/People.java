@@ -1,8 +1,8 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-shared-entity-test
+ * Nazgul Project: mithlond-services-shared-spi-jaxb
  * %%
- * Copyright (C) 2015 Mithlond
+ * Copyright (C) 2015 - 2016 Mithlond
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -19,48 +19,40 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.shared.test.entity.helpers.ecosystem;
+package se.mithlond.services.shared.spi.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = "mithlond:shared:test:ecosystem",
-        propOrder = {"name", "description"})
+@XmlType(namespace = SharedJaxbPatterns.NAMESPACE, propOrder = {"personList"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Fish implements Comparable<Fish> {
+public class People extends AbstractSimpleTransporter {
 
-    // Internal state
-    @XmlID
-    @XmlElement(nillable = false, required = true)
-    private String name;
+    @XmlElementWrapper
+    @XmlElement(name = "person")
+    private List<DummyPersonTransportable> personList;
 
-    @XmlElement(nillable = false, required = true)
-    private String description;
-
-    public Fish() {
+    public People() {
+        this.personList = new ArrayList<>();
     }
 
-    public Fish(final String name, final String description) {
-        this.name = name;
-        this.description = description;
+    public People(final List<DummyPersonTransportable> personList) {
+        this();
+
+        if(personList != null) {
+            this.personList.addAll(personList);
+        }
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public int compareTo(final Fish that) {
-        return this.name.compareTo(that.name);
+    public List<DummyPersonTransportable> getPersonList() {
+        return personList;
     }
 }

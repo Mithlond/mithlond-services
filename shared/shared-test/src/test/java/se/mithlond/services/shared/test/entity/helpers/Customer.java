@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.test.entity.helpers;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
@@ -31,6 +33,7 @@ import java.util.TreeMap;
  */
 @XmlType(namespace = "mithlond:shared:test:people",
         propOrder = {"name", "consumption"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Customer implements Comparable<Customer> {
 
     // Internal state
@@ -61,7 +64,7 @@ public class Customer implements Comparable<Customer> {
     public int compareTo(final Customer that) {
         int result = this.getName().compareTo(that.getName());
 
-        if(result == 0) {
+        if (result == 0) {
             result = getConsumption().size() - that.getConsumption().size();
         }
 

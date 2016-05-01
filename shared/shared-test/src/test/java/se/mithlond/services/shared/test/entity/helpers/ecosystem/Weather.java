@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-shared-entity-test
  * %%
- * Copyright (C) 2015 Mithlond
+ * Copyright (C) 2015 - 2016 Mithlond
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -23,44 +23,59 @@ package se.mithlond.services.shared.test.entity.helpers.ecosystem;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = "mithlond:shared:test:ecosystem",
-        propOrder = {"name", "description"})
+@XmlType(namespace = "mithlond:shared:test:ecosystem", propOrder = {"name", "isDangerous"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Fish implements Comparable<Fish> {
+public class Weather {
 
-    // Internal state
-    @XmlID
-    @XmlElement(nillable = false, required = true)
+    @XmlAttribute
+    private Boolean isDangerous;
+
+    @XmlAttribute(required = true)
     private String name;
 
-    @XmlElement(nillable = false, required = true)
-    private String description;
-
-    public Fish() {
+    public Weather() {
     }
 
-    public Fish(final String name, final String description) {
+    public Weather(final Boolean isDangerous, final String name) {
+        this.isDangerous = isDangerous;
         this.name = name;
-        this.description = description;
+    }
+
+    public Boolean getDangerous() {
+        return isDangerous;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Weather weather = (Weather) o;
+        return Objects.equals(isDangerous, weather.isDangerous) &&
+                Objects.equals(name, weather.name);
     }
 
     @Override
-    public int compareTo(final Fish that) {
-        return this.name.compareTo(that.name);
+    public int hashCode() {
+        return Objects.hash(isDangerous, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Weather [Name: " + name + ", Dangerous: " + isDangerous + "]";
     }
 }
