@@ -29,6 +29,7 @@
         <reactor.name>mithlond-services</reactor.name>
 
         <!-- Reduce coverage requirements -->
+        <breakOnFailure.checkstyle>false</breakOnFailure.checkstyle>
         <breakOnFailure.enforcer>true</breakOnFailure.enforcer>
         <breakOnFailure.cobertura>false</breakOnFailure.cobertura>
 

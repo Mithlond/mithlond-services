@@ -102,10 +102,11 @@ public final class JpaUtilities {
      * Convenience method to persist entities within the database, and then read them back
      * (with Version and JpaID assigned).
      *
+     * @param resultType        The expected return type. If unknown or compound, use {@code Object.class}.
+     * @param toPersist         The List of entities to be persisted.
      * @param jpqlOrNamedQuery  Custom JPQL to find Entites as required, or the ID of a NamedQuery.
      * @param namedQuery        If {@code true}, the jpqlOrNamedQuery contains the ID of a NamedQuery, and otherwise
      *                          the custom JPQL to use in creating a TypedQuery.
-     * @param resultType        The expected return type. If unknown or compound, use {@code Object.class}.
      * @param entityManager     A non-null EntityManager
      * @param optionalDecorator An optional QueryDecorator used to decorate the TypedQuery after it has been created.
      * @param <T>               The type of Entity to retrieve.
