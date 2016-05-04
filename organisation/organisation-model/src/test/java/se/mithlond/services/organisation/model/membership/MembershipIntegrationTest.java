@@ -195,6 +195,8 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
         toUpdate.setLoginPermitted(false);
         commitAndStartNewTransaction();
 
+        // printCurrentDatabaseState();
+
         // Assert #1: Validate full database state.
         // printCurrentDatabaseState();
         final DiffCollectingFailureHandler diffHandler = new DiffCollectingFailureHandler();

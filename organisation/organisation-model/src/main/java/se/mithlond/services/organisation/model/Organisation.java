@@ -42,6 +42,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlType;
+import java.time.ZoneId;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Entity implementation for Organisations, all of which are required to have a unique name.
@@ -54,12 +57,14 @@ import javax.xml.bind.annotation.XmlType;
                 query = "select a from Organisation a"
                         + " order by a.organisationName"),
         @NamedQuery(name = Organisation.NAMEDQ_GET_BY_NAME,
-                query = "select a from Organisation a where a.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                query = "select a from Organisation a where a.organisationName like :"
+                        + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " order by a.organisationName")
 })
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
-        "postAccountInfo", "emailSuffix", "visitingAddress"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
+                "postAccountInfo", "emailSuffix", "visitingAddress", "timeZoneID", "country", "language"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation extends NazgulEntity implements Comparable<Organisation> {
 
@@ -133,7 +138,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      */
     @Basic(optional = false)
     @Column(length = 64)
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private String emailSuffix;
 
     /**
@@ -144,6 +149,36 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
     private Address visitingAddress;
 
     /**
+     * The standard TimeZoneID of this Organisation.
+     *
+     * @see ZoneId
+     */
+    @Basic(optional = false)
+    @Column(length = 64)
+    @XmlAttribute(required = true)
+    private String timeZoneID;
+
+    /**
+     * The standard language of this Organisation, as an abbreviated, 2/3-letter string.
+     *
+     * @see Locale#getLanguage()
+     */
+    @Basic(optional = false)
+    @Column(length = 3)
+    @XmlAttribute(required = true)
+    private String language;
+
+    /**
+     * The standard country of this Organisation, as an abbreviated, 2/3-letter string.
+     *
+     * @see Locale#getCountry()
+     */
+    @Basic(optional = false)
+    @Column(length = 3, name = "locale_country")
+    @XmlAttribute(required = true)
+    private String country;
+
+    /**
      * JPA-friendly constructor.
      */
     public Organisation() {
@@ -152,30 +187,39 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
     /**
      * Compound constructor.
      *
-     * @param organisationName The name of this organisation (i.e. "Forodrim")
-     * @param suffix           The suffix of this organisation (i.e. "Stockholms Tolkiensällskap")
-     * @param phone            The official phone number to this organisation.
-     * @param bankAccountInfo  The bank account number of this organisation.
-     * @param postAccountInfo  The postal account number of this organisation.
-     * @param visitingAddress  The visiting address of this organisation.
-     * @param emailSuffix      The email suffix of this organisation (i.e. "mithlond.se").
+     * @param organisationName   The name of this organisation (i.e. "Forodrim")
+     * @param suffix             The suffix of this organisation (i.e. "Stockholms Tolkiensällskap")
+     * @param phone              The official phone number to this organisation.
+     * @param bankAccountInfo    The bank account number of this organisation.
+     * @param postAccountInfo    The postal account number of this organisation.
+     * @param visitingAddress    The visiting address of this organisation.
+     * @param emailSuffix        The email suffix of this organisation (i.e. "mithlond.se").
+     * @param standardTimeZoneID The standard TimeZoneID of this organisation.
+     * @param standardLocale     The standard Locale of this organisation.
      */
     public Organisation(final String organisationName,
-                        final String suffix,
-                        final String phone,
-                        final String bankAccountInfo,
-                        final String postAccountInfo,
-                        final Address visitingAddress,
-                        final String emailSuffix) {
+            final String suffix,
+            final String phone,
+            final String bankAccountInfo,
+            final String postAccountInfo,
+            final Address visitingAddress,
+            final String emailSuffix,
+            final ZoneId standardTimeZoneID,
+            final Locale standardLocale) {
 
         // Assign internal state
         this.organisationName = Validate.notEmpty(organisationName, "organisationName");
         this.visitingAddress = Validate.notNull(visitingAddress, "visitingAddress");
+        this.timeZoneID = Validate.notNull(standardTimeZoneID, "standardTimeZoneID").toString();
         this.suffix = suffix;
         this.phone = phone;
         this.bankAccountInfo = bankAccountInfo;
         this.postAccountInfo = postAccountInfo;
         this.emailSuffix = emailSuffix;
+
+        final Locale tmp = Validate.notNull(standardLocale, "standardLocale");
+        this.country = tmp.getCountry();
+        this.language = tmp.getLanguage();
         setXmlID();
     }
 
@@ -234,6 +278,24 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
     }
 
     /**
+     * Retrieves the standard TimeZone of this Organisation.
+     *
+     * @return the standard TimeZone of this Organisation.
+     */
+    public TimeZone getTimeZone() {
+        return TimeZone.getTimeZone(timeZoneID);
+    }
+
+    /**
+     * Retrieves the standard Locale of this Organisation.
+     *
+     * @return the standard Locale of this Organisation.
+     */
+    public Locale getLocale() {
+        return new Locale(language, country);
+    }
+
+    /**
      * The OrganisationName is unique per organisation, so will be used in equality
      * comparisons and hashCode calculations.
      * <p/>
@@ -285,6 +347,9 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
                 .notNullOrEmpty(suffix, "suffix")
                 .notNullOrEmpty(emailSuffix, "emailSuffix")
                 .notNullOrEmpty(visitingAddress, "visitingAddress")
+                .notNullOrEmpty(language, "language")
+                .notNullOrEmpty(country, "country")
+                .notNullOrEmpty(timeZoneID, "timeZoneID")
                 .endExpressionAndValidate();
     }
 

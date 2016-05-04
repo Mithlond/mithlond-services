@@ -111,6 +111,8 @@ public class GroupIntegrationTest extends AbstractIntegrationTest {
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "name_0")
                 .getSingleResult();
 
+        // printCurrentDatabaseState();
+
         // Assert
         Assert.assertEquals("modifiedEmailList@emailSuffix_0", modifiedGroup.getEmailList());
         Assert.assertEquals(2, modifiedGroup.getVersion());

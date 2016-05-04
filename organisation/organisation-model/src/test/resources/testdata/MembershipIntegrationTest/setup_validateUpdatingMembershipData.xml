@@ -25,12 +25,13 @@
                 PHONE="031987654" POSTACCOUNTINFO="823-234-234" SUFFIX="mithlond.se" VERSION="1"
                 CAREOFLINE="Lennart Jörelid" CITY="Mölnlycke" COUNTRY="Sverige"
                 DEPARTMENTNAME="Löjlighetsdepartementet"
-                DESCRIPTION="Göteborgs Tolkiensällskap" NUMBER="3" STREET="Stenflisavägen" ZIPCODE="435 56"/>
+                DESCRIPTION="Göteborgs Tolkiensällskap" LANGUAGE="sv" LOCALE_COUNTRY="SE" NUMBER="3"
+                STREET="Stenflisavägen" ZIPCODE="435 56" TIMEZONEID="Europe/Stockholm"/>
   <ORGANISATION ID="2" BANKACCOUNTINFO="bankAccountInfo_1" EMAILSUFFIX="fjodjim.org" ORGANISATIONNAME="Fjodjim"
                 PHONE="0812345678" POSTACCOUNTINFO="5059-2020" SUFFIX="fjodjim.org" VERSION="1"
                 CAREOFLINE="Carolina Agered" CITY="Farsta" COUNTRY="Sverige"
-                DESCRIPTION="Tokholms Tolkiensällskap" NUMBER="28A" STREET="Tjabbavägen"
-                ZIPCODE="153 43"/>
+                DESCRIPTION="Tokholms Tolkiensällskap" LANGUAGE="sv" LOCALE_COUNTRY="SE" NUMBER="28A"
+                STREET="Tjabbavägen" ZIPCODE="153 43" TIMEZONEID="Europe/Stockholm"/>
   <INTERNALGROUPS ID="1"
                   DESCRIPTION="Administrat&#246;rer f&#246;r Mithlond"
                   DISCRIMINATOR="group"

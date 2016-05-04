@@ -20,10 +20,9 @@
   limitations under the License.
   #L%
   -->
-
-<organisation:groupsAndGuilds xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<organisation:groupsAndGuilds xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
-        <organisation jpaId="0" version="0" xmlID="organisation_name_0">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_0" timeZoneID="Europe/Stockholm" country="SE" language="sv">
             <organisationName>name_0</organisationName>
             <suffix>suffix_0</suffix>
             <phone>phone_0</phone>
@@ -41,7 +40,7 @@
                 <description>description_0</description>
             </visitingAddress>
         </organisation>
-        <organisation jpaId="0" version="0" xmlID="organisation_name_1">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_1" timeZoneID="Europe/Stockholm" country="SE" language="sv">
             <organisationName>name_1</organisationName>
             <suffix>suffix_1</suffix>
             <phone>phone_1</phone>
@@ -59,7 +58,7 @@
                 <description>description_1</description>
             </visitingAddress>
         </organisation>
-        <organisation jpaId="0" version="0" xmlID="organisation_name_2">
+        <organisation jpaId="0" version="0" xmlID="organisation_name_2" timeZoneID="Europe/Stockholm" country="SE" language="sv">
             <organisationName>name_2</organisationName>
             <suffix>suffix_2</suffix>
             <phone>phone_2</phone>

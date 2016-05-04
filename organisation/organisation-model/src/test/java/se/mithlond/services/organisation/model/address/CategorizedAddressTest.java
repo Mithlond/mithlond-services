@@ -28,6 +28,7 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.helpers.CategorizedAddresses;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,15 @@ public class CategorizedAddressTest extends AbstractEntityTest {
 
         organisationAddress = new Address("careOfLine", "departmentName", "street", "number",
                 "city", "zipCode", "country", "description");
-        organisation = new Organisation("name", "suffix", "phone", "bankAccountInfo",
-                "postAccountInfo", organisationAddress, "emailSuffix");
+        organisation = new Organisation("name",
+                "suffix",
+                "phone",
+                "bankAccountInfo",
+                "postAccountInfo",
+                organisationAddress,
+                "emailSuffix",
+                TimeFormat.SWEDISH_TIMEZONE.normalized(),
+                TimeFormat.SWEDISH_LOCALE);
 
         addresses = new ArrayList<>();
 

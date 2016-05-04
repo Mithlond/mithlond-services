@@ -36,6 +36,7 @@ import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -80,7 +81,9 @@ public class GroupAndGuildTest extends AbstractEntityTest {
                     "bankAccountInfo_" + i,
                     "postAccountInfo_" + i,
                     currentAddress,
-                    "emailSuffix_" + i);
+                    "emailSuffix_" + i,
+                    TimeFormat.SWEDISH_TIMEZONE.normalized(),
+                    TimeFormat.SWEDISH_LOCALE);
         }
 
 
