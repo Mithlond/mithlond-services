@@ -26,7 +26,6 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -37,8 +36,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -47,11 +44,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.TimeZone;
 
 /**
  * Holds all data for an Admission to an Activity.
@@ -98,18 +92,16 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      */
     @Basic(optional = false)
     @Column(nullable = false)
-    @Temporal(value = TemporalType.TIMESTAMP)
     @XmlElement(required = true)
-    private Calendar admissionTimestamp;
+    private LocalDateTime admissionTimestamp;
 
     /**
      * The timestamp when this Admission was last modified.
      */
     @Basic
     @Column
-    @Temporal(value = TemporalType.TIMESTAMP)
     @XmlElement
-    private Calendar lastModifiedAt;
+    private LocalDateTime lastModifiedAt;
 
     /**
      * An optional note of this Admission.
@@ -176,8 +168,8 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      */
     public Admission(final Activity activity,
             final Membership admitted,
-            final ZonedDateTime admissionTimestamp,
-            final ZonedDateTime latestModifiedTime,
+            final LocalDateTime admissionTimestamp,
+            final LocalDateTime latestModifiedTime,
             final String admissionNote,
             final boolean responsible,
             final Membership admittedBy) {
@@ -190,15 +182,8 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
         this.admissionNote = admissionNote;
         this.responsible = responsible;
         this.admittedBy = admittedBy;
-
-        // Handle the ZonedDateTime --> Calendar conversion
-        final Calendar now = Calendar.getInstance();
-        this.lastModifiedAt = lastModifiedAt == null
-                ? now
-                : GregorianCalendar.from(latestModifiedTime);
-        this.admissionTimestamp = admissionTimestamp == null
-                ? now
-                : GregorianCalendar.from(admissionTimestamp);
+        this.admissionTimestamp = admissionTimestamp;
+        this.lastModifiedAt = latestModifiedTime;
     }
 
     /**
@@ -228,11 +213,8 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
     /**
      * @return The timestamp of this Admission.
      */
-    public ZonedDateTime getAdmissionTimestamp() {
-
-        return ZonedDateTime.ofInstant(
-                admissionTimestamp.toInstant(),
-                admissionTimestamp.getTimeZone().toZoneId());
+    public LocalDateTime getAdmissionTimestamp() {
+        return this.admissionTimestamp;
     }
 
     /**
@@ -281,10 +263,8 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
     /**
      * @return The timestamp when this Admission was last modified.
      */
-    public ZonedDateTime getLastModifiedAt() {
-        return ZonedDateTime.ofInstant(
-                lastModifiedAt.toInstant(),
-                lastModifiedAt.getTimeZone().toZoneId());
+    public LocalDateTime getLastModifiedAt() {
+        return lastModifiedAt;
     }
 
     /**
@@ -405,14 +385,7 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
     //
 
     void updateLastModifiedTimestamp() {
-
-        // Extract the TimeZone from the Activity.
-        final ZonedDateTime activityStartTime = activity.getStartTime();
-
-        // Use Swedish Locale to set the Calendar.
-        this.lastModifiedAt = Calendar.getInstance(
-                TimeZone.getTimeZone(activityStartTime.getZone()),
-                TimeFormat.SWEDISH_LOCALE);
+        this.lastModifiedAt = LocalDateTime.now();
     }
 
     private void recreateAdmissionIdIfRequired() {

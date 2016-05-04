@@ -31,8 +31,8 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Group;
-import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -45,8 +45,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.Unmarshaller;
@@ -59,13 +57,9 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.TreeSet;
 
 /**
@@ -102,17 +96,15 @@ public class Activity extends Listable {
     @NotNull
     @Basic(optional = false)
     @Column(nullable = false)
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Calendar startTime;
+    private LocalDateTime startTime;
 
     /**
      * The end time of the Activity. Must not be null, and must also be after startTime.
      */
     @NotNull
     @Basic
-    @Temporal(value = TemporalType.TIMESTAMP)
     @XmlElement
-    private Calendar endTime;
+    private LocalDateTime endTime;
 
     /**
      * The optional cost of the activity. Never negative.
@@ -154,17 +146,15 @@ public class Activity extends Listable {
      * After this date, the activity admission costs {@code lateAdmissionCost}.
      */
     @Basic
-    @Temporal(value = TemporalType.DATE)
     @XmlElement
-    private Calendar lateAdmissionDate;
+    private LocalDate lateAdmissionDate;
 
     /**
      * The last date of admissions to the Activity.
      */
     @Basic
-    @Temporal(value = TemporalType.DATE)
     @XmlElement
-    private Calendar lastAdmissionDate;
+    private LocalDate lastAdmissionDate;
 
     /**
      * If 'true', the Activity is cancelled.
@@ -259,8 +249,8 @@ public class Activity extends Listable {
      */
     public Activity(final String shortDesc,
             final String fullDesc,
-            final ZonedDateTime startTime,
-            final ZonedDateTime endTime,
+            final LocalDateTime startTime,
+            final LocalDateTime endTime,
             final Amount cost,
             final Amount lateAdmissionCost,
             final LocalDate lateAdmissionDate,
@@ -278,8 +268,8 @@ public class Activity extends Listable {
         super(shortDesc, fullDesc, organisation);
 
         // Assign internal state
-        this.startTime = startTime == null ? null : GregorianCalendar.from(startTime);
-        this.endTime = endTime == null ? null : GregorianCalendar.from(endTime);
+        this.startTime = startTime;
+        this.endTime = endTime;
 
         if (cost != null) {
             this.cost = cost.getValue();
@@ -300,31 +290,8 @@ public class Activity extends Listable {
             currency = WellKnownCurrency.SEK.toString();
         }
 
-        // Find the TimeZone of the startTime; fallback to Swedish TimeZone.
-        final TimeZone timeZone = startTime == null
-                ? TimeZone.getTimeZone(TimeFormat.SWEDISH_TIMEZONE)
-                : TimeZone.getTimeZone(startTime.getZone());
-
-        if(lateAdmissionDate != null) {
-
-            this.lateAdmissionDate = Calendar.getInstance(timeZone, TimeFormat.SWEDISH_LOCALE);
-
-            final Date tmp = Date.from(lateAdmissionDate.atStartOfDay()
-                    .atZone(TimeFormat.SWEDISH_TIMEZONE)
-                    .toInstant());
-            this.lateAdmissionDate.setTime(tmp);
-        }
-
-        if(lastAdmissionDate != null) {
-
-            this.lastAdmissionDate = Calendar.getInstance(timeZone, TimeFormat.SWEDISH_LOCALE);
-
-            final Date tmp = Date.from(lastAdmissionDate.atStartOfDay()
-                    .atZone(TimeFormat.SWEDISH_TIMEZONE)
-                    .toInstant());
-            this.lastAdmissionDate.setTime(tmp);
-        }
-
+        this.lateAdmissionDate = lateAdmissionDate;
+        this.lateAdmissionDate = lateAdmissionDate;
         this.cancelled = cancelled;
         this.addressCategory = addressCategory;
         this.location = location;
@@ -338,15 +305,15 @@ public class Activity extends Listable {
     /**
      * @return The start time of the Activity.
      */
-    public ZonedDateTime getStartTime() {
-        return ZonedDateTime.ofInstant(startTime.toInstant(), startTime.getTimeZone().toZoneId());
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
     /**
      * @return The end time of the Activity.
      */
-    public ZonedDateTime getEndTime() {
-        return ZonedDateTime.ofInstant(endTime.toInstant(), endTime.getTimeZone().toZoneId());
+    public LocalDateTime getEndTime() {
+        return endTime;
     }
 
     /**
@@ -369,14 +336,14 @@ public class Activity extends Listable {
      * After this date, the activity admission costs {@code lateAdmissionCost}
      */
     public LocalDate getLateAdmissionDate() {
-        return lateAdmissionDate == null ? null : LocalDate.from(lastAdmissionDate.toInstant());
+        return lateAdmissionDate;
     }
 
     /**
      * @return The last date of admissions to the Activity.
      */
     public LocalDate getLastAdmissionDate() {
-        return lastAdmissionDate == null ? null : LocalDate.from(lastAdmissionDate.toInstant());
+        return lastAdmissionDate;
     }
 
     /**
@@ -429,13 +396,8 @@ public class Activity extends Listable {
      *
      * @param startTime The start time of the Activity. Must not be null.
      */
-    public void setStartTime(@NotNull final ZonedDateTime startTime) {
-
-        // Check sanity
-        final ZonedDateTime time = Objects.requireNonNull(startTime, "Cannot handle null 'startTime' argument.");
-
-        // Convert and assign
-        this.startTime = GregorianCalendar.from(time);
+    public void setStartTime(@NotNull final LocalDateTime startTime) {
+        this.startTime = Validate.notNull(startTime, "startTime");
     }
 
     /**
@@ -443,13 +405,8 @@ public class Activity extends Listable {
      *
      * @param endTime The start time of the Activity. Must not be null.
      */
-    public void setEndTime(@NotNull final ZonedDateTime endTime) {
-
-        // Check sanity
-        final ZonedDateTime time = Objects.requireNonNull(endTime, "Cannot handle null 'endTime' argument.");
-
-        // Convert and assign
-        this.endTime = GregorianCalendar.from(time);
+    public void setEndTime(@NotNull final LocalDateTime endTime) {
+        this.endTime = Validate.notNull(endTime, "endTime");
     }
 
     /**
@@ -487,13 +444,7 @@ public class Activity extends Listable {
      *                          After this date, the activity admission costs {@code lateAdmissionCost}.
      */
     public void setLateAdmissionDate(@NotNull final LocalDate lateAdmissionDate) {
-
-        // Check sanity
-        final LocalDate nonNull = Objects.requireNonNull(lateAdmissionDate,
-                "Cannot handle null 'lateAdmissionDate' argument.");
-
-        // Assign
-        this.lateAdmissionDate = GregorianCalendar.from(nonNull.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));
+        this.lateAdmissionDate = Validate.notNull(lateAdmissionDate, "lateAdmissionDate");
     }
 
     /**
@@ -502,13 +453,7 @@ public class Activity extends Listable {
      * @param lastAdmissionDate The last date of admissions to the Activity.
      */
     public void setLastAdmissionDate(final LocalDate lastAdmissionDate) {
-
-        // Check sanity
-        final LocalDate nonNull = Objects.requireNonNull(lastAdmissionDate,
-                "Cannot handle null 'lastAdmissionDate' argument.");
-
-        // Assign
-        this.lastAdmissionDate = GregorianCalendar.from(nonNull.atStartOfDay(TimeFormat.SWEDISH_TIMEZONE));
+        this.lastAdmissionDate = Validate.notNull(lastAdmissionDate, "lastAdmissionDate");
     }
 
     /**
@@ -535,7 +480,7 @@ public class Activity extends Listable {
      * @param addressCategory the addressCategory of this Activity.
      */
     public final void setAddressCategory(final Category addressCategory) {
-        this.addressCategory = Objects.requireNonNull(addressCategory, "Cannot handle null addressCategory argument.");
+        this.addressCategory = Validate.notNull(addressCategory, "addressCategory");
     }
 
     /**
@@ -545,9 +490,7 @@ public class Activity extends Listable {
      *                                such as "Stadsbiblioteket".
      */
     public void setAddressShortDescription(final String addressShortDescription) {
-        this.addressShortDescription = Objects.requireNonNull(
-                addressShortDescription,
-                "Cannot handle null or empty addressShortDescription argument.");
+        this.addressShortDescription = Validate.notNull(addressShortDescription, "addressShortDescription");
     }
 
     /**
@@ -572,7 +515,7 @@ public class Activity extends Listable {
      * @param dressCode The dress code of the activity, if applicable. Cannot be null.
      */
     public void setDressCode(final String dressCode) {
-        this.dressCode = Objects.requireNonNull(dressCode, "Cannot handle null dressCode argument.");
+        this.dressCode = Validate.notEmpty(dressCode, "dressCode");
     }
 
     /**
