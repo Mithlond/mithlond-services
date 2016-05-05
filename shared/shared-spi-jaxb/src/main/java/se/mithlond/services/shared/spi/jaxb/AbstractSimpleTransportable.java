@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.spi.jaxb;
 
+import org.apache.commons.lang3.Validate;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -31,7 +33,7 @@ import java.util.Objects;
 /**
  * Abstract definition for an object which should be transportable and still maintain a connection to
  * a standard database-persisted Entity using a Long for JPA ID. If Java 8 time and date classes are to be
- * marshalled, use the
+ * marshalled, use the implemented JAXB adapters provided within this project.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  * @see se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter
@@ -78,6 +80,15 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
     }
 
     /**
+     * Initializes this {@link AbstractSimpleTransportable} by assigning its JPA ID.
+     *
+     * @param jpaID A non-null and positive JPA ID.
+     */
+    protected void initialize(final Long jpaID) {
+        this.jpaID = Validate.notNull(jpaID, "jpaID");
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -109,7 +120,9 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getClass().getName(), jpaID);
+
+        final Long effectiveJpaID = jpaID == null ? 0L : jpaID;
+        return Objects.hash(getClass().getName(), effectiveJpaID);
     }
 
     /**
@@ -150,5 +163,14 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
 
         // All Done.
         return toReturn;
+    }
+
+    /**
+     * Checks if this {@link AbstractSimpleTransportable} represents a state which is retrieved from the Database.
+     *
+     * @return {@code true} if this {@link AbstractSimpleTransportable} represents a persisted Entity state.
+     */
+    protected final boolean isPersisted() {
+        return jpaID != null;
     }
 }

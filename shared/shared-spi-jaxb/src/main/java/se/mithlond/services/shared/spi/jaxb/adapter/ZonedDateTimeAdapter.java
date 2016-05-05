@@ -41,13 +41,7 @@ public class ZonedDateTimeAdapter extends XmlAdapter<String, ZonedDateTime> {
      */
     @Override
     public ZonedDateTime unmarshal(final String transportForm) throws Exception {
-
-        // Handle nulls
-        if(transportForm == null) {
-            return null;
-        }
-
-        return ZonedDateTime.parse(transportForm, DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        return transportForm == null ? null : ZonedDateTime.parse(transportForm, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
 
     /**
@@ -55,12 +49,6 @@ public class ZonedDateTimeAdapter extends XmlAdapter<String, ZonedDateTime> {
      */
     @Override
     public String marshal(final ZonedDateTime dateTime) throws Exception {
-
-        // Handle nulls
-        if(dateTime == null) {
-            return null;
-        }
-
-        return DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime);
+        return dateTime == null ? null : DateTimeFormatter.ISO_ZONED_DATE_TIME.format(dateTime);
     }
 }

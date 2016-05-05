@@ -36,22 +36,11 @@ import java.time.format.DateTimeFormatter;
 public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
 
     /**
-     * Use the {@link DateTimeFormatter#ISO_LOCAL_DATE}.
-     */
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public LocalDate unmarshal(final String transportForm) throws Exception {
-
-        // Handle nulls
-        if(transportForm == null)  {
-            return null;
-        }
-
-        return LocalDate.parse(transportForm, FORMATTER);
+        return transportForm == null ? null : LocalDate.parse(transportForm, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     /**
@@ -59,12 +48,6 @@ public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
      */
     @Override
     public String marshal(final LocalDate instant) throws Exception {
-
-        // Handle nulls
-        if(instant == null) {
-            return null;
-        }
-
-        return FORMATTER.format(instant);
+        return instant == null ? null : DateTimeFormatter.ISO_LOCAL_DATE.format(instant);
     }
 }

@@ -68,9 +68,10 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = Activity.NAMEDQ_GET_BY_ORGANISATION_AND_DATERANGE,
+        @NamedQuery(name = Activity.NAMEDQ_GET_BY_ORGANISATION_IDS_AND_DATERANGE,
                 query = "select a from Activity a "
-                        + " where a.owningOrganisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " where ( 0 = :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS
+                        + " or a.owningOrganisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_NAME + " ) "
                         + " and a.startTime between :" + OrganisationPatterns.PARAM_START_TIME
                         + " and :" + OrganisationPatterns.PARAM_END_TIME
                         + " order by a.startTime")
@@ -87,8 +88,8 @@ public class Activity extends Listable {
      * NamedQuery for getting Memberships by alias and organisation name.
      * Found Memberships are retrieved irrespective of their LoginPermitted flag.
      */
-    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_DATERANGE =
-            "Activity.getByOrganisationAndDateRange";
+    public static final String NAMEDQ_GET_BY_ORGANISATION_IDS_AND_DATERANGE =
+            "Activity.getByOrganisationIdsAndDateRange";
 
     /**
      * The start time of the Activity. Never null.
@@ -202,7 +203,7 @@ public class Activity extends Listable {
      */
     @NotNull
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "activity")
-    @XmlElementWrapper(name = "admissions", nillable = false, required = true)
+    @XmlElementWrapper(name = "admissions", required = true)
     @XmlElement(name = "admission")
     private Set<Admission> admissions;
 
@@ -291,7 +292,7 @@ public class Activity extends Listable {
         }
 
         this.lateAdmissionDate = lateAdmissionDate;
-        this.lateAdmissionDate = lateAdmissionDate;
+        this.lastAdmissionDate = lastAdmissionDate;
         this.cancelled = cancelled;
         this.addressCategory = addressCategory;
         this.location = location;
@@ -548,6 +549,7 @@ public class Activity extends Listable {
                 .notNull(endTime, "endTime")
                 .notNull(addressCategory, "addressCategory")
                 .notNullOrEmpty(addressShortDescription, "addressShortDescription")
+                .notNull(lastAdmissionDate, "lastAdmissionDate")
                 .endExpressionAndValidate();
     }
 

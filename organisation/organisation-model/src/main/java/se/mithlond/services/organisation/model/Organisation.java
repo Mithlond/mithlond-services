@@ -107,7 +107,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      */
     @Basic
     @Column(length = 1024)
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private String suffix;
 
     /**
@@ -115,21 +115,21 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      */
     @Basic
     @Column(length = 64)
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private String phone;
 
     /**
      * The bank account number of this organisation.
      */
     @Basic
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private String bankAccountInfo;
 
     /**
      * The postal account number of this organisation.
      */
     @Basic
-    @XmlElement(required = false, nillable = true)
+    @XmlElement
     private String postAccountInfo;
 
     /**
@@ -145,7 +145,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      * The visiting address of this organisation.
      */
     @Embedded
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private Address visitingAddress;
 
     /**

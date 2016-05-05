@@ -26,8 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.address.Address;
-import se.mithlond.services.organisation.model.helpers.Organisations;
+import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -76,7 +79,7 @@ public class OrganisationTest extends AbstractEntityTest {
         // Assert
         Assert.assertEquals(1, result.getOrganisations().size());
 
-        final Organisation resurrected = result.getOrganisations().get(0);
+        final Organisation resurrected = result.getOrganisations().iterator().next();
         Assert.assertNotSame(unitUnderTest, resurrected);
         Assert.assertEquals(unitUnderTest, resurrected);
     }

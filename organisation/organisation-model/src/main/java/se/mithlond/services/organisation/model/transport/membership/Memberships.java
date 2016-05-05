@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-organisation-api
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2015 Mithlond
  * %%
@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.transport;
+package se.mithlond.services.organisation.model.transport.membership;
 
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -44,33 +44,46 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Transport class for memberships, users and organisations.
+ * Transport class for memberships, users and organisations. This is the transport object for detailed entities,
+ * and not the shallow version.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisations", "groups", "users", "memberships"})
+@XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"organisations", "groups", "users", "memberships"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Memberships {
 
-    // Internal state
-    @XmlElementWrapper(required = false)
-    @XmlElement(nillable = false, required = false, name = "user")
+    /**
+     * All {@link User}s correlating to transported {@link Membership}s.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "user")
     private List<User> users;
 
-    @XmlElementWrapper(required = false)
-    @XmlElement(nillable = false, required = false, name = "organisation")
+    /**
+     * All {@link User}s correlating to transported {@link Membership}s.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "organisation")
     private List<Organisation> organisations;
 
+    /**
+     * All {@link Group}s correlating to transported {@link Membership}s.
+     */
     @XmlElementWrapper(required = false)
     @XmlElements(value = {
-            @XmlElement(required = false, name = "group", type = Group.class),
-            @XmlElement(required = false, name = "guild", type = Guild.class)
+            @XmlElement(name = "group", type = Group.class),
+            @XmlElement(name = "guild", type = Guild.class)
     })
     private List<Group> groups;
 
-    @XmlElementWrapper(required = false)
-    @XmlElement(nillable = false, required = false, name = "membership")
+    /**
+     * All {@link Membership}s transported in this wrapper.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "membership")
     private List<Membership> memberships;
 
     /**

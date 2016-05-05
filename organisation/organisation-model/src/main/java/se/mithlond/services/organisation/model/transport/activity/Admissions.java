@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-organisation-api
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2015 Mithlond
  * %%
@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.transport.activity;
+package se.mithlond.services.organisation.model.transport.activity;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 
@@ -37,8 +37,8 @@ import java.util.List;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"details"})
+@XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"details"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Admissions {
 

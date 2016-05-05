@@ -40,13 +40,7 @@ public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
      */
     @Override
     public LocalTime unmarshal(final String transportForm) throws Exception {
-
-        // Handle nulls
-        if(transportForm == null) {
-            return null;
-        }
-
-        return LocalTime.parse(transportForm, DateTimeFormatter.ISO_LOCAL_TIME);
+        return transportForm == null ? null : LocalTime.parse(transportForm, DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
     /**
@@ -54,11 +48,6 @@ public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> {
      */
     @Override
     public String marshal(final LocalTime objectForm) throws Exception {
-
-        if(objectForm == null) {
-            return null;
-        }
-
-        return DateTimeFormatter.ISO_LOCAL_TIME.format(objectForm);
+        return objectForm == null ? null : DateTimeFormatter.ISO_LOCAL_TIME.format(objectForm);
     }
 }

@@ -32,9 +32,14 @@ import javax.xml.bind.annotation.XmlTransient;
 public final class OrganisationPatterns {
 
     /**
-     * The XML namespace used by content model transport objects.
+     * The XML namespace used by organisation model entity objects.
      */
     public static final String NAMESPACE = "http://xmlns.mithlond.se/xml/ns/organisation";
+
+    /**
+     * The XML namespace used by organisation model transport objects.
+     */
+    public static final String TRANSPORT_NAMESPACE = "http://xmlns.mithlond.se/xml/ns/organisation/transport";
 
     /**
      * NamedQuery parameter name for membershipId.

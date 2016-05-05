@@ -60,6 +60,8 @@ public class TimeFormatTest extends AbstractStandardizedTimezoneTest {
 		expected.put(TimeFormat.YEAR_MONTH_DATE, "2014-05-01");
 		expected.put(TimeFormat.HOURS_MINUTES, "13:15");
 		expected.put(TimeFormat.XML_TRANSPORT, "2014-05-01T13:15:00+0200");
+		expected.put(TimeFormat.COMPACT_LOCALDATE, "20140501");
+		expected.put(TimeFormat.COMPACT_LOCALDATETIME, "20140501131500");
 
 		// Act
 

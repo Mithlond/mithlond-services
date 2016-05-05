@@ -28,8 +28,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.organisation.api.transport.activity.AdmissionVO;
-import se.mithlond.services.organisation.api.transport.activity.Admissions;
+import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.List;

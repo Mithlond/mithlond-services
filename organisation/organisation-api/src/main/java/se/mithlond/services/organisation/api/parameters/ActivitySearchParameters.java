@@ -23,7 +23,6 @@ package se.mithlond.services.organisation.api.parameters;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,12 +30,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.SortedMap;
 
 /**
@@ -52,24 +50,24 @@ public class ActivitySearchParameters
 
     // Internal state
     @XmlElement(required = true)
-    private ZonedDateTime startPeriod;
+    private LocalDateTime startPeriod;
 
     @XmlElement(required = true)
-    private ZonedDateTime endPeriod;
+    private LocalDateTime endPeriod;
 
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = false, required = true, name = "organisationID")
+    @XmlElementWrapper
+    @XmlElement(name = "organisationID")
     private List<Long> organisationIDs;
 
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = false, required = true, name = "activityID")
+    @XmlElementWrapper
+    @XmlElement(name = "activityID")
     private List<Long> activityIDs;
 
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = false, required = true, name = "membershipID")
+    @XmlElementWrapper
+    @XmlElement(name = "membershipID")
     private List<Long> membershipIDs;
 
-    @XmlElement(required = false)
+    @XmlElement
     private String freeTextSearch;
 
     /**
@@ -88,8 +86,8 @@ public class ActivitySearchParameters
      * @param membershipIDs   the membership JPA IDs for which results should be retrieved.
      * @param freeTextSearch  an optional text snippet which should serve as the criterion of a free text search.
      */
-    private ActivitySearchParameters(final ZonedDateTime startPeriod,
-            final ZonedDateTime endPeriod,
+    private ActivitySearchParameters(final LocalDateTime startPeriod,
+            final LocalDateTime endPeriod,
             final List<Long> organisationIDs,
             final List<Long> activityIDs,
             final List<Long> membershipIDs,
@@ -106,14 +104,14 @@ public class ActivitySearchParameters
     /**
      * @return the start of the time period for which results should be retrieved.
      */
-    public ZonedDateTime getStartPeriod() {
+    public LocalDateTime getStartPeriod() {
         return startPeriod;
     }
 
     /**
      * @return the end of the time period for which results should be retrieved.
      */
-    public ZonedDateTime getEndPeriod() {
+    public LocalDateTime getEndPeriod() {
         return endPeriod;
     }
 
@@ -181,8 +179,8 @@ public class ActivitySearchParameters
         public static final TemporalAmount DEFAULT_PERIOD_SIZE = Period.ofMonths(3);
 
         // Internal state
-        private ZonedDateTime startPeriod;
-        private ZonedDateTime endPeriod;
+        private LocalDateTime startPeriod;
+        private LocalDateTime endPeriod;
         private List<Long> organisationIDs = new ArrayList<>();
         private List<Long> activityIDs = new ArrayList<>();
         private List<Long> membershipIDs = new ArrayList<>();
@@ -230,10 +228,12 @@ public class ActivitySearchParameters
          * @return This ActivitySearchParametersBuilder instance.
          * @see #DEFAULT_PERIOD_SIZE
          */
-        public ActivitySearchParametersBuilder withEndPeriod(@NotNull final ZonedDateTime endPeriod) {
+        public ActivitySearchParametersBuilder withEndPeriod(@NotNull final LocalDateTime endPeriod) {
 
-            this.endPeriod = Objects.requireNonNull(endPeriod, "Cannot handle null 'endPeriod' argument.");
-            syncPeriod();
+            if (endPeriod != null) {
+                this.endPeriod = endPeriod;
+                syncPeriod();
+            }
 
             // All Done.
             return this;
@@ -248,10 +248,36 @@ public class ActivitySearchParameters
          * @return This ActivitySearchParametersBuilder instance.
          * @see #DEFAULT_PERIOD_SIZE
          */
-        public ActivitySearchParametersBuilder withStartPeriod(@NotNull final ZonedDateTime startPeriod) {
+        public ActivitySearchParametersBuilder withStartPeriod(@NotNull final LocalDateTime startPeriod) {
 
-            this.startPeriod = Objects.requireNonNull(startPeriod, "Cannot handle null 'startPeriod' argument.");
-            syncPeriod();
+            // Handle nulls.
+            if (startPeriod != null) {
+                this.startPeriod = startPeriod;
+                syncPeriod();
+            }
+
+            // All Done.
+            return this;
+        }
+
+        /**
+         * Assigns the supplied startPeriod to this ActivitySearchParametersBuilder.
+         * Unless the endPeriod value is set properly, it will be adjusted to be a default Period after the
+         * supplied startPeriod.
+         *
+         * @param startLocalDateTimeString The start of the period in which to search for Activities, expected on the
+         *                                 form {@link TimeFormat#COMPACT_LOCALDATETIME}.
+         * @return This ActivitySearchParametersBuilder instance.
+         * @see TimeFormat#COMPACT_LOCALDATETIME
+         */
+        public ActivitySearchParametersBuilder withStartPeriod(@NotNull final String startLocalDateTimeString) {
+
+            // Handle nulls.
+            if (startLocalDateTimeString != null && !startLocalDateTimeString.isEmpty()) {
+
+                this.startPeriod = TimeFormat.COMPACT_LOCALDATETIME.parse(startLocalDateTimeString).toLocalDateTime();
+                syncPeriod();
+            }
 
             // All Done.
             return this;
@@ -265,8 +291,10 @@ public class ActivitySearchParameters
          */
         public ActivitySearchParametersBuilder withFreeText(@NotNull final String freeText) {
 
-            // Assign internal state
-            this.freeTextSearch = Validate.notEmpty(freeText, "freeText");
+            // Handle nulls.
+            if (freeText != null && !freeText.isEmpty()) {
+                this.freeTextSearch = freeText;
+            }
 
             // All done.
             return this;
@@ -280,7 +308,7 @@ public class ActivitySearchParameters
 
             // Ensure that we have a validity period
             if (startPeriod == null) {
-                startPeriod = ZonedDateTime.now();
+                startPeriod = LocalDateTime.now();
                 syncPeriod();
             }
 

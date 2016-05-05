@@ -50,6 +50,25 @@ public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilde
     public static final String ANY_STRING = "%";
 
     /**
+     * Flag to indicate if detailed responses are preferred/requested.
+     */
+    protected boolean preferDetailedResponse = false;
+
+    /**
+     * Adds the provided organisation IDs parameter to be used by the GroupIdSearchParametersBuilder instance.
+     *
+     * @param isDetailedResponsePreferred {@code true} to indicate if detailed responses are preferred/requested.
+     * @return This {@link AbstractParameterBuilder} subtype instance.
+     */
+    public E withDetailedResponsePreferred(@NotNull final boolean isDetailedResponsePreferred) {
+
+        preferDetailedResponse = isDetailedResponsePreferred;
+
+        // All Done.
+        return (E) this;
+    }
+
+    /**
      * Adds the values within the toAdd in order to the supplied list with the given parameterName.
      *
      * @param list          The List of strings holding the configuration parameter.
@@ -65,7 +84,7 @@ public abstract class AbstractParameterBuilder<E extends AbstractParameterBuilde
         // Check sanity
         Validate.notNull(list, "Cannot handle null list argument.");
 
-        if (toAdd.length > 0) {
+        if (toAdd != null && toAdd.length > 0) {
             for (int i = 0; i < toAdd.length; i++) {
 
                 // Check the current argument

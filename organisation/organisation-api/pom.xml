@@ -83,27 +83,6 @@
     <!-- | Section 3:  Build settings                     -->
     <!-- +=============================================== -->
     <!-- build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.16</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>6.11.2</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>se.jguru.nazgul.tools.codestyle</groupId>
-                            <artifactId>nazgul-codestyle</artifactId>
-                            <version>${nazgul.tools.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build -->
 
     <!-- +=============================================== -->

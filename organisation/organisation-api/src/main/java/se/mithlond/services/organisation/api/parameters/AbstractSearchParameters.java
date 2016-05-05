@@ -21,6 +21,12 @@
  */
 package se.mithlond.services.organisation.api.parameters;
 
+import se.mithlond.services.organisation.model.OrganisationPatterns;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -30,12 +36,29 @@ import java.util.TreeMap;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"preferDetailedResponse"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSearchParameters<E extends AbstractParameterBuilder<E>> implements Serializable {
+
+    /**
+     * Flag to indicate if a detailed response is preferred.
+     */
+    @XmlAttribute
+    protected boolean preferDetailedResponse = false;
 
     /**
      * Serializable-friendly constructor.
      */
     public AbstractSearchParameters() {
+    }
+
+    /**
+     * Flag to indicate if a detailed response is preferred.
+     *
+     * @return {@code true} to indicate if a detailed response is preferred.
+     */
+    public boolean isDetailedResponsePreferred() {
+        return preferDetailedResponse;
     }
 
     /**

@@ -60,7 +60,8 @@ import javax.xml.bind.annotation.XmlType;
         @UniqueConstraint(
                 name = "categoryIdAndClassificationIsUnique",
                 columnNames = {"categoryID", "classification"})})
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "classification", "categoryID", "description"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
 
@@ -119,8 +120,8 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
      * @param description    The (fuller/richer) description of this Category. Cannot be null or empty.
      */
     public Category(final String categoryID,
-                    final String classification,
-                    final String description) {
+            final String classification,
+            final String description) {
 
         super();
 

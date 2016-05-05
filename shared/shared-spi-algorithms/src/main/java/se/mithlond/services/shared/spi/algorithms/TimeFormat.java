@@ -51,9 +51,19 @@ public enum TimeFormat {
     YEAR_MONTH_DATE("yyyy-MM-dd"),
 
     /**
+     * A format yielding "20140213" or equivalent.
+     */
+    COMPACT_LOCALDATE("yyyyMMdd"),
+
+    /**
      * A format yielding "2014-02-13 14:23" or equivalent.
      */
     YEAR_MONTH_DATE_HOURS_MINUTES("yyyy-MM-dd HH:mm"),
+
+    /**
+     * A format yielding "20140213132500" or equivalent.
+     */
+    COMPACT_LOCALDATETIME("yyyyMMddHHmmss"),
 
     /**
      * A format retrieving hours and minutes only ("12:45").

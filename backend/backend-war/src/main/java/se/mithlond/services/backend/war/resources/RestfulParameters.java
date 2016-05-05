@@ -21,6 +21,10 @@
  */
 package se.mithlond.services.backend.war.resources;
 
+import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
+
+import java.time.LocalDate;
+
 /**
  * Utility class to hold constants and methods related to RESTful parameters.
  *
@@ -34,9 +38,24 @@ public final class RestfulParameters {
     public static final String OUTBOUND_HEADER_PREFIX = "mithlond.services.";
 
     /**
+     * Parameter name for a JPA ID.
+     */
+    public static final String JPA_ID = "id";
+
+    /**
+     * Parameter name for indicating if (full) details should be emitted in the response.
+     */
+    public static final String DETAILS = "detail";
+
+    /**
      * Parameter name for the name of an organisation.
      */
     public static final String ORGANISATION_NAME = "org";
+
+    /**
+     * Parameter name for a JPA ID of an Organisation.
+     */
+    public static final String ORGANISATION_JPA_ID = "orgid";
 
     /**
      * Parameter name for the (marshalled) data of a MenuStructure.
@@ -47,4 +66,21 @@ public final class RestfulParameters {
      * Parameter name for deciding if inbound data is in XML or JSON form.
      */
     public static final String ISXML = "isxml";
+
+    /**
+     * Parameter name for a date given in yyyyMMdd form.
+     */
+    public static final String FROM_DATE = "frd";
+
+    /**
+     * Parameter name for a date given in yyyyMMdd form.
+     */
+    public static final String TO_DATE = "frd";
+
+    /*
+     * Hide constructor for utility classes.
+     */
+    private RestfulParameters() {
+        // Do nothing
+    }
 }

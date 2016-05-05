@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-organisation-api
+ * Nazgul Project: mithlond-services-organisation-model
  * %%
  * Copyright (C) 2010 - 2013 jGuru Europe AB
  * %%
@@ -19,17 +19,18 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.transport.activity;
+package se.mithlond.services.organisation.model.transport.activity;
 
 import org.apache.commons.lang3.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.activity.Admission;
+import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -38,10 +39,10 @@ import java.util.Optional;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
         propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
+public class AdmissionVO extends AbstractSimpleTransportable {
 
     /**
      * Default ActivityID value, indicating that this {@link AdmissionVO} instance is not yet
@@ -98,9 +99,9 @@ public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
      * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
     public AdmissionVO(final String alias,
-                            final String organisation,
-                            final String note,
-                            final boolean responsible) {
+            final String organisation,
+            final String note,
+            final boolean responsible) {
 
         this(UNINITIALIZED, alias, organisation, note, responsible);
     }
@@ -116,10 +117,10 @@ public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
      * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
     public AdmissionVO(final Long activityID,
-                            final String alias,
-                            final String organisation,
-                            final String note,
-                            final boolean responsible) {
+            final String alias,
+            final String organisation,
+            final String note,
+            final boolean responsible) {
 
         // Check sanity
         Validate.notEmpty(alias, "Cannot handle null or empty alias argument.");
@@ -131,6 +132,20 @@ public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
         this.organisation = organisation;
         this.note = note;
         this.responsible = responsible;
+    }
+
+    /**
+     * Copy constructor to turn an {@link Admission} into an {@link AdmissionVO}.
+     *
+     * @param admission a non-null {@link Admission} entity.
+     */
+    public AdmissionVO(final Admission admission) {
+
+        // Check sanity
+        Validate.notNull(admission, "admission");
+
+        // Assign internal state
+
     }
 
     /**
@@ -205,35 +220,41 @@ public class AdmissionVO implements Comparable<AdmissionVO>, Serializable {
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(final AdmissionVO that) {
+    public int compareTo(final AbstractSimpleTransportable cmp) {
 
-        // Check sanity
-        if (that == null) {
-            return -1;
-        } else if (that == this) {
-            return 0;
-        }
+        if (cmp instanceof AdmissionVO) {
 
-        // Delegate to normal value
-        int toReturn = getAlias().compareTo(that.getAlias());
-        if (toReturn == 0) {
-            toReturn = getOrganisation().compareTo(that.getOrganisation());
-        }
-        if (toReturn == 0) {
+            final AdmissionVO that = (AdmissionVO) cmp;
 
-            final String thisNote = this.getNote().orElse("");
-            final String thatNote = that.getNote().orElse("");
-            toReturn = thisNote.compareTo(thatNote);
-        }
-        if (toReturn == 0) {
-            if (isResponsible()) {
-                toReturn = that.isResponsible() ? 0 : 1;
-            } else {
-                toReturn = that.isResponsible() ? -1 : 0;
+            // Check sanity
+            if (that == this) {
+                return 0;
             }
+
+            // Delegate to normal value
+            int toReturn = getAlias().compareTo(that.getAlias());
+            if (toReturn == 0) {
+                toReturn = getOrganisation().compareTo(that.getOrganisation());
+            }
+            if (toReturn == 0) {
+
+                final String thisNote = this.getNote().orElse("");
+                final String thatNote = that.getNote().orElse("");
+                toReturn = thisNote.compareTo(thatNote);
+            }
+            if (toReturn == 0) {
+                if (isResponsible()) {
+                    toReturn = that.isResponsible() ? 0 : 1;
+                } else {
+                    toReturn = that.isResponsible() ? -1 : 0;
+                }
+            }
+
+            // All done.
+            return toReturn;
         }
 
-        // All done.
-        return toReturn;
+        // Delegate.
+        return super.compareTo(cmp);
     }
 }

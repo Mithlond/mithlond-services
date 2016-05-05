@@ -138,9 +138,19 @@
                                     <toFile>NazgulCore.xsd</toFile>
                                 </transformSchema>
                                 <transformSchema>
+                                    <uri>http://xmlns.mithlond.se/xml/ns/shared/jaxb</uri>
+                                    <toPrefix>mithlond_shared</toPrefix>
+                                    <toFile>MithlondSharedJaxb.xsd</toFile>
+                                </transformSchema>
+                                <transformSchema>
                                     <uri>http://xmlns.mithlond.se/xml/ns/organisation</uri>
-                                    <toPrefix>organisation</toPrefix>
+                                    <toPrefix>mithlond_organisation</toPrefix>
                                     <toFile>MithlondOrganisation.xsd</toFile>
+                                </transformSchema>
+                                <transformSchema>
+                                    <uri>http://xmlns.mithlond.se/xml/ns/organisation/transport</uri>
+                                    <toPrefix>mithlond_organisation_transport</toPrefix>
+                                    <toFile>MithlondOrganisationTransport.xsd</toFile>
                                 </transformSchema>
                             </transformSchemas>
                         </configuration>

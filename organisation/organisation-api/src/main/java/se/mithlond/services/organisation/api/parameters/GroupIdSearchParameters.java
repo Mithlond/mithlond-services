@@ -26,6 +26,7 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
@@ -44,16 +45,16 @@ public class GroupIdSearchParameters
         extends AbstractSearchParameters<GroupIdSearchParameters.GroupIdSearchParametersBuilder> {
 
     // Internal state
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = false, required = true, name = "groupID")
+    @XmlElementWrapper
+    @XmlElement(name = "groupID")
     private List<Long> groupIDs;
 
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = false, required = true, name = "organisationID")
+    @XmlElementWrapper
+    @XmlElement(name = "organisationID")
     private List<Long> organisationIDs;
 
-    @XmlElementWrapper(required = false, nillable = true)
-    @XmlElement(nillable = false, required = true, name = "classifierID")
+    @XmlElementWrapper
+    @XmlElement(name = "classifierID")
     private List<Long> classifierIDs;
 
     /**

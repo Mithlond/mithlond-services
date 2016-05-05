@@ -24,7 +24,6 @@ package se.mithlond.services.organisation.impl.ejb;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
-import se.mithlond.services.organisation.api.transport.organisation.OrganisationVO;
 import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -32,6 +31,10 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 import se.mithlond.services.organisation.model.membership.Group;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
+import se.mithlond.services.organisation.model.transport.Organisations;
+import se.mithlond.services.organisation.model.transport.membership.GroupVO;
+import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
@@ -55,39 +58,61 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      * {@inheritDoc}
      */
     @Override
-    public List<OrganisationVO> getOrganisations() {
+    public Organisations getOrganisations(final boolean detailedRepresentation) {
 
         final List<Organisation> allOrganisations = entityManager.createNamedQuery(
                 Organisation.NAMEDQ_GET_ALL, Organisation.class)
                 .getResultList();
 
-        // Convert to OrganizationVOs and return.
-        return allOrganisations.stream()
-                .map(c -> new OrganisationVO(
-                        c.getId(),
-                        c.getOrganisationName(),
-                        c.getSuffix()))
-                .collect(Collectors.toList());
+        final Organisations toReturn = new Organisations();
+
+        if (detailedRepresentation) {
+
+            // Simply populate the organisations Set within the transport object
+            toReturn.getOrganisations().addAll(allOrganisations);
+        } else {
+
+            // Convert to OrganizationVOs and add to the OrganisationVO Set within the Transport Object.
+            toReturn.getOrganisationVOs().addAll(
+                    allOrganisations.stream()
+                            .map(c -> new OrganisationVO(
+                                    c.getId(),
+                                    c.getOrganisationName(),
+                                    c.getSuffix()))
+                            .collect(Collectors.toList()));
+        }
+
+        // All Done.
+        return toReturn;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Organisation getOrganisationDetails(final long jpaID) {
-        return entityManager.find(Organisation.class, jpaID);
+    public Organisations getOrganisation(final long jpaID, final boolean detailedRepresentation) {
+
+        final Organisation organisation = entityManager.find(Organisation.class, jpaID);
+
+        final Organisations toReturn = new Organisations();
+        if (detailedRepresentation) {
+            toReturn.getOrganisations().add(organisation);
+        } else {
+            toReturn.getOrganisationVOs().add(new OrganisationVO(organisation));
+        }
+
+        // All Done.
+        return toReturn;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Group> getGroups(@NotNull final GroupIdSearchParameters searchParameters) {
+    public Groups getGroups(@NotNull final GroupIdSearchParameters searchParameters) {
 
         // Check sanity
         Validate.notNull(searchParameters, "searchParameters");
-
-        final List<Group> toReturn = new ArrayList<>();
 
         // Pad the ID Lists.
         final int groupIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getGroupIDs(), 0L);
@@ -108,8 +133,21 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONIDS, classifierIDsSize)
                 .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION_IDS, classifierIDs)
                 .getResultList();
-        toReturn.addAll(groups);
 
+        final Groups toReturn = new Groups();
+        if (searchParameters.isDetailedResponsePreferred()) {
+
+            // Simply add all retrieved groups.
+            toReturn.getGroups().addAll(groups);
+
+        } else {
+
+            // Convert to GroupVOs and add.
+            toReturn.getGroupVOs().addAll(groups
+                    .stream()
+                    .map(GroupVO::new)
+                    .collect(Collectors.toList()));
+        }
 
         // All Done.
         return toReturn;

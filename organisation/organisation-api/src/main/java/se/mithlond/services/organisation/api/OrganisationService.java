@@ -23,11 +23,12 @@ package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
-import se.mithlond.services.organisation.api.transport.organisation.OrganisationVO;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
+import se.mithlond.services.organisation.model.transport.Organisations;
+import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
@@ -46,21 +47,27 @@ import java.util.List;
 public interface OrganisationService extends JpaCudService {
 
     /**
-     * Retrieves VOs for all known Organisations.
+     * Retrieves all known Organisations.
      *
+     * @param detailedRepresentation if {@code true}, the full detailed representation ({@link Organisation})
+     *                               is supplied, and otherwise ValueObjects
+     *                               ({@link se.mithlond.services.organisation.model.transport.OrganisationVO}).
      * @return A List of VOs of all known Organisations.
      */
-    List<OrganisationVO> getOrganisations();
+    Organisations getOrganisations(final boolean detailedRepresentation);
 
     /**
      * Retrieves detailed information about a particular organisation.
      *
-     * @param jpaID The JPA ID of the {@link Organisation} which should be retrieved.
-     *              The value can be retrieved from the {@link #getOrganisations()} method.
+     * @param jpaID                  The JPA ID of the {@link Organisation} which should be retrieved.
+     *                               The value can be retrieved from the {@link #getOrganisations(boolean)} method.
+     * @param detailedRepresentation if {@code true}, the full detailed representation ({@link Organisation})
+     *                               is supplied, and otherwise ValueObjects
+     *                               ({@link se.mithlond.services.organisation.model.transport.OrganisationVO}).
      * @return The full Organisation entity, or {@code null} if no organisation with a matching JPA ID was found.
-     * @see #getOrganisations()
+     * @see #getOrganisations(boolean)
      */
-    Organisation getOrganisationDetails(final long jpaID);
+    Organisations getOrganisation(final long jpaID, final boolean detailedRepresentation);
 
     /**
      * Retrieves all Groups matching the supplied searchParameters.
@@ -69,7 +76,7 @@ public interface OrganisationService extends JpaCudService {
      *                         groups (or organisations) which should be retrieved.
      * @return all Groups matching the supplied searchParameters.
      */
-    List<Group> getGroups(@NotNull GroupIdSearchParameters searchParameters);
+    Groups getGroups(@NotNull GroupIdSearchParameters searchParameters);
 
     /**
      * Retrieves all CategorizedAddresses matching the supplied searchParameters.

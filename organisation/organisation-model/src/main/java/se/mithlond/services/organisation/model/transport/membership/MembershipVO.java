@@ -1,6 +1,28 @@
-package se.mithlond.services.organisation.api.transport.organisation;
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-organisation-model
+ * %%
+ * Copyright (C) 2015 - 2016 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package se.mithlond.services.organisation.model.transport.membership;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
@@ -16,24 +38,38 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
         propOrder = {"alias", "organisation", "subAlias", "emailAlias", "loginPermitted"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MembershipVO extends AbstractSimpleTransportable {
 
-    // Internal state
+    /**
+     * The non-empty alias of the Membership.
+     */
     @XmlElement(required = true)
     private String alias;
 
+    /**
+     * The optional sub-alias of the Membership.
+     */
     @XmlElement
     private String subAlias;
 
+    /**
+     * The optional email-alias of the Membership.
+     */
     @XmlElement
     private String emailAlias;
 
+    /**
+     * If {@code true}, indicates that the Membership is permitted login (i.e. not locked out).
+     */
     @XmlAttribute(required = true)
     private boolean loginPermitted;
 
+    /**
+     * The non-null {@link OrganisationVO} in which this {@link MembershipVO} is part.
+     */
     @XmlIDREF
     @XmlElement
     private OrganisationVO organisation;

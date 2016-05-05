@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   #%L
   Nazgul Project: mithlond-services-organisation-model
   %%
-  Copyright (C) 2015 Mithlond
+  Copyright (C) 2015 - 2016 Mithlond
   %%
   Licensed under the jGuru Europe AB license (the "License"), based
   on Apache License, Version 2.0; you may not use this file except
@@ -20,26 +20,21 @@
   limitations under the License.
   #L%
   -->
+
 <organisation_transport:organisations xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <organisations>
-        <organisation jpaId="0" version="0" xmlID="organisation_name" timeZoneID="Europe/Stockholm" country="SE" language="sv">
-            <organisationName>name</organisationName>
-            <suffix>suffix</suffix>
-            <phone>phone</phone>
-            <bankAccountInfo>bankAccountInfo</bankAccountInfo>
-            <postAccountInfo>postAccountInfo</postAccountInfo>
-            <emailSuffix>emailSuffix</emailSuffix>
-            <visitingAddress>
-                <careOfLine>careOfLine</careOfLine>
-                <departmentName>departmentName</departmentName>
-                <street>street</street>
-                <number>number</number>
-                <city>city</city>
-                <zipCode>zipCode</zipCode>
-                <country>country</country>
-                <description>description</description>
-            </visitingAddress>
-        </organisation>
-    </organisations>
-    <organisationVOs/>
+    <organisations/>
+    <organisationVOs>
+        <organisationVO jpaID="25" organisationName="name_0">
+            <description>suffix_0</description>
+        </organisationVO>
+        <organisationVO jpaID="26" organisationName="name_1">
+            <description>suffix_1</description>
+        </organisationVO>
+        <organisationVO jpaID="27" organisationName="name_2">
+            <description>suffix_2</description>
+        </organisationVO>
+        <organisationVO jpaID="28" organisationName="name_3">
+            <description>suffix_3</description>
+        </organisationVO>
+    </organisationVOs>
 </organisation_transport:organisations>
