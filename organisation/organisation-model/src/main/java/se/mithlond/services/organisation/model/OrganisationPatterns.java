@@ -127,6 +127,11 @@ public final class OrganisationPatterns {
     public static final String PARAM_ORGANISATION_IDS = "organisationIDs";
 
     /**
+     * NamedQuery parameter name for the organisationID found.
+     */
+    public static final String PARAM_ORGANISATION_ID = "organisationID";
+
+    /**
      * NamedQuery parameter name for the number of categoryIDs found.
      */
     public static final String PARAM_NUM_CATEGORYIDS = "numCategoryIDs";

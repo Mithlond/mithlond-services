@@ -20,8 +20,7 @@
   limitations under the License.
   #L%
   -->
-
-<organisation:admissions xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<organisation_transport:admissions xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <details>
         <admissionDetails responsible="true" activityID="20">
             <alias>alias_0</alias>
@@ -49,4 +48,4 @@
             <note>note_4</note>
         </admissionDetails>
     </details>
-</organisation:admissions>
+</organisation_transport:admissions>

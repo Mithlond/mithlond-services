@@ -29,6 +29,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 
 import javax.ejb.Local;
 import java.util.List;
@@ -116,9 +117,9 @@ public interface ActivityService {
      * Retrieves a Map relating Category to CategorizedAddress for all Location addresses
      * within the given organisation.
      *
-     * @param organisationName The name of the organisation owning the Activity-location CategorizedAddress.
+     * @param jpaID The JPA ID of the organisation for which addresses should be retrieved
      * @return a Map relating Category to a List of CategorizedAddress for all Location addresses
      * within the given organisation.
      */
-    Map<Category, List<CategorizedAddress>> getActivityLocationAddresses(final String organisationName);
+    CategoriesAndAddresses getActivityLocationAddresses(final Long jpaID);
 }

@@ -64,7 +64,7 @@ public class ActivitySearchParametersTest extends AbstractSearchParametersTest {
 				.withOrganisationIDs(5L)
 				.withActivityIDs(25L, 65L)
 				.withFreeText("foobar")
-				.withEndPeriod(endPeriod)
+				.withEndPeriod(endPeriod.toLocalDateTime())
 				.build();
 
 		// Assert

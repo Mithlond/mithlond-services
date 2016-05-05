@@ -49,10 +49,11 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_AND_CATEGORY_ID,
+        @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CATEGORY_IDS,
                 query = "select a from CategorizedAddress a "
-                        + "where a.owningOrganisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
-                        + " and a.category.categoryID like :" + OrganisationPatterns.PARAM_CATEGORY_ID
+                        + "where a.owningOrganisation.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
+                        + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_CATEGORYIDS
+                        + " or a.category.categoryID in :" + OrganisationPatterns.PARAM_CATEGORY_IDS + " ) "
                         + " order by a.shortDesc"),
         @NamedQuery(name = "CategorizedAddress.getByOrganisationAndClassification",
                 query = "select a from CategorizedAddress a "
@@ -95,8 +96,8 @@ public class CategorizedAddress extends Listable implements Comparable<Categoriz
     /**
      * NamedQuery for getting CategorizedAddresses by organisation and category ID.
      */
-    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_CATEGORY_ID =
-            "CategorizedAddress.getByOrganisationAndCategoryID";
+    public static final String NAMEDQ_GET_BY_ORGANISATION_ID_AND_CATEGORY_IDS =
+            "CategorizedAddress.getByOrganisationIdAndCategoryIDs";
 
     /**
      * The constant value indicating that a {@link CategorizedAddress} is for Activities.

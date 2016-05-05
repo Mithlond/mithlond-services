@@ -28,6 +28,7 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.transport.Organisations;
+import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
@@ -83,9 +84,10 @@ public interface OrganisationService extends JpaCudService {
      *
      * @param searchParameters The CategorizedAddressSearchParameters populated with the IDs of the
      *                         CategorizedAddresses which should be retrieved.
-     * @return all CategorizedAddresses matching the supplied searchParameters.
+     * @return all CategorizedAddresses matching the supplied searchParameters, packed within a
+     * {@link CategoriesAndAddresses} wrapper.
      */
-    List<CategorizedAddress> getCategorizedAddresses(@NotNull CategorizedAddressSearchParameters searchParameters);
+    CategoriesAndAddresses getCategorizedAddresses(@NotNull CategorizedAddressSearchParameters searchParameters);
 
     /**
      * Updates the supplied CategorizedAddress within the database.
@@ -109,8 +111,8 @@ public interface OrganisationService extends JpaCudService {
      * @return The created CategorizedAddress instance.
      */
     CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-            final String fullDesc,
-            final Address address,
-            final String category,
-            final String organisation);
+                                                        final String fullDesc,
+                                                        final Address address,
+                                                        final String category,
+                                                        final String organisation);
 }

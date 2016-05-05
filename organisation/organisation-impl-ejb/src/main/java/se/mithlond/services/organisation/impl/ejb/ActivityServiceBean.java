@@ -37,6 +37,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
@@ -44,9 +45,11 @@ import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -223,8 +226,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public Activity updateActivity(final ActivityVO activityVO,
-            final boolean onlyUpdateNonNullProperties,
-            final Membership activeMembership) {
+                                   final boolean onlyUpdateNonNullProperties,
+                                   final Membership activeMembership) {
 
 
         return null;
@@ -304,8 +307,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public boolean modifyAdmission(final ChangeType changeType,
-            final Membership actingMembership,
-            final AdmissionVO... admissionDetails) throws IllegalStateException {
+                                   final Membership actingMembership,
+                                   final AdmissionVO... admissionDetails) throws IllegalStateException {
 
         // Check sanity
         Validate.notNull(changeType, "changeType");
@@ -469,10 +472,42 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * {@inheritDoc}
      */
     @Override
-    public Map<Category, List<CategorizedAddress>> getActivityLocationAddresses(final String organisationName) {
-        return null;
-    }
+    public CategoriesAndAddresses getActivityLocationAddresses(final Long jpaID) {
 
+        // Find the IDs of all relevant categories
+        final Query query = entityManager.createQuery("select a.id from Category a"
+                + " where a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
+                + " order by a.categoryID")
+                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION, CategorizedAddress.ACTIVITY_CLASSIFICATION);
+        final List<Long> categoryJpaIDs = new ArrayList<>();
+        query.getResultList().stream().forEach(c -> {
+
+            final Long currentJpaID = (Long) c;
+            if(!categoryJpaIDs.contains(currentJpaID)) {
+                categoryJpaIDs.add(currentJpaID);
+            }
+        });
+
+        // Pad the ID Lists.
+        final int categoryIDsSize = AbstractJpaService.padAndGetSize(categoryJpaIDs, 0L);
+
+        // Extract all activity location CategorizedAddresses known to the Organisation.
+        final List<CategorizedAddress> categorizedAddresses = JpaUtilities.findEntities(CategorizedAddress.class,
+                CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CATEGORY_IDS,
+                true,
+                entityManager,
+                aQuery -> {
+                    aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, jpaID);
+                    aQuery.setParameter(OrganisationPatterns.PARAM_NUM_CATEGORYIDS, categoryIDsSize);
+                    aQuery.setParameter(OrganisationPatterns.PARAM_CATEGORY_IDS, categoryJpaIDs);
+                });
+
+        CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
+        categorizedAddresses.stream().forEach(toReturn::addCategorizedAddress);
+
+        // All Done.
+        return toReturn;
+    }
 
     //
     // Private helpers
@@ -509,7 +544,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     }
 
     private static Optional<Group> validateActivityHasResponsibleAndRetrieveGroup(final EntityManager entityManager,
-            final ActivityVO activityVO) {
+                                                                                  final ActivityVO activityVO) {
 
         final Optional<AdmissionVO> firstResponsibleAdmission = activityVO.getAdmissions()
                 .stream()

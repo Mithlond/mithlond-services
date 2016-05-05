@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.api.transport;
+package se.mithlond.services.organisation.model.transport.membership;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +31,6 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
-import se.mithlond.services.organisation.model.transport.membership.Memberships;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
@@ -82,7 +81,9 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
                     "bankAccountInfo_" + i,
                     "postAccountInfo_" + i,
                     currentAddress,
-                    "emailSuffix_" + i);
+                    "emailSuffix_" + i,
+                    TimeFormat.SWEDISH_TIMEZONE.normalized(),
+                    TimeFormat.SWEDISH_LOCALE);
 
             JpaIdMutator.setId(organisations[i], 10 + i);
         }
@@ -197,7 +198,7 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
     public void validateMarshalling() throws Exception {
 
         // Assemble
-        final String expected = XmlTestUtils.readFully("testdata/memberships.xml");
+        final String expected = XmlTestUtils.readFully("testdata/transport/membership/memberships.xml");
         final Memberships unitUnderTest = new Memberships();
         unitUnderTest.addOrganisations(organisations);
         unitUnderTest.addGroups(groupsAndGuilds);
@@ -215,7 +216,7 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
     public void validateUnmarshalling() throws Exception {
 
         // Assemble
-        final String data = XmlTestUtils.readFully("testdata/memberships.xml");
+        final String data = XmlTestUtils.readFully("testdata/transport/membership/memberships.xml");
 
         final Memberships expected = new Memberships();
         expected.addOrganisations(organisations);
