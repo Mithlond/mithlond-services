@@ -33,6 +33,7 @@ import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.organisation.model.transport.Organisations;
+import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.transport.membership.GroupVO;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.shared.spi.algorithms.Validate;
@@ -157,13 +158,12 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      * {@inheritDoc}
      */
     @Override
-    public List<CategorizedAddress> getCategorizedAddresses(@NotNull final CategorizedAddressSearchParameters searchParameters) {
+    public CategoriesAndAddresses getCategorizedAddresses(
+            @NotNull final CategorizedAddressSearchParameters searchParameters) {
 
         // Check sanity
         Validate.notNull(searchParameters, "searchParameters");
         Validate.notNull(searchParameters.getOrganisationID(), "organisationID");
-
-        final List<CategorizedAddress> toReturn = new ArrayList<>();
 
         // Pad the ID Lists.
         final int classifiersSize = AbstractJpaService.padAndGetSize(searchParameters.getClassifierIDs(), "none");
@@ -191,7 +191,9 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .setParameter(OrganisationPatterns.PARAM_STREET, searchParameters.getStreetPattern())
                 .setParameter(OrganisationPatterns.PARAM_ZIPCODE, searchParameters.getZipCodePattern())
                 .getResultList();
-        toReturn.addAll(categorizedAddresses);
+
+        final CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
+        categorizedAddresses.stream().forEach(toReturn::addCategorizedAddress);
 
         // All Done.
         return toReturn;
@@ -230,10 +232,10 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      */
     @Override
     public CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-            final String fullDesc,
-            final Address address,
-            final String category,
-            final String organisation) {
+                                                               final String fullDesc,
+                                                               final Address address,
+                                                               final String category,
+                                                               final String organisation) {
 
         final List<Organisation> organisations = JpaUtilities.findEntities(Organisation.class,
                 Organisation.NAMEDQ_GET_BY_NAME,
