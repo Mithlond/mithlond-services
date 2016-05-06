@@ -31,7 +31,6 @@ import se.mithlond.services.backend.war.providers.security.AbstractSecurityFilte
 import se.mithlond.services.backend.war.providers.security.OrganisationAndAlias;
 import se.mithlond.services.shared.spi.algorithms.Deployment;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;

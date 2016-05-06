@@ -14,7 +14,7 @@ addons:
 install:
   - "mvn -N io.takari:maven:wrapper -Dmaven=${MAVEN_VERSION}"
   - "./mvnw --show-version --errors --batch-mode validate"
-script: "./mvnw --show-version --errors --batch-mode clean verify site"
+script: "./mvnw --show-version --errors --batch-mode clean install"
 cache:
     directories:
     - $HOME/.m2

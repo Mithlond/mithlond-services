@@ -45,6 +45,11 @@
                 EclipseLink to properly operate with RestEasy (i.e. using MOXy).
              -->
             <module name="org.eclipse.persistence" services="import"/>
+            <!--
+                Include Keycloak, as we use it for securing the webapp.
+            -->
+            <!-- module name="org.jboss.resteasy.resteasy-jaxb-provider" services="import"/>
+            <module name="org.jboss.resteasy.resteasy-jaxrs" services="import"/ -->
         </dependencies>
     </deployment>
 </jboss-deployment-structure>
