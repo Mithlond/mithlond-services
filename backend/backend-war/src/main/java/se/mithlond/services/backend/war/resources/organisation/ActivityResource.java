@@ -65,15 +65,7 @@ public class ActivityResource extends AbstractResource {
                 .withEndPeriod(toDateTime)
                 .build();
 
-        final Activities toReturn = new Activities();
-
-        final List<Activity> activities = activityService.getActivities(params);
-        toReturn.getActivityVOs().addAll(
-                activities.stream()
-                        .map(ActivityVO::new)
-                        .collect(Collectors.toList()));
-
         // All Done.
-        return toReturn;
+        return activityService.getActivities(params, getDisconnectedActiveMembership().get());
     }
 }
