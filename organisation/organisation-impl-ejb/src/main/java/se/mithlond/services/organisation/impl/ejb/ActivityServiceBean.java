@@ -190,12 +190,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                     // Convert the AdmissionVO to an Admission
                     final Membership currentMembership = CommonPersistenceTasks.getSingleMembership(
                             entityManager, c.getAlias(), c.getOrganisation());
-
-                    // Compile the admission note
-                    final String admittedBySomeoneElse = " Anmäld av " + activeMembership.getAlias()
-                            + " (" + activeMembership.getOrganisation().getOrganisationName() + ")";
-                    final String admissionNote = c.getNote().orElse("")
-                            + (!currentMembership.equals(activeMembership) ? admittedBySomeoneElse : "");
+                    final String admissionNote = createAdmissionNote(activeMembership, c, currentMembership);
 
                     // All Done.
                     return new Admission(
@@ -315,7 +310,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         Validate.notNull(actingMembership, "actingMembership");
         Validate.notNull(admissionDetails, "admissionDetails");
 
-        // Re-pack into a map relating to the JPA ID of the Activity.
+        // #1) Re-pack into a map relating to the JPA ID of the Activity.
+        //
         final Map<Long, Set<AdmissionVO>> admissionVOs = new TreeMap<>();
         Arrays.asList(admissionDetails)
                 .stream()
@@ -338,7 +334,9 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                     }
                 });
 
-        // We do formally permit handling multiple Activities per call ... but it would most likely imply an error.
+        // #2) We could permit handling multiple Activities per call
+        //     ... but it would most likely imply an input error, so treat it as an error for now.
+        //
         if (admissionVOs.size() > 1) {
             final String msg = admissionVOs.keySet().stream()
                     .map(c -> "" + c)
@@ -348,7 +346,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                     .size() + "): " + msg);
         }
 
-        // Find the activity to modify
+        // #3) Find the activity to modify
+        //
         final Long activityJpaID = admissionVOs.keySet().iterator().next();
         final Activity toModify = entityManager.find(Activity.class, activityJpaID);
         final Map<AliasAndOrganisationName, AdmissionVO> modifiedAdmissions = admissionVOs.get(activityJpaID)
@@ -357,7 +356,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                         c -> new AliasAndOrganisationName(c.getAlias(), c.getOrganisation()),
                         c -> c));
 
-        // Map all current Admissions to their AliasAndOrganisationName.
+        // #4) Extract the current Admissions information; Map an AliasAndOrganisationName to the Admissions.
+        //
         final Map<AliasAndOrganisationName, Admission> currentAdmissionMap = toModify.getAdmissions()
                 .stream()
                 .collect(Collectors.toMap(
@@ -369,8 +369,12 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 .filter(c -> c.getValue().isResponsible())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+        // #5) Handle the changes per change type.
+        //
         if (changeType == ChangeType.DELETE) {
 
+            // #5.1) If a group is responsible for the Activity, we have responsible parties.
+            //
             if (toModify.getResponsible() == null) {
 
                 // Do we still have at least one Admission which is responsible for the Activity after deleting?
@@ -381,7 +385,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 validateResponsibleAdmissionsStillExist(currentResponsibleAdmissions, responsibleAdmissionsAfterDelete);
             }
 
-            // We may remove the Admissions as Requested.
+            // #5.2) Remove the Admissions as requested.
+            //
             final List<Admission> toBeRemoved = toModify.getAdmissions().stream()
                     .filter(c -> {
 
@@ -402,42 +407,91 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
             return true;
         }
 
-        // The logic to actually validate all changes in advance is quite complex.
-        // Hence, simply perform the operation and validate the state afterwards.
-        // If illegal, simply rollback the transaction.
-        modifiedAdmissions.entrySet().stream().forEach(c -> {
-
-        });
-
-
-        // We should either add Admissions or modify existing Admissions
+        //
+        // #6) We should either add Admissions or modify existing Admissions
+        //     Perform the operation and stash the results in an extra Admissions Collection,
+        //     which can be evaluated before actually committing the changes.
+        //
+        //     This allows for validating that the Activity still has at least 1 responsible Admission.
+        //
         if (toModify.getResponsible() == null) {
 
-            // Do we still have at least one Admission which is responsible for the Activity after deleting?
-            final Map<AliasAndOrganisationName, AdmissionVO> responsibleInboundModifications =
-                    modifiedAdmissions.entrySet().stream()
-                            .filter(c -> c.getValue().isResponsible())
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            if (responsibleInboundModifications == null || responsibleInboundModifications.isEmpty()) {
-
-                final Map<AliasAndOrganisationName, AdmissionVO> notResponsibleInboundModifications =
-                        modifiedAdmissions.entrySet().stream()
-                                .filter(c -> !c.getValue().isResponsible())
-                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-
-            }
-
+            // #6.1) Are any of the inbound modifications responsible?
+            //
             final Map<AliasAndOrganisationName, Admission> responsibleAdmissionsAfterModify =
                     currentResponsibleAdmissions.entrySet().stream()
-                            .filter(c -> !modifiedAdmissions.containsKey(c.getKey()))
+                            .filter(c -> {
+
+                                // Does the current AliasAndOrganisationName have an inbound AdmissionVO?
+                                // (I.e. should we change the associated Admission for the AliasAndOrganisationName?)
+                                final AdmissionVO currentModifiedAdmissionVO = modifiedAdmissions.get(c.getKey());
+
+                                // Collect the two positive cases.
+                                final boolean inboundAdmissionVoIsResponsible = currentModifiedAdmissionVO != null
+                                        && currentModifiedAdmissionVO.isResponsible();
+                                final boolean responsibleExistingAdmissionWasNotChanged =
+                                        currentModifiedAdmissionVO == null;
+
+                                // All Done.
+                                return responsibleExistingAdmissionWasNotChanged || inboundAdmissionVoIsResponsible;
+                            })
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
             validateResponsibleAdmissionsStillExist(currentResponsibleAdmissions, responsibleAdmissionsAfterModify);
         }
 
-        // Nopes.
-        return false;
+        // #7) Perform the requested changes.
+        //
+        final Map<AliasAndOrganisationName, AdmissionVO> newAdmissionVOs = modifiedAdmissions.entrySet().stream()
+                .filter(c -> currentAdmissionMap.get(c.getKey()) == null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        newAdmissionVOs.entrySet().stream().forEach(c -> {
+
+            // Extract the admission VO
+            final AdmissionVO admissionData = c.getValue();
+
+            // Find the Membership to be admitted.
+            final Membership admitted = CommonPersistenceTasks.getSingleMembership(entityManager,
+                    admissionData.getAlias(),
+                    admissionData.getOrganisation());
+
+            // Dig out the current LocalDateTime
+            final ZoneId standardZoneID = toModify.getOwningOrganisation().getTimeZone().toZoneId();
+            final LocalDateTime now = LocalDateTime.now(standardZoneID);
+
+            // Create the new admission
+            final Admission newAdmission = new Admission(toModify,
+                    admitted,
+                    now,
+                    now,
+                    createAdmissionNote(actingMembership, admissionData, admitted),
+                    admissionData.isResponsible(),
+                    actingMembership);
+
+            // Add the new Admission to the modified activity
+            toModify.getAdmissions().add(newAdmission);
+        });
+
+        modifiedAdmissions.entrySet().stream()
+                .filter(c -> currentAdmissionMap.get(c.getKey()) != null)
+                .forEach(c -> {
+
+                    // Modify the corresponding Admission
+                    final Admission existingAdmission = currentAdmissionMap.get(c.getKey());
+                    final AdmissionVO updatedAdmissionData = c.getValue();
+
+                    // Update the existing admission's data
+                    existingAdmission.setAdmissionNote(createAdmissionNote(
+                            actingMembership,
+                            updatedAdmissionData,
+                            existingAdmission.getAdmitted()));
+                    existingAdmission.setAdmittedBy(actingMembership);
+                    existingAdmission.setResponsible(updatedAdmissionData.isResponsible());
+                });
+
+        // All is well.
+        return true;
     }
 
     /**
@@ -483,7 +537,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         query.getResultList().stream().forEach(c -> {
 
             final Long currentJpaID = (Long) c;
-            if(!categoryJpaIDs.contains(currentJpaID)) {
+            if (!categoryJpaIDs.contains(currentJpaID)) {
                 categoryJpaIDs.add(currentJpaID);
             }
         });
@@ -519,14 +573,11 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         // The Last admission Date cannot be null.
         Validate.notNull(lastAdmissionDate, "lastAdmissionDate");
 
-        if (lateAdmissionDate != null) {
-
-            if (lastAdmissionDate.isBefore(lateAdmissionDate)) {
-                final String lastAdmissionDateString = TimeFormat.YEAR_MONTH_DATE.print(lastAdmissionDate);
-                final String lateAdmissionDateString = TimeFormat.YEAR_MONTH_DATE.print(lateAdmissionDate);
-                throw new IllegalArgumentException("Sista anmälningsdatum (" + lastAdmissionDateString
-                        + ") kan inte vara före gränsen för sen anmälan (" + lateAdmissionDateString + ")");
-            }
+        if (lateAdmissionDate != null && lastAdmissionDate.isBefore(lateAdmissionDate)) {
+            final String lastAdmissionDateString = TimeFormat.YEAR_MONTH_DATE.print(lastAdmissionDate);
+            final String lateAdmissionDateString = TimeFormat.YEAR_MONTH_DATE.print(lateAdmissionDate);
+            throw new IllegalArgumentException("Sista anmälningsdatum (" + lastAdmissionDateString
+                    + ") kan inte vara före gränsen för sen anmälan (" + lateAdmissionDateString + ")");
         }
     }
 
@@ -558,7 +609,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
             boolean noResponsibleFound = true;
             if (groupName != null && !groupName.isEmpty()) {
 
-                final List<Group> responsibleGroups = JpaUtilities.findEntities(Group.class, Group.NAMEDQ_GET_BY_NAME_ORGANISATION,
+                final List<Group> responsibleGroups = JpaUtilities.findEntities(Group.class,
+                        Group.NAMEDQ_GET_BY_NAME_ORGANISATION,
                         true,
                         entityManager,
                         aQuery -> {
@@ -597,5 +649,15 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
             throw new IllegalArgumentException("Åtminstone 1 Medlem eller Grupp måste vara ansvarig för en "
                     + "Aktivitet. Kan inte sudda samtliga ansvariga: " + msg);
         }
+    }
+
+    private static String createAdmissionNote(final Membership admittedBy,
+                                              final AdmissionVO admissionVO,
+                                              final Membership admitted) {
+        // Compile the admission note
+        final String admittedBySomeoneElse = " Anmäld av " + admittedBy.getAlias()
+                + " (" + admittedBy.getOrganisation().getOrganisationName() + ")";
+        return admissionVO.getNote().orElse("")
+                + (!admitted.equals(admittedBy) ? admittedBySomeoneElse : "");
     }
 }

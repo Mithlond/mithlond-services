@@ -32,9 +32,14 @@ import javax.xml.bind.annotation.XmlTransient;
 public final class ContentPatterns {
 
     /**
+     * The XML namespace used by content model entity objects.
+     */
+    public static final String NAMESPACE = "http://xmlns.mithlond.se/xml/ns/content";
+
+    /**
      * The XML namespace used by content model transport objects.
      */
-    public static final String NAMESPACE = "http://www.jguru.se/mithlond/services/content";
+    public static final String TRANSPORT_NAMESPACE = "http://xmlns.mithlond.se/xml/ns/content/transport";
 
     /**
      * NamedQuery parameter name for last modified timestamp.

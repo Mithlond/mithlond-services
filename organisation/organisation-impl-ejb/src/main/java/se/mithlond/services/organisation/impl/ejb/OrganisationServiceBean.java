@@ -24,12 +24,11 @@ package se.mithlond.services.organisation.impl.ejb;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
-import se.mithlond.services.organisation.model.CategoryProducer;
+import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
-import se.mithlond.services.organisation.model.address.WellKnownAddressType;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.organisation.model.transport.Organisations;
@@ -38,13 +37,11 @@ import se.mithlond.services.organisation.model.transport.membership.GroupVO;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
-import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.ejb.Stateless;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -211,7 +208,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
         Validate.isTrue(id > 0L, "Cannot handle zero or negative JPA ID.");
 
         // Retrieve an existing CategorizedAddress
-        final CategorizedAddress existingCA = entityManager.find(CategorizedAddress.class, (Long) nonNull.getId());
+        final CategorizedAddress existingCA = entityManager.find(CategorizedAddress.class, nonNull.getId());
         if (existingCA == null) {
             throw new IllegalArgumentException("No existing CategorizedAddress with JPA ID [" + id + "]");
         }
@@ -234,31 +231,37 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
     public CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
                                                                final String fullDesc,
                                                                final Address address,
-                                                               final String category,
-                                                               final String organisation) {
+                                                               final Long categoryID,
+                                                               final Long organisationID) {
 
-        final List<Organisation> organisations = JpaUtilities.findEntities(Organisation.class,
-                Organisation.NAMEDQ_GET_BY_NAME,
-                true,
-                entityManager,
-                aQuery -> aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisation));
+        // Check sanity
+        Validate.notEmpty(shortDesc, "shortDesc");
+        Validate.notEmpty(fullDesc, "fullDesc");
+        Validate.notNull(address, "address");
+        Validate.notNull(categoryID, "categoryID");
+        Validate.notNull(organisationID, "organisationID");
 
-        final Optional<Organisation> potentialOrganisation = JpaUtilities.getSingleInstance(
-                organisations,
-                "Organisation",
-                Organisation::getOrganisationName);
-        if (!potentialOrganisation.isPresent()) {
-            throw new IllegalArgumentException("No organisation '" + organisation + "' found.");
+        // Find the database objects required to create a CategorizedAddress
+        final Organisation organisation = entityManager.find(Organisation.class, organisationID);
+        final Category category = entityManager.find(Category.class, categoryID);
+
+        // Handle insanity
+        if (organisation == null) {
+            throw new IllegalArgumentException("Hittade ingen organisation med ID [" + organisationID + "]");
         }
-
-        final CategoryProducer categoryProducer = WellKnownAddressType.valueOf(category);
+        if (category == null) {
+            throw new IllegalArgumentException("Hittade ingen kategori med ID [" + categoryID + "]");
+        }
+        if(!CategorizedAddress.ACTIVITY_CLASSIFICATION.equals(category.getClassification())) {
+            throw new IllegalArgumentException("Kategori [" + category + "] härrör inte till aktiviteter.");
+        }
 
         // Create the CategorizedAddress, and persist it.
         final CategorizedAddress toPersist = new CategorizedAddress(
                 shortDesc,
                 fullDesc,
-                categoryProducer,
-                potentialOrganisation.get(),
+                category,
+                organisation,
                 address);
         entityManager.persist(toPersist);
         entityManager.flush();

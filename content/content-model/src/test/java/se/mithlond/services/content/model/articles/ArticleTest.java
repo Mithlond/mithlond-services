@@ -131,8 +131,15 @@ public class ArticleTest extends AbstractPlainJaxbTest {
 
         address = new Address("careOfLine", "departmentName", "street", "number",
                 "city", "zipCode", "country", "description");
-        organisation = new Organisation("name", "suffix", "phone", "bankAccountInfo",
-                "postAccountInfo", address, "emailSuffix");
+        organisation = new Organisation("name",
+                "suffix",
+                "phone",
+                "bankAccountInfo",
+                "postAccountInfo",
+                address,
+                "emailSuffix",
+                TimeFormat.SWEDISH_TIMEZONE,
+                TimeFormat.SWEDISH_LOCALE);
 
         for (int i = 0; i < 10; i++) {
 

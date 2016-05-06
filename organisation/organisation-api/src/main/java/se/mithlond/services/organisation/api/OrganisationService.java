@@ -102,17 +102,17 @@ public interface OrganisationService extends JpaCudService {
      * The categories are assumed to have the {@code CategorizedAddress.ACTIVITY_LOCALE_CLASSIFICATION}
      * classification.
      *
-     * @param shortDesc    The categorized address short description.
-     * @param fullDesc     The full description of the CatgorizedAddress.
-     * @param address      The address to wrap to a CategorizedAddress.
-     * @param category     The Category (assumed to be present in the database already) of
-     *                     the created CategorizedAddress.
-     * @param organisation The name of the owning organisation for the CategorizedAddress.
+     * @param shortDesc      The categorized address short description.
+     * @param fullDesc       The full description of the CatgorizedAddress.
+     * @param address        The address to wrap to a CategorizedAddress.
+     * @param categoryID     The ID of the Category (assumed to be present in the database already) of
+     *                       the created CategorizedAddress.
+     * @param organisationID The ID of the owning organisation for the CategorizedAddress.
      * @return The created CategorizedAddress instance.
      */
     CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
                                                         final String fullDesc,
                                                         final Address address,
-                                                        final String category,
-                                                        final String organisation);
+                                                        final Long categoryID,
+                                                        final Long organisationID);
 }
