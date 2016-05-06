@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.api;
 
-import se.mithlond.services.content.api.transport.Articles;
+import se.mithlond.services.content.model.transport.articles.Articles;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
 import java.util.List;

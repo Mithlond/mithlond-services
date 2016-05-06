@@ -30,6 +30,7 @@ import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import java.util.List;
 
@@ -55,7 +56,9 @@ public class MenuStructureTest extends AbstractEntityTest {
         address = new Address("careOfLine", "departmentName", "street", "number",
                 "city", "zipCode", "country", "description");
         organisation = new Organisation("name", "suffix", "phone", "bankAccountInfo",
-                "postAccountInfo", address, "emailSuffix");
+                "postAccountInfo", address, "emailSuffix",
+                TimeFormat.SWEDISH_TIMEZONE,
+                TimeFormat.SWEDISH_LOCALE);
 
         rootMenu = StandardMenu.getBuilder()
                 .withDomId("rootMenu")

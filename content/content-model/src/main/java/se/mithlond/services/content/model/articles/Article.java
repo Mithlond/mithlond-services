@@ -266,7 +266,7 @@ public class Article extends NazgulEntity {
         // Log somewhat
         if (log.isDebugEnabled()) {
             final String contentType = content == null ? "<null>" : content.getClass().getName();
-            log.info("Got content [" + contentType + "]: " + content);
+            log.debug("Got content [" + contentType + "]: " + content);
         }
 
         // Assign the markup content.

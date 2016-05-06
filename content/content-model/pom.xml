@@ -22,6 +22,10 @@
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>
+
+        <!-- Reduce coverage requirements -->
+        <breakOnFailure.pmd>false</breakOnFailure.pmd>
+
         <!--
             Define the name and type of this reactor
         -->

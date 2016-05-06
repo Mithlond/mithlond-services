@@ -19,11 +19,12 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.api.transport;
+package se.mithlond.services.content.model.transport.articles;
 
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,10 +43,11 @@ import java.util.List;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlRootElement(namespace = ContentPatterns.NAMESPACE)
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"realm", "selectionPath", "articleList"})
+@XmlRootElement(namespace = ContentPatterns.TRANSPORT_NAMESPACE)
+@XmlType(namespace = ContentPatterns.TRANSPORT_NAMESPACE,
+        propOrder = {"realm", "selectionPath", "articleList"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Articles implements Serializable {
+public class Articles extends AbstractSimpleTransporter {
 
     /**
      * The realm which owns the transported List of Articles.
@@ -72,6 +75,7 @@ public class Articles implements Serializable {
      * JAXB-friendly constructor.
      */
     public Articles() {
+        this.articleList = new ArrayList<>();
     }
 
     /**
@@ -86,15 +90,19 @@ public class Articles implements Serializable {
      * @param articleList   The List of Articles wrapped in this transport object.
      */
     public Articles(final String realm,
-            final String selectionPath,
-            final List<Article> articleList) {
+                    final String selectionPath,
+                    final List<Article> articleList) {
+
+        this();
 
         // Check sanity and assign internal state
         this.realm = Validate.notEmpty(realm, "Cannot handle null or empty 'realm' argument.");
 
         this.selectionPath = selectionPath;
         this.realm = realm;
-        this.articleList = articleList;
+        if (articleList != null) {
+            this.articleList.addAll(articleList);
+        }
     }
 
     /**

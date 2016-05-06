@@ -74,4 +74,12 @@ public class Markup {
 	public String getContent() {
 		return content;
 	}
+
+	/**
+	 * {@inheritDoc}
+     */
+	@Override
+	public String toString() {
+		return "Markup [Content: " + content + "]";
+	}
 }

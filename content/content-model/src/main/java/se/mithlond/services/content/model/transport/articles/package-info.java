@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-content-model
+ * Nazgul Project: mithlond-services-content-api
  * %%
  * Copyright (C) 2015 Mithlond
  * %%
@@ -20,7 +20,7 @@
  * #L%
  */
 /**
- * Package holding specifications for navigation types, such as Menus and MenuItems.
+ * Package holding specifications for articles, both data and metadata.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -44,7 +44,7 @@
         @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
 })
 @XmlAccessorType(XmlAccessType.FIELD)
-package se.mithlond.services.content.model.navigation;
+package se.mithlond.services.content.model.transport.articles;
 
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.organisation.model.OrganisationPatterns;

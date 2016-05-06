@@ -45,7 +45,7 @@ import java.io.StringWriter;
 public class MarkupTest {
 
 	// Shared state
-	private static final String MARKUP = "<foo>bar<baz>gnat</baz></foo>";
+	private static final String MARKUP = "<foo><baz>gnat</baz><gnu>åäöÅÄÖ</gnu></foo>";
 	private Markup markup;
 	private Marshaller marshaller;
 	private Unmarshaller unmarshaller;

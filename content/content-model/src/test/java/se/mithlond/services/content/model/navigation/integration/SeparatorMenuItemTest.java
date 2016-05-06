@@ -65,7 +65,7 @@ public class SeparatorMenuItemTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToXML(menuItems);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);

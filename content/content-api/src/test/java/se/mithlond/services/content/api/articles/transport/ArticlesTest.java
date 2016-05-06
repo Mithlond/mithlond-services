@@ -30,7 +30,7 @@ import org.junit.Test;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.api.transport.Articles;
+import se.mithlond.services.content.model.transport.articles.Articles;
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.content.model.articles.Markup;

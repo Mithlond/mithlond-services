@@ -29,7 +29,7 @@ import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolv
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.articles.helpers.Articles;
+import se.mithlond.services.content.model.transport.articles.Articles;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -144,7 +144,7 @@ public class ArticleTest extends AbstractPlainJaxbTest {
         for (int i = 0; i < 10; i++) {
 
             // Create some mock content
-            final String content = "<div>\n  <strong>ArticleTitle_" + i
+            final String content = "<div foo='bar'>\n  <strong>ArticleTitle_" + i
                     + "</strong>\n  <content>content_" + i + "åäöÅÄÖëü</content>\n</div>";
             contentMap.put(i, content);
 
@@ -170,7 +170,7 @@ public class ArticleTest extends AbstractPlainJaxbTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/articles.xml");
         final Articles toMarshal = new Articles();
-        toMarshal.getArticles().addAll(this.articleList);
+        toMarshal.getArticleList().addAll(this.articleList);
 
         // Act
         final StringWriter out = new StringWriter();
@@ -195,7 +195,7 @@ public class ArticleTest extends AbstractPlainJaxbTest {
         Assert.assertNotNull(result);
         Assert.assertTrue(result instanceof Articles);
 
-        final List<Article> articles = ((Articles) result).getArticles();
+        final List<Article> articles = ((Articles) result).getArticleList();
         Assert.assertEquals(10, articles.size());
 
         final Article firstArticle = articles.get(0);
@@ -204,6 +204,6 @@ public class ArticleTest extends AbstractPlainJaxbTest {
         Assert.assertNull(firstArticle.getLastModified());
         Assert.assertEquals(
                 contentMap.get(0).replaceAll("\\p{Space}", ""),
-                firstArticle.getMarkup().trim().replaceAll("\\p{Space}", ""));
+                firstArticle.getMarkup().trim().replaceAll("\\p{Space}", "").replaceAll("\"", "\\'"));
     }
 }
