@@ -19,7 +19,7 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.content.api.articles.transport;
+package se.mithlond.services.content.model.transport.articles;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
@@ -27,25 +27,13 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
-import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.transport.articles.Articles;
-import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
-import se.mithlond.services.content.model.articles.Markup;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +41,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class ArticlesTest {
+public class ArticlesTest extends AbstractPlainJaxbTest {
 
     // Shared state
     private String realm;
@@ -62,8 +50,6 @@ public class ArticlesTest {
     private Organisation organisation;
     private Address address;
 
-    private Marshaller marshaller;
-    private Unmarshaller unmarshaller;
 
     @Before
     public void setupSharedState() {
@@ -74,35 +60,29 @@ public class ArticlesTest {
         address = new Address("careOfLine", "departmentName", "street", "number",
                 "city", "zipCode", "country", "description");
         organisation = new Organisation("FooBar", "suffix", "phone", "bankAccountInfo",
-                "postAccountInfo", address, "emailSuffix");
+                "postAccountInfo", address, "emailSuffix", TimeFormat.SWEDISH_TIMEZONE,
+                TimeFormat.SWEDISH_LOCALE);
         realm = organisation.getOrganisationName();
 
-        try {
-            final JAXBContext ctx = JAXBContext.newInstance(Articles.class, Article.class, Markup.class);
-            final JaxbNamespacePrefixResolver prefixResolver = new JaxbNamespacePrefixResolver();
-            prefixResolver.put(ContentPatterns.NAMESPACE, "content");
-            marshaller = JaxbUtils.getHumanReadableStandardMarshaller(ctx, prefixResolver, false);
-            unmarshaller = ctx.createUnmarshaller();
-        } catch (JAXBException e) {
-            throw new IllegalStateException("Could not setup JAXB marshaller/unmarshaller", e);
-        }
-
-        List<Article> articleList = new ArrayList<>();
-        articles = new Articles(realm, "/news/latest", articleList);
+        articles = new Articles(realm, "/news/latest", new ArrayList<>());
 
         // Create some arbitrary content
         content1 = "<div><header>foo</header><body>bar!</body></div>";
         content2 = "<div><header>foo2</header><body>bar2!</body></div>";
 
         // Populate the Articles.
-        articleList.add(new Article("News_1",
+        articles.getArticleList().add(new Article("News_1",
                 "ERF Häxxxxmästaren",
                 ZonedDateTime.of(2015, 12, 12, 5, 2, 3, 0, TimeFormat.SWEDISH_TIMEZONE),
                 content1, organisation));
-        articleList.add(new Article("News_2",
+        articles.getArticleList().add(new Article("News_2",
                 "ERF Häxxmästaren",
                 ZonedDateTime.of(2015, 11, 11, 15, 22, 33, 0, TimeFormat.SWEDISH_TIMEZONE),
                 content2, organisation));
+
+        jaxb.add(Articles.class);
+        jaxb.getUnMarshallerProperties().put(UnmarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
+        jaxb.getMarshallerProperties().put(MarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
     }
 
     @After
@@ -115,12 +95,10 @@ public class ArticlesTest {
     public void validateMarshallingToXML() throws Exception {
 
         // Assemble
-        final String expected = XmlTestUtils.readFully("testdata/articles.xml");
-        final StringWriter out = new StringWriter();
+        final String expected = XmlTestUtils.readFully("testdata/transport/articles.xml");
 
         // Act
-        marshaller.marshal(articles, out);
-        final String result = out.toString();
+        final String result = marshalToXML(articles);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -131,16 +109,10 @@ public class ArticlesTest {
     public void validateMarshallingToJSon() throws Exception {
 
         // Assemble
-        marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-        marshaller.setProperty(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-        marshaller.setProperty(MarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
-
-        final String expected = XmlTestUtils.readFully("testdata/articles.json");
-        final StringWriter out = new StringWriter();
+        final String expected = XmlTestUtils.readFully("testdata/transport/articles.json");
 
         // Act
-        marshaller.marshal(articles, out);
-        final String result = out.toString();
+        final String result = marshalToJSon(articles);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -152,11 +124,10 @@ public class ArticlesTest {
     public void validateUnmarshallingFromXML() throws Exception {
 
         // Assemble
-        final String data = XmlTestUtils.readFully("testdata/articles.xml");
-        final Source source = new StreamSource(new StringReader(data));
+        final String data = XmlTestUtils.readFully("testdata/transport/articles.xml");
 
         // Act
-        final Articles resurrected = unmarshaller.unmarshal(source, Articles.class).getValue();
+        final Articles resurrected = unmarshalFromXML(Articles.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);
@@ -172,16 +143,16 @@ public class ArticlesTest {
     public void validateUnmarshallingFromJSON() throws Exception {
 
         // Assemble
+        /*
         unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
         unmarshaller.setProperty(UnmarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
         unmarshaller.setProperty(UnmarshallerProperties.JSON_NAMESPACE_PREFIX_MAPPER, true);
         unmarshaller.setProperty(UnmarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
-
-        final String data = XmlTestUtils.readFully("testdata/articles.json");
-        final Source source = new StreamSource(new StringReader(data));
+        */
+        final String data = XmlTestUtils.readFully("testdata/transport/articles.json");
 
         // Act
-        final Articles resurrected = unmarshaller.unmarshal(source, Articles.class).getValue();
+        final Articles resurrected = unmarshalFromJSON(Articles.class, data);
 
         // Assert
         Assert.assertNotNull(resurrected);

@@ -60,8 +60,8 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
     /**
      * The optional name of the department (i.e. "Att: Research & Development")
      */
-    @Basic(optional = false)
-    @Column(length = 1024, nullable = false)
+    @Basic
+    @Column(length = 1024)
     @XmlElement(nillable = true)
     private String departmentName;
 

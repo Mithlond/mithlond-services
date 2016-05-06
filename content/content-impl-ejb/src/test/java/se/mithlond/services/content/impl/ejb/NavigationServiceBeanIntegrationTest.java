@@ -95,7 +95,9 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
                 "5010-0123456",
                 "123456789-0",
                 visitingAddress,
-                "mifflond.se");
+                "mifflond.se",
+                TimeFormat.SWEDISH_TIMEZONE,
+                TimeFormat.SWEDISH_LOCALE);
 
         // #2) Create the Groups.
         mithlondMembers = new Group("members", "Medlemmar i sällskapet Mithlond.", mifflond, null, "mithlondMembers");
