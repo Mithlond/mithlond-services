@@ -34,17 +34,17 @@ public final class Deployment {
     /**
      * Prefix for every deployment property name used.
      */
-    private static final String PREFIX = "mithlond.";
+    private static final String PREFIX = "deployment.";
 
     /**
-     * The system property key for finding the current deployment name.
+     * The system property key for finding the current deployment type.
      */
-    public static final String DEPLOYMENT_NAME_KEY = PREFIX + "deployment";
+    public static final String DEPLOYMENT_TYPE_KEY = PREFIX + "type";
 
     /**
      * The key for finding the local file storage root directory.
      */
-    public static final String FILE_STORAGE_ROOTDIR_KEY = PREFIX + "storage.rootdir";
+    public static final String DEPLOYMENT_STORAGE_ROOTDIR_KEY = PREFIX + "storage.rootdir";
 
     /**
      * The expected format of the Deployment Name property.
@@ -57,7 +57,7 @@ public final class Deployment {
     public static final String EXPECTED_STORAGE_ROOTDIR_PATTERN = "([/\\\\][\\p{javaLetterOrDigit}-_]+)+";
 
     // Internal state
-    private static String deploymentName;
+    private static String deploymentType;
     private static File storageRootDirectory;
 
     /*
@@ -69,41 +69,41 @@ public final class Deployment {
 
     /**
      * Retrieves the deployment name, by reading the System or environment property
-     * <strong>{@value #DEPLOYMENT_NAME_KEY}</strong>, unless this is already done.
+     * <strong>{@value #DEPLOYMENT_TYPE_KEY}</strong>, unless this is already done.
      *
      * @return the deployment name, as found within the System or environment property
-     * <strong>{@value #DEPLOYMENT_NAME_KEY}</strong>.
+     * <strong>{@value #DEPLOYMENT_TYPE_KEY}</strong>.
      * @throws IllegalStateException if the System or environment property
-     *                               <strong>{@value #DEPLOYMENT_NAME_KEY}</strong>
+     *                               <strong>{@value #DEPLOYMENT_TYPE_KEY}</strong>
      *                               did not match the regular expression pattern
      *                               <strong>{@value #EXPECTED_DEPLOYMENT_NAME_PATTERN}</strong>.
      */
-    public static String getDeploymentName() throws IllegalStateException {
+    public static String getDeploymentType() throws IllegalStateException {
 
-        if (deploymentName == null) {
+        if (deploymentType == null) {
 
             // Find the deployment name.
-            deploymentName = getProperty(DEPLOYMENT_NAME_KEY);
+            deploymentType = getProperty(DEPLOYMENT_TYPE_KEY);
 
             // Check sanity
-            if (deploymentName == null || !deploymentName.matches(EXPECTED_DEPLOYMENT_NAME_PATTERN)) {
+            if (deploymentType == null || !deploymentType.matches(EXPECTED_DEPLOYMENT_NAME_PATTERN)) {
                 throw new IllegalStateException(
-                        getErrorMessage(DEPLOYMENT_NAME_KEY, EXPECTED_DEPLOYMENT_NAME_PATTERN));
+                        getErrorMessage(DEPLOYMENT_TYPE_KEY, EXPECTED_DEPLOYMENT_NAME_PATTERN));
             }
         }
 
         // All done.
-        return deploymentName;
+        return deploymentType;
     }
 
     /**
      * Retrieves the storage root directory, by reading the System or environment property
-     * <strong>{@value #FILE_STORAGE_ROOTDIR_KEY}</strong>, unless this is already done.
+     * <strong>{@value #DEPLOYMENT_STORAGE_ROOTDIR_KEY}</strong>, unless this is already done.
      *
      * @return the storage root directory File, as created from the path found within the System or environment
-     * property <strong>{@value #FILE_STORAGE_ROOTDIR_KEY}</strong>.
+     * property <strong>{@value #DEPLOYMENT_STORAGE_ROOTDIR_KEY}</strong>.
      * @throws IllegalStateException if the System or environment property
-     *                               <strong>{@value #FILE_STORAGE_ROOTDIR_KEY}</strong>
+     *                               <strong>{@value #DEPLOYMENT_STORAGE_ROOTDIR_KEY}</strong>
      *                               did not match the regular expression pattern
      *                               <strong>{@value #EXPECTED_STORAGE_ROOTDIR_PATTERN}</strong>, or if the path
      *                               supplied was to an existing non-directory structure.
@@ -113,12 +113,12 @@ public final class Deployment {
         if (storageRootDirectory == null) {
 
             // Find the file storage root dir.
-            String path = getProperty(FILE_STORAGE_ROOTDIR_KEY);
+            String path = getProperty(DEPLOYMENT_STORAGE_ROOTDIR_KEY);
 
             // Check sanity
             if (path == null || !path.matches(EXPECTED_STORAGE_ROOTDIR_PATTERN)) {
                 throw new IllegalStateException(
-                        getErrorMessage(FILE_STORAGE_ROOTDIR_KEY, EXPECTED_STORAGE_ROOTDIR_PATTERN));
+                        getErrorMessage(DEPLOYMENT_STORAGE_ROOTDIR_KEY, EXPECTED_STORAGE_ROOTDIR_PATTERN));
             }
 
             File candidate = new File(path);

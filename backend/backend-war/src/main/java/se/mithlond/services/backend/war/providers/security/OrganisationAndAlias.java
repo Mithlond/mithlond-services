@@ -21,12 +21,14 @@
  */
 package se.mithlond.services.backend.war.providers.security;
 
+import java.io.Serializable;
+
 /**
  * Holder for an organisation name and an alias.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class OrganisationAndAlias {
+public class OrganisationAndAlias implements Serializable {
 
     // Internal state
     private String organisationName;
@@ -56,5 +58,13 @@ public class OrganisationAndAlias {
      */
     public String getAlias() {
         return alias;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "OrganisationAndAlias [Org: " + organisationName + ", Alias: " + alias + "]";
     }
 }

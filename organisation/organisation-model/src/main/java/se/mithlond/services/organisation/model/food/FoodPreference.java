@@ -54,11 +54,11 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "getAllFoodPreferences",
+        @NamedQuery(name = "FoodPreference.getAllFoodPreferences",
                 query = "select a from Category a where a.classification = '"
-                        + FoodPreference.FOOD_PREFERENCE_CATEGORY_CLASSIFICATION + "' order by a.category"),
-        @NamedQuery(name = "getFoodPreferencesByMemberLogin",
-                query = "select a from FoodPreference a where a.member.login = ?1 order by a.category.category")
+                        + FoodPreference.FOOD_PREFERENCE_CATEGORY_CLASSIFICATION + "' order by a.categoryID"),
+        @NamedQuery(name = "FoodPreference.getFoodPreferencesByMemberLogin",
+                query = "select a from FoodPreference a where a.user.id = ?1 order by a.category.categoryID")
 })
 @Entity
 @Access(value = AccessType.FIELD)

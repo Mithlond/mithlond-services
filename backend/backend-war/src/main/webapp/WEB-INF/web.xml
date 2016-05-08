@@ -26,12 +26,38 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
-    <display-name>mithlond-services-jaxrs-war</display-name>
+    <display-name>services-backend-war</display-name>
+    <module-name>services-backend-war</module-name>
 
     <!-- error-page>
         <error-code>404</error-code>
         <location>/notfound</location>
     </error-page -->
+
+    <!--
+        The KeyCloak server secures all resources within this backend WAR.
+        The only role identified within this backend WAR is the
+        "authenticated_user" (i.e. someone logged in via KeyCloak).
+    -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>resources</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>authenticated_user</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>KEYCLOAK</auth-method>
+        <realm-name>this is ignored currently</realm-name>
+    </login-config>
+    <security-role>
+        <role-name>authenticated_user</role-name>
+    </security-role>
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

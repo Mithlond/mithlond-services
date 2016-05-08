@@ -48,8 +48,7 @@
             <!--
                 Include Keycloak, as we use it for securing the webapp.
             -->
-            <!-- module name="org.jboss.resteasy.resteasy-jaxb-provider" services="import"/>
-            <module name="org.jboss.resteasy.resteasy-jaxrs" services="import"/ -->
+            <module name="org.keycloak.keycloak-core" services="import"/>
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

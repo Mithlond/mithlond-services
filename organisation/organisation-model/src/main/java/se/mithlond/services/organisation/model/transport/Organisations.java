@@ -110,4 +110,14 @@ public class Organisations extends AbstractSimpleTransporter {
     public SortedSet<OrganisationVO> getOrganisationVOs() {
         return organisationVOs;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "Organisations containing " + organisations.size()
+                + " detailed, and " + organisationVOs.size()
+                + " shallow representations.";
+    }
 }

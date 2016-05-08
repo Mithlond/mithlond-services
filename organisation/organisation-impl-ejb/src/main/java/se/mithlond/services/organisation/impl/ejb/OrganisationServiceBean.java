@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.organisation.impl.ejb;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
@@ -52,11 +54,19 @@ import java.util.stream.Collectors;
 @Stateless
 public class OrganisationServiceBean extends AbstractJpaService implements OrganisationService {
 
+    // Our Logger
+    private static final Logger log = LoggerFactory.getLogger(OrganisationServiceBean.class);
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Organisations getOrganisations(final boolean detailedRepresentation) {
+
+        if(log.isDebugEnabled()) {
+            log.debug("Fetching organisation data for " + (detailedRepresentation ? "detailed": "shallow")
+                    + " representation");
+        }
 
         final List<Organisation> allOrganisations = entityManager.createNamedQuery(
                 Organisation.NAMEDQ_GET_ALL, Organisation.class)
@@ -78,6 +88,10 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                                     c.getOrganisationName(),
                                     c.getSuffix()))
                             .collect(Collectors.toList()));
+        }
+
+        if(log.isDebugEnabled()) {
+            log.debug("All Done. Returning " + toReturn);
         }
 
         // All Done.

@@ -40,7 +40,7 @@ public class DeploymentTest {
     public void setupSharedState() {
 
         try {
-            final Field deploymentName = Deployment.class.getDeclaredField("deploymentName");
+            final Field deploymentName = Deployment.class.getDeclaredField("deploymentType");
             deploymentName.setAccessible(true);
             if(deploymentName.get(null) != null) {
                 deploymentName.set(null, null);
@@ -52,7 +52,7 @@ public class DeploymentTest {
 
     @After
     public void teardownSharedPropertyState() {
-        System.clearProperty(Deployment.DEPLOYMENT_NAME_KEY);
+        System.clearProperty(Deployment.DEPLOYMENT_TYPE_KEY);
     }
 
     @Test
@@ -60,10 +60,10 @@ public class DeploymentTest {
 
         // Assemble
         final String deploymentName = "FooBar";
-        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, deploymentName);
+        System.setProperty(Deployment.DEPLOYMENT_TYPE_KEY, deploymentName);
 
         // Act & Assert
-        Assert.assertEquals(deploymentName, Deployment.getDeploymentName());
+        Assert.assertEquals(deploymentName, Deployment.getDeploymentType());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -71,10 +71,10 @@ public class DeploymentTest {
 
         // Assemble
         final String incorrectDeploymentName = "Foo Bar";
-        System.setProperty(Deployment.DEPLOYMENT_NAME_KEY, incorrectDeploymentName);
+        System.setProperty(Deployment.DEPLOYMENT_TYPE_KEY, incorrectDeploymentName);
 
         // Act & Assert
-        Deployment.getDeploymentName();
+        Deployment.getDeploymentType();
     }
 
     @Test

@@ -62,10 +62,17 @@ public class SecurityFilter extends AbstractSecurityFilter {
      * {@inheritDoc}
      */
     @Override
-    protected OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx) {
+    protected OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx)
+            throws IllegalStateException {
+
+        if (log.isDebugEnabled()) {
+            final String typeName = ctx == null ? "<none>" : ctx.getClass().getName();
+            log.debug("Getting OrganisationAndAlias for ContainerRequestContext of type " + typeName);
+            log.debug("Got HttpRequest " + httpRequest);
+        }
 
         // Development mode?
-        if(isDevelopmentEnvironment()) {
+        if (isDevelopmentEnvironment()) {
             return getDevelopmentOrganisationAndAlias();
         }
 
@@ -127,16 +134,17 @@ public class SecurityFilter extends AbstractSecurityFilter {
     // Private helpers
     //
 
-    private boolean isDevelopmentEnvironment() {
+    private boolean isDevelopmentEnvironment() throws IllegalStateException {
 
-        final String deploymentName = Deployment.getDeploymentName();
+        final String deploymentName = Deployment.getDeploymentType();
+        final boolean isDevEnvironment = deploymentName != null && deploymentName.equalsIgnoreCase("development");
 
-        if(log.isDebugEnabled()) {
-            log.debug("Got DeploymentName: " + deploymentName);
+        if (log.isDebugEnabled()) {
+            log.debug("Got DeploymentName: " + deploymentName + " --> isDevEnvironment: " + isDevEnvironment);
         }
 
         // All Done.
-        return deploymentName != null && deploymentName.equalsIgnoreCase("development");
+        return isDevEnvironment;
     }
 
     private OrganisationAndAlias getDevelopmentOrganisationAndAlias() {

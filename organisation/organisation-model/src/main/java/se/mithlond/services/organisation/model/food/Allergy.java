@@ -33,12 +33,11 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -55,11 +54,11 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "getAllergiesByLogin",
-                query = "select a from Allergy a where a.member.login = ?1 order by a.severity"),
-        @NamedQuery(name = "getAllAllergies",
+        @NamedQuery(name = Allergy.NAMEDQ_GET_BY_USERID,
+                query = "select a from Allergy a where a.user.id = ?1 order by a.severity"),
+        @NamedQuery(name = Allergy.NAMEDQ_GET_ALL,
                 query = "select a from Allergy a order by a.severity"),
-        @NamedQuery(name = "getAllergiesByFoodName",
+        @NamedQuery(name = Allergy.NAMEDQ_GET_BY_FOODNAME,
                 query = "select a from Allergy a where a.food.foodName like ?1 order by a.severity")
 })
 @Entity
@@ -67,6 +66,21 @@ import java.io.Serializable;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"food", "severity", "note", "user", "version"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
+
+    /**
+     * {@link NamedQuery} which retrieves all Allergies for a specific {@link User} (identified by the UserID).
+     */
+    public static final String NAMEDQ_GET_BY_USERID = "Allergy.getAllergiesByUserID";
+
+    /**
+     * {@link NamedQuery} which retrieves all Allergies.
+     */
+    public static final String NAMEDQ_GET_ALL = "Allergy.getAll";
+
+    /**
+     * {@link NamedQuery} which retrieves all Allergies for a given {@link Food} (identified by its name).
+     */
+    public static final String NAMEDQ_GET_BY_FOODNAME = "Allergy.getAllergiesByFoodName";
 
     // Internal state
     @Version
@@ -87,9 +101,8 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
     @XmlIDREF
     private User user;
 
-    @Basic(optional = false) @Column(nullable = false)
-    @XmlElement(nillable = false, required = true)
-    @Enumerated(value = EnumType.STRING)
+    @OneToOne(optional = false)
+    @XmlElement(required = true)
     private AllergySeverity severity;
 
     @Basic(optional = true) @Column(nullable = true)

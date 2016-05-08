@@ -51,16 +51,16 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "getAllFood",
+        @NamedQuery(name = "Food.getAllFood",
                 query = "select a from Food a order by a.foodName"),
-        @NamedQuery(name = "getFoodByName",
+        @NamedQuery(name = "Food.getFoodByName",
                 query = "select a from Food a where a.foodName like ?1 order by a.foodName"),
-        @NamedQuery(name = "getFoodByCategory",
-                query = "select a from Food a where a.category.category like ?1 and a.category.classification = '"
+        @NamedQuery(name = "Food.getFoodByCategory",
+                query = "select a from Food a where a.category.categoryID like ?1 and a.category.classification = '"
                         + Food.FOOD_CATEGORY_CLASSIFICATION + "' order by a.foodName"),
-        @NamedQuery(name = "getFoodByCategoryAndSubCategory",
-                query = "select a from Food a where a.category.category like ?1 and a.category.classification = '"
-                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' and a.subCategory.category like ?2 "
+        @NamedQuery(name = "Food.getFoodByCategoryAndSubCategory",
+                query = "select a from Food a where a.category.categoryID like ?1 and a.category.classification = '"
+                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' and a.subCategory.categoryID like ?2 "
                         + "and a.subCategory.classification = '" + Food.FOOD_SUBCATEGORY_CLASSIFICATION + "' "
                         + "order by a.foodName")
 })

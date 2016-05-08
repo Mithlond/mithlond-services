@@ -31,6 +31,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -76,7 +77,7 @@ public class AllergySeverity extends NazgulEntity implements Comparable<AllergyS
      * A localized texts instance containing the description of this AllergySeverity.
      */
     @OneToOne(optional = false)
-    @Column(name = "localizedtexts_id")
+    @JoinColumn(name = "localizedtexts_id")
     @XmlElement(required = true)
     private LocalizedTexts description;
 

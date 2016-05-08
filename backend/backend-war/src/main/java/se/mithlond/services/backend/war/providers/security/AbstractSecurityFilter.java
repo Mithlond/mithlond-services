@@ -91,16 +91,27 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
 
             // We need to validate the active User's authorization.
             final RequireAuthorization authAnnotation = targetMethod.getAnnotation(RequireAuthorization.class);
-            if (authAnnotation != null && authAnnotation.authorizationPatterns() != null) {
+            final String authAnnotationPatterns = authAnnotation == null ? "" : authAnnotation.authorizationPatterns();
+            if (authAnnotation != null && !authAnnotationPatterns.isEmpty()) {
                 requiredAuthPatterns = authAnnotation.authorizationPatterns();
             } else {
                 requiredAuthPatterns = DEFAULT_AUTH_PATTERN.toString();
+            }
+
+            if(log.isDebugEnabled()) {
+                log.debug("Got targetMethod [" + targetMethod + "] and requiredAuthPatterns ["
+                        + requiredAuthPatterns + "]");
             }
 
             // Find the Membership of the active caller.
             final OrganisationAndAlias holder = getOrganisationNameAndAlias(ctx);
             final Membership activeMembership = membershipService.getMembership(
                     holder.getOrganisationName(), holder.getAlias());
+
+            if(log.isDebugEnabled()) {
+                log.debug("OrganisationAndAlias " + holder + " and requiredAuthPatterns ["
+                        + requiredAuthPatterns + "]");
+            }
 
             if (activeMembership == null) {
 
