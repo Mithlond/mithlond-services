@@ -25,9 +25,7 @@ import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.ActivityService;
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
-import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
-import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.ejb.EJB;
@@ -36,8 +34,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB

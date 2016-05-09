@@ -32,9 +32,11 @@ import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 import se.mithlond.services.shared.authorization.api.Segmenter;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 
+import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
@@ -51,6 +53,7 @@ import java.util.TreeSet;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Priority(Priorities.AUTHENTICATION)
 public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
 
     /**

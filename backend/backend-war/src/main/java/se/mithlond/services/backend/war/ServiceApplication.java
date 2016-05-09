@@ -22,6 +22,9 @@
 package se.mithlond.services.backend.war;
 
 import org.apache.commons.lang3.Validate;
+import se.mithlond.services.backend.war.providers.exceptions.RuntimeExceptionHandler;
+import se.mithlond.services.backend.war.providers.headers.HttpHeadersFilter;
+import se.mithlond.services.backend.war.providers.security.resteasy.SecurityFilter;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
@@ -51,6 +54,15 @@ public class ServiceApplication extends Application {
         // Create internal state.
         this.jaxRsClasses = new HashSet<>();
         this.jaxRsSingletons = new HashSet<>();
+
+        // Add standard providers
+        addJaxRsSingleton(new HttpHeadersFilter());
+        addJaxRsSingleton(new RuntimeExceptionHandler());
+
+        // Running in a RestEasy environment?
+        // final String resteasyClassName = "org.jboss.resteasy.api.validation.Validation";
+        // if(getClass().getClassLoader().loadClass(resteasyClassName))
+        addJaxRsSingleton(new SecurityFilter());
     }
 
     /**

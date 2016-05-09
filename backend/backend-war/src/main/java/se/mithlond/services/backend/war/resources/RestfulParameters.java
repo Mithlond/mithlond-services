@@ -21,10 +21,6 @@
  */
 package se.mithlond.services.backend.war.resources;
 
-import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
-
-import java.time.LocalDate;
-
 /**
  * Utility class to hold constants and methods related to RESTful parameters.
  *

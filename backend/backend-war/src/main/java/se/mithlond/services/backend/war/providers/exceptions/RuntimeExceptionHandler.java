@@ -46,7 +46,8 @@ public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException
     /**
      * Header where the internal error is bound.
      */
-    public static final String INTERNAL_ERROR_TYPE_HEADER = RestfulParameters.OUTBOUND_HEADER_PREFIX + "RuntimeException";
+    public static final String INTERNAL_ERROR_TYPE_HEADER = RestfulParameters.OUTBOUND_HEADER_PREFIX
+            + "RuntimeException";
 
     /**
      * Header where the cause of the internal error is bound.

@@ -48,7 +48,7 @@
             <!--
                 Include Keycloak, as we use it for securing the webapp.
             -->
-            <module name="org.keycloak.keycloak-core" services="import"/>
+            <module name="org.keycloak.keycloak-core"/>
         </dependencies>
     </deployment>
 </jboss-deployment-structure>

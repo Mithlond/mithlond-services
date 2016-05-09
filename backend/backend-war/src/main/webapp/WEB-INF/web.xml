@@ -39,7 +39,7 @@
         The only role identified within this backend WAR is the
         "authenticated_user" (i.e. someone logged in via KeyCloak).
     -->
-    <security-constraint>
+    <!-- security-constraint>
         <web-resource-collection>
             <web-resource-name>resources</web-resource-name>
             <url-pattern>/*</url-pattern>
@@ -57,7 +57,7 @@
     </login-config>
     <security-role>
         <role-name>authenticated_user</role-name>
-    </security-role>
+    </security-role -->
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

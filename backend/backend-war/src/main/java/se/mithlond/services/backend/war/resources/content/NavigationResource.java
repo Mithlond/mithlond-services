@@ -74,7 +74,8 @@ public class NavigationResource extends AbstractResource {
      */
     @Path("/{" + RestfulParameters.ORGANISATION_NAME + "}")
     @GET
-    public MenuStructure getMenuStructure(@PathParam(RestfulParameters.ORGANISATION_NAME) final String organisationName) {
+    public MenuStructure getMenuStructure(
+            @PathParam(RestfulParameters.ORGANISATION_NAME) final String organisationName) {
 
         // Populate the SemanticAuthorizationPathProducer List with the active Membership.
         final List<SemanticAuthorizationPathProducer> sapp = new ArrayList<>();
