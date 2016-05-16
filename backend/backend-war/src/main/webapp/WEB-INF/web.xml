@@ -42,7 +42,7 @@
     <!-- security-constraint>
         <web-resource-collection>
             <web-resource-name>resources</web-resource-name>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>/org/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>authenticated_user</role-name>

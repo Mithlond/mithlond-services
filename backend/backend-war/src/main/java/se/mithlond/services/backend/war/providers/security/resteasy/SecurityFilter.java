@@ -33,7 +33,6 @@ import se.mithlond.services.shared.spi.algorithms.Deployment;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -46,7 +45,7 @@ import java.util.TreeMap;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@Provider
+// @Provider
 public class SecurityFilter extends AbstractSecurityFilter {
 
     // Our log

@@ -21,15 +21,18 @@
  */
 package se.mithlond.services.backend.war;
 
+import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
+import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.apache.commons.lang3.Validate;
 import se.mithlond.services.backend.war.providers.exceptions.RuntimeExceptionHandler;
 import se.mithlond.services.backend.war.providers.headers.HttpHeadersFilter;
-import se.mithlond.services.backend.war.providers.security.resteasy.SecurityFilter;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,10 +62,30 @@ public class ServiceApplication extends Application {
         addJaxRsSingleton(new HttpHeadersFilter());
         addJaxRsSingleton(new RuntimeExceptionHandler());
 
+        // Add swagger introspectors
+        addJaxRsClass(ApiListingResource.class);
+        addJaxRsClass(SwaggerSerializers.class);
+
+        // Configure Swagger
+        final String packagePrefix = "se.mithlond.services.backend.war.resources";
+        final String commaSeparatedPackageList = Arrays.asList("", "organisation", "content").stream()
+                .map(c -> packagePrefix + (c.isEmpty() ? "" : "." + c))
+                .reduce((l, r) -> l + "," + r)
+                .orElse("");
+
+        final BeanConfig beanConfig = new BeanConfig();
+        beanConfig.setVersion("1.0.2");
+        beanConfig.setSchemes(new String[]{"http"});
+        beanConfig.setPrettyPrint(true);
+        beanConfig.setHost("localhost:8080");
+        beanConfig.setBasePath("/backend/resource");
+        beanConfig.setResourcePackage(commaSeparatedPackageList);
+        beanConfig.setScan(true);
+
         // Running in a RestEasy environment?
         // final String resteasyClassName = "org.jboss.resteasy.api.validation.Validation";
         // if(getClass().getClassLoader().loadClass(resteasyClassName))
-        addJaxRsSingleton(new SecurityFilter());
+        // addJaxRsSingleton(new SecurityFilter());
     }
 
     /**

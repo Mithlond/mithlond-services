@@ -30,6 +30,7 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -52,6 +53,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
