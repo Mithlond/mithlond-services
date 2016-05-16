@@ -32,9 +32,15 @@ import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * The JAX-RS Application-derived class providing the integration point to backend services.
@@ -73,8 +79,10 @@ public class ServiceApplication extends Application {
                 .reduce((l, r) -> l + "," + r)
                 .orElse("");
 
+        // Read the version from the dependencies.properties file.
+        final String version = getDependenciesProperties().get("version");
         final BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion("1.0.2");
+        beanConfig.setVersion(version);
         beanConfig.setSchemes(new String[]{"http"});
         beanConfig.setPrettyPrint(true);
         beanConfig.setHost("localhost:8080");
@@ -138,4 +146,42 @@ public class ServiceApplication extends Application {
     public Set<Class<?>> getClasses() {
         return jaxRsClasses;
     }
+
+    //
+    // Private helpers
+    //
+
+    private SortedMap<String, String> getDependenciesProperties() {
+
+        final String depPropFile = "META-INF/maven/dependencies.properties";
+        final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(depPropFile);
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        final SortedMap<String, String> toReturn = new TreeMap<>();
+
+        try {
+            String aLine = null;
+            while ((aLine = reader.readLine()) != null) {
+
+                final String currentLine = aLine.trim();
+                if (currentLine.isEmpty() || currentLine.startsWith("#")) {
+                    continue;
+                }
+
+                final int equalsIndex = currentLine.indexOf("=");
+                if (equalsIndex != -1) {
+
+                    final String key = currentLine.substring(0, equalsIndex).trim();
+                    final String value = currentLine.substring(equalsIndex + 1).trim();
+
+                    toReturn.put(key, value);
+                }
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not read [" + depPropFile + "]", e);
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
 }

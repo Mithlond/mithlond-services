@@ -21,6 +21,10 @@
  */
 package se.mithlond.services.backend.war.resources.content;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
@@ -54,6 +58,7 @@ import java.util.List;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Api(value = "navigation", description = "Provides menus to authorized users for site navigation.")
 @Path("/navigation")
 public class NavigationResource extends AbstractResource {
 
@@ -67,11 +72,19 @@ public class NavigationResource extends AbstractResource {
     private static final String ECLIPSELINK_MEDIA_TYPE = "eclipselink.media-type";
 
     /**
-     * Retrieves the MenuStructure available from the supplied organisation, for the
+     * Retrieves the MenuStructure available from the supplied organisation, tailored to the
+     * authorization level of the active Membership.
      *
      * @param organisationName The name of the organisation for which the MenuStructure should be retrieved.
      * @return The fully populated MenuStructure for the supplied organisationName and the active Membership.
      */
+    @ApiOperation(value = "Retrieves a MenuStructure",
+            notes = "The fully populated MenuStructure for the supplied organisationName and the active Membership.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200,
+                    message = "Retrieves the Organisation's MenuStructure",
+                    response = MenuStructure.class)
+    })
     @Path("/{" + RestfulParameters.ORGANISATION_NAME + "}")
     @GET
     public MenuStructure getMenuStructure(
@@ -103,7 +116,7 @@ public class NavigationResource extends AbstractResource {
             @HeaderParam(RestfulParameters.MENUSTRUCTURE_DATA) final String newMenuStructure,
             @QueryParam(RestfulParameters.ISXML) @DefaultValue("true") final boolean isXml) {
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Starting " + (isXml ? "XML" : "JSON")
                     + " update of MenuStructure for [" + organisationName + "]");
         }
@@ -127,7 +140,7 @@ public class NavigationResource extends AbstractResource {
 
     private MenuStructure unmarshalMenuStructure(final boolean expectJSON, final String newStructure) {
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Unmarshalling MenuStructure in " + (expectJSON ? "JSON" : "XML") + " form:\n " + newStructure);
         }
 
