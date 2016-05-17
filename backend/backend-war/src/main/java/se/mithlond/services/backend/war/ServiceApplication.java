@@ -21,9 +21,6 @@
  */
 package se.mithlond.services.backend.war;
 
-import io.swagger.jaxrs.config.BeanConfig;
-import io.swagger.jaxrs.listing.ApiListingResource;
-import io.swagger.jaxrs.listing.SwaggerSerializers;
 import org.apache.commons.lang3.Validate;
 import se.mithlond.services.backend.war.providers.exceptions.RuntimeExceptionHandler;
 import se.mithlond.services.backend.war.providers.headers.HttpHeadersFilter;
@@ -36,7 +33,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedMap;
@@ -67,28 +63,6 @@ public class ServiceApplication extends Application {
         // Add standard providers
         addJaxRsSingleton(new HttpHeadersFilter());
         addJaxRsSingleton(new RuntimeExceptionHandler());
-
-        // Add swagger introspectors
-        addJaxRsClass(ApiListingResource.class);
-        addJaxRsClass(SwaggerSerializers.class);
-
-        // Configure Swagger
-        final String packagePrefix = "se.mithlond.services.backend.war.resources";
-        final String commaSeparatedPackageList = Arrays.asList("", "organisation", "content").stream()
-                .map(c -> packagePrefix + (c.isEmpty() ? "" : "." + c))
-                .reduce((l, r) -> l + "," + r)
-                .orElse("");
-
-        // Read the version from the dependencies.properties file.
-        final String version = getDependenciesProperties().get("version");
-        final BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion(version);
-        beanConfig.setSchemes(new String[]{"http"});
-        beanConfig.setPrettyPrint(true);
-        beanConfig.setHost("localhost:8080");
-        beanConfig.setBasePath("/backend/resource");
-        beanConfig.setResourcePackage(commaSeparatedPackageList);
-        beanConfig.setScan(true);
 
         // Running in a RestEasy environment?
         // final String resteasyClassName = "org.jboss.resteasy.api.validation.Validation";
@@ -151,7 +125,12 @@ public class ServiceApplication extends Application {
     // Private helpers
     //
 
-    private SortedMap<String, String> getDependenciesProperties() {
+    /**
+     * Retrieves a sorted map containing the properties within the dependencies.properties file.
+     *
+     * @return a Map containing the properties within the {@code META-INF/maven/dependencies.properties} file.
+     */
+    public static SortedMap<String, String> getDependenciesProperties() {
 
         final String depPropFile = "META-INF/maven/dependencies.properties";
         final InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(depPropFile);
@@ -183,5 +162,4 @@ public class ServiceApplication extends Application {
         // All Done.
         return toReturn;
     }
-
 }

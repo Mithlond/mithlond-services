@@ -34,6 +34,7 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss.sssZ</maven.build.timestamp.format>
         <webapp.dir>${project.build.directory}/exploded/webapp-rest.war</webapp.dir>
+        <swagger.dir>${webapp.dir}/swagger</swagger.dir>
     </properties>
 
     <!-- +=============================================== -->
@@ -66,27 +67,6 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-jersey2-jaxrs</artifactId>
-            <version>1.5.9</version>
-            <!-- exclusions>
-                <exclusion>
-                    <groupId>org.glassfish.jersey.containers</groupId>
-                    <artifactId>jersey-container-servlet-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-multipart</artifactId>
-                </exclusion>
-            </exclusions -->
-        </dependency>
-        <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-core</artifactId>
-            <version>1.9.3.Final</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>se.mithlond.services.shared.test.entity</groupId>
             <artifactId>mithlond-services-shared-entity-test</artifactId>
             <version>1.0.0-SNAPSHOT</version>
@@ -99,6 +79,17 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+            <version>1.9.3.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.9</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -151,9 +142,50 @@
             </testResource>
         </testResources>
 
-        <!-- pluginManagement>
+        <pluginManagement>
             <plugins>
+
+                <!--
+                    Generates a Swagger.JSON file describing the backend's RESTful API.
+                    Unlike swagger-core, swagger-maven-plugin does not actively serve the
+                    spec with the rest of the application; it generates the spec as a build
+                    artifact to be used in downstream Swagger tooling.
+
+                    Why:    Generate the swagger description file.
+                    When:   Standard lifecycle, compile.
+                -->
                 <plugin>
+                    <groupId>com.github.kongchen</groupId>
+                    <artifactId>swagger-maven-plugin</artifactId>
+                    <version>3.1.3</version>
+                    <configuration>
+                        <apiSources>
+                            <apiSource>
+                                <host>localhost:8080</host>
+                                <basePath>/backend/resource</basePath>
+                                <outputPath>${swagger.dir}</outputPath>
+                                <swaggerDirectory>${swagger.dir}</swaggerDirectory>
+                                <attachSwaggerArtifact>true</attachSwaggerArtifact>
+                                <schemes>http,https</schemes>
+                                <info>
+                                    <title>${project.description}</title>
+                                    <version>${project.version}</version>
+                                    <license>
+                                        <name>jGuru Europe Corporate Source License, based on The Apache Software License, Version 2.0</name>
+                                        <url>http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt</url>
+                                    </license>
+                                    <contact>
+                                        <name>jGuru Europe AB</name>
+                                        <url>http://www.jguru.se</url>
+                                    </contact>
+                                </info>
+                                <locations>se.mithlond.services.backend.war.resources.content</locations>
+                            </apiSource>
+                        </apiSources>
+                    </configuration>
+                </plugin>
+
+                <!-- plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>2.16</version>
@@ -169,11 +201,29 @@
                             <version>${nazgul.tools.version}</version>
                         </dependency>
                     </dependencies>
-                </plugin>
+                </plugin -->
             </plugins>
-        </pluginManagement -->
+        </pluginManagement>
 
         <plugins>
+
+            <!--
+                Generate Swagger artifacts.
+            -->
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-swagger-json-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!--
                 Ensure that we generate XSDs for all our model projects.
             -->
