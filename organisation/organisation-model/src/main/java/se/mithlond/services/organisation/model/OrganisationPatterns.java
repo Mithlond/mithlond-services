@@ -225,4 +225,11 @@ public final class OrganisationPatterns {
      * NamedQuery parameter name for primary keys ("IDs").
      */
     public static final String PARAM_IDS = "ids";
+
+    /*
+     * Hide utility-class constructors.
+     */
+    private OrganisationPatterns() {
+        // Do nothing
+    }
 }

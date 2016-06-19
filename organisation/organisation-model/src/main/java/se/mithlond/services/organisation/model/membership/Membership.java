@@ -38,10 +38,16 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -59,8 +65,10 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -98,7 +106,7 @@ import java.util.TreeSet;
 @Table(uniqueConstraints = {
         @UniqueConstraint(name = "aliasAndOrganisationIsUnique", columnNames = {"alias", "organisation_id"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"alias", "subAlias", "emailAlias",
-        "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation"})
+        "loginPermitted", "user", "groupMemberships", "orderLevelGrants", "organisation", "personalSettings"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Membership extends NazgulEntity implements Comparable<Membership>, SemanticAuthorizationPathProducer {
 
@@ -160,47 +168,87 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     public static final String NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED =
             "Membership.getByOrganisationAndLoginPermitted";
 
-    // Internal state
+    /**
+     * The alias of this Membership. Never null/empty, and unique within the Organisation.
+     */
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
     @XmlElement(required = true)
     private String alias;
 
+    /**
+     * An optional (i.e. nullable) sub-alias for the Membership within the Organisation.
+     */
     @Basic
     @Column(length = 1024)
     @XmlElement
     private String subAlias;
 
+    /**
+     * An optional (i.e. nullable) email for the Membership within the Organisation.
+     * Should not include the domain name, since that is derived from the organisation.
+     */
     @Basic
     @Column(length = 64)
     @XmlElement
     private String emailAlias;
 
+    /**
+     * If true, this Membership is permitted login.
+     */
     @Basic
     @Column(nullable = false)
     @XmlAttribute(required = true)
     private boolean loginPermitted;
 
+    /**
+     * The non-null User of this Membership.
+     */
     @ManyToOne(optional = false, cascade = CascadeType.DETACH)
     @XmlIDREF
     private User user;
 
+    /**
+     * The non-null Organisation wherein this Membership is part.
+     */
     @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @XmlIDREF
     private Organisation organisation;
 
+    /**
+     * Set of {@link GroupMembership} held by this {@link Membership}.
+     */
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "membership")
-    @XmlElementWrapper(name = "memberships", nillable = true, required = false)
+    @XmlElementWrapper(name = "memberships")
     @XmlElements(value = {
             @XmlElement(name = "groupMembership", type = GroupMembership.class),
             @XmlElement(name = "guildMembership", type = GuildMembership.class)
     })
     private Set<GroupMembership> groupMemberships;
 
+    /**
+     * Set of {@link OrderLevelGrant} instances held by this {@link Membership}.
+     */
     @OneToMany(mappedBy = "membership", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @XmlElementWrapper(name = "orderLevelGrants", nillable = true, required = false)
     @XmlElement(name = "orderLevelGrant")
     private Set<OrderLevelGrant> orderLevelGrants;
+
+    /**
+     * A Map relating personal settings, such as contact information
+     */
+    @ElementCollection
+    @MapKeyColumn(name = "settings_key")
+    @Column(name = "settings_value")
+    @CollectionTable(name = "membership_personalsettings",
+            joinColumns = @JoinColumn(name = "membership_id"),
+            uniqueConstraints = {
+                    @UniqueConstraint(
+                            name = "unq_settingstype_per_membership",
+                            columnNames = {"settings_key", "membership_id"})})
+    @XmlElementWrapper
+    @XmlElement(name = "setting")
+    private Map<String, String> personalSettings;
 
     /**
      * JPA/JAXB-friendly constructor.
@@ -211,6 +259,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
         this.loginPermitted = true;
         this.orderLevelGrants = new TreeSet<>();
         this.groupMemberships = new TreeSet<>();
+        this.personalSettings = new TreeMap<>();
     }
 
     /**
@@ -225,11 +274,11 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @param organisation   The organisation of this Membership, i.e. where the user belongs.
      */
     public Membership(final String alias,
-            final String subAlias,
-            final String emailAlias,
-            final boolean loginPermitted,
-            final User user,
-            final Organisation organisation) {
+                      final String subAlias,
+                      final String emailAlias,
+                      final boolean loginPermitted,
+                      final User user,
+                      final Organisation organisation) {
 
         this(alias,
                 subAlias,
@@ -256,13 +305,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      *                         user of this membership belongs.
      */
     public Membership(final String alias,
-            final String subAlias,
-            final String emailAlias,
-            final boolean loginPermitted,
-            final User user,
-            final Organisation organisation,
-            final Set<OrderLevelGrant> orderLevelGrants,
-            final Set<GroupMembership> groupMemberships) {
+                      final String subAlias,
+                      final String emailAlias,
+                      final boolean loginPermitted,
+                      final User user,
+                      final Organisation organisation,
+                      final Set<OrderLevelGrant> orderLevelGrants,
+                      final Set<GroupMembership> groupMemberships) {
 
         this();
 
@@ -468,9 +517,9 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @see #addOrGetGroupMembership(Group)
      */
     public GuildMembership addOrUpdateGuildMembership(final Guild guild,
-            final boolean guildMaster,
-            final boolean deputyGuildMaster,
-            final boolean auditor) {
+                                                      final boolean guildMaster,
+                                                      final boolean deputyGuildMaster,
+                                                      final boolean auditor) {
 
         // Check sanity
         Validate.notNull(guild, "Cannot handle null guild argument.");
@@ -501,6 +550,15 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     }
 
     /**
+     * Retrieves the personal settings for this {@link Membership}.
+     *
+     * @return the non-null personal settings Map for this {@link Membership}.
+     */
+    public Map<String, String> getPersonalSettings() {
+        return personalSettings;
+    }
+
+    /**
      * Adds or updates an OrderLevelGrant wrapping the supplied data.
      *
      * @param orderLevel  The OrderLevel which should be granted to this Membership.
@@ -509,8 +567,8 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @return The added or updated OrderLevelGrant.
      */
     public OrderLevelGrant addOrUpdateOrderLevelGrant(final OrderLevel orderLevel,
-            final ZonedDateTime grantedDate,
-            final String note) {
+                                                      final ZonedDateTime grantedDate,
+                                                      final String note) {
 
         // Check sanity
         Validate.notNull(orderLevel, "Cannot handle null orderLevel argument.");
@@ -543,7 +601,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     public int compareTo(final Membership that) {
 
         // Fail fast
-        if(that == null) {
+        if (that == null) {
             return -1;
         } else if (that == this) {
             return 0;
@@ -638,9 +696,8 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
         // Re-assign the XmlTransient collections.
-        for (OrderLevelGrant current : orderLevelGrants) {
-            current.setMembership(this);
-        }
+        orderLevelGrants.stream().filter(c -> c != null).forEach(c -> c.setMembership(this));
+        groupMemberships.stream().filter(current -> current != null).forEach(c -> c.setMembership(this));
 
         if (log.isDebugEnabled()) {
             if (parent instanceof User) {
@@ -648,12 +705,6 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
             } else {
                 final String parentObjectType = parent == null ? "<null>" : parent.getClass().getName();
                 log.debug("Got parent object of type: " + parentObjectType);
-            }
-        }
-
-        for (GroupMembership current : groupMemberships) {
-            if (current != null) {
-                current.setMembership(this);
             }
         }
     }

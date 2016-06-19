@@ -244,6 +244,16 @@
             <memberships/>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_0</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_0</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="102" version="0" loginPermitted="false">
             <alias>alias_12</alias>
@@ -272,6 +282,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_12</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_12</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="93" version="0" loginPermitted="false">
             <alias>alias_3</alias>
@@ -288,6 +308,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_3</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_3</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="96" version="0" loginPermitted="false">
             <alias>alias_6</alias>
@@ -307,6 +337,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_6</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_6</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="99" version="0" loginPermitted="false">
             <alias>alias_9</alias>
@@ -332,6 +372,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_9</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_9</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="91" version="0" loginPermitted="true">
             <alias>alias_1</alias>
@@ -345,6 +395,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_1</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_1</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="100" version="0" loginPermitted="true">
             <alias>alias_10</alias>
@@ -370,6 +430,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_10</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_10</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="103" version="0" loginPermitted="true">
             <alias>alias_13</alias>
@@ -401,6 +471,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_13</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_13</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="94" version="0" loginPermitted="true">
             <alias>alias_4</alias>
@@ -417,6 +497,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_4</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_4</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="97" version="0" loginPermitted="true">
             <alias>alias_7</alias>
@@ -439,6 +529,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_7</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_7</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="101" version="0" loginPermitted="true">
             <alias>alias_11</alias>
@@ -467,6 +567,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_11</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_11</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="104" version="0" loginPermitted="true">
             <alias>alias_14</alias>
@@ -498,6 +608,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_14</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_14</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="92" version="0" loginPermitted="true">
             <alias>alias_2</alias>
@@ -511,6 +631,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_2</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_2</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="95" version="0" loginPermitted="true">
             <alias>alias_5</alias>
@@ -530,6 +660,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_5</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_5</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="98" version="0" loginPermitted="true">
             <alias>alias_8</alias>
@@ -552,6 +692,16 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>CellPhone</key>
+                    <value>CellPhone_8</value>
+                </entry>
+                <entry>
+                    <key>Skype</key>
+                    <value>Skype_8</value>
+                </entry>
+            </personalSettings>
         </membership>
     </memberships>
 </organisation_transport:memberships>

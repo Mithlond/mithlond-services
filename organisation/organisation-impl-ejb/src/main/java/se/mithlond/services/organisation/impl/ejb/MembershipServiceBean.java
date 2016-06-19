@@ -26,10 +26,7 @@ import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.PersonalSettings;
-import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
-import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
@@ -117,20 +114,5 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         // All done.
         return toReturn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public PersonalSettings getPersonalSettingsFor(final Membership membership) {
-
-        // Check sanity
-        Validate.notNull(membership, "membership");
-
-        // All done.
-        return entityManager.createNamedQuery(PersonalSettings.NAMEDQ_GET_BY_MEMBERSHIP_ID, PersonalSettings.class)
-                .setParameter(OrganisationPatterns.PARAM_MEMBERSHIP_ID, membership.getId())
-                .getSingleResult();
     }
 }

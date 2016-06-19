@@ -28,6 +28,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -53,7 +54,7 @@ import java.util.Set;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"organisations", "groups", "users", "memberships"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Memberships {
+public class Memberships extends AbstractSimpleTransporter {
 
     /**
      * All {@link User}s correlating to transported {@link Membership}s.

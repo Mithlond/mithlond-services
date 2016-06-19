@@ -30,7 +30,6 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -39,6 +38,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -53,7 +53,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -87,36 +86,56 @@ public class User extends NazgulEntity {
     // Constants
     private static final long serialVersionUID = 8829990119L;
 
-    // Internal state
+    /**
+     * A non-empty token used to connect this User to a userID within an external Identity Management system.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     @XmlElement(required = true)
     private String userIdentifierToken;
 
+    /**
+     * The first name of this User.
+     */
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
     @XmlElement(required = true)
     private String firstName;
 
+    /**
+     * The last name of this User.
+     */
     @Basic(optional = false)
     @Column(nullable = false, length = 64)
     @XmlElement(required = true)
     private String lastName;
 
+    /**
+     * The birthday of this User.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     @XmlElement(required = true)
     private LocalDate birthday;
 
-    @Basic(optional = false)
-    @Column(nullable = false, length = 4)
-    @XmlAttribute(required = true)
+    /**
+     * The optional personal number (SSN-related, swedish thing) of this User.
+     */
+    @Basic
+    @Column(length = 4)
+    @XmlAttribute
     private short personalNumberLast4Digits;
 
+    /**
+     * The home address of this User.
+     */
     @Embedded
     @XmlElement(required = true)
     private Address homeAddress;
 
+    /**
+     * The {@link Membership}s held by this User.
+     */
     @XmlElementWrapper(name = "memberships", required = true)
     @XmlElement(name = "membership")
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -151,10 +170,13 @@ public class User extends NazgulEntity {
     // targetClass property of @ElementCollection to
     // define value type.
     //
-    @CollectionTable(name = "user_contactdetails")
+    @CollectionTable(name = "user_contactdetails", uniqueConstraints = {
+            @UniqueConstraint(name = "unq_user_contact_type",
+            columnNames = {"user_id", "contact_type"})
+    })
     @Column(name = "address_or_number")
     @MapKeyColumn(name = "contact_type")
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, String> contactDetails;
 
     /**

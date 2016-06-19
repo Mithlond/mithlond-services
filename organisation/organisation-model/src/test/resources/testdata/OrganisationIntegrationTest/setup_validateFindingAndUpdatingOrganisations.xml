@@ -65,11 +65,10 @@
                     ORGANISATION_ID="2" QUENYANAME="quenyaName_4" QUENYAPREFIX="quenyaPrefix_4"
                     DESCRIPTION="guildDescription_4"/>
     <MEMBERSHIP/>
+    <MEMBERSHIP_PERSONALSETTINGS/>
     <NAZGULORDER/>
     <ORDERLEVEL/>
     <ORDERLEVELGRANT/>
-    <PERSONALSETTINGS/>
-    <PERSONALSETTINGS_SETTINGS/>
     <INTERNALUSERS/>
     <USER_CONTACTDETAILS/>
 </dataset>

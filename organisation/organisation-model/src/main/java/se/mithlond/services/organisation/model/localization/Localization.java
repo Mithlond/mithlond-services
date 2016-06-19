@@ -63,11 +63,10 @@ import java.util.StringTokenizer;
                         + " where l.id in :" + OrganisationPatterns.PARAM_IDS)
 })
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(
+@Table(name = "localized_definitions",
+        uniqueConstraints = {@UniqueConstraint(
                 name = "enum_localizations",
-                columnNames = {"language", "country", "variant"})
-})
+                columnNames = {"language", "country", "variant"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = "compactStringForm")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localization extends NazgulEntity implements Comparable<Localization> {

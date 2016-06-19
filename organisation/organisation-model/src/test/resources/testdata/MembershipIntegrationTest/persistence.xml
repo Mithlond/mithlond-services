@@ -49,7 +49,6 @@
         <class>se.mithlond.services.organisation.model.address.CategorizedAddress</class>
         <class>se.mithlond.services.organisation.model.address.WellKnownAddressType</class>
         <class>se.mithlond.services.organisation.model.membership.Membership</class>
-        <class>se.mithlond.services.organisation.model.membership.PersonalSettings</class>
         <class>se.mithlond.services.organisation.model.membership.Group</class>
         <class>se.mithlond.services.organisation.model.membership.GroupMembership</class>
         <class>se.mithlond.services.organisation.model.membership.GroupMembershipId</class>

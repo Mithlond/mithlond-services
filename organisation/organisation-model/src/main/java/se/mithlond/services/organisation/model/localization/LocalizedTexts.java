@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.transport.localization.LocalizedTextVO;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
@@ -39,6 +40,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUtil;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -57,11 +59,12 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
- * A text translatable to several languages.
+ * A text translatable (or translated) to several languages.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
+@Table(name = "localized_texts")
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocalization", "texts"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
@@ -70,7 +73,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     private static final Logger log = LoggerFactory.getLogger(LocalizedTexts.class);
 
     @ElementCollection
-    @CollectionTable(name = "text_localizations", joinColumns = @JoinColumn(name = "localization_suite"))
+    @CollectionTable(name = "text_localizations", joinColumns = @JoinColumn(name = "localization_id"))
     @Column(name = "localized_text")
     @MapKeyJoinColumn(name = "localization_id", referencedColumnName = "id")
     @XmlTransient
@@ -81,12 +84,13 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     @Transient
     @XmlElement(name = "localizedText")
-    private List<LocalizedTextTuple> texts;
+    private List<LocalizedTextVO> texts;
 
     /**
      * The default Localization for this LocalizedTexts instance.
      */
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST})
+    @JoinColumn(name = "default_localization_id")
     @XmlElement(required = true)
     private Localization defaultLocalization;
 
@@ -321,9 +325,9 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     private void beforeMarshal(final Marshaller marshaller) {
 
         // Populate the transport tuple sequence
-        final List<LocalizedTextTuple> textSequence = data.entrySet()
+        final List<LocalizedTextVO> textSequence = data.entrySet()
                 .stream()
-                .map(current -> new LocalizedTextTuple(current.getKey(), current.getValue()))
+                .map(current -> new LocalizedTextVO(current.getKey(), current.getValue()))
                 .collect(Collectors.toList());
         this.texts.clear();
         this.texts.addAll(textSequence);

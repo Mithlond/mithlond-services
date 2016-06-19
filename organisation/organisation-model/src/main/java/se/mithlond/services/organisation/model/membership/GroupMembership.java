@@ -78,7 +78,7 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
     @ManyToOne
     @MapsId("groupId")
     @XmlIDREF
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private Group group;
 
     // This must be XmlTransient to avoid a cyclic graph in the XSD.
@@ -239,7 +239,7 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
                     && thisGroup.getOrganisation() != null
                     && thisGroup.getOrganisation().getOrganisationName() != null) {
                 toReturn = thisGroup.getOrganisation().getOrganisationName().compareTo(
-                        thatGroup.getOrganisation().getOrganisationName()             );
+                        thatGroup.getOrganisation().getOrganisationName());
             }
         }
         if (toReturn == 0 && getMembership() != null) {
@@ -251,7 +251,7 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
             if (getMembership().getOrganisation() != null
                     && getMembership().getOrganisation().getOrganisationName() != null) {
                 toReturn = getMembership().getOrganisation().getOrganisationName().compareTo(
-                        that.getMembership().getOrganisation().getOrganisationName()        );
+                        that.getMembership().getOrganisation().getOrganisationName());
             }
         }
 

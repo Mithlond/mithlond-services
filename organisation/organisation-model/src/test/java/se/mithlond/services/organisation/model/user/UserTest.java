@@ -108,6 +108,8 @@ public class UserTest extends AbstractEntityTest {
                     new TreeSet<>(),
                     new TreeSet<>());
 
+            membership.getPersonalSettings().put("Foo", "Foo_" + i);
+
             for (Group currentGroupOrGuild : groupsAndGuilds.getGroupsAndGuilds()) {
                 if (i % 2 == 0) {
                     if (currentGroupOrGuild instanceof Guild) {

@@ -22,7 +22,6 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
@@ -71,12 +70,4 @@ public interface MembershipService extends JpaCudService {
      * @return The Memberships corresponding to the supplied data, or an empty List if none was found.
      */
     List<Membership> getActiveMemberships(final String organisationName, final String firstName, final String lastName);
-
-    /**
-     * Acquires the personal settings for the given Membership.
-     *
-     * @param aMember The membership for which the personal settings should be acquired.
-     * @return The PersonalSettings of the given membership.
-     */
-    PersonalSettings getPersonalSettingsFor(final Membership aMember);
 }

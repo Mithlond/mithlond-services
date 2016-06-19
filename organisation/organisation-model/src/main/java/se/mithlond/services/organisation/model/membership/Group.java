@@ -266,7 +266,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      */
     public String getEmailList() {
 
-        if(emailList.contains("@")) {
+        if (emailList.contains("@")) {
             return emailList;
         }
 

@@ -195,6 +195,12 @@
                     </memberships>
                     <orderLevelGrants/>
                     <organisation>organisation_name_0</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_0</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -222,6 +228,12 @@
                     <memberships/>
                     <orderLevelGrants/>
                     <organisation>organisation_name_1</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_1</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -280,6 +292,12 @@
                     </memberships>
                     <orderLevelGrants/>
                     <organisation>organisation_name_2</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_2</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -307,6 +325,12 @@
                     <memberships/>
                     <orderLevelGrants/>
                     <organisation>organisation_name_0</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_3</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -365,6 +389,12 @@
                     </memberships>
                     <orderLevelGrants/>
                     <organisation>organisation_name_1</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_4</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -392,6 +422,12 @@
                     <memberships/>
                     <orderLevelGrants/>
                     <organisation>organisation_name_2</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_5</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -450,6 +486,12 @@
                     </memberships>
                     <orderLevelGrants/>
                     <organisation>organisation_name_0</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_6</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -477,6 +519,12 @@
                     <memberships/>
                     <orderLevelGrants/>
                     <organisation>organisation_name_1</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_7</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -535,6 +583,12 @@
                     </memberships>
                     <orderLevelGrants/>
                     <organisation>organisation_name_2</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_8</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -562,6 +616,12 @@
                     <memberships/>
                     <orderLevelGrants/>
                     <organisation>organisation_name_0</organisation>
+                    <personalSettings>
+                        <entry>
+                            <key>Foo</key>
+                            <value>Foo_9</value>
+                        </entry>
+                    </personalSettings>
                 </membership>
             </memberships>
         </user>
@@ -606,6 +666,12 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_0</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_1</alias>
@@ -615,6 +681,12 @@
             <memberships/>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_1</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_2</alias>
@@ -655,6 +727,12 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_2</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_3</alias>
@@ -664,6 +742,12 @@
             <memberships/>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_3</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_4</alias>
@@ -704,6 +788,12 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_4</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_5</alias>
@@ -713,6 +803,12 @@
             <memberships/>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_5</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_6</alias>
@@ -753,6 +849,12 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_6</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_7</alias>
@@ -762,6 +864,12 @@
             <memberships/>
             <orderLevelGrants/>
             <organisation>organisation_name_1</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_7</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="false">
             <alias>alias_8</alias>
@@ -802,6 +910,12 @@
             </memberships>
             <orderLevelGrants/>
             <organisation>organisation_name_2</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_8</value>
+                </entry>
+            </personalSettings>
         </membership>
         <membership jpaId="0" version="0" loginPermitted="true">
             <alias>alias_9</alias>
@@ -811,6 +925,12 @@
             <memberships/>
             <orderLevelGrants/>
             <organisation>organisation_name_0</organisation>
+            <personalSettings>
+                <entry>
+                    <key>Foo</key>
+                    <value>Foo_9</value>
+                </entry>
+            </personalSettings>
         </membership>
     </memberships>
 </organisation:users>

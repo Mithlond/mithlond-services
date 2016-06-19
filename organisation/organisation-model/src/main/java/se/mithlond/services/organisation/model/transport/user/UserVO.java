@@ -21,11 +21,15 @@
  */
 package se.mithlond.services.organisation.model.transport.user;
 
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 
 /**
@@ -33,6 +37,8 @@ import java.time.LocalDate;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"firstName", "lastName", "birthday"})
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserVO extends AbstractSimpleTransportable {
 
     /**

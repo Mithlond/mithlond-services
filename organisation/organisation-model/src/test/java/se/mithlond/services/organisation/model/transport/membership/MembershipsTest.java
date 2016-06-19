@@ -191,6 +191,9 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
                     currentMembership.addOrUpdateGuildMembership(guilds[j % guilds.length], false, false, false);
                 }
             }
+
+            currentMembership.getPersonalSettings().put("Skype", "Skype_" + i);
+            currentMembership.getPersonalSettings().put("CellPhone", "CellPhone_" + i);
         }
     }
 
@@ -243,7 +246,10 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
         final SortedMap<String, Membership> expectedMbMap = getMembershipMap(expected);
 
         for (Map.Entry<String, Membership> current : expectedMbMap.entrySet()) {
-            Assert.assertEquals(0, current.getValue().compareTo(actualMbMap.get(current.getKey())));
+
+            final Membership resurrectedMembership = actualMbMap.get(current.getKey());
+            Assert.assertEquals(0, current.getValue().compareTo(resurrectedMembership));
+            Assert.assertEquals(2, resurrectedMembership.getPersonalSettings().size());
         }
     }
 

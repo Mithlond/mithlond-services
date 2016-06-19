@@ -80,15 +80,24 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
     public static final String NAMEDQ_GET_BY_ID_CLASSIFICATION =
             "Category.getByIdAndClassification";
 
-    // Internal state
+    /**
+     * The category id - comparable to a short description or single word. Cannot be null or empty.
+     */
     @Basic(optional = false)
     @Column(nullable = false, name = "category")
     private String categoryID;
 
+    /**
+     * A classification of this category, such as "Restaurant".
+     * This is intended to simplify separating a type of Categories from others.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     private String classification;
 
+    /**
+     * The (fuller/richer) description of this Category. Cannot be null or empty.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     private String description;

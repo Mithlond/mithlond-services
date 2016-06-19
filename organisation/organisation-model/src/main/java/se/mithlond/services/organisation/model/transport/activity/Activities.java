@@ -46,11 +46,18 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Activities extends AbstractSimpleTransporter {
 
-    // Internal state
+    /**
+     * A List of ActivityVO instances providing a shallow representation of the Activities.
+     * Suitable for listings and similar.
+     */
     @XmlElementWrapper
     @XmlElement(name = "activityVO")
     private List<ActivityVO> activityVOs;
 
+    /**
+     * A List of full Activity instances providing a full/deep representation of the Activities.
+     * Suitable for detailed views or editing.
+     */
     @XmlElementWrapper
     @XmlElement(name = "activity")
     private List<Activity> activities;

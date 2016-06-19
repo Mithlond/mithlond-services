@@ -19,9 +19,10 @@
  * limitations under the License.
  * #L%
  */
-package se.mithlond.services.organisation.model.localization;
+package se.mithlond.services.organisation.model.transport.localization;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.localization.Localization;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,9 +37,9 @@ import java.util.Objects;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"locale", "text"})
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"locale", "text"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
+public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
 
     /**
      * The compact transport form for a Localization.
@@ -55,7 +56,7 @@ public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
     /**
      * JAXB-friendly constructor.
      */
-    public LocalizedTextTuple() {
+    public LocalizedTextVO() {
     }
 
     /**
@@ -64,7 +65,7 @@ public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
      * @param localization a non-null Localization.
      * @param text         a non-null text.
      */
-    public LocalizedTextTuple(final Localization localization, final String text) {
+    public LocalizedTextVO(final Localization localization, final String text) {
 
         // Check sanity
         Validate.notNull(localization, "localization");
@@ -93,7 +94,7 @@ public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(final LocalizedTextTuple that) {
+    public int compareTo(final LocalizedTextVO that) {
 
         // Return fast
         if (that == this) {
@@ -121,9 +122,9 @@ public class LocalizedTextTuple implements Comparable<LocalizedTextTuple> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final LocalizedTextTuple that = (LocalizedTextTuple) o;
-        return Objects.equals(locale, that.locale) &&
-                Objects.equals(text, that.text);
+        final LocalizedTextVO that = (LocalizedTextVO) o;
+        return Objects.equals(locale, that.locale)
+                && Objects.equals(text, that.text);
     }
 
     /**

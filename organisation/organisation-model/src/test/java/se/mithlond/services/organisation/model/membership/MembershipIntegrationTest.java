@@ -107,6 +107,8 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
 
             users[i] = currentUser;
         }
+
+        // printCurrentDatabaseState();
     }
 
     /**
@@ -169,6 +171,8 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
             if ((i + 1) % 3 == 0) {
                 groupMemberships.add(new GuildMembership(mthFekalion, membership, false, false, false));
             }
+
+            membership.getPersonalSettings().put("Skype", "SkypeNr_" + i);
 
             // Persist the membership
             entityManager.persist(membership);
