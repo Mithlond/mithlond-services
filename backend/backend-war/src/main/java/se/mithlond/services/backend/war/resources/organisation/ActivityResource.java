@@ -22,6 +22,9 @@
 package se.mithlond.services.backend.war.resources.organisation;
 
 import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.mithlond.services.backend.war.providers.security.resteasy.SecurityFilter;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.ActivityService;
@@ -44,6 +47,9 @@ import java.time.LocalDateTime;
 @Api(description = "Provides information about Activities to authorized users.")
 @Path("/org/{" + RestfulParameters.ORGANISATION_JPA_ID + "}/activity")
 public class ActivityResource extends AbstractResource {
+
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(ActivityResource.class);
 
     // Internal state
     @EJB
@@ -69,8 +75,17 @@ public class ActivityResource extends AbstractResource {
             @QueryParam(RestfulParameters.FROM_DATE) final String fromDate,
             @QueryParam(RestfulParameters.TO_DATE) final String toDate) {
 
-        final LocalDateTime fromDateTime = TimeFormat.COMPACT_LOCALDATE.parse(fromDate).toLocalDateTime();
-        final LocalDateTime toDateTime = TimeFormat.COMPACT_LOCALDATE.parse(toDate).toLocalDateTime();
+        log.info("Hit getactivities method. OrgID: " + organisationID
+                + ", fromDate: " + fromDate + ", toDate: " + toDate);
+
+
+        // Handle default values for from and to dates
+        final LocalDateTime fromDateTime = fromDate == null || fromDate.isEmpty()
+                ? LocalDateTime.now()
+                : TimeFormat.COMPACT_LOCALDATE.parse(fromDate).toLocalDateTime();
+        final LocalDateTime toDateTime = toDate == null || toDate.isEmpty()
+                ? fromDateTime.minusWeeks(1)
+                : TimeFormat.COMPACT_LOCALDATE.parse(toDate).toLocalDateTime();
 
         final ActivitySearchParameters params = ActivitySearchParameters.builder()
                 .withOrganisationIDs(organisationID)
