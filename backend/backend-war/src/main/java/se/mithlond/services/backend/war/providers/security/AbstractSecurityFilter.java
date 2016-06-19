@@ -43,7 +43,9 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * <p>Abstract ContainerRequestFilter implementation used to ensure that an active user is authenticated
@@ -78,7 +80,7 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
         String requiredAuthPatterns = null;
 
         // Debug some?
-        printRequestHeaders(ctx.getHeaders());
+        printRequestInformation(ctx);
 
         // Adhere to the standard WRT the @PermitAll annotation.
         if (!targetMethod.isAnnotationPresent(PermitAll.class)) {
@@ -101,7 +103,7 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
                 requiredAuthPatterns = DEFAULT_AUTH_PATTERN.toString();
             }
 
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug("Got targetMethod [" + targetMethod + "] and requiredAuthPatterns ["
                         + requiredAuthPatterns + "]");
             }
@@ -111,9 +113,8 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
             final Membership activeMembership = membershipService.getMembership(
                     holder.getOrganisationName(), holder.getAlias());
 
-            if(log.isDebugEnabled()) {
-                log.debug("OrganisationAndAlias " + holder + " and requiredAuthPatterns ["
-                        + requiredAuthPatterns + "]");
+            if (log.isDebugEnabled()) {
+                log.debug(holder.toString() + " and requiredAuthPatterns [" + requiredAuthPatterns + "]");
             }
 
             if (activeMembership == null) {
@@ -181,10 +182,12 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
     // Private helpers
     //
 
-    private void printRequestHeaders(final MultivaluedMap<String, String> headers) {
+    private void printRequestInformation(final ContainerRequestContext ctx) {
 
         // Printout the HTTP headers, if available.
         if (log.isDebugEnabled()) {
+
+            final MultivaluedMap<String, String> headers = ctx.getHeaders();
 
             final StringBuilder builder = new StringBuilder();
             builder.append("\n\n====== [Inbound Request Headers] ======\n");
@@ -200,7 +203,18 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
                     }
                 }
             }
-            builder.append("====== [End Inbound Request Headers] ======\n\n");
+            builder.append("====== [End Inbound Request Headers] ======");
+
+            final Map<String, Object> propertyMap = ctx.getPropertyNames().stream()
+                    .sorted()
+                    .collect(Collectors.toMap(c -> c, ctx::getProperty));
+
+            builder.append("\n\n====== [Inbound Request Properties] ======\n");
+            propertyMap.entrySet().stream()
+                    .map(c -> "[" + c.getKey() + "]: " + c.getValue() + "\n")
+                    .forEach(builder::append);
+            builder.append("====== [End Inbound Request Properties] ======\n");
+
             log.debug(builder.toString());
         }
     }

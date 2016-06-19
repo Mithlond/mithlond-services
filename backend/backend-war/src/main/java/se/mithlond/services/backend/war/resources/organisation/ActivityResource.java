@@ -21,10 +21,13 @@
  */
 package se.mithlond.services.backend.war.resources.organisation;
 
+import io.swagger.annotations.Api;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.ActivityService;
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
+import se.mithlond.services.organisation.model.activity.Activity;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -38,6 +41,7 @@ import java.time.LocalDateTime;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Api(description = "Provides information about Activities to authorized users.")
 @Path("/org/{" + RestfulParameters.ORGANISATION_JPA_ID + "}/activity")
 public class ActivityResource extends AbstractResource {
 
@@ -45,10 +49,23 @@ public class ActivityResource extends AbstractResource {
     @EJB
     private ActivityService activityService;
 
+    /**
+     * Retrieves all Activities owned by an Organisation within a DateTime interval.
+     *
+     * @param organisationID The ID of the Organisation owning the activities extracted.
+     * @param fromDate       The String representing the beginning of the interval which should contain the
+     *                       {@link Activity#getStartTime()}. The time should be provided in the form 'yyyyMMdd'
+     *                       such as {@code 20160203}.
+     * @param toDate         The String representing the end of the interval which should contain the
+     *                       {@link Activity#getStartTime()}. The time should be provided in the form 'yyyyMMdd'
+     *                       such as {@code 20160205}.
+     * @return A non-null {@link Activities} transport object containing all Activity instances matching the supplie
+     * search criteria.
+     */
     @GET
     @Path("/all")
     public Activities getActivities(
-            @PathParam(RestfulParameters.ORGANISATION_NAME) final Long organisationID,
+            @PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long organisationID,
             @QueryParam(RestfulParameters.FROM_DATE) final String fromDate,
             @QueryParam(RestfulParameters.TO_DATE) final String toDate) {
 
@@ -61,7 +78,10 @@ public class ActivityResource extends AbstractResource {
                 .withEndPeriod(toDateTime)
                 .build();
 
+        final Membership currentUser = getDisconnectedActiveMembership()
+                .orElseThrow(() -> new IllegalStateException("Active Membership not found."));
+
         // All Done.
-        return activityService.getActivities(params, getDisconnectedActiveMembership().get());
+        return activityService.getActivities(params, currentUser);
     }
 }

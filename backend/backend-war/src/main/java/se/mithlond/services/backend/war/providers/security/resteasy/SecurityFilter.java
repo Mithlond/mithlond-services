@@ -33,6 +33,7 @@ import se.mithlond.services.shared.spi.algorithms.Deployment;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.ext.Provider;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -67,7 +68,6 @@ public class SecurityFilter extends AbstractSecurityFilter {
         if (log.isDebugEnabled()) {
             final String typeName = ctx == null ? "<none>" : ctx.getClass().getName();
             log.debug("Getting OrganisationAndAlias for ContainerRequestContext of type " + typeName);
-            log.debug("Got HttpRequest " + httpRequest);
         }
 
         // Development mode?
@@ -135,7 +135,15 @@ public class SecurityFilter extends AbstractSecurityFilter {
 
     private boolean isDevelopmentEnvironment() throws IllegalStateException {
 
-        final String deploymentName = Deployment.getDeploymentType();
+        String deploymentName = null;
+        try {
+            deploymentName = Deployment.getDeploymentType();
+        } catch (IllegalStateException e) {
+            // Ignore this.
+            if(log.isDebugEnabled()) {
+                log.error(e.getMessage());
+            }
+        }
         final boolean isDevEnvironment = deploymentName != null && deploymentName.equalsIgnoreCase("development");
 
         if (log.isDebugEnabled()) {

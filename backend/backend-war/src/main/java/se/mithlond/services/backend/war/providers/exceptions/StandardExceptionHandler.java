@@ -35,13 +35,13 @@ import java.util.List;
 /**
  * Generic RuntimeException handler, which populates a JSON response and includes the
  * error messages in outbound HTTP headers (i.e.
- * <code>{@value RuntimeExceptionHandler#INTERNAL_ERROR_TYPE_HEADER}</code> for the internal exception itself, and
- * <code>{@value RuntimeExceptionHandler#ERROR_CAUSE_HEADER}</code> for the cause).
+ * <code>{@value StandardExceptionHandler#INTERNAL_ERROR_TYPE_HEADER}</code> for the internal exception itself, and
+ * <code>{@value StandardExceptionHandler#ERROR_CAUSE_HEADER}</code> for the cause).
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Provider
-public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException> {
+public class StandardExceptionHandler implements ExceptionMapper<Exception> {
 
     /**
      * Header where the internal error is bound.
@@ -63,7 +63,7 @@ public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException
      * {@inheritDoc}
      */
     @Override
-    public Response toResponse(final RuntimeException exception) {
+    public Response toResponse(final Exception exception) {
 
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity("Failed to invoke service.")
@@ -78,7 +78,7 @@ public class RuntimeExceptionHandler implements ExceptionMapper<RuntimeException
     // Private helpers
     //
 
-    private String extractExceptionStacktrace(final RuntimeException ex) {
+    private String extractExceptionStacktrace(final Exception ex) {
 
         // Create a sort-of human-readable string containing the exception stack trace.
         final StringBuilder builder = new StringBuilder();
