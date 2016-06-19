@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
@@ -131,9 +130,8 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
             // If the user does not possess the required roles, simply abort.
             if (getAuthorizer().isAuthorized(requiredAuthPatterns, activeMembership.getPaths())) {
 
-                // Dig out the PersonalSettings, and continue processing.
-                final PersonalSettings personalSettings = membershipService.getPersonalSettingsFor(activeMembership);
-                ctx.setSecurityContext(new NazgulMembershipSecurityContext(activeMembership, personalSettings));
+                // Continue processing.
+                ctx.setSecurityContext(new NazgulMembershipSecurityContext(activeMembership));
             } else {
                 // The user is unauthorized. Abort.
                 ctx.abortWith(Response.status(Response.Status.UNAUTHORIZED)

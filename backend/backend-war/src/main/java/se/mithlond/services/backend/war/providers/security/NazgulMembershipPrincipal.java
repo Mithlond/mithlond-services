@@ -24,7 +24,6 @@ package se.mithlond.services.backend.war.providers.security;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.shared.spi.algorithms.Validate;
@@ -43,24 +42,19 @@ public class NazgulMembershipPrincipal implements Principal {
 
     // Internal state
     private Membership membership;
-    private PersonalSettings personalSettings;
 
     /**
      * Creates a NazgulMembershipPrincipal wrapping the supplied Membership.
      *
-     * @param membership       A non-null Membership to wrap in this NazgulMembershipPrincipal.
-     * @param personalSettings The PersonalSettings of the supplied membership.
+     * @param membership A non-null Membership to wrap in this NazgulMembershipPrincipal.
      */
-    public NazgulMembershipPrincipal(final Membership membership,
-                                     final PersonalSettings personalSettings) {
+    public NazgulMembershipPrincipal(final Membership membership) {
 
         // Check sanity
         Validate.notNull(membership, "membership");
-        Validate.notNull(personalSettings, "personalSettings");
 
         // Assign internal ste
         this.membership = membership;
-        this.personalSettings = personalSettings;
     }
 
     /**
@@ -76,13 +70,6 @@ public class NazgulMembershipPrincipal implements Principal {
      */
     public Membership getMembership() {
         return membership;
-    }
-
-    /**
-     * @return The PersonalSettings of the wrapped Membership.
-     */
-    public PersonalSettings getPersonalSettings() {
-        return personalSettings;
     }
 
     /**

@@ -23,7 +23,6 @@ package se.mithlond.services.backend.war.resources;
 
 import se.mithlond.services.backend.war.providers.security.NazgulMembershipPrincipal;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.PersonalSettings;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -61,26 +60,6 @@ public abstract class AbstractResource {
         }
 
         // All done.
-        return Optional.empty();
-    }
-
-    /**
-     * Retrieves the PersonalSettings of the active User, in JPA-disconnected state.
-     *
-     * @return the PersonalSettings of the active User, in JPA-disconnected state.
-     * This implies that changes to the supplied Membership <strong>will not</strong>
-     * be persisted when the invocation ends. Instead, use EJB services with corresponding
-     * transactions to change database state. If the SecurityContext was not injected, this
-     * method returns an empty Optional.
-     */
-    protected Optional<PersonalSettings> getDisconnectedPersonalSettings() {
-
-        final NazgulMembershipPrincipal principal = getPrincipal();
-        if (principal != null) {
-            return Optional.of(principal.getPersonalSettings());
-        }
-
-        // Nopes.
         return Optional.empty();
     }
 

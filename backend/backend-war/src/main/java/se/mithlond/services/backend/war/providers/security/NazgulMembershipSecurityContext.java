@@ -22,7 +22,6 @@
 package se.mithlond.services.backend.war.providers.security;
 
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.PersonalSettings;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 
@@ -42,12 +41,10 @@ public class NazgulMembershipSecurityContext implements SecurityContext {
     /**
      * Creates a NazgulMembershipSecurityContext wrapping the supplied Membership.
      *
-     * @param membership       The authenticated Membership.
-     * @param personalSettings The personal settings of the membership wrapped.
+     * @param membership The authenticated Membership.
      */
-    public NazgulMembershipSecurityContext(final Membership membership,
-                                           final PersonalSettings personalSettings) {
-        this.principal = new NazgulMembershipPrincipal(membership, personalSettings);
+    public NazgulMembershipSecurityContext(final Membership membership) {
+        this.principal = new NazgulMembershipPrincipal(membership);
     }
 
     /**

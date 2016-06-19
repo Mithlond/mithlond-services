@@ -217,6 +217,9 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
                 .build());
 
         templateMenuStructure = new MenuStructure(rootMenu, mifflond);
+
+        // Debug some.
+        printCurrentDatabaseState();
     }
 
     /**
@@ -232,7 +235,7 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
             // Ignore this
         }
 
-        final String[] tablesToReset = {"LOCALIZATION", "ORGANISATION"};
+        final String[] tablesToReset = {"LOCALIZED_DEFINITIONS","LOCALIZED_TEXTS", "ORGANISATION"};
         final List<String> resetIndexStatements = Arrays.asList(tablesToReset).stream()
                 .map(current -> "ALTER TABLE \"" + current + "\" ALTER COLUMN \"ID\" RESTART WITH 0")
                 .collect(Collectors.toList());
