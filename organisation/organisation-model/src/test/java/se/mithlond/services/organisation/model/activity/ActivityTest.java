@@ -25,109 +25,118 @@
  */
 package se.mithlond.services.organisation.model.activity;
 
+import org.junit.Before;
+import org.junit.Test;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.address.CategorizedAddress;
+import se.mithlond.services.organisation.model.finance.Amount;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.organisation.model.transport.activity.Activities;
+import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.user.User;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+
+import javax.ejb.Local;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public class ActivityTest extends AbstractEntityTest {
 
-	// Shared state
-	private Organisation mifflond;
-	private User member1;
-	private User member2;
-	private Group subGroup;
-	private Group superGroup;
-	private Guild mmm;
-	private Guild zzz;
-	private Membership membership1;
-	private Membership membership2;
-	private Category restaurant;
+    // Shared state
+    private Activities activities;
+    private Activity activity;
+    private ActivityVO activityVO;
+    private LocalDateTime activityStartTime, activityEndTime;
+    private LocalDate lateAdmissionDate, lastAdmissionDate;
+    private Amount cost, lateAdmissionCost;
+    private Category addressCategory;
+    private Address location;
+    private Organisation organisation;
 
-	/**
-	 * Performs custom setup logic.
+    @Before
+    public void setupSharedState() {
 
-	@Override
-	protected void doCustomSetup() {
+        activities = new Activities();
 
-		// Unmarshal the Guild.
-		final String data = XmlTestUtils.readFully("testdata/aMembership.xml");
-		final List<Object> result = jaxb.unmarshal(new StringReader(data));
+        // Create the activity data
+        activityStartTime = LocalDateTime.of(2016, Month.JUNE, 20, 17, 0);
+        activityEndTime = LocalDateTime.of(2016, Month.JUNE, 20, 22, 15);
 
-		// Check sanity, and assign shared state
-		Assert.assertEquals(9, result.size());
-		mifflond = (Organisation) result.get(0);
-		subGroup = (Group) result.get(1);
-		superGroup = (Group) result.get(2);
-		mmm = (Guild) result.get(3);
-		zzz = (Guild) result.get(4);
-		member1 = (User) result.get(5);
-		member2 = (User) result.get(6);
-		membership1 = (Membership) result.get(7);
-		membership2 = (Membership) result.get(8);
+        lateAdmissionDate = LocalDate.of(2016, Month.JUNE, 15);
+        lastAdmissionDate = LocalDate.of(2016, Month.JUNE, 19);
 
-		// Create shared state
-		restaurant = new Category("Restaurang eller Krog", "restaurant", "Restaurang eller Krog");
-	}
-	 */
+        cost = new Amount(BigDecimal.valueOf(50), WellKnownCurrency.SEK);
+        lateAdmissionCost = new Amount(BigDecimal.valueOf(75), WellKnownCurrency.SEK);
 
-    /*
-	@Test
+        addressCategory = new Category("Visiting address", "visiting_address", "Address for visiting the organisation");
+        location = new Address(null, null, "Foo Street",
+                "5",
+                "Göteborg",
+                "253 54",
+                "Sverige",
+                "Visiting address");
+
+        organisation = new Organisation("The Organisation",
+                "The Tolkien Society of Kinnekulle",
+                null,
+                "0123-234211",
+                "02515-2325232-2323",
+                new Address(null, null, "Kinnekullegatan", "54 C", "Kinnekulle", "142 41", "Sverige",
+                        "Visiting address"),
+                "kinnekulle.tolkien.se",
+                TimeFormat.SWEDISH_TIMEZONE,
+                TimeFormat.SWEDISH_LOCALE);
+
+        activity = new Activity(
+                "activityShortDesc",
+                "activityFullDesc",
+                activityStartTime,
+                activityEndTime,
+                cost,
+                lateAdmissionCost,
+                lateAdmissionDate,
+                lastAdmissionDate,
+                false,
+                "activityDressCode",
+                addressCategory,
+                location,
+                "addressShortDescription",
+                organisation,
+                null,
+                true);
+
+        jaxb.add(Activities.class);
+    }
+
+    @Test
     public void validateMarshalling() throws Exception {
 
         // Assemble
-        final String dressCode = "Midgårda dräkt";
-        final Amount lowCost = new Amount(42.5, WellKnownCurrency.SEK);
-        final Amount higherCost = new Amount(124, WellKnownCurrency.SEK);
-        final DateTime startTime = new DateTime(2013, 5, 6, 18, 0, 0, DateTimeZone.UTC);
-        final DateTime endTime = new DateTime(2013, 5, 6, 20, 0, 0, DateTimeZone.UTC);
-        final DateTime lateAdmissionDate = new DateTime(2013, 5, 2, 0, 0, DateTimeZone.UTC);
-        final DateTime lastAdmissionDate = new DateTime(2013, 5, 3, 0, 0, 0, DateTimeZone.UTC);
-        final Address activityLocation = new Address(null, null, "TestGatan", "3", "TestStan",
-                "12345", "Sverige", "TestAddress");
-        final String activityLocationShortDescription = "Stadsbiblioteket";
+        activities.getActivities().add(activity);
+        activities.getActivityVOs().add(new ActivityVO(activity));
 
-        // final SortedMap<Membership, Boolean> participants = new TreeMap<Membership, Boolean>();
+        // Act
+        final String result = marshalToXML(activities);
+        // System.out.println("Got: " + result);
 
-        for(Membership current : mmm.getDeputyGuildMasters()) {
-            participants.put(current, false);
-        }
+        // Assert
+        validateIdenticalContent();
+    }
 
-	final Activity unitUnderTest = new Activity("activityShortDesc", "activityFullDesc", startTime, endTime,
-			lowCost, higherCost, lateAdmissionDate, lastAdmissionDate, false, dressCode, restaurant,
-			activityLocation, activityLocationShortDescription, mifflond, mmm, true);
-
-	final Set<Admission> admissions = unitUnderTest.getAdmissions();
-	admissions.add(new
-
-	Admission(unitUnderTest, membership1,
-			  lateAdmissionDate.minusDays(1),
-
-	"The GuildMaster doesn't like Sprouts.",true));
-	admissions.add(new
-
-	Admission(unitUnderTest, membership2,
-			  lateAdmissionDate, null,false)
-
-	);
-
-	final String expected = XmlTestUtils.readFully("testdata/activity.xml");
-
-	// Act - ensure that we have forward references WRT @XmlIDREFs here.
-	final String result = binder.marshalToXML(mifflond, subGroup, superGroup, mmm, zzz, member1, member2, unitUnderTest);
-	System.out.println("Got: "+result);
-
-	// Assert
-	validateIdenticalContent(expected, result);
-}
-
-	@Test
+	/*
+    @Test
 	public void validateUnmarshalling() throws Exception {
 
 		// Assemble

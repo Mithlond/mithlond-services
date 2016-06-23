@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisation_transport:activities xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <activities>
+        <activity jpaId="0" version="0" organisationReference="organisation_The_Organisation" currency="SEK" openToGeneralPublic="true">
+            <shortDesc>activityShortDesc</shortDesc>
+            <fullDesc>activityFullDesc</fullDesc>
+            <cancelled>false</cancelled>
+            <admissions/>
+            <startTime>2016-06-20T17:00:00</startTime>
+            <endTime>2016-06-20T22:15:00</endTime>
+            <cost>50</cost>
+            <lateAdmissionCost>75</lateAdmissionCost>
+            <lateAdmissionDate>2016-06-15</lateAdmissionDate>
+            <lastAdmissionDate>2016-06-19</lastAdmissionDate>
+            <location>
+                <careOfLine xsi:nil="true"/>
+                <departmentName xsi:nil="true"/>
+                <street>Foo Street</street>
+                <number>5</number>
+                <city>Göteborg</city>
+                <zipCode>253 54</zipCode>
+                <country>Sverige</country>
+                <description>Visiting address</description>
+            </location>
+            <addressCategory jpaId="0" version="0" xmlID="category_visiting_address_Visiting_address">
+                <classification>visiting_address</classification>
+                <categoryID>Visiting address</categoryID>
+                <description>Address for visiting the organisation</description>
+            </addressCategory>
+            <addressShortDescription>addressShortDescription</addressShortDescription>
+            <dressCode>activityDressCode</dressCode>
+        </activity>
+    </activities>
+    <activityVOs>
+        <activityVO jpaID="0" startTime="2016-06-20T17:00:00" endTime="2016-06-20T22:15:00" isOpenToGeneralPublic="true" addressCategory="Visiting address" cancelled="false">
+            <organisation>The Organisation</organisation>
+            <shortDesc>activityShortDesc</shortDesc>
+            <fullDesc>activityFullDesc</fullDesc>
+            <addressShortDescription>addressShortDescription</addressShortDescription>
+            <location>
+                <careOfLine xsi:nil="true"/>
+                <departmentName xsi:nil="true"/>
+                <street>Foo Street</street>
+                <number>5</number>
+                <city>Göteborg</city>
+                <zipCode>253 54</zipCode>
+                <country>Sverige</country>
+                <description>Visiting address</description>
+            </location>
+            <cost value="50" currency="SEK"/>
+            <lateAdmissionCost value="75" currency="SEK"/>
+            <lateAdmissionDate>2016-06-15</lateAdmissionDate>
+            <lastAdmissionDate>2016-06-19</lastAdmissionDate>
+            <dressCode>activityDressCode</dressCode>
+        </activityVO>
+    </activityVOs>
+</organisation_transport:activities>
