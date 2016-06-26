@@ -30,6 +30,7 @@ import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
+import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 
 import javax.ejb.Local;
 import java.util.List;
@@ -66,6 +67,7 @@ public interface ActivityService {
      * @param parameters A non-null ActivitySearchParameters instance detailing which Activities should be retrieved.
      * @return all Activities within the supplied organisationName within the supplied Period.
      */
+    @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
     Activities getActivities(final ActivitySearchParameters parameters, final Membership activeMembership);
 
     /**
@@ -77,6 +79,7 @@ public interface ActivityService {
      * @throws RuntimeException if the Activity could not be created due to the activityVO not containing
      *                          enough data or the activeMembership being null.
      */
+    @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
     Activity createActivity(final ActivityVO activityVO, final Membership activeMembership)
             throws RuntimeException;
 
@@ -93,6 +96,7 @@ public interface ActivityService {
      *                          to an existing Activity.
      */
     @SuppressWarnings("all")
+    @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
     Activity updateActivity(final ActivityVO activityVO,
             final boolean onlyUpdateNonNullProperties,
             final Membership activeMembership);
@@ -108,6 +112,7 @@ public interface ActivityService {
      * @throws RuntimeException if the supplied {@link AdmissionVO} did not contain sufficient information
      *                          to modify an Admission.
      */
+    @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
     boolean modifyAdmission(
             final ChangeType changeType,
             final Membership actingMembership,

@@ -40,6 +40,7 @@ import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
@@ -224,8 +225,24 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                                    final boolean onlyUpdateNonNullProperties,
                                    final Membership activeMembership) {
 
+        // Check sanity
+        Validate.notNull(activityVO, "activityVO");
+        Validate.notNull(activeMembership, "activeMembership");
+        Validate.isTrue(0 < activityVO.getJpaID(), "0 < activityVO.getJpaID()");
 
-        return null;
+        final Activity toUpdate = entityManager.find(Activity.class, activityVO.getJpaID());
+        if(toUpdate == null) {
+            return null;
+        }
+
+        // Update all sensible things to update
+        SimpleIntrospector.copyJavaBeanProperties(activityVO, toUpdate);
+
+        // Flush the entity manager.
+        entityManager.flush();
+
+        // All Done.
+        return toUpdate;
     }
 
     private class AliasAndOrganisationName implements Comparable<AliasAndOrganisationName> {

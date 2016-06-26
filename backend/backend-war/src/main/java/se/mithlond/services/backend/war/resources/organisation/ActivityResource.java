@@ -160,7 +160,10 @@ public class ActivityResource extends AbstractResource {
             throw new IllegalArgumentException("Could not get exactly 1 activity for search params " + params);
         }
 
-        final Activity modifiedActivity = activityService.updateActivity(activityVO, false, getActiveMembership());
+        final Activity modifiedActivity = activityService.updateActivity(
+                activityVO,
+                false,
+                getActiveMembership());
 
         // All Done.
         return new Activities(new ActivityVO(modifiedActivity));
