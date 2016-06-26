@@ -64,6 +64,19 @@ public abstract class AbstractResource {
     }
 
     /**
+     * Retrieves the (JPA-disconnected) Membership of the actice/calling User, or throws an
+     * {@link IllegalStateException} if no active Membership was found.
+     *
+     * @return The active/calling Membership of the User invoking this resource.
+     * @throws IllegalStateException if no Membership was found in the {@link #securityContext}.
+     */
+    protected Membership getActiveMembership() throws IllegalStateException {
+        return getDisconnectedActiveMembership()
+                .orElseThrow(() -> new IllegalStateException("Active Membership not found. ["
+                        + getClass().getName() + "]"));
+    }
+
+    /**
      * Checks if the active user belongs to the group with the supplied name.
      *
      * @param group The name of a Group to which the user may belong.

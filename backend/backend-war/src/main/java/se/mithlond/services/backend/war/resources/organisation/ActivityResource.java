@@ -29,7 +29,6 @@ import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.ActivityService;
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
 import se.mithlond.services.organisation.model.activity.Activity;
-import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -43,6 +42,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Resource facade to Activities and Activity management.
@@ -100,11 +100,8 @@ public class ActivityResource extends AbstractResource {
                 .withEndPeriod(toDateTime)
                 .build();
 
-        final Membership currentUser = getDisconnectedActiveMembership()
-                .orElseThrow(() -> new IllegalStateException("Active Membership not found."));
-
         // All Done.
-        return activityService.getActivities(params, currentUser);
+        return activityService.getActivities(params, getActiveMembership());
     }
 
     /**
@@ -125,11 +122,9 @@ public class ActivityResource extends AbstractResource {
 
         // Check sanity
         Validate.notNull(activityVO, "Cannot handle null 'activityVO' argument.");
-        final Membership currentUser = getDisconnectedActiveMembership()
-                .orElseThrow(() -> new IllegalStateException("Active Membership not found."));
 
         // Create the activity
-        final Activity created = activityService.createActivity(activityVO, currentUser);
+        final Activity created = activityService.createActivity(activityVO, getActiveMembership());
 
         if (log.isDebugEnabled()) {
             log.debug("Created " + created);
@@ -142,21 +137,32 @@ public class ActivityResource extends AbstractResource {
     /**
      * Modifies the admissions of the supplied ActivityVO.
      *
-     * @param activityVO
-     * @return
+     * @param activityVO A populated - and non-null - {@link ActivityVO}.
+     * @return An Activities wrapper containing the ActivityVO of the modified Activity.
      */
     @POST
     @Path("/modify")
-    public Activities modifyAdmissions(final ActivityVO activityVO) {
+    public Activities modifyActivity(final ActivityVO activityVO) {
 
         // Check sanity
+        Validate.notNull(activityVO, "Cannot handle null 'activityVO' argument.");
 
         final ActivitySearchParameters params = ActivitySearchParameters.builder()
-                .withOrganisationIDs(organisationID)
-                .withStartPeriod(fromDateTime)
-                .withEndPeriod(toDateTime)
+                .withActivityIDs()
+                .withOrganisationIDs()
                 .build();
 
-        activityService.getActivities()
+        final Activities activities = activityService.getActivities(params, getActiveMembership());
+        final List<Activity> activityList = activities.getActivities();
+
+        // There should really only be one activity here
+        if (activityList.size() != 1) {
+            throw new IllegalArgumentException("Could not get exactly 1 activity for search params " + params);
+        }
+
+        final Activity modifiedActivity = activityService.updateActivity(activityVO, false, getActiveMembership());
+
+        // All Done.
+        return new Activities(new ActivityVO(modifiedActivity));
     }
 }
