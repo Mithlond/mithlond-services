@@ -25,8 +25,10 @@
  */
 package se.mithlond.services.organisation.model.activity;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
@@ -117,6 +119,8 @@ public class ActivityTest extends AbstractEntityTest {
                 null,
                 true);
 
+        activityVO = new ActivityVO(activity);
+
         jaxb.add(Activities.class);
     }
 
@@ -124,67 +128,36 @@ public class ActivityTest extends AbstractEntityTest {
     public void validateMarshalling() throws Exception {
 
         // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/activities.xml");
         activities.getActivities().add(activity);
-        activities.getActivityVOs().add(new ActivityVO(activity));
+        activities.getActivityVOs().add(activityVO);
 
         // Act
         final String result = marshalToXML(activities);
         // System.out.println("Got: " + result);
 
         // Assert
-        validateIdenticalContent();
+        validateIdenticalContent(expected, result);
     }
 
-	/*
     @Test
-	public void validateUnmarshalling() throws Exception {
+    public void validateUnmarshalling() throws Exception {
 
-		// Assemble
-		final String dressCode = "Midgårda dräkt";
-		final Amount lowCost = new Amount(42.5, WellKnownCurrency.SEK);
-		final Amount higherCost = new Amount(124, WellKnownCurrency.SEK);
-		final DateTime startTime = new DateTime(2013, 5, 6, 18, 0, 0, DateTimeZone.UTC);
-		final DateTime endTime = new DateTime(2013, 5, 6, 20, 0, 0, DateTimeZone.UTC);
-		final DateTime lateAdmissionDate = new DateTime(2013, 5, 2, 0, 0, DateTimeZone.UTC);
-		final DateTime lastAdmissionDate = new DateTime(2013, 5, 3, 0, 0, 0, DateTimeZone.UTC);
-		final Address activityLocation = new Address(null, null, "TestGatan", "3", "TestStan",
-				"12345", "Sverige", "TestAddress");
-		final String activityLocationShortDescription = "Stadsbiblioteket";
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/activities.xml");
 
-		final Activity unitUnderTest = new Activity("activityShortDesc", "activityFullDesc", startTime, endTime,
-				lowCost, higherCost, lateAdmissionDate, lastAdmissionDate, false, dressCode, restaurant,
-				activityLocation, activityLocationShortDescription, mifflond, mmm, true);
+        // Act
+        final Activities unmarshalled = unmarshalFromXML(Activities.class, data);
 
-		final String data = XmlTestUtils.readFully("testdata/activity.xml");
+        // Assert
+        Assert.assertNotNull(unmarshalled);
+        Assert.assertEquals(1, unmarshalled.getActivities().size());
+        Assert.assertEquals(1, unmarshalled.getActivityVOs().size());
 
-		// Act
-		final List<Object> result = binder.unmarshal(new StringReader(data));
+        final Activity fullActivity = unmarshalled.getActivities().get(0);
+        final ActivityVO activityVO = unmarshalled.getActivityVOs().get(0);
 
-		// Assert
-		Assert.assertEquals(8, result.size());
-		final Activity resurrected = (Activity) result.get(7);
-		final Set<Admission> admissions = resurrected.getAdmissions();
-
-		Assert.assertNotSame(unitUnderTest, resurrected);
-		Assert.assertNotNull(resurrected);
-		Assert.assertEquals(unitUnderTest.getLocation(), resurrected.getLocation());
-		Assert.assertNotNull(admissions);
-		Assert.assertEquals(2, admissions.size());
-
-		Admission guildMasterAdmission = null;
-		for (Admission current : admissions) {
-			if (current.getAdmitted().equals(membership1)) {
-				guildMasterAdmission = current;
-			}
-		}
-
-		Assert.assertNotNull(guildMasterAdmission);
-		Assert.assertEquals("The GuildMaster doesn't like Sprouts.", guildMasterAdmission.getAdmissionNote());
-		Assert.assertEquals(dressCode, resurrected.getDressCode());
-
-		Assert.assertSame(resurrected, guildMasterAdmission.getActivity());
-		Assert.assertNotNull(guildMasterAdmission.getAdmissionId());
-		Assert.assertEquals(resurrected, guildMasterAdmission.getActivity());
-	}
-	*/
+        Assert.assertEquals(activity, fullActivity);
+        Assert.assertEquals(this.activityVO, activityVO);
+    }
 }
