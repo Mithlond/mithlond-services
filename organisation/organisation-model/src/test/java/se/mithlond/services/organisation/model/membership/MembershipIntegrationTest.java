@@ -190,9 +190,11 @@ public class MembershipIntegrationTest extends AbstractIntegrationTest {
         }
         commitAndStartNewTransaction();
 
+        final long mithlondJpaID = mithlond.getId();
+
         final List<Membership> memberships = entityManager.createNamedQuery(
-                Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
-                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, "Mit%")
+                Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED, Membership.class)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, mithlondJpaID)
                 .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
         Assert.assertEquals(10, memberships.size());

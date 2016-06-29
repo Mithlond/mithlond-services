@@ -52,7 +52,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
         final List<Membership> toReturn = new ArrayList<>();
 
         final List<Membership> loginPermittedMemberships = entityManager.createNamedQuery(
-                Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
+                Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED, Membership.class)
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, orgJpaID)
                 .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
@@ -61,7 +61,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
         // Include the ones denied Login?
         if (includeLoginNotPermitted) {
             final List<Membership> loginNotPermittedMemberships = entityManager.createNamedQuery(
-                    Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
+                    Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED, Membership.class)
                     .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, orgJpaID)
                     .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, false)
                     .getResultList();
