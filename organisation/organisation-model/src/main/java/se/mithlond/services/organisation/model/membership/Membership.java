@@ -44,10 +44,8 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -96,9 +94,9 @@ import java.util.TreeSet;
                         + " and a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
                         + " and a.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
                         + " order by a.alias"),
-        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED,
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED,
                 query = "select a from Membership a"
-                        + " where a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " where a.organisation.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
                         + " and a.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
                         + " order by a.alias")
 })
@@ -165,7 +163,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     /**
      * NamedQuery for getting Memberships by organisation name and loginPermitted.
      */
-    public static final String NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED =
+    public static final String NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED =
             "Membership.getByOrganisationAndLoginPermitted";
 
     /**
@@ -274,11 +272,11 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @param organisation   The organisation of this Membership, i.e. where the user belongs.
      */
     public Membership(final String alias,
-                      final String subAlias,
-                      final String emailAlias,
-                      final boolean loginPermitted,
-                      final User user,
-                      final Organisation organisation) {
+            final String subAlias,
+            final String emailAlias,
+            final boolean loginPermitted,
+            final User user,
+            final Organisation organisation) {
 
         this(alias,
                 subAlias,
@@ -305,13 +303,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      *                         user of this membership belongs.
      */
     public Membership(final String alias,
-                      final String subAlias,
-                      final String emailAlias,
-                      final boolean loginPermitted,
-                      final User user,
-                      final Organisation organisation,
-                      final Set<OrderLevelGrant> orderLevelGrants,
-                      final Set<GroupMembership> groupMemberships) {
+            final String subAlias,
+            final String emailAlias,
+            final boolean loginPermitted,
+            final User user,
+            final Organisation organisation,
+            final Set<OrderLevelGrant> orderLevelGrants,
+            final Set<GroupMembership> groupMemberships) {
 
         this();
 
@@ -517,9 +515,9 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @see #addOrGetGroupMembership(Group)
      */
     public GuildMembership addOrUpdateGuildMembership(final Guild guild,
-                                                      final boolean guildMaster,
-                                                      final boolean deputyGuildMaster,
-                                                      final boolean auditor) {
+            final boolean guildMaster,
+            final boolean deputyGuildMaster,
+            final boolean auditor) {
 
         // Check sanity
         Validate.notNull(guild, "Cannot handle null guild argument.");
@@ -567,8 +565,8 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @return The added or updated OrderLevelGrant.
      */
     public OrderLevelGrant addOrUpdateOrderLevelGrant(final OrderLevel orderLevel,
-                                                      final ZonedDateTime grantedDate,
-                                                      final String note) {
+            final ZonedDateTime grantedDate,
+            final String note) {
 
         // Check sanity
         Validate.notNull(orderLevel, "Cannot handle null orderLevel argument.");

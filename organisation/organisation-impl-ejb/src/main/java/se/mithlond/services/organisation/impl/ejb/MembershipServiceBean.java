@@ -47,13 +47,13 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
      * {@inheritDoc}
      */
     @Override
-    public List<Membership> getMembershipsIn(final String organisation, final boolean includeLoginNotPermitted) {
+    public List<Membership> getMembershipsIn(final Long orgJpaID, final boolean includeLoginNotPermitted) {
 
         final List<Membership> toReturn = new ArrayList<>();
 
         final List<Membership> loginPermittedMemberships = entityManager.createNamedQuery(
                 Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
-                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisation)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, orgJpaID)
                 .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
         toReturn.addAll(loginPermittedMemberships);
@@ -62,7 +62,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
         if (includeLoginNotPermitted) {
             final List<Membership> loginNotPermittedMemberships = entityManager.createNamedQuery(
                     Membership.NAMEDQ_GET_BY_ORGANISATION_LOGINPERMITTED, Membership.class)
-                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisation)
+                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, orgJpaID)
                     .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, false)
                     .getResultList();
             toReturn.addAll(loginNotPermittedMemberships);

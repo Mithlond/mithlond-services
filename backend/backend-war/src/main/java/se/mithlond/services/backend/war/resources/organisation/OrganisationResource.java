@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.backend.war.resources.organisation;
 
+import io.swagger.annotations.Api;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.OrganisationService;
@@ -40,6 +41,7 @@ import javax.ws.rs.QueryParam;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Api(description = "Provides information about Organisations to authorized users.")
 @Path("/organisation")
 public class OrganisationResource extends AbstractResource {
 

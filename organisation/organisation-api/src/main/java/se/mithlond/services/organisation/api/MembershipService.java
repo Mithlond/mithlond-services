@@ -39,14 +39,14 @@ public interface MembershipService extends JpaCudService {
      * Retrieves all Memberships within the named Organisation, including the Memberships with
      * the "Login not permitted" flag set, if so indicated.
      *
-     * @param organisation             The name of the organisation for which all Memberships should be retrieved.
+     * @param organisationJpaID        The JpaID of the organisation for which all Memberships should be retrieved.
      * @param includeLoginNotPermitted if {@code true}, all Memberships will be retrieved. if {@code false}, only
      *                                 Memberships with the {@code loginPermitted} flag set to true will be included
      *                                 in the result.
      * @return All Memberships within the supplied organisation. if the {@code includeLoginNotPermitted} flag is set
      * to false only Memberships with the {@code loginPermitted} flag set to true will be included in the result
      */
-    List<Membership> getMembershipsIn(final String organisation, final boolean includeLoginNotPermitted);
+    List<Membership> getMembershipsIn(final Long organisationJpaID, final boolean includeLoginNotPermitted);
 
     /**
      * Retrieves the Membership corresponding to the supplied organisation name and alias.
