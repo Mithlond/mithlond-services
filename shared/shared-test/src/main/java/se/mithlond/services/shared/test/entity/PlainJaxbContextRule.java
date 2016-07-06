@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.shared.test.entity;
 
-import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.junit.rules.TestWatcher;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;

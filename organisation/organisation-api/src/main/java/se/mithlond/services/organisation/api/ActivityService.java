@@ -22,9 +22,7 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
-import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.activity.Activity;
-import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
@@ -33,8 +31,6 @@ import se.mithlond.services.organisation.model.transport.address.CategoriesAndAd
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 
 import javax.ejb.Local;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Service specification for Activity management, enabling callers
@@ -64,7 +60,8 @@ public interface ActivityService {
     /**
      * Retrieves all Activities within the supplied organisationName within the supplied range of dates.
      *
-     * @param parameters A non-null ActivitySearchParameters instance detailing which Activities should be retrieved.
+     * @param parameters       A non-null ActivitySearchParameters instance detailing which Activities should be retrieved.
+     * @param activeMembership The Membership executing this call (hence being the 'active' {@link Membership}).
      * @return all Activities within the supplied organisationName within the supplied Period.
      */
     @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
@@ -122,9 +119,9 @@ public interface ActivityService {
      * Retrieves a Map relating Category to CategorizedAddress for all Location addresses
      * within the given organisation.
      *
-     * @param jpaID The JPA ID of the organisation for which addresses should be retrieved
+     * @param organisationID The JPA ID of the organisation for which addresses should be retrieved
      * @return a Map relating Category to a List of CategorizedAddress for all Location addresses
      * within the given organisation.
      */
-    CategoriesAndAddresses getActivityLocationAddresses(final Long jpaID);
+    CategoriesAndAddresses getActivityLocationAddresses(final Long organisationID);
 }

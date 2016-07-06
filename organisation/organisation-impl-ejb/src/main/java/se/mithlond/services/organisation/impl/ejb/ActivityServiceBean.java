@@ -543,7 +543,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * {@inheritDoc}
      */
     @Override
-    public CategoriesAndAddresses getActivityLocationAddresses(final Long jpaID) {
+    public CategoriesAndAddresses getActivityLocationAddresses(final Long organisationID) {
 
         // Find the IDs of all relevant categories
         final Query query = entityManager.createQuery("select a.id from Category a"
@@ -568,7 +568,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 true,
                 entityManager,
                 aQuery -> {
-                    aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, jpaID);
+                    aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, organisationID);
                     aQuery.setParameter(OrganisationPatterns.PARAM_NUM_CATEGORYIDS, categoryIDsSize);
                     aQuery.setParameter(OrganisationPatterns.PARAM_CATEGORY_IDS, categoryJpaIDs);
                 });
