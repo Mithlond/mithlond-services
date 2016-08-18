@@ -36,6 +36,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -92,6 +94,7 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      */
     @Basic(optional = false)
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     @XmlElement(required = true)
     private LocalDateTime admissionTimestamp;
 
@@ -100,6 +103,7 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      */
     @Basic
     @Column
+    @Temporal(TemporalType.TIMESTAMP)
     @XmlElement
     private LocalDateTime lastModifiedAt;
 

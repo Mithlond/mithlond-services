@@ -194,6 +194,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     /**
      * If true, this Membership is permitted login.
      */
+    // TODO: Change to map --> Year + (last permissible login date)
     @Basic
     @Column(nullable = false)
     @XmlAttribute(required = true)
