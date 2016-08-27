@@ -26,6 +26,7 @@
  */
 @XmlSchema(
         xmlns = {
+                @XmlNs(prefix = "nazgul_core", namespaceURI = "http://www.jguru.se/nazgul/core"),
                 @XmlNs(prefix = "content", namespaceURI = ContentPatterns.NAMESPACE),
                 @XmlNs(prefix = "content_transport", namespaceURI = ContentPatterns.TRANSPORT_NAMESPACE),
                 @XmlNs(prefix = "shared", namespaceURI = SharedJaxbPatterns.NAMESPACE),

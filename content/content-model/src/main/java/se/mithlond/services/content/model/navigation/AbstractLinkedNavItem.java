@@ -34,6 +34,7 @@ import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
 import java.util.UUID;
@@ -273,6 +274,7 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      *
      * @param <T> the concrete subtype of AbstractLinkedNavItemBuilder.
      */
+    @XmlTransient
     public abstract static class AbstractLinkedNavItemBuilder<T extends AbstractLinkedNavItemBuilder> {
 
         // Internal state

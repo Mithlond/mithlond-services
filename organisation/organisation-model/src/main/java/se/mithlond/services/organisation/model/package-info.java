@@ -26,6 +26,7 @@
  */
 @XmlSchema(
         xmlns = {
+                @XmlNs(prefix = "core", namespaceURI = "http://www.jguru.se/nazgul/core"),
                 @XmlNs(prefix = "shared", namespaceURI = SharedJaxbPatterns.NAMESPACE),
                 @XmlNs(prefix = "organisation", namespaceURI = OrganisationPatterns.NAMESPACE),
                 @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
@@ -43,6 +44,7 @@
 @XmlAccessorType(XmlAccessType.FIELD)
 package se.mithlond.services.organisation.model;
 
+import se.jguru.nazgul.core.xmlbinding.api.WellKnownNamespace;
 import se.mithlond.services.shared.spi.jaxb.SharedJaxbPatterns;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateTimeAdapter;

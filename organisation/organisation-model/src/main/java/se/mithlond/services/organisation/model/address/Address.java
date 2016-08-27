@@ -22,7 +22,6 @@
 package se.mithlond.services.organisation.model.address;
 
 import org.apache.commons.lang3.Validate;
-import se.jguru.nazgul.core.persistence.model.Entities;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -33,6 +32,7 @@ import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Implementation of an embedded Address. The embedded nature of the address implies that
@@ -247,7 +247,42 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
      */
     @Override
     public int compareTo(final Address that) {
-        return Entities.compare(this, that, Address.class);
+
+        // Fail fast
+        if (that == null) {
+            return -1;
+        } else if (that == this) {
+            return 0;
+        }
+
+        // Delegate to internal state
+        int toReturn = 0;
+
+        final String thisCoL = getCareOfLine() == null ? "" : getCareOfLine();
+        toReturn = thisCoL.compareTo(that.getCareOfLine());
+
+        if (toReturn == 0) {
+            toReturn = compareStrings(getStreet(), that.getStreet());
+        }
+        if (toReturn == 0) {
+            toReturn = compareStrings(getNumber(), that.getNumber());
+        }
+        if (toReturn == 0) {
+            toReturn = compareStrings(getCity(), that.getCity());
+        }
+        if (toReturn == 0) {
+            toReturn = compareStrings(getZipCode(), that.getZipCode());
+        }
+        if (toReturn == 0) {
+            toReturn = compareStrings(getCountry(), that.getCountry());
+        }
+        return toReturn;
+    }
+
+    private int compareStrings(final String left, final String right) {
+        final String leftString = left == null ? "" : left;
+        final String rightString = right == null ? "" : right;
+        return leftString.compareTo(rightString);
     }
 
     /**
@@ -255,26 +290,37 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
      */
     @Override
     public int hashCode() {
-        return Entities.hashCode(this, Address.class);
+        return Objects.hash(getCareOfLine(),
+                getDepartmentName(),
+                getStreet(),
+                getNumber(),
+                getCity(),
+                getZipCode(),
+                getCountry(),
+                getDescription());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    @SuppressWarnings("all")
-    public boolean equals(final Object that) {
-        // Check sanity
-        if (this == that) {
+    public boolean equals(final Object o) {
+
+        // Fail fast
+        if (this == o) {
             return true;
         }
-        if (!(that instanceof Address)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        // Delegate
-        final Address thatAddress = (Address) that;
-        return Entities.equals(this, thatAddress, Address.class);
+        // Delegate to internal state
+        final Address address = (Address) o;
+        return Objects.equals(getCareOfLine(), address.getCareOfLine())
+                && Objects.equals(getDepartmentName(), address.getDepartmentName())
+                && Objects.equals(getStreet(), address.getStreet())
+                && Objects.equals(getNumber(), address.getNumber())
+                && Objects.equals(getCity(), address.getCity())
+                && Objects.equals(getZipCode(), address.getZipCode())
+                && Objects.equals(getCountry(), address.getCountry())
+                && Objects.equals(getDescription(), address.getDescription());
     }
 
     /**
@@ -298,11 +344,11 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
 
         // Don't permit null or empty values unnecessarily.
         InternalStateValidationException.create()
-                    .notNullOrEmpty(number, "number")
-                    .notNullOrEmpty(street, "street")
-                    .notNullOrEmpty(city, "city")
-                    .notNullOrEmpty(zipCode, "zipCode")
-                    .notNullOrEmpty(country, "country")
+                .notNullOrEmpty(number, "number")
+                .notNullOrEmpty(street, "street")
+                .notNullOrEmpty(city, "city")
+                .notNullOrEmpty(zipCode, "zipCode")
+                .notNullOrEmpty(country, "country")
                 .endExpressionAndValidate();
     }
 }

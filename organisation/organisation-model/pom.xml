@@ -10,7 +10,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-model-parent</artifactId>
-        <version>1.5.0</version>
+        <version>1.7.0</version>
         <relativePath/>
     </parent>
 
@@ -112,8 +112,7 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
+                <directory>${basedir}/target/jaxb2/transformed/generated-schema</directory>
             </resource>
         </resources>
 
@@ -130,26 +129,22 @@
                         <goals>
                             <goal>schemagen</goal>
                         </goals>
-                        <configuration>
+                        <configuration combine.children="override">
                             <transformSchemas>
                                 <transformSchema>
                                     <uri>http://www.jguru.se/nazgul/core</uri>
-                                    <toPrefix>core</toPrefix>
                                     <toFile>NazgulCore.xsd</toFile>
                                 </transformSchema>
                                 <transformSchema>
                                     <uri>http://xmlns.mithlond.se/xml/ns/shared/jaxb</uri>
-                                    <toPrefix>mithlond_shared</toPrefix>
                                     <toFile>MithlondSharedJaxb.xsd</toFile>
                                 </transformSchema>
                                 <transformSchema>
                                     <uri>http://xmlns.mithlond.se/xml/ns/organisation</uri>
-                                    <toPrefix>mithlond_organisation</toPrefix>
                                     <toFile>MithlondOrganisation.xsd</toFile>
                                 </transformSchema>
                                 <transformSchema>
                                     <uri>http://xmlns.mithlond.se/xml/ns/organisation/transport</uri>
-                                    <toPrefix>mithlond_organisation_transport</toPrefix>
                                     <toFile>MithlondOrganisationTransport.xsd</toFile>
                                 </transformSchema>
                             </transformSchemas>
