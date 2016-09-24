@@ -31,6 +31,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -165,6 +166,7 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
     /**
      * Simple builder class for StandardMenuItems.
      */
+    @XmlTransient
     public static class StandardMenuItemBuilder extends AbstractLinkedNavItemBuilder<StandardMenuItemBuilder> {
 
         /**

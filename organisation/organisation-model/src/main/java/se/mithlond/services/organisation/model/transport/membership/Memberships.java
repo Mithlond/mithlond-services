@@ -141,7 +141,7 @@ public class Memberships extends AbstractSimpleTransporter {
         Validate.notNull(toAdd, "Cannot handle null 'toAdd' argument.");
 
         // Add the current Group, unless already added.
-        Arrays.asList(toAdd).stream().forEach(c -> {
+        Arrays.asList(toAdd).forEach(c -> {
 
             if (c != null) {
 

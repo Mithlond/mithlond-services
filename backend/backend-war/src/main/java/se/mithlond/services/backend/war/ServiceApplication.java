@@ -57,18 +57,21 @@ public class ServiceApplication extends Application {
         // Create internal state.
         this.jaxRsClasses = new HashSet<>();
         this.jaxRsSingletons = new HashSet<>();
-
-        // Running in a RestEasy environment?
-        /*
-        final String resteasyClassName = "org.jboss.resteasy.api.validation.Validation";
-        if(getClass().getClassLoader().loadClass(resteasyClassName)) {
-            addJaxRsSingleton(new SecurityFilter());
-        }
-        */
     }
 
     /**
-     * Adds the supplied class to the resource types of this IntranetJaxRsApplication.
+     * <p>Adds the supplied class to the resource types of this IntranetJaxRsApplication.</p>
+     * <p><strong>Note!</strong> Adding classes this way disables the classpath scanning when running
+     * RESTeasy (and this is somewhat dimly expressed
+     * <a href="https://jsr311.java.net/nonav/releases/1.1/spec/spec.html"in the JAXRS 1.1 specification, section
+     * 2.3.2</a>:</p>
+     * <blockquote>... if both Application.getClasses and Application.getSingletons
+     * return an empty list then all root resource classes and providers packaged in the web
+     * application MUST be included in the published JAX-RS application. If either getClasses
+     * or getSingletons return a non-empty list then only those classes or singletons returned
+     * MUST be included in the published JAX-RS application.</blockquote>
+     * <p>Hence - do not add any Classes using this method, unless you are prepare to add
+     * <strong>all</strong> classes (Resource/Provider/...) for your application explicitly using this method.</p>
      *
      * @param toAdd A non-null class to add as a resource type to this IntranetJaxRsApplication.
      */
@@ -82,7 +85,18 @@ public class ServiceApplication extends Application {
     }
 
     /**
-     * Adds the supplied singleton instance to this IntranetJaxRsApplication.
+     * <p>Adds the supplied singleton instance to this IntranetJaxRsApplication.</p>
+     * <p><strong>Note!</strong> Adding classes this way disables the classpath scanning when running
+     * RESTeasy (and this is somewhat dimly expressed
+     * <a href="https://jsr311.java.net/nonav/releases/1.1/spec/spec.html"in the JAXRS 1.1 specification, section
+     * 2.3.2</a>:</p>
+     * <blockquote>... if both Application.getClasses and Application.getSingletons
+     * return an empty list then all root resource classes and providers packaged in the web
+     * application MUST be included in the published JAX-RS application. If either getClasses
+     * or getSingletons return a non-empty list then only those classes or singletons returned
+     * MUST be included in the published JAX-RS application.</blockquote>
+     * <p>Hence - do not add any Classes using this method, unless you are prepare to add
+     * <strong>all</strong> classes (Resource/Provider/...) for your application explicitly using this method.</p>
      *
      * @param singleton A non-null singleton instance to add as a resource to this IntranetJaxRsApplication.
      */

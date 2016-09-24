@@ -350,6 +350,7 @@ public class StandardMenu extends AbstractLinkedNavItem {
     /**
      * Simple builder class for StandardMenus.
      */
+    @XmlTransient
     public static class StandardMenuBuilder extends AbstractLinkedNavItemBuilder<StandardMenuBuilder> {
 
         /**

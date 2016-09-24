@@ -10,7 +10,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-api-parent</artifactId>
-        <version>1.7.0</version>
+        <version>1.7.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -56,8 +56,6 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>se.jguru.nazgul.core.xmlbinding.spi.jaxb</groupId>
