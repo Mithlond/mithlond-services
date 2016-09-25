@@ -164,7 +164,10 @@
                                 <outputPath>${swagger.dir}</outputPath>
                                 <swaggerDirectory>${swagger.dir}</swaggerDirectory>
                                 <attachSwaggerArtifact>true</attachSwaggerArtifact>
-                                <schemes>http,https</schemes>
+                                <schemes>
+                                    <scheme>http</scheme>
+                                    <scheme>https</scheme>
+                                </schemes>
                                 <info>
                                     <title>${project.description}</title>
                                     <version>${project.version}</version>
@@ -177,7 +180,9 @@
                                         <url>http://www.jguru.se</url>
                                     </contact>
                                 </info>
-                                <locations>se.mithlond.services.backend.war.resources.content</locations>
+                                <locations>
+                                    <location>se.mithlond.services.backend.war.resources.content</location>
+                                </locations>
                             </apiSource>
                         </apiSources>
                     </configuration>
@@ -213,7 +218,7 @@
                 <executions>
                     <execution>
                         <id>schemagen</id>
-                        <phase/>
+                        <!-- phase/ -->
                         <goals>
                             <goal>schemagen</goal>
                         </goals>
