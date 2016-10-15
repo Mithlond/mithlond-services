@@ -23,33 +23,32 @@ package se.mithlond.services.content.model.articles;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Holds data and metadata for an Article.
@@ -63,9 +62,9 @@ import java.util.GregorianCalendar;
                         + " and a.lastModified > :" + ContentPatterns.PARAM_LAST_MODIFIED)
 })
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "author", "createdAt", "lastModified", "content"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "owner"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Article extends NazgulEntity {
+public class Article extends AbstractTimestampedText {
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(Article.class);
@@ -76,42 +75,37 @@ public class Article extends NazgulEntity {
     public static final String NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE
             = "Article.getByOrgAndLastModDate";
 
-    // Internal state
+    /**
+     * The Title of this Article.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     @XmlElement(required = true)
     private String title;
 
-    @Basic(optional = false)
-    @Column(nullable = false)
-    @XmlElement(required = true)
-    private String author;
-
-    @Basic(optional = false)
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @XmlElement(required = true)
-    private Calendar createdAt;
-
-    @Basic(optional = true)
-    @Column(nullable = true)
-    @Temporal(TemporalType.TIMESTAMP)
-    @XmlElement
-    private Calendar lastModified;
-
-    @Basic(optional = false)
-    @Column(nullable = false)
-    @Lob
-    @XmlTransient
-    private String markup;
-
-    @Transient
-    @XmlElement(required = true)
-    private Markup content;
-
+    /**
+     * The Organisation which formally owns this Article. Must not be null, in order
+     * to establishing a responsible publisher for the article.
+     */
     @ManyToOne(optional = false)
     @XmlTransient
     private Organisation owner;
+
+    /**
+     * The Sections being aggregated into this Article.
+     */
+    @OneToMany(mappedBy = "article")
+    @XmlElementWrapper
+    @XmlElement(name = "section")
+    private List<Section> sections;
+
+    /**
+     * An optional image resource URL where to find an image for this Article.
+     */
+    @Basic
+    @Column(length = 1024)
+    @XmlElement
+    private String leadingImage;
 
     /**
      * JPA/JAXB-friendly constructor.
@@ -130,10 +124,9 @@ public class Article extends NazgulEntity {
      */
     public Article(
             final String title,
-            final String author,
-            final String content,
+            final Membership author,
             final Organisation owner) {
-        this(title, author, ZonedDateTime.now(), content, owner);
+        this(title, author, LocalDateTime.now(), content, owner);
     }
 
     /**
@@ -147,29 +140,48 @@ public class Article extends NazgulEntity {
      */
     public Article(
             final String title,
-            final String author,
-            final ZonedDateTime createdAt,
+            final Membership author,
+            final LocalDateTime createdAt,
             final String markup,
             final Organisation owner) {
 
+        // Delegate
+        super(createdAt, author);
+
         // Assign internal state
         this.title = title;
-        this.author = author;
-        this.createdAt = GregorianCalendar.from(createdAt);
-        this.markup = markup;
         this.owner = owner;
+    }
+
+    public Article(final LocalDateTime created,
+            final Membership createdBy,
+            final String title,
+            final Organisation owner,
+            final String leadingImage) {
+
+        // Delegate
+        super(created, createdBy);
+
+        // Assign internal state
+        this.title = title;
+        this.owner = owner;
+        this.leadingImage = leadingImage;
     }
 
     /**
      * Reassigns the title and updates the lastModified timestamp.
      *
-     * @param title a non-empty new title for this Article.
+     * @param title      a non-empty new title for this Article.
+     * @param membership The Membership updating the Title of this Article.
      */
-    public void setTitle(final String title) {
+    public void setTitle(final String title, final Membership membership) {
+
+        // Check sanity
+        final String newTitle = Validate.notEmpty(title, "title");
 
         // Assign internal state
-        this.title = Validate.notEmpty(title, "title");
-        this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
+        setUpdated(null, membership);
+        this.title = newTitle;
     }
 
     /**
@@ -233,10 +245,7 @@ public class Article extends NazgulEntity {
     protected void validateEntityState() throws InternalStateValidationException {
 
         InternalStateValidationException.create()
-                .notNullOrEmpty(author, "author")
                 .notNullOrEmpty(title, "title")
-                .notNullOrEmpty(markup, "markup")
-                .notNull(createdAt, "createdAt")
                 .notNull(owner, "owner")
                 .endExpressionAndValidate();
     }

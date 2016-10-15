@@ -31,7 +31,7 @@ public final class RestfulParameters {
     /**
      * The prefix of all outbound custom headers.
      */
-    public static final String OUTBOUND_HEADER_PREFIX = "mithlond.services.";
+    public static final String OUTBOUND_HEADER_PREFIX = "services_";
 
     /**
      * Parameter name for a JPA ID.
