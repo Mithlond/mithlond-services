@@ -51,7 +51,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * Holds data and metadata for an Article.
+ * Holds data and metadata for an Article, which consists of some initial metadata (author, created and modified
+ * timestamps, as well as organisational owner), and then constructed by concatenating sections.
+ * Each section contains a heading, an optional image and (somewhat structured) text.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -62,7 +64,7 @@ import java.util.List;
                         + " and a.lastModified > :" + ContentPatterns.PARAM_LAST_MODIFIED)
 })
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "owner"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "owner", "leadingImage", "sections"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends AbstractTimestampedText {
 
@@ -119,14 +121,13 @@ public class Article extends AbstractTimestampedText {
      *
      * @param title   The title of this Article.
      * @param author  The Article author.
-     * @param content The Article content.
      * @param owner   The Organisation owning (the content of) this Article.
      */
     public Article(
             final String title,
             final Membership author,
             final Organisation owner) {
-        this(title, author, LocalDateTime.now(), content, owner);
+        this(title, author, LocalDateTime.now(), owner);
     }
 
     /**
@@ -142,7 +143,6 @@ public class Article extends AbstractTimestampedText {
             final String title,
             final Membership author,
             final LocalDateTime createdAt,
-            final String markup,
             final Organisation owner) {
 
         // Delegate
@@ -153,11 +153,20 @@ public class Article extends AbstractTimestampedText {
         this.owner = owner;
     }
 
+    /**
+     * Compound constructor creating an Article wrapping the supplied data.
+     *
+     * @param title
+     * @param created
+     * @param createdBy
+     * @param owner
+     * @param leadingImage
+     */
     public Article(final LocalDateTime created,
-            final Membership createdBy,
-            final String title,
-            final Organisation owner,
-            final String leadingImage) {
+                   final Membership createdBy,
+                   final String title,
+                   final Organisation owner,
+                   final String leadingImage) {
 
         // Delegate
         super(created, createdBy);
