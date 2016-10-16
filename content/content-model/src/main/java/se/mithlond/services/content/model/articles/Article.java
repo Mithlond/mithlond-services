@@ -31,14 +31,15 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -46,8 +47,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.GregorianCalendar;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,7 +65,7 @@ import java.util.List;
                         + " and a.lastModified > :" + ContentPatterns.PARAM_LAST_MODIFIED)
 })
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "owner", "leadingImage", "sections"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "sections"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends AbstractTimestampedText {
 
@@ -96,85 +97,58 @@ public class Article extends AbstractTimestampedText {
     /**
      * The Sections being aggregated into this Article.
      */
-    @OneToMany(mappedBy = "article")
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinTable(name = "article_sections")
     @XmlElementWrapper
     @XmlElement(name = "section")
     private List<Section> sections;
 
     /**
-     * An optional image resource URL where to find an image for this Article.
-     */
-    @Basic
-    @Column(length = 1024)
-    @XmlElement
-    private String leadingImage;
-
-    /**
      * JPA/JAXB-friendly constructor.
      */
     public Article() {
+        this.sections = new ArrayList<>();
     }
 
     /**
      * Convenience constructor, creating an Article using the supplied data and
      * using the current timestamp ("now") for createdAt.
      *
-     * @param title   The title of this Article.
-     * @param author  The Article author.
-     * @param owner   The Organisation owning (the content of) this Article.
+     * @param title  The title of this Article.
+     * @param author The Article author.
+     * @param owner  The Organisation owning (the content of) this Article.
      */
     public Article(
             final String title,
             final Membership author,
             final Organisation owner) {
-        this(title, author, LocalDateTime.now(), owner);
+
+        // Delegate
+        this(null, author, title, owner);
     }
 
     /**
      * Compound constructor creating an Article wrapping the supplied data.
      *
      * @param title     The title of this Article.
-     * @param author    The Article author.
-     * @param createdAt The timestamp when this article was created.
-     * @param markup    The Article markup content.
-     * @param owner     The Organisation owning (the content of) this Article.
+     * @param createdBy The Membership who (initially) created this Article.
+     * @param owner     The Organisation owning the Article. This implies Editor and responsibility for the text
+     *                  being published.
+     * @param created   The timestamp when this Article was created. If {@code null}, the current timestamp is used.
      */
-    public Article(
+    public Article(final LocalDateTime created,
+            final Membership createdBy,
             final String title,
-            final Membership author,
-            final LocalDateTime createdAt,
             final Organisation owner) {
 
         // Delegate
-        super(createdAt, author);
+        super((created == null ? LocalDateTime.now() : created), createdBy);
 
         // Assign internal state
+        this.sections = new ArrayList<>();
         this.title = title;
         this.owner = owner;
-    }
-
-    /**
-     * Compound constructor creating an Article wrapping the supplied data.
-     *
-     * @param title
-     * @param created
-     * @param createdBy
-     * @param owner
-     * @param leadingImage
-     */
-    public Article(final LocalDateTime created,
-                   final Membership createdBy,
-                   final String title,
-                   final Organisation owner,
-                   final String leadingImage) {
-
-        // Delegate
-        super(created, createdBy);
-
-        // Assign internal state
-        this.title = title;
-        this.owner = owner;
-        this.leadingImage = leadingImage;
     }
 
     /**
@@ -194,43 +168,10 @@ public class Article extends AbstractTimestampedText {
     }
 
     /**
-     * Reassigns the markup content and updates the lastModified timestamp.
-     *
-     * @param markup a non-empty new markup content for this Article.
-     */
-    public void setMarkup(final String markup) {
-
-        // Assign internal state
-        this.markup = Validate.notEmpty(markup, "markup");
-        this.lastModified = GregorianCalendar.from(ZonedDateTime.now());
-    }
-
-    /**
      * @return The title of this Article. Never null or empty.
      */
     public String getTitle() {
         return title;
-    }
-
-    /**
-     * @return The Article author. Never null or empty.
-     */
-    public String getAuthor() {
-        return author;
-    }
-
-    /**
-     * @return The ZonedDateTime when this Article was created. Never null.
-     */
-    public ZonedDateTime getCreatedAt() {
-        return ((GregorianCalendar) createdAt).toZonedDateTime();
-    }
-
-    /**
-     * @return The ZonedDateTime when this Article was last modified, or {@code null} if not modified after creation.
-     */
-    public ZonedDateTime getLastModified() {
-        return lastModified == null ? null : ((GregorianCalendar) lastModified).toZonedDateTime();
     }
 
     /**
@@ -241,10 +182,28 @@ public class Article extends AbstractTimestampedText {
     }
 
     /**
-     * @return The full markup content of this article.
+     * Retrieves an unmodifiable version of the Sections List.
+     *
+     * @return an unmodifiable version of the Sections List.
      */
-    public String getMarkup() {
-        return markup;
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
+
+    /**
+     * Adds the supplied Section to the List of known Sections within this Article.
+     *
+     * @param section    The Section to add.
+     * @param membership The Membership adding the Section.
+     */
+    public void addSection(final Section section, final Membership membership) {
+
+        // Check sanity
+        final Section newSection = Validate.notNull(section, "section");
+
+        // Assign internal state
+        setUpdated(null, membership);
+        this.sections.add(newSection);
     }
 
     /**
@@ -257,37 +216,5 @@ public class Article extends AbstractTimestampedText {
                 .notNullOrEmpty(title, "title")
                 .notNull(owner, "owner")
                 .endExpressionAndValidate();
-    }
-
-    //
-    // Private helpers
-    //
-
-    /**
-     * Standard JAXB class-wide listener method, automagically invoked
-     * after it has created an instance of this Class.
-     *
-     * @param marshaller The active Marshaller.
-     */
-    @SuppressWarnings("PMD")
-    private void beforeMarshal(final Marshaller marshaller) {
-        this.content = new Markup(markup);
-    }
-
-    /**
-     * This method is called after all the properties (except IDREF) are unmarshalled for this object,
-     * but before this object is set to the parent object.
-     */
-    @SuppressWarnings("PMD")
-    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
-
-        // Log somewhat
-        if (log.isDebugEnabled()) {
-            final String contentType = content == null ? "<null>" : content.getClass().getName();
-            log.debug("Got content [" + contentType + "]: " + content);
-        }
-
-        // Assign the markup content.
-        markup = content.getContent();
     }
 }

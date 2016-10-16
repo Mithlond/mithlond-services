@@ -21,9 +21,17 @@
  */
 package se.mithlond.services.shared.test.entity;
 
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.Difference;
 import org.joda.time.DateTimeZone;
+import org.junit.Assert;
 import org.junit.Rule;
 import se.jguru.nazgul.test.xmlbinding.AbstractStandardizedTimezoneTest;
+import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+
+import java.util.List;
+import java.util.SortedMap;
+import java.util.regex.Pattern;
 
 /**
  * Abstract superclass for JAXB-related tests using a standard TimeZone for the
@@ -32,6 +40,13 @@ import se.jguru.nazgul.test.xmlbinding.AbstractStandardizedTimezoneTest;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public abstract class AbstractPlainJaxbTest extends AbstractStandardizedTimezoneTest implements ExtendedJaxbOperations {
+
+    /**
+     * Pattern intended to discover XPaths for trivial (i.e. non-important) diffs within
+     * XML structures sent and received.
+     */
+    public static final Pattern TRIVIAL_XPATH_PATTERN = Pattern.compile(
+            "/entityTransporter\\[\\d+\\]/entityClasses\\[\\d+\\](/entityClass\\[\\d+\\](/.*)?)?");
 
     /**
      * Active rule which assigns a standard DateTimeZone for the remainder of the tests,
@@ -101,5 +116,34 @@ public abstract class AbstractPlainJaxbTest extends AbstractStandardizedTimezone
     @Override
     public <T> T unmarshalFromJSON(final Class<T> expectedReturnType, final String toUnmarshal) {
         return jaxb.unmarshal(standardClassLoader, true, expectedReturnType, toUnmarshal);
+    }
+
+    /**
+     * Validates that the expected and actual XML-formatted strings are
+     * identical, ignoring any metaClass differences.
+     *
+     * @param expected The expected XML.
+     * @param actual   The actual, received XML.
+     */
+    protected void validateIdenticalContent(final String expected, final String actual) {
+
+        final Diff diff;
+        try {
+            diff = XmlTestUtils.compareXmlIgnoringWhitespace(expected, actual);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not compare XMLs.", e);
+        }
+
+        if (!diff.identical()) {
+
+            // Validate that the difference is only within the entityClasses element.
+            final SortedMap<String, List<Difference>> diffMap = XmlTestUtils.getXPathLocationToDifferenceMap(diff);
+            for (String current : diffMap.keySet()) {
+                if (!TRIVIAL_XPATH_PATTERN.matcher(current).matches()) {
+                    Assert.fail("Diff [" + current + "] was non-trivial. (" + diffMap.get(current) + ")");
+                    break;
+                }
+            }
+        }
     }
 }

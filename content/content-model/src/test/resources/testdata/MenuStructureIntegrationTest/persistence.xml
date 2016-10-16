@@ -63,6 +63,8 @@
         <!-- ===============================================
           |  Content Model Entities
           +============================================== -->
-        <class>se.mithlond.services.organisation.model.user.User</class>
+        <class>se.mithlond.services.content.model.articles.Article</class>
+        <class>se.mithlond.services.content.model.articles.Section</class>
+        <class>se.mithlond.services.content.model.articles.media.BitmapImage</class>
     </persistence-unit>
 </persistence>

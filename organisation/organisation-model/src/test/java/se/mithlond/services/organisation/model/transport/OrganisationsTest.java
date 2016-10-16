@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
@@ -118,7 +119,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
         // System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test
@@ -136,7 +137,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
         Assert.assertEquals(this.organisationVOs.size(), organisations.getOrganisationVOs().size());
 
         final List<OrganisationVO> frozen = organisations.getOrganisationVOs().stream().collect(Collectors.toList());
-        for(int i = 0; i < this.organisationVOs.size(); i++) {
+        for (int i = 0; i < this.organisationVOs.size(); i++) {
             Assert.assertEquals(frozen.get(i), this.organisationVOs.get(i));
         }
     }
@@ -156,7 +157,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
         Assert.assertEquals(this.organisationVOs.size(), organisations.getOrganisationVOs().size());
 
         final List<OrganisationVO> frozen = organisations.getOrganisationVOs().stream().collect(Collectors.toList());
-        for(int i = 0; i < this.organisationVOs.size(); i++) {
+        for (int i = 0; i < this.organisationVOs.size(); i++) {
             Assert.assertEquals(frozen.get(i), this.organisationVOs.get(i));
         }
     }

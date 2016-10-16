@@ -1,17 +1,17 @@
 {
   "shared.abstractSimpleTransporter": {
     "xsi.type": "shared.people",
-    "personList": {
-      "person": {
-        "jpaID": "25",
+    "personList": [
+      {
+        "jpaID": 25,
         "firstName": "Allan",
         "lastName": "Octamac"
       },
-      "person": {
-        "jpaID": "32",
+      {
+        "jpaID": 32,
         "firstName": "Ellen",
         "lastName": "Ectamac"
       }
-    }
+    ]
   }
 }

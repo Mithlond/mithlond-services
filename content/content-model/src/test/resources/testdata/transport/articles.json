@@ -1,36 +1,65 @@
 {
   "content_transport.articles": {
-    "@realm": "FooBar",
-    "selectionPath": "/news/latest",
-    "articleList": {
-      "article": [
-        {
-          "@jpaId": 0,
-          "@version": 0,
-          "title": "News_1",
-          "author": "ERF Häxxxxmästaren",
-          "createdAt": "2015-12-12T05:02:03+01:00",
-          "content": {
-            "div": {
-              "header": "foo",
-              "body": "bar!"
-            }
-          }
+    "realm": "Mithlond",
+    "selectionPath": "/news/mithlond",
+    "articleList": [
+      {
+        "jpaId": 0,
+        "version": 0,
+        "created": "2016-02-14T12:04:00",
+        "lastUpdated": "2016-02-15T16:17:00",
+        "createdBy": {
+          "jpaId": 0,
+          "version": 0,
+          "loginPermitted": true,
+          "alias": "ERF Häxxmästaren",
+          "subAlias": "Den onde",
+          "emailAlias": "haxx",
+          "user": "user_0_FirstName_LastName_1968_09_17",
+          "memberships": {
+          },
+          "organisation": "organisation_FooBar"
         },
-        {
-          "@jpaId": 0,
-          "@version": 0,
-          "title": "News_2",
-          "author": "ERF Häxxmästaren",
-          "createdAt": "2015-11-11T15:22:33+01:00",
-          "content": {
-            "div": {
-              "header": "foo2",
-              "body": "bar2!"
-            }
+        "lastUpdatedBy": {
+          "jpaId": 0,
+          "version": 0,
+          "loginPermitted": true,
+          "alias": "ERF Häxxmästaren",
+          "subAlias": "Den onde",
+          "emailAlias": "haxx",
+          "user": "user_0_FirstName_LastName_1968_09_17",
+          "memberships": {
+          },
+          "organisation": "organisation_FooBar"
+        },
+        "title": "Article Title",
+        "sections": [
+          {
+            "jpaId": 0,
+            "version": 0,
+            "showHeading": true,
+            "heading": "section1_heading",
+            "text": "section1_text",
+            "images": [
+              {
+                "jpaId": 0,
+                "version": 0,
+                "widthInPixels": 313,
+                "heightInPixels": 234,
+                "name": "example_jpg.jpg",
+                "contentType": "image/jpeg"
+              }
+            ]
+          },
+          {
+            "jpaId": 0,
+            "version": 0,
+            "showHeading": true,
+            "heading": "section2_heading",
+            "text": "section2_text"
           }
-        }
-      ]
-    }
+        ]
+      }
+    ]
   }
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core:entityTransporter xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <entityClasses>
+        <entityClass>ch.qos.logback.classic.Logger</entityClass>
+        <entityClass>java.lang.String</entityClass>
+        <entityClass>java.lang.String$CaseInsensitiveComparator</entityClass>
+        <entityClass>java.time.LocalDate</entityClass>
+        <entityClass>java.time.LocalDateTime</entityClass>
+        <entityClass>java.util.TreeMap</entityClass>
+        <entityClass>org.aspectj.runtime.reflect.JoinPointImpl$StaticPartImpl</entityClass>
+        <entityClass>se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter</entityClass>
+        <entityClass>se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.type.JaxbAnnotatedCollection</entityClass>
+        <entityClass>se.mithlond.services.content.model.articles.Article</entityClass>
+        <entityClass>se.mithlond.services.content.model.articles.Section</entityClass>
+        <entityClass>se.mithlond.services.content.model.articles.media.BitmapImage</entityClass>
+        <entityClass>se.mithlond.services.organisation.model.Organisation</entityClass>
+        <entityClass>se.mithlond.services.organisation.model.address.Address</entityClass>
+        <entityClass>se.mithlond.services.organisation.model.membership.Membership</entityClass>
+        <entityClass>se.mithlond.services.organisation.model.user.User</entityClass>
+    </entityClasses>
+    <items>
+        <item jpaId="0" version="0" xmlID="organisation_FooBar" timeZoneID="Europe/Stockholm" country="SE" language="sv" xmlns:ns0="http://xmlns.mithlond.se/xml/ns/organisation" xsi:type="ns0:organisation">
+            <organisationName>FooBar</organisationName>
+            <suffix>suffix</suffix>
+            <phone>phone</phone>
+            <bankAccountInfo>bankAccountInfo</bankAccountInfo>
+            <postAccountInfo>postAccountInfo</postAccountInfo>
+            <emailSuffix>emailSuffix</emailSuffix>
+            <visitingAddress>
+                <careOfLine>careOfLine</careOfLine>
+                <departmentName>departmentName</departmentName>
+                <street>street</street>
+                <number>number</number>
+                <city>city</city>
+                <zipCode>zipCode</zipCode>
+                <country>country</country>
+                <description>description</description>
+            </visitingAddress>
+        </item>
+        <item jpaId="0" version="0" xmlID="user_0_FirstName_LastName_1968_09_17" personalNumberLast4Digits="1234" xmlns:ns1="http://xmlns.mithlond.se/xml/ns/organisation" xsi:type="ns1:user">
+            <userIdentifierToken>someToken</userIdentifierToken>
+            <firstName>FirstName</firstName>
+            <lastName>LastName</lastName>
+            <birthday>1968-09-17</birthday>
+            <homeAddress>
+                <careOfLine>careOfLine</careOfLine>
+                <departmentName>departmentName</departmentName>
+                <street>street</street>
+                <number>number</number>
+                <city>city</city>
+                <zipCode>zipCode</zipCode>
+                <country>country</country>
+                <description>description</description>
+            </homeAddress>
+            <memberships/>
+        </item>
+        <item jpaId="0" version="0" loginPermitted="true" xmlns:ns2="http://xmlns.mithlond.se/xml/ns/organisation" xsi:type="ns2:membership">
+            <alias>ERF Häxxmästaren</alias>
+            <subAlias>Den onde</subAlias>
+            <emailAlias>haxx</emailAlias>
+            <user>user_0_FirstName_LastName_1968_09_17</user>
+            <memberships/>
+            <orderLevelGrants/>
+            <organisation>organisation_FooBar</organisation>
+            <personalSettings/>
+        </item>
+        <item jpaId="0" version="0" created="2016-02-14T12:04:00" lastUpdated="2016-02-15T16:17:00" xmlns:ns3="http://xmlns.mithlond.se/xml/ns/content" xsi:type="ns3:article">
+            <createdBy jpaId="0" version="0" loginPermitted="true">
+                <alias>ERF Häxxmästaren</alias>
+                <subAlias>Den onde</subAlias>
+                <emailAlias>haxx</emailAlias>
+                <user>user_0_FirstName_LastName_1968_09_17</user>
+                <memberships/>
+                <orderLevelGrants/>
+                <organisation>organisation_FooBar</organisation>
+                <personalSettings/>
+            </createdBy>
+            <lastUpdatedBy jpaId="0" version="0" loginPermitted="true">
+                <alias>ERF Häxxmästaren</alias>
+                <subAlias>Den onde</subAlias>
+                <emailAlias>haxx</emailAlias>
+                <user>user_0_FirstName_LastName_1968_09_17</user>
+                <memberships/>
+                <orderLevelGrants/>
+                <organisation>organisation_FooBar</organisation>
+                <personalSettings/>
+            </lastUpdatedBy>
+            <title>Article Title</title>
+            <sections>
+                <section jpaId="0" version="0" showHeading="true">
+                    <heading>section1_heading</heading>
+                    <text>section1_text</text>
+                    <images>
+                        <image jpaId="0" version="0" widthInPixels="313" heightInPixels="234">
+                            <name>example_jpg.jpg</name>
+                            <contentType>image/jpeg</contentType>
+                        </image>
+                    </images>
+                </section>
+                <section jpaId="0" version="0" showHeading="true">
+                    <heading>section2_heading</heading>
+                    <text>section2_text</text>
+                    <images/>
+                </section>
+            </sections>
+        </item>
+    </items>
+</core:entityTransporter>

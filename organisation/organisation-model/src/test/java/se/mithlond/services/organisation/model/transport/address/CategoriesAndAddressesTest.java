@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.address;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
@@ -125,7 +126,7 @@ public class CategoriesAndAddressesTest extends AbstractPlainJaxbTest {
         // System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test

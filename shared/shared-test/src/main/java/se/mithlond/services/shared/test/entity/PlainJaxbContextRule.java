@@ -21,21 +21,39 @@
  */
 package se.mithlond.services.shared.test.entity;
 
+import org.eclipse.persistence.internal.oxm.record.namespaces.MapNamespacePrefixMapper;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.junit.rules.TestWatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.SAXException;
+import se.jguru.nazgul.core.algorithms.api.collections.predicate.Tuple;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
-import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
+import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.MappedSchemaResourceResolver;
 import se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter;
-import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.bind.SchemaOutputResolver;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,6 +91,9 @@ import java.util.stream.Collectors;
  */
 public class PlainJaxbContextRule extends TestWatcher {
 
+    // Our Log
+    private static final Logger log = LoggerFactory.getLogger(PlainJaxbContextRule.class);
+
     private static final Comparator<Class<?>> CLASS_COMPARATOR = (class1, class2) -> {
 
         // Deal with nulls.
@@ -93,6 +114,9 @@ public class PlainJaxbContextRule extends TestWatcher {
     private static final String ECLIPSELINK_JSON_MARSHAL_EMPTY_COLLECTIONS
             = "eclipselink.json.marshal-empty-collections";
     private static final SortedSet<String> STD_IGNORED_CLASSPATTERNS;
+    private static final String RI_NAMESPACE_PREFIX_MAPPER_PROPERTY = "com.sun.xml.bind.namespacePrefixMapper";
+    private static final String ECLIPSELINK_NAMESPACE_PREFIX_MAPPER_PROPERTY =
+            JAXBContextProperties.NAMESPACE_PREFIX_MAPPER;
 
     static {
         STD_IGNORED_CLASSPATTERNS = new TreeSet<>();
@@ -144,11 +168,13 @@ public class PlainJaxbContextRule extends TestWatcher {
         marshallerProperties = new TreeMap<>();
         marshallerProperties.put(Marshaller.JAXB_ENCODING, "UTF-8");
         marshallerProperties.put(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshallerProperties.put("com.sun.xml.bind.namespacePrefixMapper", namespacePrefixResolver);
-        // marshallerProperties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+        marshallerProperties.put(RI_NAMESPACE_PREFIX_MAPPER_PROPERTY, namespacePrefixResolver);
+        marshallerProperties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
         // Assign standard properties for the Unmarshaller
         unMarshallerProperties = new TreeMap<>();
+        unMarshallerProperties.put(RI_NAMESPACE_PREFIX_MAPPER_PROPERTY, namespacePrefixResolver);
+        unMarshallerProperties.put(UnmarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
     }
 
     /**
@@ -159,8 +185,6 @@ public class PlainJaxbContextRule extends TestWatcher {
      * @see #useEclipseLinkMOXyIfAvailable
      */
     public void setUseEclipseLinkMOXyIfAvailable(final boolean useEclipseLinkMOXyIfAvailable) {
-
-        // Check sanity
         this.useEclipseLinkMOXyIfAvailable = useEclipseLinkMOXyIfAvailable;
     }
 
@@ -287,17 +311,54 @@ public class PlainJaxbContextRule extends TestWatcher {
         // Extract class info as required by the JAXBContext.
         final SortedSet<String> clsInfo = transporter.getClassInformation();
         try {
-            jaxbContext = JAXBContext.newInstance(getClasses(loader, clsInfo));
+            jaxbContext = JAXBContext.newInstance(getClasses(loader, clsInfo), marshallerProperties);
+
+            log.info("Got JAXBContext of type " + jaxbContext.getClass().getName() + ", with classes");
+
         } catch (JAXBException e) {
             throw new IllegalArgumentException("Could not create JAXB context.", e);
         }
 
+        // Handle the namespace mapper
+        handleNamespacePrefixMapper();
+
         Marshaller marshaller = null;
         try {
-            marshaller = JaxbUtils.getHumanReadableStandardMarshaller(
-                    jaxbContext,
-                    namespacePrefixResolver,
-                    performXsdValidation);
+            marshaller = jaxbContext.createMarshaller();
+
+            // Should we validate what we write?
+            if (performXsdValidation) {
+
+                if ("org.eclipse.persistence.jaxb.JAXBContext".equals(jaxbContext.getClass().getName())) {
+
+                    // Cast to the appropriate JAXBContext
+                    org.eclipse.persistence.jaxb.JAXBContext eclipseLinkJaxbContext =
+                            ((org.eclipse.persistence.jaxb.JAXBContext) jaxbContext);
+                    if (emitJSON) {
+
+                        final SimpleSchemaOutputResolver simpleResolver = new SimpleSchemaOutputResolver();
+                        Arrays.stream(objects)
+                                .filter(c -> c != null)
+                                .forEach(c -> {
+
+                                    final Class<?> currentClass = c.getClass();
+
+                                    if (log.isDebugEnabled()) {
+                                        log.debug("Generating JSON schema for " + currentClass.getName());
+                                    }
+                                    try {
+                                        eclipseLinkJaxbContext.generateJsonSchema(simpleResolver, currentClass);
+                                    } catch (Exception e) {
+                                        log.error("Could not generate JSON schema", e);
+                                    }
+                                });
+                    } else {
+                        final Tuple<Schema, LSResourceResolver> schema2LSResolver = generateTransientXSD(jaxbContext);
+                        marshaller.setSchema(schema2LSResolver.getKey());
+                    }
+                }
+            }
+
         } catch (Exception e) {
 
             try {
@@ -312,15 +373,19 @@ public class PlainJaxbContextRule extends TestWatcher {
         if (emitJSON) {
             try {
                 marshaller.setProperty(ECLIPSELINK_MEDIA_TYPE, JSON_CONTENT_TYPE);
-                marshaller.setProperty(ECLIPSELINK_JSON_MARSHAL_EMPTY_COLLECTIONS, Boolean.FALSE) ;
+                marshaller.setProperty(ECLIPSELINK_JSON_MARSHAL_EMPTY_COLLECTIONS, Boolean.FALSE);
             } catch (PropertyException e) {
+
                 // This is likely not the EclipseLink Marshaller.
+                log.error("Could not assign EclipseLink properties to Marshaller of type "
+                                + marshaller.getClass().getName() + "]. Proceeding, but results may be unexpected.",
+                        e);
             }
         }
 
         // Assign all other Marshaller properties.
         try {
-            for(Map.Entry<String, Object> current : marshallerProperties.entrySet()) {
+            for (Map.Entry<String, Object> current : marshallerProperties.entrySet()) {
                 marshaller.setProperty(current.getKey(), current.getValue());
             }
         } catch (PropertyException e) {
@@ -381,8 +446,8 @@ public class PlainJaxbContextRule extends TestWatcher {
             final String toUnmarshal) {
 
         // Check sanity
-        Validate.notNull(resultType, "resultType");
-        Validate.notEmpty(toUnmarshal, "xmlToUnmarshal");
+        org.apache.commons.lang3.Validate.notNull(resultType, "Cannot handle null 'resultType' argument.");
+        org.apache.commons.lang3.Validate.notEmpty(toUnmarshal, "Cannot handle null or empty 'xmlToUnmarshal' argument.");
 
         final Source source = new StreamSource(new StringReader(toUnmarshal));
 
@@ -394,7 +459,10 @@ public class PlainJaxbContextRule extends TestWatcher {
         }
 
         try {
-            jaxbContext = JAXBContext.newInstance(getClasses(loader, null));
+            jaxbContext = JAXBContext.newInstance(getClasses(loader, null), unMarshallerProperties);
+
+            handleNamespacePrefixMapper();
+
         } catch (JAXBException e) {
             throw new IllegalArgumentException("Could not create JAXB context.", e);
         }
@@ -403,7 +471,7 @@ public class PlainJaxbContextRule extends TestWatcher {
             final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
             // Assign all unMarshallerProperties to the Unmarshaller
-            unMarshallerProperties.entrySet().stream().forEach(c -> {
+            unMarshallerProperties.entrySet().forEach(c -> {
                 try {
                     unmarshaller.setProperty(c.getKey(), c.getValue());
                 } catch (PropertyException e) {
@@ -424,7 +492,9 @@ public class PlainJaxbContextRule extends TestWatcher {
             // All Done.
             return unmarshaller.unmarshal(source, resultType).getValue();
         } catch (JAXBException e) {
-            throw new IllegalArgumentException("Could not unmarshal xml into [" + resultType.getName() + "]", e);
+            final String dataType = assumeJSonInput ? "json" : "xml";
+            throw new IllegalArgumentException("Could not unmarshal " + dataType + " into ["
+                    + resultType.getName() + "]", e);
         }
     }
 
@@ -432,9 +502,11 @@ public class PlainJaxbContextRule extends TestWatcher {
      * Unmarshals without type information resulting in an Object, when no resulting type information
      * has been (or can be) given.
      *
-     * @param loader         The ClassLoader to use in order to load all classes previously added
-     *                       by calls to the {@code add} method.
-     * @param xmlToUnmarshal The XML string to unmarshal into a T object.
+     * @param loader          The ClassLoader to use in order to load all classes previously added
+     *                        by calls to the {@code add} method.
+     * @param assumeJSonInput If {@code true}, assume that the input to the unmarshaller is provided in JSON - rather
+     *                        than XML - form.
+     * @param xmlToUnmarshal  The XML string to unmarshal into a T object.
      * @return The resulting, unmarshalled object.
      * @see #unmarshal(ClassLoader, boolean, Class, String)
      */
@@ -489,5 +561,145 @@ public class PlainJaxbContextRule extends TestWatcher {
 
         // All done.
         return classList.toArray(new Class<?>[classList.size()]);
+    }
+
+    /**
+     * Simple {@link SchemaOutputResolver} implementation intended for JSON Schema generation using EclipseLink's
+     * JAXBContext implementation ("Moxy").
+     */
+    public static class SimpleSchemaOutputResolver extends SchemaOutputResolver {
+
+        // Internal state
+        private StringWriter stringWriter = new StringWriter();
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Result createOutput(final String namespaceURI, final String suggestedFileName) throws IOException {
+
+            // Delegate to a StreamResult.
+            final StreamResult result = new StreamResult(stringWriter);
+            result.setSystemId(suggestedFileName);
+            return result;
+        }
+
+        /**
+         * Retrieves the Schema source in String form.
+         *
+         * @return the Schema source in String form.
+         */
+        public String getSchema() {
+            return stringWriter.toString();
+        }
+    }
+
+    private void handleNamespacePrefixMapper() {
+
+        if (jaxbContext instanceof org.eclipse.persistence.jaxb.JAXBContext) {
+
+            // Create an EclipseLink-compliant NamespacePrefix mapper.
+            final SortedMap<String, String> uri2PrefixMap = new TreeMap<>();
+            final MapNamespacePrefixMapper eclipseLinkMapper = new MapNamespacePrefixMapper(uri2PrefixMap);
+
+            // Copy each URI to Prefix entry.
+            namespacePrefixResolver.getRegisteredNamespaceURIs().forEach(c -> {
+                uri2PrefixMap.put(c, namespacePrefixResolver.getXmlPrefix(c));
+            });
+
+            // Replace the RI namespace mapping properties with the EclipseLink equivalents.
+            marshallerProperties.remove(RI_NAMESPACE_PREFIX_MAPPER_PROPERTY);
+            marshallerProperties.put(ECLIPSELINK_NAMESPACE_PREFIX_MAPPER_PROPERTY, eclipseLinkMapper);
+
+            unMarshallerProperties.remove(RI_NAMESPACE_PREFIX_MAPPER_PROPERTY);
+            unMarshallerProperties.put(ECLIPSELINK_NAMESPACE_PREFIX_MAPPER_PROPERTY, eclipseLinkMapper);
+        }
+    }
+
+    /**
+     * Acquires a JAXB Schema from the provided JAXBContext.
+     *
+     * @param ctx The context for which am XSD should be constructed.
+     * @return A tuple holding the constructed XSD from the provided JAXBContext, and
+     * the LSResourceResolver synthesized during the way.
+     * @throws NullPointerException     if ctx was {@code null}.
+     * @throws IllegalArgumentException if a JAXB-related exception occurred while extracting the schema.
+     */
+    public static Tuple<Schema, LSResourceResolver> generateTransientXSD(final JAXBContext ctx)
+            throws NullPointerException, IllegalArgumentException {
+
+        // Check sanity
+        org.apache.commons.lang3.Validate.notNull(ctx, "Cannot handle null ctx argument.");
+
+        final SortedMap<String, ByteArrayOutputStream> namespace2SchemaMap = new TreeMap<>();
+
+        try {
+            ctx.generateSchema(new SchemaOutputResolver() {
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                public Result createOutput(final String namespaceUri, final String suggestedFileName)
+                        throws IOException {
+
+                    // The types should really be annotated with @XmlType(namespace = "... something ...")
+                    // to avoid using the default ("") namespace.
+                    if (namespaceUri.isEmpty()) {
+                        log.warn("Received empty namespaceUri while resolving a generated schema. "
+                                + "Did you forget to add a @XmlType(namespace = \"... something ...\") annotation "
+                                + "to your class?");
+                    }
+
+                    // Create the result ByteArrayOutputStream
+                    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    final StreamResult toReturn = new StreamResult(out);
+                    toReturn.setSystemId("");
+
+                    // Map the namespaceUri to the schemaResult.
+                    namespace2SchemaMap.put(namespaceUri, out);
+
+                    // All done.
+                    return toReturn;
+                }
+            });
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not acquire Schema snippets.", e);
+        }
+
+        // Convert to an array of StreamSource.
+        final MappedSchemaResourceResolver resourceResolver = new MappedSchemaResourceResolver();
+        final StreamSource[] schemaSources = new StreamSource[namespace2SchemaMap.size()];
+        int counter = 0;
+        for (Map.Entry<String, ByteArrayOutputStream> current : namespace2SchemaMap.entrySet()) {
+
+            final byte[] schemaSnippetAsBytes = current.getValue().toByteArray();
+            resourceResolver.addNamespace2SchemaEntry(current.getKey(), new String(schemaSnippetAsBytes));
+
+            if (log.isDebugEnabled()) {
+                log.info("Generated schema [" + (counter + 1) + "/" + schemaSources.length + "]:\n "
+                        + new String(schemaSnippetAsBytes));
+            }
+
+            // Copy the schema source to the schemaSources array.
+            schemaSources[counter] = new StreamSource(new ByteArrayInputStream(schemaSnippetAsBytes), "");
+
+            // Increase the counter
+            counter++;
+        }
+
+        try {
+
+            // All done.
+            final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            schemaFactory.setResourceResolver(resourceResolver);
+            final Schema transientSchema = schemaFactory.newSchema(schemaSources);
+
+            // All done.
+            return new Tuple<>(transientSchema, resourceResolver);
+
+        } catch (final SAXException e) {
+            throw new IllegalArgumentException("Could not create Schema from snippets.", e);
+        }
     }
 }

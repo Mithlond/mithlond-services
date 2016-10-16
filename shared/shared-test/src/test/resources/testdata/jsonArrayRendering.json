@@ -1,0 +1,19 @@
+{
+  "json_array_test.owner" : {
+    "name" : "Pelle",
+    "cars" : [ {
+      "name" : "Ford"
+    }, {
+      "name" : "Volvo"
+    } ],
+    "pets" : [ {
+      "name" : "Fluffy"
+    }, {
+      "name" : "Bunny"
+    }, {
+      "name" : "Tabby"
+    }, {
+      "name" : "Tokah"
+    } ]
+  }
+}

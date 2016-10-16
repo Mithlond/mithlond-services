@@ -2,15 +2,13 @@
   "content.menuStructure": {
     "jpaId": 0,
     "version": 0,
-    "localizations": {
-      "localization": [
-        {
-          "jpaId": 0,
-          "version": 0,
-          "compactStringForm": "sv..none..none"
-        }
-      ]
-    },
+    "localizations": [
+      {
+        "jpaId": 0,
+        "version": 0,
+        "compactStringForm": "sv..none..none"
+      }
+    ],
     "organisationName": "name",
     "rootMenu": {
       "jpaId": 0,
@@ -39,11 +37,9 @@
             "version": 0,
             "domId": "firstMenu",
             "tabIndex": 1,
-            "cssClasses": {
-              "cssClass": [
-                "icon-fixed-width"
-              ]
-            },
+            "cssClasses": [
+              "icon-fixed-width"
+            ],
             "iconIdentifier": "cog",
             "href": "/firstMenu",
             "localizedTexts": {
@@ -68,16 +64,12 @@
                   "jpaId": 0,
                   "version": 0,
                   "domId": "membersPage",
-                  "cssClasses": {
-                    "cssClass": [
-                      "icon-fixed-width"
-                    ]
-                  },
-                  "authPatterns": {
-                    "pattern": [
-                      "/mithlond/members"
-                    ]
-                  },
+                  "cssClasses": [
+                    "icon-fixed-width"
+                  ],
+                  "authPatterns": [
+                    "/mithlond/members"
+                  ],
                   "iconIdentifier": "man",
                   "href": "/members/list",
                   "localizedTexts": {
@@ -101,11 +93,9 @@
                   "jpaId": 0,
                   "version": 0,
                   "domId": "membersIdeaPage",
-                  "cssClasses": {
-                    "cssClass": [
-                      "icon-fixed-width"
-                    ]
-                  },
+                  "cssClasses": [
+                    "icon-fixed-width"
+                  ],
                   "iconIdentifier": "lightbulb",
                   "href": "/mithlond/members/ideas",
                   "localizedTexts": {
@@ -140,12 +130,10 @@
             "jpaId": 0,
             "version": 0,
             "domId": "plainItemPage3",
-            "authPatterns": {
-              "pattern": [
-                "/forodrim/members",
-                "/mithlond/members"
-              ]
-            },
+            "authPatterns": [
+              "/forodrim/members",
+              "/mithlond/members"
+            ],
             "href": "/calendar",
             "localizedTexts": {
               "jpaId": 0,

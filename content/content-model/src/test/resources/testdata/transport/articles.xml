@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  #%L
-  Nazgul Project: mithlond-services-content-model
-  %%
-  Copyright (C) 2015 - 2016 Mithlond
-  %%
-  Licensed under the jGuru Europe AB license (the "License"), based
-  on Apache License, Version 2.0; you may not use this file except
-  in compliance with the License.
-  
-  You may obtain a copy of the License at
-  
-        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  #L%
-  -->
-<content_transport:articles xmlns:content="http://xmlns.mithlond.se/xml/ns/content" xmlns:content_transport="http://xmlns.mithlond.se/xml/ns/content/transport" xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" realm="FooBar">
-    <selectionPath>/news/latest</selectionPath>
+<content_transport:articles xmlns:content="http://xmlns.mithlond.se/xml/ns/content" xmlns:content_transport="http://xmlns.mithlond.se/xml/ns/content/transport" xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" realm="Mithlond">
+    <selectionPath>/news/mithlond</selectionPath>
     <articleList>
-        <article jpaId="0" version="0">
-            <title>News_1</title>
-            <author>ERF Häxxxxmästaren</author>
-            <createdAt>2015-12-12T05:02:03+01:00</createdAt>
-            <content>
-                <div>
-                    <header>foo</header>
-                    <body>bar!</body>
-                </div>
-            </content>
-        </article>
-        <article jpaId="0" version="0">
-            <title>News_2</title>
-            <author>ERF Häxxmästaren</author>
-            <createdAt>2015-11-11T15:22:33+01:00</createdAt>
-            <content>
-                <div>
-                    <header>foo2</header>
-                    <body>bar2!</body>
-                </div>
-            </content>
+        <article jpaId="0" version="0" created="2016-02-14T12:04:00" lastUpdated="2016-02-15T16:17:00">
+            <createdBy jpaId="0" version="0" loginPermitted="true">
+                <alias>ERF Häxxmästaren</alias>
+                <subAlias>Den onde</subAlias>
+                <emailAlias>haxx</emailAlias>
+                <user>user_0_FirstName_LastName_1968_09_17</user>
+                <memberships/>
+                <orderLevelGrants/>
+                <organisation>organisation_FooBar</organisation>
+                <personalSettings/>
+            </createdBy>
+            <lastUpdatedBy jpaId="0" version="0" loginPermitted="true">
+                <alias>ERF Häxxmästaren</alias>
+                <subAlias>Den onde</subAlias>
+                <emailAlias>haxx</emailAlias>
+                <user>user_0_FirstName_LastName_1968_09_17</user>
+                <memberships/>
+                <orderLevelGrants/>
+                <organisation>organisation_FooBar</organisation>
+                <personalSettings/>
+            </lastUpdatedBy>
+            <title>Article Title</title>
+            <sections>
+                <section jpaId="0" version="0" showHeading="true">
+                    <heading>section1_heading</heading>
+                    <text>section1_text</text>
+                    <images>
+                        <image jpaId="0" version="0" widthInPixels="313" heightInPixels="234">
+                            <name>example_jpg.jpg</name>
+                            <contentType>image/jpeg</contentType>
+                        </image>
+                    </images>
+                </section>
+                <section jpaId="0" version="0" showHeading="true">
+                    <heading>section2_heading</heading>
+                    <text>section2_text</text>
+                    <images/>
+                </section>
+            </sections>
         </article>
     </articleList>
 </content_transport:articles>

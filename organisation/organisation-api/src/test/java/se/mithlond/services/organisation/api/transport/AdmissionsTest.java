@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.activity.Admissions;
@@ -85,7 +86,8 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
         // System.out.println("Got: " + jaxb.getMarshallerProperties());
 
         // Assert
-        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        // Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test

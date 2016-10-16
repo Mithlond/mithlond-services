@@ -93,6 +93,8 @@
         <class>se.mithlond.services.content.model.navigation.integration.StandardMenuItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.MenuStructure</class>
         <class>se.mithlond.services.content.model.articles.Article</class>
+        <class>se.mithlond.services.content.model.articles.Section</class>
+        <class>se.mithlond.services.content.model.articles.media.BitmapImage</class>
 
         <!--
             Don't consider other classes than the ones listed for the PersistenceUnit.

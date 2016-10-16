@@ -222,6 +222,9 @@ public class User extends NazgulEntity {
             final Map<String, String> contactDetails,
             final String userIdentifierToken) {
 
+        // Delegate
+        this();
+
         // Check sanity
         Validate.notNull(birthday, "birthday");
 
@@ -229,10 +232,15 @@ public class User extends NazgulEntity {
         this.lastName = lastName;
         this.personalNumberLast4Digits = personalNumberLast4Digits;
         this.homeAddress = homeAddress;
-        this.memberships = memberships;
         this.userIdentifierToken = userIdentifierToken;
-        this.contactDetails = contactDetails == null ? new TreeMap<>() : contactDetails;
         this.birthday = birthday;
+
+        if(memberships != null) {
+            this.memberships.addAll(memberships);
+        }
+        if(contactDetails != null) {
+            this.contactDetails.putAll(contactDetails);
+        }
         setXmlID();
     }
 

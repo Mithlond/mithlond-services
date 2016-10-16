@@ -21,22 +21,31 @@
  */
 package se.mithlond.services.content.model.transport.articles;
 
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.eclipse.persistence.jaxb.UnmarshallerProperties;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.model.articles.Article;
+import se.mithlond.services.content.model.articles.Section;
+import se.mithlond.services.content.model.articles.media.BitmapImage;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -44,50 +53,69 @@ import java.util.List;
 public class ArticlesTest extends AbstractPlainJaxbTest {
 
     // Shared state
-    private String realm;
-    private Articles articles;
-    private String content1, content2;
+    private Articles unitUnderTest;
     private Organisation organisation;
+    private User user;
+    private Membership membership;
     private Address address;
 
+    private Article anArticle;
+    private Section section1, section2;
+    private File jarFileFile;
+    private ClassLoader originalClassLoader;
 
     @Before
-    public void setupSharedState() {
+    public void setupSharedState() throws Exception {
 
-        // Use Moxy as the JAXB implementation
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+        // First, identify the path to the JAR containing images.
+        final URL imageJarURL = getClass().getClassLoader().getResource("testdata/articles/images.jar");
+        Assert.assertNotNull(imageJarURL);
+
+        jarFileFile = new File(imageJarURL.getPath());
+        Assert.assertTrue(jarFileFile.exists() && jarFileFile.isFile());
+
+        // Setup the classloader to include the image JAR.
+        originalClassLoader = Thread.currentThread().getContextClassLoader();
+        final URL[] imageJarFileURLs = new URL[]{jarFileFile.toURI().toURL()};
+        final URLClassLoader imageJarClassLoader = new URLClassLoader(imageJarFileURLs, originalClassLoader);
+        Thread.currentThread().setContextClassLoader(imageJarClassLoader);
 
         address = new Address("careOfLine", "departmentName", "street", "number",
                 "city", "zipCode", "country", "description");
         organisation = new Organisation("FooBar", "suffix", "phone", "bankAccountInfo",
                 "postAccountInfo", address, "emailSuffix", TimeFormat.SWEDISH_TIMEZONE,
                 TimeFormat.SWEDISH_LOCALE);
-        realm = organisation.getOrganisationName();
 
-        articles = new Articles(realm, "/news/latest", new ArrayList<>());
+        user = new User("FirstName",
+                "LastName",
+                LocalDate.of(1968, Month.SEPTEMBER, 17),
+                (short) 1234,
+                address, null,
+                new TreeMap<>(),
+                "someToken");
 
-        // Create some arbitrary content
-        content1 = "<div><header>foo</header><body>bar!</body></div>";
-        content2 = "<div><header>foo2</header><body>bar2!</body></div>";
+        membership = new Membership("ERF Häxxmästaren", "Den onde", "haxx", true, user, organisation);
 
-        // Populate the Articles.
-        articles.getArticleList().add(new Article("News_1",
-                "ERF Häxxxxmästaren",
-                ZonedDateTime.of(2015, 12, 12, 5, 2, 3, 0, TimeFormat.SWEDISH_TIMEZONE),
-                content1, organisation));
-        articles.getArticleList().add(new Article("News_2",
-                "ERF Häxxmästaren",
-                ZonedDateTime.of(2015, 11, 11, 15, 22, 33, 0, TimeFormat.SWEDISH_TIMEZONE),
-                content2, organisation));
+        // Create 2 Sections.
+        final BitmapImage aJpgImage = BitmapImage.createFromResourcePath("images/example_jpg.jpg");
+        this.section1 = new Section("section1_heading", true, "section1_text", aJpgImage);
+        this.section2 = new Section("section2_heading", true, "section2_text");
 
-        jaxb.add(Articles.class);
-        jaxb.getUnMarshallerProperties().put(UnmarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
-        jaxb.getMarshallerProperties().put(MarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
-    }
+        // Define some timestamps
+        final LocalDateTime createdAt = LocalDateTime.of(2016, Month.FEBRUARY, 14, 12, 4);
+        final LocalDateTime updatedAt = LocalDateTime.of(2016, Month.FEBRUARY, 15, 16, 17);
 
-    @After
-    public void teardownSharedState() {
-        System.clearProperty("javax.xml.bind.context.factory");
+        // Create an Article
+        this.anArticle = new Article(createdAt, membership, "Article Title", organisation);
+        anArticle.addSection(section1, membership);
+        anArticle.addSection(section2, membership);
+
+        // Make the internal state fully defined.
+        anArticle.setUpdated(updatedAt, membership);
+
+        unitUnderTest = new Articles("Mithlond", "/news/mithlond", Collections.singletonList(anArticle));
+
+        jaxb.add(Articles.class, Article.class, Section.class, BitmapImage.class);
     }
 
 
@@ -98,7 +126,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/articles.xml");
 
         // Act
-        final String result = marshalToXML(articles);
+        final String result = marshalToXML(unitUnderTest);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -112,13 +140,12 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/articles.json");
 
         // Act
-        final String result = marshalToJSon(articles);
+        final String result = marshalToJSon(unitUnderTest);
         // System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        JSONAssert.assertEquals(expected, result, true);
     }
-
 
     @Test
     public void validateUnmarshallingFromXML() throws Exception {
@@ -131,24 +158,17 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
 
         // Assert
         Assert.assertNotNull(resurrected);
-        Assert.assertEquals(realm, resurrected.getRealm());
+        Assert.assertEquals("Mithlond", resurrected.getRealm());
 
         final List<Article> articleList = resurrected.getArticleList();
-        Assert.assertEquals(2, articleList.size());
-        Assert.assertEquals(content1, articleList.get(0).getMarkup().replaceAll("\\s+", ""));
-        Assert.assertEquals("ERF Häxxxxmästaren", articleList.get(0).getAuthor());
+        Assert.assertEquals(1, articleList.size());
+        Assert.assertEquals("ERF Häxxmästaren", articleList.get(0).getCreatedBy().getAlias());
     }
 
     @Test
     public void validateUnmarshallingFromJSON() throws Exception {
 
         // Assemble
-        /*
-        unmarshaller.setProperty(UnmarshallerProperties.MEDIA_TYPE, "application/json");
-        unmarshaller.setProperty(UnmarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-        unmarshaller.setProperty(UnmarshallerProperties.JSON_NAMESPACE_PREFIX_MAPPER, true);
-        unmarshaller.setProperty(UnmarshallerProperties.JSON_ATTRIBUTE_PREFIX, "@");
-        */
         final String data = XmlTestUtils.readFully("testdata/transport/articles.json");
 
         // Act
@@ -156,12 +176,10 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
 
         // Assert
         Assert.assertNotNull(resurrected);
-        Assert.assertEquals(realm, resurrected.getRealm());
+        Assert.assertEquals("Mithlond", resurrected.getRealm());
 
         final List<Article> articleList = resurrected.getArticleList();
-        Assert.assertEquals(2, articleList.size());
-        Assert.assertEquals(content1, articleList.get(0).getMarkup().replaceAll("\\s+", ""));
-        Assert.assertEquals(content2, articleList.get(1).getMarkup().replaceAll("\\s+", ""));
-        Assert.assertEquals("ERF Häxxxxmästaren", articleList.get(0).getAuthor());
+        Assert.assertEquals(1, articleList.size());
+        Assert.assertEquals("ERF Häxxmästaren", articleList.get(0).getCreatedBy().getAlias());
     }
 }

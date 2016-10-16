@@ -25,28 +25,26 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbNamespacePrefixResolver;
-import se.jguru.nazgul.core.xmlbinding.spi.jaxb.helper.JaxbUtils;
+import org.skyscreamer.jsonassert.JSONAssert;
+import se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.content.model.transport.articles.Articles;
+import se.mithlond.services.content.model.articles.media.BitmapImage;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventLocator;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.SortedMap;
@@ -58,152 +56,115 @@ import java.util.TreeMap;
 public class ArticleTest extends AbstractPlainJaxbTest {
 
     // Shared state
-    private Locale defaultLocale;
-    private List<Article> articleList;
-    private Marshaller marshaller;
-    private Unmarshaller unmarshaller;
-    private SortedMap<Integer, String> contentMap = new TreeMap<>();
     private Organisation organisation;
+    private User user;
+    private Membership membership;
     private Address address;
 
-    private static String getEventSeverity(final int eventSeverity) {
-        switch (eventSeverity) {
-            case ValidationEvent.ERROR:
-                return "ERROR";
-
-            case ValidationEvent.FATAL_ERROR:
-                return "FATAL ERROR";
-
-            case ValidationEvent.WARNING:
-                return "WARNING";
-
-            default:
-                return "UNKNOWN [" + eventSeverity + "]";
-        }
-    }
+    private Article unitUnderTest;
+    private Section section1, section2;
+    private File jarFileFile;
+    private ClassLoader originalClassLoader;
 
     @Before
-    public void setupSharedState() {
+    public void setupSharedState() throws Exception {
 
-        // Use Moxy as the JAXB implementation
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+        // First, identify the path to the JAR containing images.
+        final URL imageJarURL = getClass().getClassLoader().getResource("testdata/articles/images.jar");
+        Assert.assertNotNull(imageJarURL);
 
-        // Stash the locale
-        defaultLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
-        articleList = new ArrayList<>();
+        jarFileFile = new File(imageJarURL.getPath());
+        Assert.assertTrue(jarFileFile.exists() && jarFileFile.isFile());
 
-        // Create the JAXBContext and related objects.
-        try {
-            final JAXBContext ctx = JAXBContext.newInstance(Articles.class, Article.class, Markup.class);
-            final JaxbNamespacePrefixResolver prefixResolver = new JaxbNamespacePrefixResolver();
-            prefixResolver.put(ContentPatterns.NAMESPACE, "content");
-            marshaller = JaxbUtils.getHumanReadableStandardMarshaller(ctx, prefixResolver, false);
-            unmarshaller = ctx.createUnmarshaller();
-
-
-            marshaller.setEventHandler(event -> {
-
-                final StringBuffer buffer = new StringBuffer(" [" + getEventSeverity(event.getSeverity()) + "] ");
-                final ValidationEventLocator locator = event.getLocator();
-                if (locator != null) {
-                    buffer.append(locator.getLineNumber() + "|" + locator.getColumnNumber() + "]\n");
-                } else {
-                    buffer.append(" No location available.\n");
-                }
-                buffer.append("\t" + event.getMessage());
-
-                System.err.println(buffer.toString());
-
-                final Throwable ex = event.getLinkedException();
-                if (ex != null) {
-                    ex.printStackTrace(System.err);
-                }
-
-                return true;
-            });
-        } catch (JAXBException e) {
-            throw new IllegalStateException("Could not create JAXBContext related objects", e);
-        }
-
-        final LocalDateTime theLocalDate = LocalDateTime.of(2014, Month.APRIL, 2, 3, 4);
-        final ZonedDateTime baseDate = ZonedDateTime.of(theLocalDate, TimeFormat.SWEDISH_TIMEZONE);
+        // Setup the classloader to include the image JAR.
+        originalClassLoader = Thread.currentThread().getContextClassLoader();
+        final URL[] imageJarFileURLs = new URL[]{jarFileFile.toURI().toURL()};
+        final URLClassLoader imageJarClassLoader = new URLClassLoader(imageJarFileURLs, originalClassLoader);
+        Thread.currentThread().setContextClassLoader(imageJarClassLoader);
 
         address = new Address("careOfLine", "departmentName", "street", "number",
                 "city", "zipCode", "country", "description");
-        organisation = new Organisation("name",
-                "suffix",
-                "phone",
-                "bankAccountInfo",
-                "postAccountInfo",
-                address,
-                "emailSuffix",
-                TimeFormat.SWEDISH_TIMEZONE,
+        organisation = new Organisation("FooBar", "suffix", "phone", "bankAccountInfo",
+                "postAccountInfo", address, "emailSuffix", TimeFormat.SWEDISH_TIMEZONE,
                 TimeFormat.SWEDISH_LOCALE);
 
-        for (int i = 0; i < 10; i++) {
+        user = new User("FirstName",
+                "LastName",
+                LocalDate.of(1968, Month.SEPTEMBER, 17),
+                (short) 1234,
+                address, null,
+                new TreeMap<>(),
+                "someToken");
 
-            // Create some mock content
-            final String content = "<div foo='bar'>\n  <strong>ArticleTitle_" + i
-                    + "</strong>\n  <content>content_" + i + "åäöÅÄÖëü</content>\n</div>";
-            contentMap.put(i, content);
+        membership = new Membership("ERF Häxxmästaren", "Den onde", "haxx", true, user, organisation);
 
-            // Create the Article
-            articleList.add(new Article(
-                    "title_" + i,
-                    "author_" + i,
-                    baseDate.plusHours(i),
-                    content,
-                    organisation));
-        }
+        // Create 2 Sections.
+        final BitmapImage aJpgImage = BitmapImage.createFromResourcePath("images/example_jpg.jpg");
+        this.section1 = new Section("section1_heading", true, "section1_text", aJpgImage);
+        this.section2 = new Section("section2_heading", true, "section2_text");
+
+        // Define some timestamps
+        final LocalDateTime createdAt = LocalDateTime.of(2016, Month.FEBRUARY, 14, 12, 4);
+        final LocalDateTime updatedAt = LocalDateTime.of(2016, Month.FEBRUARY, 15, 16, 17);
+
+        // Create an Article
+        this.unitUnderTest = new Article(createdAt, membership, "Article Title", organisation);
+        unitUnderTest.addSection(section1, membership);
+        unitUnderTest.addSection(section2, membership);
+
+        // Make the internal state fully defined.
+        unitUnderTest.setUpdated(updatedAt, membership);
+
+        jaxb.add(Article.class, Section.class, BitmapImage.class, EntityTransporter.class);
     }
 
     @After
-    public void teardownSharedState() {
-        Locale.setDefault(defaultLocale);
-        System.clearProperty("javax.xml.bind.context.factory");
+    public void restoreClassLoader() {
+
+        try {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        } catch (Exception e) {
+            // Do nothing.
+        }
     }
 
     @Test
-    public void validateMarshalling() throws Exception {
+    public void validateMarshallingToXML() throws Exception {
 
         // Assemble
-        final String expected = XmlTestUtils.readFully("testdata/articles.xml");
-        final Articles toMarshal = new Articles();
-        toMarshal.getArticleList().addAll(this.articleList);
+        final String expected = XmlTestUtils.readFully("testdata/articles/wrappedArticle.xml");
+
+        final EntityTransporter<Object> wrapper = new EntityTransporter<>();
+        wrapper.addItem(organisation);
+        wrapper.addItem(user);
+        wrapper.addItem(membership);
+        wrapper.addItem(unitUnderTest);
 
         // Act
-        final StringWriter out = new StringWriter();
-        marshaller.marshal(toMarshal, out);
-        // System.out.println("Got: " + out.toString());
+        final String result = marshalToXML(wrapper);
+        // System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, out.toString()).identical());
+        Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
     }
 
     @Test
-    public void validateUnmarshalling() throws Exception {
+    public void validateMarshallingToJSon() throws Exception {
 
         // Assemble
-        final String data = XmlTestUtils.readFully("testdata/articles.xml");
-        // System.out.println("Got: " + data.toString());
+        final String expected = XmlTestUtils.readFully("testdata/articles/wrappedArticle.json");
+
+        final EntityTransporter<Object> wrapper = new EntityTransporter<>();
+        wrapper.addItem(organisation);
+        wrapper.addItem(user);
+        wrapper.addItem(membership);
+        wrapper.addItem(unitUnderTest);
 
         // Act
-        final Object result = unmarshaller.unmarshal(new StringReader(data));
+        final String result = marshalToJSon(wrapper);
+        // System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertNotNull(result);
-        Assert.assertTrue(result instanceof Articles);
-
-        final List<Article> articles = ((Articles) result).getArticleList();
-        Assert.assertEquals(10, articles.size());
-
-        final Article firstArticle = articles.get(0);
-        Assert.assertEquals("title_0", firstArticle.getTitle());
-        Assert.assertEquals("author_0", firstArticle.getAuthor());
-        Assert.assertNull(firstArticle.getLastModified());
-        Assert.assertEquals(
-                contentMap.get(0).replaceAll("\\p{Space}", ""),
-                firstArticle.getMarkup().trim().replaceAll("\\p{Space}", "").replaceAll("\"", "\\'"));
+        JSONAssert.assertEquals(expected, result, true);
     }
 }

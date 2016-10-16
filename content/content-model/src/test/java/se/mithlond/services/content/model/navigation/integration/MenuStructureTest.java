@@ -24,6 +24,7 @@ package se.mithlond.services.content.model.navigation.integration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
@@ -118,17 +119,18 @@ public class MenuStructureTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateMarshallingToJSON() {
+    public void validateMarshallingToJSON() throws Exception {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/menuStructure.json");
 
         // Act
         final String result = marshalToJSon(menuStructure);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
-        Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        // Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
+        JSONAssert.assertEquals(expected, result, true);
     }
 
 

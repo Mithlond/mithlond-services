@@ -1,41 +1,41 @@
 {
   "organisation_transport.admissions": {
-    "details": {
-      "admissionDetails": {
-        "responsible": "true",
-        "activityID": "20",
+    "details": [
+      {
+        "responsible": true,
+        "activityID": 20,
         "alias": "alias_0",
         "organisation": "organisation_0",
         "note": "note_0"
       },
-      "admissionDetails": {
-        "responsible": "false",
-        "activityID": "21",
+      {
+        "responsible": false,
+        "activityID": 21,
         "alias": "alias_1",
         "organisation": "organisation_1",
         "note": "note_1"
       },
-      "admissionDetails": {
-        "responsible": "false",
-        "activityID": "22",
+      {
+        "responsible": false,
+        "activityID": 22,
         "alias": "alias_2",
         "organisation": "organisation_2",
         "note": "note_2"
       },
-      "admissionDetails": {
-        "responsible": "true",
-        "activityID": "23",
+      {
+        "responsible": true,
+        "activityID": 23,
         "alias": "alias_3",
         "organisation": "organisation_3",
         "note": "note_3"
       },
-      "admissionDetails": {
-        "responsible": "false",
-        "activityID": "24",
+      {
+        "responsible": false,
+        "activityID": 24,
         "alias": "alias_4",
         "organisation": "organisation_4",
         "note": "note_4"
       }
-    }
+    ]
   }
 }

@@ -57,6 +57,11 @@
             <artifactId>mithlond-services-shared-spi-algorithms</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+        </dependency>
 
         <!-- External dependencies -->
         <dependency>
