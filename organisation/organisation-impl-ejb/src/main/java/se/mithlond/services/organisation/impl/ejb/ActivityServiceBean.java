@@ -205,7 +205,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 })
                 .collect(Collectors.toList());
 
-        allAdmissions.stream().forEach(a -> {
+        allAdmissions.forEach(a -> {
             entityManager.persist(a);
             allAdmissions.add(a);
         });
@@ -330,8 +330,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         // #1) Re-pack into a map relating to the JPA ID of the Activity.
         //
         final Map<Long, Set<AdmissionVO>> admissionVOs = new TreeMap<>();
-        Arrays.asList(admissionDetails)
-                .stream()
+        Arrays.stream(admissionDetails)
                 .filter(c -> c.getActivityID() != null)
                 .forEach(c -> {
 
@@ -417,7 +416,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                     .collect(Collectors.toList());
 
             toModify.getAdmissions().removeAll(toBeRemoved);
-            toBeRemoved.stream().forEach(c -> entityManager.remove(c));
+            toBeRemoved.forEach(c -> entityManager.remove(c));
             entityManager.flush();
 
             // All is well.
@@ -463,7 +462,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 .filter(c -> currentAdmissionMap.get(c.getKey()) == null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        newAdmissionVOs.entrySet().stream().forEach(c -> {
+        newAdmissionVOs.entrySet().forEach(c -> {
 
             // Extract the admission VO
             final AdmissionVO admissionData = c.getValue();
@@ -551,7 +550,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 + " order by a.categoryID")
                 .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION, CategorizedAddress.ACTIVITY_CLASSIFICATION);
         final List<Long> categoryJpaIDs = new ArrayList<>();
-        query.getResultList().stream().forEach(c -> {
+        query.getResultList().forEach(c -> {
 
             final Long currentJpaID = (Long) c;
             if (!categoryJpaIDs.contains(currentJpaID)) {
@@ -574,7 +573,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 });
 
         CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
-        categorizedAddresses.stream().forEach(toReturn::addCategorizedAddress);
+        categorizedAddresses.forEach(toReturn::addCategorizedAddress);
 
         // All Done.
         return toReturn;

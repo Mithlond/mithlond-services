@@ -68,8 +68,8 @@ public final class CommonPersistenceTasks {
     }
 
     /**
-     * Retrieves the Category with the classification {@link CategorizedAddress#ACTIVITY_CLASSIFICATION} and the
-     * given ID.
+     * Retrieves the Category with the classification {@link CategorizedAddress#ACTIVITY_CLASSIFICATION}
+     * and the given ID.
      *
      * @param entityManager The non-null and active {@link EntityManager}.
      * @param categoryID    the non-empty categoryID.
@@ -99,6 +99,15 @@ public final class CommonPersistenceTasks {
         return category;
     }
 
+    /**
+     * Retrieves a single Membership with the supplied alias and organisationName.
+     *
+     * @param entityManager    The active {@link EntityManager}.
+     * @param alias            The non-empty alias.
+     * @param organisationName The non-empty organisationName.
+     * @return The Membership with the given alias and organisationName.
+     * @throws IllegalArgumentException if no Membership could be found.
+     */
     public static Membership getSingleMembership(final EntityManager entityManager,
             final String alias,
             final String organisationName) throws IllegalArgumentException {

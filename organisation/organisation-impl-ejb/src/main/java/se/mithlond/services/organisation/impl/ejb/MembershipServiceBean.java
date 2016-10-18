@@ -103,14 +103,17 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         final List<Membership> toReturn = new ArrayList<>();
 
-        final List<Membership> loginPermittedMemberships = entityManager.createNamedQuery(
+        final List<Membership> allMemberships = entityManager.createNamedQuery(
                 Membership.NAMEDQ_GET_BY_NAME_ORGANISATION, Membership.class)
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
                 .setParameter(OrganisationPatterns.PARAM_FIRSTNAME, firstName)
                 .setParameter(OrganisationPatterns.PARAM_LASTNAME, lastName)
-                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
+                // .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
                 .getResultList();
-        toReturn.addAll(loginPermittedMemberships);
+
+        if(allMemberships != null && !allMemberships.isEmpty()) {
+            allMemberships.stream().filter(Membership::isLoginPermitted).forEach(toReturn::add);
+        }
 
         // All done.
         return toReturn;

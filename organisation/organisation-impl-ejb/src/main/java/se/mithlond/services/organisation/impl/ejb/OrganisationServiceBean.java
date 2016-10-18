@@ -204,7 +204,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .getResultList();
 
         final CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
-        categorizedAddresses.stream().forEach(toReturn::addCategorizedAddress);
+        categorizedAddresses.forEach(toReturn::addCategorizedAddress);
 
         // All Done.
         return toReturn;
