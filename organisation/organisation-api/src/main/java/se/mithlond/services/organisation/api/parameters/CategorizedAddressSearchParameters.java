@@ -40,7 +40,7 @@ import java.util.SortedMap;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisationID", "classifiers", "shortDescPattern",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"organisationID", "classifications", "shortDescPattern",
         "fullDescPattern", "addressCareOfLinePattern", "departmentNamePattern", "streetPattern", "numberPattern",
         "cityPattern", "zipCodePattern", "countryPattern", "descriptionPattern"})
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -56,11 +56,11 @@ public class CategorizedAddressSearchParameters extends
     private Long organisationID;
 
     /**
-     * An optional List of classifiers for the CategorizedAddresses to find.
+     * An optional List of classifications for the CategorizedAddresses to find.
      */
     @XmlElementWrapper
-    @XmlElement(name = "classifier")
-    private List<String> classifiers;
+    @XmlElement(name = "classification")
+    private List<String> classifications;
 
     /**
      * Pattern to match with short description of retrieved CategorizedAddresses.
@@ -132,7 +132,7 @@ public class CategorizedAddressSearchParameters extends
      * Compound constructor creating a CategorizedAddressSearchParameters wrapping the supplied data.
      *
      * @param organisationID           The ID of the organisation for which CategorizedAddresses should be found.
-     * @param classifiers              A List of classifiers for the CategorizedAddresses to find.
+     * @param classifications              A List of classifications for the CategorizedAddresses to find.
      * @param shortDescPattern         Pattern to match with short description of retrieved CategorizedAddresses.
      * @param fullDescPattern          Pattern to match with full description of retrieved CategorizedAddresses.
      * @param addressCareOfLinePattern Pattern to match with careOfLine of retrieved CategorizedAddresses.
@@ -145,7 +145,7 @@ public class CategorizedAddressSearchParameters extends
      * @param descriptionPattern       Pattern to match with description of retrieved CategorizedAddresses.
      */
     private CategorizedAddressSearchParameters(final Long organisationID,
-            final List<String> classifiers,
+            final List<String> classifications,
             final String shortDescPattern,
             final String fullDescPattern,
             final String addressCareOfLinePattern,
@@ -159,7 +159,7 @@ public class CategorizedAddressSearchParameters extends
 
         // Assign internal state
         this.organisationID = organisationID;
-        this.classifiers = classifiers;
+        this.classifications = classifications;
         this.shortDescPattern = shortDescPattern;
         this.fullDescPattern = fullDescPattern;
         this.addressCareOfLinePattern = addressCareOfLinePattern;
@@ -180,10 +180,10 @@ public class CategorizedAddressSearchParameters extends
     }
 
     /**
-     * @return A List of classifier IDs for the CategorizedAddresses to retrieve.
+     * @return A List of classifications for the CategorizedAddresses to retrieve.
      */
-    public List<String> getClassifierIDs() {
-        return classifiers;
+    public List<String> getClassifications() {
+        return classifications;
     }
 
     /**
@@ -263,7 +263,7 @@ public class CategorizedAddressSearchParameters extends
     protected void populateInternalStateMap(final SortedMap<String, String> toPopulate) {
 
         toPopulate.put("organisationID", "" + organisationID);
-        toPopulate.put("classifiers", classifiers.toString());
+        toPopulate.put("classifications", classifications.toString());
         toPopulate.put("shortDescPattern", shortDescPattern);
         toPopulate.put("fullDescPattern", fullDescPattern);
         toPopulate.put("descriptionPattern", descriptionPattern);
@@ -274,6 +274,16 @@ public class CategorizedAddressSearchParameters extends
         toPopulate.put("cityPattern", cityPattern);
         toPopulate.put("zipCodePattern", zipCodePattern);
         toPopulate.put("countryPattern", countryPattern);
+    }
+
+    /**
+     * Retrieves a CategorizedAddressSearchParametersBuilder, to start
+     * populating a CategorizedAddressSearchParameters instance.
+     *
+     * @return a new CategorizedAddressSearchParametersBuilder used to populate with parameters for searches.
+     */
+    public static CategorizedAddressSearchParameters.CategorizedAddressSearchParametersBuilder builder() {
+        return new CategorizedAddressSearchParametersBuilder();
     }
 
     /**
@@ -299,11 +309,11 @@ public class CategorizedAddressSearchParameters extends
         /**
          * Adds the provided classifier IDs parameter to be used by this builder.
          *
-         * @param classifiers the classifiers parameter to be used by this builder. Cannot be null or empty.
+         * @param classifiers the classifications parameter to be used by this builder. Cannot be null or empty.
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withClassifiers(@NotNull final String... classifiers) {
-            return addValuesIfApplicable(this.classifiers, "classifiers", classifiers);
+            return addValuesIfApplicable(this.classifiers, "classifications", classifiers);
         }
 
         /**
@@ -420,11 +430,29 @@ public class CategorizedAddressSearchParameters extends
         }
 
         /**
+         * Adds the provided organisation IDs parameter to be used by this CategorizedAddressSearchParametersBuilder
+         * instance.
+         *
+         * @param organisationID the organisationID parameter to be used by
+         *                       the CategorizedAddressSearchParametersBuilder instance. Cannot be null.
+         * @return This CategorizedAddressSearchParametersBuilder instance.
+         */
+        public CategorizedAddressSearchParametersBuilder withOrganisationID(@NotNull final Long organisationID) {
+
+            if(organisationID != null) {
+                this.organisationID = organisationID;
+            }
+            return this;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
         public CategorizedAddressSearchParameters build() {
-            return new CategorizedAddressSearchParameters(organisationID,
+
+            final CategorizedAddressSearchParameters toReturn = new CategorizedAddressSearchParameters(
+                    organisationID,
                     classifiers,
                     shortDescPattern,
                     fullDescPattern,
@@ -436,6 +464,12 @@ public class CategorizedAddressSearchParameters extends
                     zipCodePattern,
                     countryPattern,
                     descriptionPattern);
+
+            // Add the preferred response mode.
+            toReturn.preferDetailedResponse = this.preferDetailedResponse;
+
+            // All Done.
+            return toReturn;
         }
     }
 }

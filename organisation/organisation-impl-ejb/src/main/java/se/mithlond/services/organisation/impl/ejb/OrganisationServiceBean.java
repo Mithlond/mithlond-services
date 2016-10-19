@@ -129,12 +129,10 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
         // Pad the ID Lists.
         final int groupIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getGroupIDs(), 0L);
         final int organisationIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getOrganisationIDs(), 0L);
-        final int classifierIDsSize = AbstractJpaService.padAndGetSize(searchParameters.getClassifierIDs(), 0L);
 
         // Acquire the padded lists.
         final List<Long> groupIDs = searchParameters.getGroupIDs();
         final List<Long> organisationIDs = searchParameters.getOrganisationIDs();
-        final List<Long> classifierIDs = searchParameters.getClassifierIDs();
 
         // Fire, and add all results to the return List.
         final List<Group> groups = entityManager.createNamedQuery(Group.NAMEDQ_GET_BY_SEARCHPARAMETERS, Group.class)
@@ -142,8 +140,6 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .setParameter(OrganisationPatterns.PARAM_GROUP_IDS, groupIDs)
                 .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, organisationIDsSize)
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs)
-                .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONIDS, classifierIDsSize)
-                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION_IDS, classifierIDs)
                 .getResultList();
 
         final Groups toReturn = new Groups();
@@ -174,13 +170,12 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         // Check sanity
         Validate.notNull(searchParameters, "searchParameters");
-        Validate.notNull(searchParameters.getOrganisationID(), "organisationID");
 
         // Pad the ID Lists.
-        final int classifiersSize = AbstractJpaService.padAndGetSize(searchParameters.getClassifierIDs(), "none");
+        final int numClassifications = AbstractJpaService.padAndGetSize(searchParameters.getClassifications(), "none");
 
         // Acquire the padded lists.
-        final List<String> classifiers = searchParameters.getClassifierIDs();
+        final List<String> classifications = searchParameters.getClassifications();
         final List<Long> organisationIDs = new ArrayList<>();
         organisationIDs.add(searchParameters.getOrganisationID());
 
@@ -191,8 +186,8 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .setParameter(OrganisationPatterns.PARAM_SHORT_DESC, searchParameters.getShortDescPattern())
                 .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, organisationIDs.size())
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs)
-                .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONS, classifiersSize)
-                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATIONS, classifiers)
+                .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONS, numClassifications)
+                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATIONS, classifications)
                 .setParameter(OrganisationPatterns.PARAM_ADDRESSCAREOFLINE, searchParameters.getAddressCareOfLinePattern())
                 .setParameter(OrganisationPatterns.PARAM_CITY, searchParameters.getCityPattern())
                 .setParameter(OrganisationPatterns.PARAM_COUNTRY, searchParameters.getCountryPattern())

@@ -126,6 +126,17 @@ public abstract class AbstractPlainJaxbTest extends AbstractStandardizedTimezone
      * @param actual   The actual, received XML.
      */
     protected void validateIdenticalContent(final String expected, final String actual) {
+        validateIdenticalXml(expected, actual);
+    }
+
+    /**
+     * Validates that the expected and actual XML-formatted strings are
+     * identical, ignoring any metaClass differences.
+     *
+     * @param expected The expected XML.
+     * @param actual   The actual, received XML.
+     */
+    public static void validateIdenticalXml(final String expected, final String actual) {
 
         final Diff diff;
         try {

@@ -29,6 +29,8 @@ import se.jguru.nazgul.test.persistence.StandardPersistenceTest;
 import se.jguru.nazgul.test.xmlbinding.AbstractStandardizedTimezoneTest;
 import se.jguru.nazgul.test.xmlbinding.junit.StandardTimeZoneRule;
 
+import javax.persistence.EntityManager;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -89,6 +91,25 @@ public abstract class AbstractIntegrationTest extends StandardPersistenceTest im
     }
 
     /**
+     * <p>Adds a call to the {@link #resetIdCounters(EntityManager)} method in addition to
+     * performing normal cleanup mechanics after running each test.</p>
+     *
+     * @param shutdownDatabase if {@code true}, shuts down the database in addition to cleaning the test schema.
+     */
+    @Override
+    protected void cleanupTestSchema(final boolean shutdownDatabase) {
+
+        try {
+            super.cleanupTestSchema(shutdownDatabase);
+        } catch (Exception e) {
+            // Ignore this
+        }
+
+        // Reset all ID counters.
+        resetIdCounters(entityManager);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -131,5 +152,42 @@ public abstract class AbstractIntegrationTest extends StandardPersistenceTest im
         } catch (SQLException e) {
             log.error("Could not acquire flat XML form of current DB IDataset", e);
         }
+    }
+
+    /**
+     * Resets all identity counters within the "PUBLIC" schema accessed by the supplied EntityManager.
+     *
+     * @param entityManager A non-null EntityManager.
+     * @see #entityManager
+     */
+    @SuppressWarnings("all")
+    public static void resetIdCounters(final EntityManager entityManager) {
+
+        if (entityManager != null) {
+
+            // #1) Extract the raw JDBC Connection from the EntityManager
+            final Connection connection = entityManager.unwrap(Connection.class);
+
+            // #2) Hit the DB with the crude but efficient SQL statement.
+            final String resetSql = "TRUNCATE SCHEMA PUBLIC RESTART IDENTITY AND COMMIT NO CHECK";
+
+            try {
+                connection.createStatement().execute(resetSql);
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Could not reset the ID Counters", e);
+            }
+        }
+    }
+
+    /**
+     * Validates that the expected and actual XML-formatted strings are
+     * identical, ignoring any metaClass differences.
+     *
+     * @param expected The expected XML.
+     * @param actual   The actual, received XML.
+     */
+    @SuppressWarnings("all")
+    protected void validateIdenticalContent(final String expected, final String actual) {
+        AbstractPlainJaxbTest.validateIdenticalXml(expected, actual);
     }
 }

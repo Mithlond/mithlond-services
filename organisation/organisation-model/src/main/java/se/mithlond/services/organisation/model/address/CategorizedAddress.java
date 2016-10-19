@@ -67,8 +67,8 @@ import javax.xml.bind.annotation.XmlType;
                 query = "select a from CategorizedAddress a "
                         + "where a.fullDesc like :" + OrganisationPatterns.PARAM_FULL_DESC
                         + " and a.shortDesc like :" + OrganisationPatterns.PARAM_SHORT_DESC
-                        + " and ( :" + OrganisationPatterns.PARAM_CLASSIFICATION_IDS + " > 0 "
-                        + "      and a.category.classification in :" + OrganisationPatterns.PARAM_CATEGORY_IDS + " ) "
+                        + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_CLASSIFICATIONS
+                        + " or a.category.classification in :" + OrganisationPatterns.PARAM_CLASSIFICATIONS + " ) "
                         + " and ( :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS + " > 0 "
                         + "      and a.owningOrganisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
                         + " and a.address.careOfLine like :" + OrganisationPatterns.PARAM_ADDRESSCAREOFLINE

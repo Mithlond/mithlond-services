@@ -312,13 +312,18 @@ public class ActivitySearchParameters
                 syncPeriod();
             }
 
-            // All done.
-            return new ActivitySearchParameters(startPeriod,
+            final ActivitySearchParameters toReturn = new ActivitySearchParameters(startPeriod,
                     endPeriod,
                     organisationIDs,
                     activityIDs,
                     membershipIDs,
                     freeTextSearch);
+
+            // Add the preferred response mode.
+            toReturn.preferDetailedResponse = this.preferDetailedResponse;
+
+            // All Done.
+            return toReturn;
         }
 
         //

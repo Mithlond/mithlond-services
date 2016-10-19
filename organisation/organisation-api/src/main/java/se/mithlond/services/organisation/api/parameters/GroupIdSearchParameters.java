@@ -178,7 +178,16 @@ public class GroupIdSearchParameters
          * {@inheritDoc}
          */
         public GroupIdSearchParameters build() {
-            return new GroupIdSearchParameters(groupIDs, organisationIDs, classifierIDs);
+
+            final GroupIdSearchParameters toReturn = new GroupIdSearchParameters(
+                    groupIDs,
+                    organisationIDs,
+                    classifierIDs);
+
+            toReturn.preferDetailedResponse = this.preferDetailedResponse;
+
+            // All Done.
+            return toReturn;
         }
     }
 }

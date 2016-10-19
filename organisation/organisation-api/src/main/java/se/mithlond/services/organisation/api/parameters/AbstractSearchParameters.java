@@ -84,14 +84,12 @@ public abstract class AbstractSearchParameters<E extends AbstractParameterBuilde
             final String formatString = "%1$-" + maxWidth + "s";
 
             // "    [groupIDs          : " + groupIDs + nLine
-            internalState.entrySet().stream().forEach(c -> {
-                builder
-                        .append(" [")
-                        .append(String.format(formatString, c.getKey()))
-                        .append(" : ")
-                        .append(c.getValue())
-                        .append(nLine);
-            });
+            internalState.entrySet().forEach(c -> builder
+                    .append(" [")
+                    .append(String.format(formatString, c.getKey()))
+                    .append(" : ")
+                    .append(c.getValue())
+                    .append(nLine));
         } else {
             builder.append("No internal state recorded.");
         }

@@ -92,7 +92,16 @@ import java.util.TreeSet;
         @NamedQuery(name = Group.NAMEDQ_GET_BY_ORGANISATION,
                 query = "select a from Group a "
                         + " where a.organisation.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
-                        + " order by a.groupName")
+                        + " order by a.groupName"),
+        @NamedQuery(name = Group.NAMEDQ_GET_BY_SEARCHPARAMETERS,
+                query = "select g from Group g "
+                        + " where "
+                        + "( 0 = :" + OrganisationPatterns.PARAM_NUM_GROUPIDS + " or g.id in :"
+                        + OrganisationPatterns.PARAM_GROUP_IDS + " ) "
+                        + " and ( 0 = :"
+                        + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS + " or g.organisation.id in :"
+                        + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
+                        + " order by g.groupName")
 })
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"groupName", "description", "organisation", "parent", "emailList"})
