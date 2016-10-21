@@ -31,6 +31,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.Collection;
 
 /**
@@ -182,6 +183,24 @@ public abstract class AbstractJpaService implements JpaCudService {
 
         // No need to pad the Collection. Simply return its size.
         return aCollection.size();
+    }
+
+    /**
+     * Surrounds the originalParameter with '%' characters, implying that the original parameter will be able to be
+     * used within a SQL LIKE statement. Null originalParameters yield a "%" response.
+     *
+     * @param originalParameter The parameter to surround.
+     * @return The JPQL-LIKE-ready parameter.
+     */
+    protected String makeLikeParameter(final String originalParameter) {
+
+        // Null parameters yield '%'
+        if (originalParameter == null || "%".equalsIgnoreCase(originalParameter)) {
+            return "%";
+        }
+
+        // Surround the parameter value with %'s if required.
+        return "%" + originalParameter.trim() + "%";
     }
 
     //

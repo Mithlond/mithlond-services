@@ -1,7 +1,9 @@
 package se.mithlond.services.organisation.impl.ejb;
 
+import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -180,5 +182,29 @@ public final class PersistenceHelper {
         fjodjimAragorn.addOrUpdateGuildMembership(mellonathBralda, false, false, false);
         fjodjimPledra.addOrUpdateGuildMembership(mellonathBralda, true, false, false);
         fjodjimZap.addOrUpdateGuildMembership(mellonathBralda, false, false, true);
+
+        // Create some CategorizedAddresses
+        final Category restaurantAddress = persist(new Category(
+                "Restaurang",
+                CategorizedAddress.ACTIVITY_CLASSIFICATION,
+                "Restaurang eller Café"));
+        final Category shopAddress = persist(new Category(
+                "Affär",
+                CategorizedAddress.ACTIVITY_CLASSIFICATION,
+                "Affär eller Bazaar"));
+
+        final CategorizedAddress helloMonkeyAddress = persist(new CategorizedAddress("Hello Monkey",
+                "Restaurang Hello Monkey",
+                restaurantAddress,
+                mifflond,
+                new Address(null, null, "Linnégatan", "52", "Göteborg", "413 08", "Sverige",
+                        "Besöksadress Hello Monkey Linnégatan")));
+        final CategorizedAddress baristaKistaAddress = persist(new CategorizedAddress("Barista",
+                "Barista Kista Galleria",
+                restaurantAddress,
+                fjodjim,
+                new Address(null, null, "Danmarksgatan", "11", "Kista", "164 53", "Sverige",
+                        "Besöksadress Barista Kista Galleria")));
+
     }
 }

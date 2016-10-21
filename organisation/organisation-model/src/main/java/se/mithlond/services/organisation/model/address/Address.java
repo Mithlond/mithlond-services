@@ -54,7 +54,7 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
      */
     @Basic
     @Column(length = 1024)
-    @XmlElement(nillable = true)
+    @XmlElement
     private String careOfLine;
 
     /**
@@ -62,7 +62,7 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
      */
     @Basic
     @Column(length = 1024)
-    @XmlElement(nillable = true)
+    @XmlElement
     private String departmentName;
 
     /**
@@ -84,21 +84,24 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
     /**
      * The city of this address ("Göteborg").
      */
-    @Basic
+    @Basic(optional = false)
+    @Column(nullable = false)
     @XmlElement(required = true)
     private String city;
 
     /**
      * The zipCode of this address.
      */
-    @Basic
+    @Basic(optional = false)
+    @Column(nullable = false)
     @XmlElement(required = true)
     private String zipCode;
 
     /**
      * The country of this address.
      */
-    @Basic
+    @Basic(optional = false)
+    @Column(nullable = false)
     @XmlElement(required = true)
     private String country;
 

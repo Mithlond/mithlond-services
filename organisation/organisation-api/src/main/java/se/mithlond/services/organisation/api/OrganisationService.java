@@ -26,7 +26,6 @@ import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
-import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
@@ -34,7 +33,7 @@ import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.SortedSet;
 
 /**
  * <p>Service specification for queries extracting information from Organisations - without
@@ -90,6 +89,15 @@ public interface OrganisationService extends JpaCudService {
     CategoriesAndAddresses getCategorizedAddresses(@NotNull CategorizedAddressSearchParameters searchParameters);
 
     /**
+     * Retrieves all CategorizedAddresses with the supplied jpa IDs.
+     *
+     * @param addressJpaIDs A SortedSet of JPA IDs to CategorizedAddresses.
+     * @return all CategorizedAddresses matching the supplied searchParameters, packed within a
+     * {@link CategoriesAndAddresses} wrapper.
+     */
+    CategoriesAndAddresses getCategorizedAddresses(@NotNull SortedSet<Long> addressJpaIDs);
+
+    /**
      * Updates the supplied CategorizedAddress within the database.
      *
      * @param toUpdate The CategorizedAddress to update.
@@ -111,8 +119,8 @@ public interface OrganisationService extends JpaCudService {
      * @return The created CategorizedAddress instance.
      */
     CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-                                                        final String fullDesc,
-                                                        final Address address,
-                                                        final Long categoryID,
-                                                        final Long organisationID);
+            final String fullDesc,
+            final Address address,
+            final Long categoryID,
+            final Long organisationID);
 }

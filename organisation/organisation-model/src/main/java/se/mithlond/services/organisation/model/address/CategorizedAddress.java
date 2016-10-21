@@ -59,10 +59,14 @@ import javax.xml.bind.annotation.XmlType;
                 query = "select a from CategorizedAddress a "
                         + "where a.owningOrganisation.organisationName like :organisationName "
                         + "and a.category.classification like :classification order by a.shortDesc"),
-        @NamedQuery(name = "CategorizedAddress.getByOrganisationAndShortDesc",
+        @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_IDS,
                 query = "select a from CategorizedAddress a "
                         + "where a.owningOrganisation.organisationName like :organisationName "
                         + "and a.shortDesc like :shortDesc order by a.shortDesc"),
+        @NamedQuery(name = "CategorizedAddress.getByIDs",
+                query = "select a from CategorizedAddress a "
+                        + "where a.id in :" + OrganisationPatterns.PARAM_IDS
+                        + " order by a.shortDesc"),
         @NamedQuery(name = CategorizedAddress.NAMEDQ_GET_BY_SEARCHPARAMETERS,
                 query = "select a from CategorizedAddress a "
                         + "where a.fullDesc like :" + OrganisationPatterns.PARAM_FULL_DESC
@@ -71,10 +75,12 @@ import javax.xml.bind.annotation.XmlType;
                         + " or a.category.classification in :" + OrganisationPatterns.PARAM_CLASSIFICATIONS + " ) "
                         + " and ( :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS + " > 0 "
                         + "      and a.owningOrganisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
-                        + " and a.address.careOfLine like :" + OrganisationPatterns.PARAM_ADDRESSCAREOFLINE
+                        + " and ( a.address.careOfLine is null or a.address.careOfLine like :"
+                        + OrganisationPatterns.PARAM_ADDRESSCAREOFLINE + " ) "
                         + " and a.address.city like :" + OrganisationPatterns.PARAM_CITY
                         + " and a.address.country like :" + OrganisationPatterns.PARAM_COUNTRY
-                        + " and a.address.departmentName like :" + OrganisationPatterns.PARAM_DEPARTMENT
+                        + " and ( a.address.departmentName is null or a.address.departmentName like :"
+                        + OrganisationPatterns.PARAM_DEPARTMENT + " ) "
                         + " and a.address.description like :" + OrganisationPatterns.PARAM_DESCRIPTION
                         + " and a.address.number like :" + OrganisationPatterns.PARAM_NUMBER
                         + " and a.address.street like :" + OrganisationPatterns.PARAM_STREET
@@ -98,6 +104,12 @@ public class CategorizedAddress extends Listable implements Comparable<Categoriz
      */
     public static final String NAMEDQ_GET_BY_ORGANISATION_ID_AND_CATEGORY_IDS =
             "CategorizedAddress.getByOrganisationIdAndCategoryIDs";
+
+    /**
+     * NamedQuery for getting CategorizedAddresses by organisation and category ID.
+     */
+    public static final String NAMEDQ_GET_BY_IDS =
+            "CategorizedAddress.getByJpaIDs";
 
     /**
      * The constant value indicating that a {@link CategorizedAddress} is for Activities.

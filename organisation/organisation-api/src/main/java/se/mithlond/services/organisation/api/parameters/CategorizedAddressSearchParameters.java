@@ -334,7 +334,7 @@ public class CategorizedAddressSearchParameters extends
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withFullDescPattern(@NotNull final String fullDescPattern) {
-            this.shortDescPattern = Validate.notNull(fullDescPattern, "fullDescPattern");
+            this.fullDescPattern = Validate.notNull(fullDescPattern, "fullDescPattern");
             return this;
         }
 
@@ -346,7 +346,7 @@ public class CategorizedAddressSearchParameters extends
          */
         public CategorizedAddressSearchParametersBuilder withAddressCareOfLinePattern(
                 @NotNull final String addressCareOfLinePattern) {
-            this.shortDescPattern = Validate.notNull(addressCareOfLinePattern, "addressCareOfLinePattern");
+            this.addressCareOfLinePattern = Validate.notNull(addressCareOfLinePattern, "addressCareOfLinePattern");
             return this;
         }
 
@@ -358,7 +358,7 @@ public class CategorizedAddressSearchParameters extends
          */
         public CategorizedAddressSearchParametersBuilder withDepartmentNamePattern(
                 @NotNull final String departmentNamePattern) {
-            this.shortDescPattern = Validate.notNull(departmentNamePattern, "departmentNamePattern");
+            this.departmentNamePattern = Validate.notNull(departmentNamePattern, "departmentNamePattern");
             return this;
         }
 
@@ -369,7 +369,7 @@ public class CategorizedAddressSearchParameters extends
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withStreetPattern(@NotNull final String streetPattern) {
-            this.shortDescPattern = Validate.notNull(streetPattern, "streetPattern");
+            this.streetPattern = Validate.notNull(streetPattern, "streetPattern");
             return this;
         }
 
@@ -380,7 +380,7 @@ public class CategorizedAddressSearchParameters extends
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withNumberPattern(@NotNull final String numberPattern) {
-            this.shortDescPattern = Validate.notNull(numberPattern, "numberPattern");
+            this.numberPattern = Validate.notNull(numberPattern, "numberPattern");
             return this;
         }
 
@@ -391,7 +391,7 @@ public class CategorizedAddressSearchParameters extends
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withCityPattern(@NotNull final String cityPattern) {
-            this.shortDescPattern = Validate.notNull(cityPattern, "cityPattern");
+            this.cityPattern = Validate.notNull(cityPattern, "cityPattern");
             return this;
         }
 
@@ -402,7 +402,7 @@ public class CategorizedAddressSearchParameters extends
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withZipCodePattern(@NotNull final String zipCodePattern) {
-            this.shortDescPattern = Validate.notNull(zipCodePattern, "zipCodePattern");
+            this.zipCodePattern = Validate.notNull(zipCodePattern, "zipCodePattern");
             return this;
         }
 
@@ -413,7 +413,7 @@ public class CategorizedAddressSearchParameters extends
          * @return This Builder instance.
          */
         public CategorizedAddressSearchParametersBuilder withCountryPattern(@NotNull final String countryPattern) {
-            this.shortDescPattern = Validate.notNull(countryPattern, "countryPattern");
+            this.countryPattern = Validate.notNull(countryPattern, "countryPattern");
             return this;
         }
 
@@ -425,7 +425,7 @@ public class CategorizedAddressSearchParameters extends
          */
         public CategorizedAddressSearchParametersBuilder withDescriptionPattern(
                 @NotNull final String descriptionPattern) {
-            this.shortDescPattern = Validate.notNull(descriptionPattern, "descriptionPattern");
+            this.descriptionPattern = Validate.notNull(descriptionPattern, "descriptionPattern");
             return this;
         }
 

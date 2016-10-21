@@ -1,7 +1,6 @@
 package se.mithlond.services.organisation.impl.ejb;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
@@ -146,15 +145,22 @@ public class OrganisationServiceBeanTest extends AbstractOrganisationIntegration
 
     }
 
-    @Ignore("Fix NamedQuery first.")
+    // @Ignore("Fix NamedQuery first.")
     @Test
-    public void validateCategorizedAddressSearch() {
+    public void validateCategorizedAddressSearch() throws Exception {
+
+        System.out.println("Got: \n" + extractFlatXmlDataSet(iDatabaseConnection.createDataSet()));
 
         // Assemble
+        //
+        //   <CATEGORIZEDADDRESS ID="2" FULLDESC="Barista Kista Galleria" SHORTDESC="Barista"
+        //     VERSION="1" CITY="Kista" COUNTRY="Sverige" DESCRIPTION="Bes&#246;ksadress Barista Kista Galleria"
+        //     NUMBER="11" STREET="Danmarksgatan" ZIPCODE="164 53" CATEGORY_ID="1" OWNINGORGANISATION_ID="2"/>
+        //
         final CategorizedAddressSearchParameters shallowSearchParams = CategorizedAddressSearchParameters
                 .builder()
                 .withOrganisationID(FJODJIM_JPA_ID)
-                .withCityPattern("%andvet%")
+                .withCityPattern("ist") // Should match "Kista"
                 .build();
 
         // Act
@@ -164,5 +170,11 @@ public class OrganisationServiceBeanTest extends AbstractOrganisationIntegration
         // Assert
         Assert.assertNotNull(categorizedAddresses);
         Assert.assertEquals(1, categorizedAddresses.size());
+
+        CategorizedAddress caddress = categorizedAddresses.get(0);
+        Assert.assertEquals("Kista", caddress.getAddress().getCity());
+        Assert.assertEquals("Barista", caddress.getShortDesc());
+        Assert.assertEquals("Restaurang", caddress.getCategory().getCategoryID());
+        Assert.assertEquals(CategorizedAddress.ACTIVITY_CLASSIFICATION, caddress.getCategory().getClassification());
     }
 }

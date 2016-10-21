@@ -41,9 +41,11 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
+import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 /**
@@ -180,7 +182,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
         organisationIDs.add(searchParameters.getOrganisationID());
 
         // Fire, and add all results to the return List.
-        final List<CategorizedAddress> categorizedAddresses = entityManager.createNamedQuery(
+        final TypedQuery<CategorizedAddress> categorizedAddressTypedQuery = entityManager.createNamedQuery(
                 CategorizedAddress.NAMEDQ_GET_BY_SEARCHPARAMETERS, CategorizedAddress.class)
                 .setParameter(OrganisationPatterns.PARAM_FULL_DESC, searchParameters.getFullDescPattern())
                 .setParameter(OrganisationPatterns.PARAM_SHORT_DESC, searchParameters.getShortDescPattern())
@@ -188,18 +190,54 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs)
                 .setParameter(OrganisationPatterns.PARAM_NUM_CLASSIFICATIONS, numClassifications)
                 .setParameter(OrganisationPatterns.PARAM_CLASSIFICATIONS, classifications)
-                .setParameter(OrganisationPatterns.PARAM_ADDRESSCAREOFLINE, searchParameters.getAddressCareOfLinePattern())
-                .setParameter(OrganisationPatterns.PARAM_CITY, searchParameters.getCityPattern())
-                .setParameter(OrganisationPatterns.PARAM_COUNTRY, searchParameters.getCountryPattern())
-                .setParameter(OrganisationPatterns.PARAM_DEPARTMENT, searchParameters.getDepartmentNamePattern())
-                .setParameter(OrganisationPatterns.PARAM_DESCRIPTION, searchParameters.getDescriptionPattern())
-                .setParameter(OrganisationPatterns.PARAM_NUMBER, searchParameters.getNumberPattern())
-                .setParameter(OrganisationPatterns.PARAM_STREET, searchParameters.getStreetPattern())
-                .setParameter(OrganisationPatterns.PARAM_ZIPCODE, searchParameters.getZipCodePattern())
-                .getResultList();
+                .setParameter(OrganisationPatterns.PARAM_ADDRESSCAREOFLINE,
+                        makeLikeParameter(searchParameters.getAddressCareOfLinePattern()))
+                .setParameter(OrganisationPatterns.PARAM_CITY,
+                        makeLikeParameter(searchParameters.getCityPattern()))
+                .setParameter(OrganisationPatterns.PARAM_COUNTRY,
+                        makeLikeParameter(searchParameters.getCountryPattern()))
+                .setParameter(OrganisationPatterns.PARAM_DEPARTMENT,
+                        makeLikeParameter(searchParameters.getDepartmentNamePattern()))
+                .setParameter(OrganisationPatterns.PARAM_DESCRIPTION,
+                        makeLikeParameter(searchParameters.getDescriptionPattern()))
+                .setParameter(OrganisationPatterns.PARAM_NUMBER,
+                        searchParameters.getNumberPattern())
+                .setParameter(OrganisationPatterns.PARAM_STREET,
+                        makeLikeParameter(searchParameters.getStreetPattern()))
+                .setParameter(OrganisationPatterns.PARAM_ZIPCODE,
+                        makeLikeParameter(searchParameters.getZipCodePattern()));
 
+
+        final List<CategorizedAddress> categorizedAddresses = categorizedAddressTypedQuery.getResultList();
         final CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
         categorizedAddresses.forEach(toReturn::addCategorizedAddress);
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CategoriesAndAddresses getCategorizedAddresses(@NotNull final SortedSet<Long> addressJpaIDs) {
+
+        // Check sanity
+        Validate.notNull(addressJpaIDs, "addressJpaIDs");
+
+        final CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
+
+        if(!addressJpaIDs.isEmpty()) {
+
+            // Collect all JPA IDs
+            final List<Long> ids = addressJpaIDs.stream().filter(id -> id != null).collect(Collectors.toList());
+
+            // Add all CAs to the transport VO.
+            entityManager.createNamedQuery(CategorizedAddress.NAMEDQ_GET_BY_IDS, CategorizedAddress.class)
+                    .setParameter(OrganisationPatterns.PARAM_IDS, ids)
+                    .getResultList()
+                    .forEach(toReturn::addCategorizedAddress);
+        }
 
         // All Done.
         return toReturn;

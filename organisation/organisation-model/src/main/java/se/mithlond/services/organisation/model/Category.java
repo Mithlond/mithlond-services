@@ -57,9 +57,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(
-                name = "categoryIdAndClassificationIsUnique",
-                columnNames = {"categoryID", "classification"})})
+        @UniqueConstraint(name = "categoryIdAndClassificationIsUnique", columnNames = {"category", "classification"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
