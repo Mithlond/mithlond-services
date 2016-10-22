@@ -47,6 +47,11 @@ public final class OrganisationPatterns {
     public static final String PARAM_MEMBERSHIP_ID = "membershipId";
 
     /**
+     * NamedQuery parameter name for a List of MembershipIDs.
+     */
+    public static final String PARAM_MEMBERSHIP_IDS = "membershipIDs";
+
+    /**
      * NamedQuery parameter name for organisationName.
      */
     public static final String PARAM_ORGANISATION_NAME = "organisationName";
@@ -107,6 +112,16 @@ public final class OrganisationPatterns {
     public static final String PARAM_END_TIME = "endTime";
 
     /**
+     * NamedQuery parameter name for the note of an Activity.
+     */
+    public static final String PARAM_ACTIVITY_NOTE = "note";
+
+    /**
+     * NamedQuery parameter name for the number of membershipIDs found.
+     */
+    public static final String PARAM_NUM_MEMBERSHIPIDS = "numMembershipIDs";
+
+    /**
      * NamedQuery parameter name for the number of groupIDs found.
      */
     public static final String PARAM_NUM_GROUPIDS = "numGroupIDs";
@@ -130,6 +145,11 @@ public final class OrganisationPatterns {
      * NamedQuery parameter name for the organisationID found.
      */
     public static final String PARAM_ORGANISATION_ID = "organisationID";
+
+    /**
+     * NamedQuery parameter name for the number of activityIDs found.
+     */
+    public static final String PARAM_NUM_ACTIVITYIDS = "numActivityIDs";
 
     /**
      * NamedQuery parameter name for the number of categoryIDs found.

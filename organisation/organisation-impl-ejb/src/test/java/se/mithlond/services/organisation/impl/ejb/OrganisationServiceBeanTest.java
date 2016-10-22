@@ -145,11 +145,8 @@ public class OrganisationServiceBeanTest extends AbstractOrganisationIntegration
 
     }
 
-    // @Ignore("Fix NamedQuery first.")
     @Test
     public void validateCategorizedAddressSearch() throws Exception {
-
-        System.out.println("Got: \n" + extractFlatXmlDataSet(iDatabaseConnection.createDataSet()));
 
         // Assemble
         //

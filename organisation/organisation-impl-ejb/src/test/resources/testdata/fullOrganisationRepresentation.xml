@@ -9,8 +9,6 @@
             <postAccountInfo>4090201-1</postAccountInfo>
             <emailSuffix>fjodrim.se</emailSuffix>
             <visitingAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>Småstensgatan</street>
                 <number>34 B</number>
                 <city>Landvetter</city>
@@ -27,8 +25,6 @@
             <postAccountInfo>4090201-1</postAccountInfo>
             <emailSuffix>mifflond.se</emailSuffix>
             <visitingAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>Småstensgatan</street>
                 <number>34 B</number>
                 <city>Landvetter</city>

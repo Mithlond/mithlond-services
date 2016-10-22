@@ -20,7 +20,6 @@
   limitations under the License.
   #L%
   -->
-
 <organisation_transport:memberships xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
         <organisation jpaId="10" version="0" xmlID="organisation_name_0" timeZoneID="Europe/Stockholm" country="SE" language="sv">
@@ -147,8 +146,6 @@
             <lastName>lastName_0</lastName>
             <birthday>1975-05-01</birthday>
             <homeAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>homeStreet_0</street>
                 <number>homeNumber_0</number>
                 <city>homeCity_0</city>
@@ -170,8 +167,6 @@
             <lastName>lastName_2</lastName>
             <birthday>1977-07-03</birthday>
             <homeAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>homeStreet_2</street>
                 <number>homeNumber_2</number>
                 <city>homeCity_2</city>
@@ -193,8 +188,6 @@
             <lastName>lastName_3</lastName>
             <birthday>1978-08-04</birthday>
             <homeAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>homeStreet_3</street>
                 <number>homeNumber_3</number>
                 <city>homeCity_3</city>
@@ -216,8 +209,6 @@
             <lastName>lastName_1</lastName>
             <birthday>1976-06-02</birthday>
             <homeAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>homeStreet_1</street>
                 <number>homeNumber_1</number>
                 <city>homeCity_1</city>
@@ -239,8 +230,6 @@
             <lastName>lastName_4</lastName>
             <birthday>1979-09-05</birthday>
             <homeAddress>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>homeStreet_4</street>
                 <number>homeNumber_4</number>
                 <city>homeCity_4</city>

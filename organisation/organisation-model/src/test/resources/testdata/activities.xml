@@ -20,7 +20,6 @@
   limitations under the License.
   #L%
   -->
-
 <organisation_transport:activities xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <activities>
         <activity jpaId="0" version="0" organisationReference="organisation_The_Organisation" currency="SEK" openToGeneralPublic="true">
@@ -35,8 +34,6 @@
             <lateAdmissionDate>2016-06-15</lateAdmissionDate>
             <lastAdmissionDate>2016-06-19</lastAdmissionDate>
             <location>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>Foo Street</street>
                 <number>5</number>
                 <city>Göteborg</city>
@@ -60,8 +57,6 @@
             <fullDesc>activityFullDesc</fullDesc>
             <addressShortDescription>addressShortDescription</addressShortDescription>
             <location>
-                <careOfLine xsi:nil="true"/>
-                <departmentName xsi:nil="true"/>
                 <street>Foo Street</street>
                 <number>5</number>
                 <city>Göteborg</city>

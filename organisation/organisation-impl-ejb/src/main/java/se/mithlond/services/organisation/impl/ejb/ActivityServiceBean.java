@@ -47,6 +47,7 @@ import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -88,20 +89,40 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         // Pad the ID Lists.
         final int organisationIDsSize = AbstractJpaService.padAndGetSize(parameters.getOrganisationIDs(), 0L);
+        final int activityIDsSize = AbstractJpaService.padAndGetSize(parameters.getActivityIDs(), 0L);
+        // final int membershipIDsSize = AbstractJpaService.padAndGetSize(parameters.getMembershipIDs(), 0L);
 
         // Acquire the padded lists.
         final List<Long> organisationIDs = parameters.getOrganisationIDs();
+        final List<Long> activityIDs = parameters.getActivityIDs();
+        // final List<Long> membershipIDs = parameters.getMembershipIDs();
 
-        final List<Activity> activities = JpaUtilities.findEntities(Activity.class,
-                Activity.NAMEDQ_GET_BY_ORGANISATION_IDS_AND_DATERANGE,
-                true,
-                entityManager,
-                aQuery -> {
-                    aQuery.setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, organisationIDsSize);
-                    aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs);
-                    aQuery.setParameter(OrganisationPatterns.PARAM_START_TIME, parameters.getStartPeriod());
-                    aQuery.setParameter(OrganisationPatterns.PARAM_END_TIME, parameters.getEndPeriod());
-                });
+        final TypedQuery<Activity> query = entityManager.createNamedQuery(
+                Activity.NAMEDQ_GET_BY_SEARCH_PARAMETERS, Activity.class)
+                .setParameter(OrganisationPatterns.PARAM_NUM_ACTIVITYIDS, activityIDsSize)
+                .setParameter(OrganisationPatterns.PARAM_IDS, activityIDs)
+                // .setParameter(OrganisationPatterns.PARAM_NUM_MEMBERSHIPIDS, membershipIDsSize)
+                // .setParameter(OrganisationPatterns.PARAM_MEMBERSHIP_IDS, membershipIDs)
+                .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, organisationIDsSize)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, organisationIDs)
+                .setParameter(OrganisationPatterns.PARAM_START_TIME, parameters.getStartPeriod())
+                .setParameter(OrganisationPatterns.PARAM_END_TIME, parameters.getEndPeriod());
+
+        /*
+        if (parameters.getStartPeriod() != null) {
+            query.setParameter(OrganisationPatterns.PARAM_START_TIME,
+                    Timestamp.valueOf(parameters.getStartPeriod()),
+                    TemporalType.TIMESTAMP);
+        }
+
+        if (parameters.getEndPeriod() != null) {
+            query.setParameter(OrganisationPatterns.PARAM_START_TIME,
+                    Timestamp.valueOf(parameters.getEndPeriod()),
+                    TemporalType.TIMESTAMP);
+        }
+        */
+
+        final List<Activity> activities = query.getResultList();
 
         final Activities toReturn = new Activities();
         if (parameters.isDetailedResponsePreferred()) {
@@ -222,8 +243,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public Activity updateActivity(final ActivityVO activityVO,
-                                   final boolean onlyUpdateNonNullProperties,
-                                   final Membership activeMembership) {
+            final boolean onlyUpdateNonNullProperties,
+            final Membership activeMembership) {
 
         // Check sanity
         Validate.notNull(activityVO, "activityVO");
@@ -231,7 +252,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         Validate.isTrue(0 < activityVO.getJpaID(), "0 < activityVO.getJpaID()");
 
         final Activity toUpdate = entityManager.find(Activity.class, activityVO.getJpaID());
-        if(toUpdate == null) {
+        if (toUpdate == null) {
             return null;
         }
 
@@ -319,8 +340,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public boolean modifyAdmission(final ChangeType changeType,
-                                   final Membership actingMembership,
-                                   final AdmissionVO... admissionDetails) throws IllegalStateException {
+            final Membership actingMembership,
+            final AdmissionVO... admissionDetails) throws IllegalStateException {
 
         // Check sanity
         Validate.notNull(changeType, "changeType");
@@ -611,7 +632,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     }
 
     private static Optional<Group> validateActivityHasResponsibleAndRetrieveGroup(final EntityManager entityManager,
-                                                                                  final ActivityVO activityVO) {
+            final ActivityVO activityVO) {
 
         final Optional<AdmissionVO> firstResponsibleAdmission = activityVO.getAdmissions()
                 .stream()
@@ -668,8 +689,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     }
 
     private static String createAdmissionNote(final Membership admittedBy,
-                                              final AdmissionVO admissionVO,
-                                              final Membership admitted) {
+            final AdmissionVO admissionVO,
+            final Membership admitted) {
         // Compile the admission note
         final String admittedBySomeoneElse = " Anmäld av " + admittedBy.getAlias()
                 + " (" + admittedBy.getOrganisation().getOrganisationName() + ")";

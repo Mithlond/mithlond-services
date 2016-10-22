@@ -74,6 +74,15 @@ import java.util.TreeSet;
                         + " or a.owningOrganisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_NAME + " ) "
                         + " and a.startTime between :" + OrganisationPatterns.PARAM_START_TIME
                         + " and :" + OrganisationPatterns.PARAM_END_TIME
+                        + " order by a.startTime"),
+        @NamedQuery(name = Activity.NAMEDQ_GET_BY_SEARCH_PARAMETERS,
+                query = "select a from Activity a "
+                        + " where ( 0 = :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS
+                        + " or a.owningOrganisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
+                        + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_ACTIVITYIDS
+                        + " or a.id in :" + OrganisationPatterns.PARAM_IDS + " ) "
+                        + " and ( a.startTime between :" + OrganisationPatterns.PARAM_START_TIME
+                        + " and :" + OrganisationPatterns.PARAM_END_TIME + " ) "
                         + " order by a.startTime")
 })
 @Entity
@@ -85,11 +94,16 @@ import java.util.TreeSet;
 public class Activity extends Listable {
 
     /**
-     * NamedQuery for getting Memberships by alias and organisation name.
-     * Found Memberships are retrieved irrespective of their LoginPermitted flag.
+     * NamedQuery for getting Activities organisation JPA ID and DateRange.
      */
     public static final String NAMEDQ_GET_BY_ORGANISATION_IDS_AND_DATERANGE =
             "Activity.getByOrganisationIdsAndDateRange";
+
+    /**
+     * NamedQuery for getting Activities matching the state within an ActivitySearchParameters instance.
+     */
+    public static final String NAMEDQ_GET_BY_SEARCH_PARAMETERS =
+            "Activity.getBySearchParameters";
 
     /**
      * The start time of the Activity. Never null.

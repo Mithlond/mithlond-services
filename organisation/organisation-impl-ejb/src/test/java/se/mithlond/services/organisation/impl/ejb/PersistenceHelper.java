@@ -2,8 +2,12 @@ package se.mithlond.services.organisation.impl.ejb;
 
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.activity.Activity;
+import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
+import se.mithlond.services.organisation.model.finance.Amount;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -11,7 +15,9 @@ import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +126,43 @@ public final class PersistenceHelper {
         return persist ? persist(user) : user;
     }
 
+    public static Activity createActivity(
+            final boolean persist,
+            final Membership responsible,
+            final String shortDesc,
+            final LocalDateTime startTime,
+            final Amount cost,
+            final CategorizedAddress catAddress) {
+
+        final Activity activity = new Activity(shortDesc, "Full description for " + shortDesc,
+                startTime,
+                startTime.plusHours(2),
+                cost,
+                new Amount(cost.getValue().add(BigDecimal.valueOf(25L)), WellKnownCurrency.SEK),
+                startTime.minusDays(2L).toLocalDate(),
+                startTime.minusDays(2L).toLocalDate(),
+                false,
+                "Midgårda Dräkt",
+                catAddress.getCategory(),
+                catAddress.getAddress(),
+                catAddress.getShortDesc(),
+                catAddress.getOwningOrganisation(),
+                null,
+                true);
+
+        final Admission initialAdmission = new Admission(activity,
+                responsible,
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                responsible.getAlias() + " skapade aktiviteten.",
+                true,
+                null);
+
+        activity.getAdmissions().add(initialAdmission);
+
+        return persist ? persist(activity) : activity;
+    }
+
     /**
      * Performs a base population of the Database.
      */
@@ -205,6 +248,31 @@ public final class PersistenceHelper {
                 fjodjim,
                 new Address(null, null, "Danmarksgatan", "11", "Kista", "164 53", "Sverige",
                         "Besöksadress Barista Kista Galleria")));
+
+        // Create some addresses
+        final Activity swordFighting = createActivity(true,
+                fjodjimAragorn,
+                "Svärdsfäktning",
+                LocalDateTime.of(2016, Month.OCTOBER, 5, 18, 0),
+                new Amount(BigDecimal.valueOf(25L), WellKnownCurrency.SEK),
+                new CategorizedAddress("Barista",
+                        "Barista Stockholms Central",
+                        restaurantAddress,
+                        fjodjim,
+                        new Address(null, null, "Centralplan", "15", "Stockholm", "111 20", "Sverige",
+                                "Besöksadress Barista Stockholms Central")));
+
+        final Activity shieldPainting = createActivity(true,
+                fjodjimZap,
+                "Sköldmålning",
+                LocalDateTime.of(2016, Month.OCTOBER, 28, 19, 30),
+                new Amount(BigDecimal.valueOf(5L), WellKnownCurrency.SEK),
+                new CategorizedAddress("Barista",
+                        "Barista Götgatan",
+                        restaurantAddress,
+                        fjodjim,
+                        new Address(null, null, "Götgatan", "67", "Stockholm", "116 21", "Sverige",
+                                "Besöksadress Barista Götgatan")));
 
     }
 }
