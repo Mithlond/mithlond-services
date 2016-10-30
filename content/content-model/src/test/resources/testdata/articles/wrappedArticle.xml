@@ -20,7 +20,6 @@
   limitations under the License.
   #L%
   -->
-
 <core:entityTransporter xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <entityClasses>
         <entityClass>ch.qos.logback.classic.Logger</entityClass>
@@ -41,7 +40,7 @@
         <entityClass>se.mithlond.services.organisation.model.user.User</entityClass>
     </entityClasses>
     <items>
-        <item jpaId="0" version="0" xmlID="organisation_FooBar" timeZoneID="Europe/Stockholm" country="SE" language="sv" xmlns:ns0="http://xmlns.mithlond.se/xml/ns/organisation" xsi:type="ns0:organisation">
+        <item jpaId="0" version="0" xmlID="organisation_FooBar" timeZoneID="Europe/Stockholm" country="SE" language="sv" standardCurrency="EUR" xmlns:ns0="http://xmlns.mithlond.se/xml/ns/organisation" xsi:type="ns0:organisation">
             <organisationName>FooBar</organisationName>
             <suffix>suffix</suffix>
             <phone>phone</phone>

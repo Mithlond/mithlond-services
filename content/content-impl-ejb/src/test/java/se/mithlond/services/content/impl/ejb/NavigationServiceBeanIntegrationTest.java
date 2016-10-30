@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.NavigationService;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.localization.Localization;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
@@ -99,7 +100,8 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
                 visitingAddress,
                 "mifflond.se",
                 TimeFormat.SWEDISH_TIMEZONE,
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         // #2) Create the Groups.
         mithlondMembers = new Group("members", "Medlemmar i sällskapet Mithlond.", mifflond, null, "mithlondMembers");

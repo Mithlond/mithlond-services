@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractEntityTest;
@@ -59,7 +60,8 @@ public class MenuStructureTest extends AbstractEntityTest {
         organisation = new Organisation("name", "suffix", "phone", "bankAccountInfo",
                 "postAccountInfo", address, "emailSuffix",
                 TimeFormat.SWEDISH_TIMEZONE,
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         rootMenu = StandardMenu.getBuilder()
                 .withDomId("rootMenu")

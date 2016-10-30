@@ -20,10 +20,9 @@
   limitations under the License.
   #L%
   -->
-
 <organisation_transport:organisations xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <organisations>
-        <organisation jpaId="2" version="1" xmlID="organisation_Fjodjim" timeZoneID="Europe/Stockholm" country="SE" language="sv">
+        <organisation jpaId="2" version="1" xmlID="organisation_Fjodjim" timeZoneID="Europe/Stockholm" country="SE" language="sv" standardCurrency="SEK">
             <organisationName>Fjodjim</organisationName>
             <suffix>Ftockholmf Toksällskap</suffix>
             <phone>031-123456</phone>
@@ -39,7 +38,7 @@
                 <description>Besöksadress till Fjodjim</description>
             </visitingAddress>
         </organisation>
-        <organisation jpaId="1" version="1" xmlID="organisation_Mifflond" timeZoneID="Europe/Stockholm" country="SE" language="sv">
+        <organisation jpaId="1" version="1" xmlID="organisation_Mifflond" timeZoneID="Europe/Stockholm" country="SE" language="sv" standardCurrency="SEK">
             <organisationName>Mifflond</organisationName>
             <suffix>Göteborgs Toksällskap</suffix>
             <phone>031-123456</phone>

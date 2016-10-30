@@ -26,6 +26,7 @@
         "timeZoneID": "Europe/Stockholm",
         "country": "SE",
         "language": "sv",
+        "standardCurrency": "EUR",
         "xsi.type": "ns0.organisation",
         "organisationName": "FooBar",
         "suffix": "suffix",

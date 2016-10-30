@@ -108,7 +108,8 @@ public final class PersistenceHelper {
                         "Besöksadress till " + organisationName),
                 emailSuffix,
                 TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         return persist ? persist(organisation) : organisation;
     }

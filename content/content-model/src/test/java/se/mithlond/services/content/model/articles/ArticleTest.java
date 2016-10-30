@@ -31,23 +31,18 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.model.articles.media.BitmapImage;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
@@ -86,7 +81,8 @@ public class ArticleTest extends AbstractPlainJaxbTest {
                 "city", "zipCode", "country", "description");
         organisation = new Organisation("FooBar", "suffix", "phone", "bankAccountInfo",
                 "postAccountInfo", address, "emailSuffix", TimeFormat.SWEDISH_TIMEZONE,
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.EUR);
 
         user = new User("FirstName",
                 "LastName",

@@ -159,7 +159,6 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         final String addressCategory = Validate.notEmpty(activityVO.getAddressCategory(), "addressCategory");
         final Address location = Validate.notNull(activityVO.getLocation(), "location");
-        final Set<AdmissionVO> admissions = Validate.notNull(activityVO.getAdmissions(), "admissions");
 
         // Are the startTime and endTime properly situated?
         final LocalDateTime startTime = Validate.notNull(activityVO.getStartTime(), "activityVO.getStartTime()");

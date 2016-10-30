@@ -32,6 +32,7 @@ import se.mithlond.services.content.model.articles.Section;
 import se.mithlond.services.content.model.articles.media.BitmapImage;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -84,7 +85,8 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
                 "city", "zipCode", "country", "description");
         organisation = new Organisation("FooBar", "suffix", "phone", "bankAccountInfo",
                 "postAccountInfo", address, "emailSuffix", TimeFormat.SWEDISH_TIMEZONE,
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         user = new User("FirstName",
                 "LastName",
