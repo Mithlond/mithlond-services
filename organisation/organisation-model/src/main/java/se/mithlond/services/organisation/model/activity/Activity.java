@@ -245,7 +245,9 @@ public class Activity extends Listable {
      *                                May not be null or empty.
      * @param startTime               The start time of the Activity. Must not be null.
      * @param endTime                 The end time of the Activity. Must not be null, and must also be after startTime.
-     * @param cost                    The optional cost of the activity. Must not be negative.
+     * @param cost                    The optional cost of the activity. If not supplied, will default to
+     *                                {@link BigDecimal#ZERO}, and using {@link Organisation#getStandardCurrency()}.
+     *                                If provided, must not be negative.
      * @param lateAdmissionCost       The cost if admission after the lateAdmissionDate.
      *                                Optional, but recommended to be higher than the (standard) cost.
      * @param lateAdmissionDate       The date before which the activity costs {@code cost}.
@@ -286,23 +288,17 @@ public class Activity extends Listable {
         this.startTime = startTime;
         this.endTime = endTime;
 
-        if (cost != null) {
-            this.cost = cost.getValue();
-            this.currency = cost.getCurrency().toString();
-        }
-        if (lateAdmissionCost != null) {
-            this.lateAdmissionCost = lateAdmissionCost.getValue();
-            if (this.currency == null) {
-                this.currency = lateAdmissionCost.getCurrency().toString();
-            } else {
-                if (!lateAdmissionCost.getCurrency().toString().equals(this.currency)) {
-                    throw new IllegalArgumentException("cost and lateAdmissionCost should use the same currency.");
-                }
-            }
-        }
+        this.cost = cost != null ? cost.getValue() : BigDecimal.ZERO;
+        this.currency = cost != null ? cost.getCurrency().toString() : organisation.getStandardCurrency().toString();
 
-        if (currency == null) {
-            currency = WellKnownCurrency.SEK.toString();
+        if(lateAdmissionCost == null) {
+            this.lateAdmissionCost = this.cost;
+        } else {
+
+            this.lateAdmissionCost = lateAdmissionCost.getValue();
+            if (!lateAdmissionCost.getCurrency().toString().equals(this.currency)) {
+                throw new IllegalArgumentException("cost and lateAdmissionCost should use the same currency.");
+            }
         }
 
         this.lateAdmissionDate = lateAdmissionDate;
@@ -335,6 +331,8 @@ public class Activity extends Listable {
      * @return The optional cost of the activity. Never negative or null.
      */
     public Amount getCost() {
+        if (cost == null) {
+        }
         return new Amount(cost, WellKnownCurrency.valueOf(currency));
     }
 
@@ -562,6 +560,7 @@ public class Activity extends Listable {
                 .notNull(startTime, "startTime")
                 .notNull(endTime, "endTime")
                 .notNull(addressCategory, "addressCategory")
+                .notNull(cost, "cost")
                 .notNullOrEmpty(addressShortDescription, "addressShortDescription")
                 .notNull(lastAdmissionDate, "lastAdmissionDate")
                 .endExpressionAndValidate();

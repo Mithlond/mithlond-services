@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -224,13 +225,13 @@ public class ActivityVO extends AbstractSimpleTransportable {
         // Check sanity
         this.organisation = Validate.notNull(organisation, "organisation");
         this.shortDesc = Validate.notEmpty(shortDesc, "shortDesc");
+        this.cost = Validate.notNull(cost, "cost");
 
         // Assign internal state
         this.admissions = new TreeSet<>();
         this.fullDesc = fullDesc;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.cost = cost;
         this.lateAdmissionCost = lateAdmissionCost;
         this.lateAdmissionDate = lateAdmissionDate;
         this.lastAdmissionDate = lastAdmissionDate;
