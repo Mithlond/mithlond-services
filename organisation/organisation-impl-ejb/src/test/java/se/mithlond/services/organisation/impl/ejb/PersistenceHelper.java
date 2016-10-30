@@ -25,6 +25,7 @@ import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.Admission;
+import se.mithlond.services.organisation.model.activity.EventCalendar;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.finance.Amount;
@@ -296,5 +297,23 @@ public final class PersistenceHelper {
                         new Address(null, null, "Götgatan", "67", "Stockholm", "116 21", "Sverige",
                                 "Besöksadress Barista Götgatan")));
 
+        // Create a few EventCalendars
+        final EventCalendar devCalendar = new EventCalendar(
+                "Mifflond Development Calendar",
+                "EventCalendar for Mifflond Application Development",
+                mifflond,
+                "mifflondDevCalendar",
+                "Development");
+        persist(devCalendar);
+        entityManager.flush();
+
+        final EventCalendar stagingCalendar = new EventCalendar(
+                "Mifflond Staging Calendar",
+                "EventCalendar for Mifflond Application Staging",
+                mifflond,
+                "mifflondStagingCalendar",
+                "Development");
+        persist(stagingCalendar);
+        entityManager.flush();
     }
 }

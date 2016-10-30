@@ -48,13 +48,13 @@ import java.time.ZoneId;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-		@NamedQuery(name = EventCalendar.NAMEDQ_GET_BY_ORGANISATION_RUNTIME_AND_IDENTIFIER,
-				query = "select a from EventCalendar a "
-						+ " where a.owningOrganisation.organisationName like :"
+        @NamedQuery(name = EventCalendar.NAMEDQ_GET_BY_ORGANISATION_RUNTIME_AND_IDENTIFIER,
+                query = "select a from EventCalendar a "
+                        + " where a.owningOrganisation.organisationName like :"
                         + OrganisationPatterns.PARAM_ORGANISATION_NAME
-						+ " and a.runtimeEnvironment like :" + OrganisationPatterns.PARAM_ENVIRONMENT_ID
-						+ " and a.calendarIdentifier like :" + OrganisationPatterns.PARAM_EVENT_CALENDAR
-						+ " order by a.fullDesc"),
+                        + " and a.runtimeEnvironment like :" + OrganisationPatterns.PARAM_ENVIRONMENT_ID
+                        + " and a.calendarIdentifier like :" + OrganisationPatterns.PARAM_EVENT_CALENDAR
+                        + " order by a.fullDesc"),
         @NamedQuery(name = EventCalendar.NAMEDQ_GET_BY_ORGANISATION_AND_RUNTIME,
                 query = "select a from EventCalendar a "
                         + " where a.owningOrganisation.organisationName like :"
