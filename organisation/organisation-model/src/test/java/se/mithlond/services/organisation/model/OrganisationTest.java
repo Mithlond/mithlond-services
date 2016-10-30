@@ -26,11 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -49,7 +47,8 @@ public class OrganisationTest extends AbstractEntityTest {
         unitUnderTest = new Organisation("name", "suffix", "phone", "bankAccountInfo",
                 "postAccountInfo", address, "emailSuffix",
                 TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
     }
 
     @Test

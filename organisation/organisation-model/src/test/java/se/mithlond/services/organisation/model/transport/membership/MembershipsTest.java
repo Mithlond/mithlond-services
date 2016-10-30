@@ -28,6 +28,7 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -83,7 +84,8 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
                     currentAddress,
                     "emailSuffix_" + i,
                     TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                    TimeFormat.SWEDISH_LOCALE);
+                    TimeFormat.SWEDISH_LOCALE,
+                    WellKnownCurrency.SEK);
 
             JpaIdMutator.setId(organisations[i], 10 + i);
         }

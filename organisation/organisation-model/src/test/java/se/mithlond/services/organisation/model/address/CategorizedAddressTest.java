@@ -27,6 +27,7 @@ import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.helpers.CategorizedAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -57,7 +58,8 @@ public class CategorizedAddressTest extends AbstractEntityTest {
                 organisationAddress,
                 "emailSuffix",
                 TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         addresses = new ArrayList<>();
 

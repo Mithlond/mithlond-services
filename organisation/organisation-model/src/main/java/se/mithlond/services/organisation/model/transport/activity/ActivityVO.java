@@ -153,7 +153,7 @@ public class ActivityVO extends AbstractSimpleTransportable {
 
     /**
      * A Set holding all initial admissions to the activity to create. Optional,
-     * but should contain at least one responsible AdmissionDetails, unless a Group
+     * but should contain at least one responsible AdmissionVO, unless a Group
      * organizes the Activity.
      */
     @XmlElement

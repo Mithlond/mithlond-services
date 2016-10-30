@@ -145,7 +145,11 @@ public class AdmissionVO extends AbstractSimpleTransportable {
         Validate.notNull(admission, "admission");
 
         // Assign internal state
-
+        this.activityID = admission.getActivity().getId();
+        this.alias = admission.getAdmitted().getAlias();
+        this.organisation = admission.getActivity().getOwningOrganisation().getOrganisationName();
+        this.note = admission.getAdmissionNote();
+        this.responsible = admission.isResponsible();
     }
 
     /**

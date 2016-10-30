@@ -31,6 +31,7 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.address.WellKnownAddressType;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
@@ -63,7 +64,8 @@ public class CategoriesAndAddressesTest extends AbstractPlainJaxbTest {
                 organisationAddress,
                 "emailSuffix",
                 TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         addresses = new ArrayList<>();
         categories = new ArrayList<>();

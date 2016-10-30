@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
@@ -64,7 +65,8 @@ import java.util.TimeZone;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "organisationNameIsUnique", columnNames = {"organisationName"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"organisationName", "xmlID", "suffix", "phone", "bankAccountInfo",
-                "postAccountInfo", "emailSuffix", "visitingAddress", "timeZoneID", "country", "language"})
+                "postAccountInfo", "emailSuffix", "visitingAddress",
+                "timeZoneID", "country", "language", "standardCurrency"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organisation extends NazgulEntity implements Comparable<Organisation> {
 
@@ -179,6 +181,14 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
     private String country;
 
     /**
+     * The standard currency of this Organisation.
+     */
+    @Basic(optional = false)
+    @Column(length = 5, name = "standard_currency")
+    @XmlAttribute(required = true)
+    private String standardCurrency;
+
+    /**
      * JPA-friendly constructor.
      */
     public Organisation() {
@@ -196,6 +206,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
      * @param emailSuffix        The email suffix of this organisation (i.e. "mithlond.se").
      * @param standardTimeZoneID The standard TimeZoneID of this organisation.
      * @param standardLocale     The standard Locale of this organisation.
+     * @param standardCurrency   The standard currency used by this organisation.
      */
     public Organisation(final String organisationName,
             final String suffix,
@@ -205,7 +216,8 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
             final Address visitingAddress,
             final String emailSuffix,
             final ZoneId standardTimeZoneID,
-            final Locale standardLocale) {
+            final Locale standardLocale,
+            final WellKnownCurrency standardCurrency) {
 
         // Assign internal state
         this.organisationName = Validate.notEmpty(organisationName, "organisationName");
@@ -216,6 +228,9 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
         this.bankAccountInfo = bankAccountInfo;
         this.postAccountInfo = postAccountInfo;
         this.emailSuffix = emailSuffix;
+
+        Validate.notNull(standardCurrency, "standardCurrency");
+        this.standardCurrency = standardCurrency.name();
 
         final Locale tmp = Validate.notNull(standardLocale, "standardLocale");
         this.country = tmp.getCountry();
@@ -296,6 +311,16 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
     }
 
     /**
+     * Retrieves the standard currency of this Organisation - the standard currency is used to represent all
+     * amounts, unless a specific currency is given.
+     *
+     * @return the standard currency of this Organisation
+     */
+    public WellKnownCurrency getStandardCurrency() {
+        return WellKnownCurrency.valueOf(standardCurrency);
+    }
+
+    /**
      * The OrganisationName is unique per organisation, so will be used in equality
      * comparisons and hashCode calculations.
      * <p/>
@@ -350,6 +375,7 @@ public class Organisation extends NazgulEntity implements Comparable<Organisatio
                 .notNullOrEmpty(language, "language")
                 .notNullOrEmpty(country, "country")
                 .notNullOrEmpty(timeZoneID, "timeZoneID")
+                .notNullOrEmpty(standardCurrency, "standardCurrency")
                 .endExpressionAndValidate();
     }
 

@@ -92,7 +92,8 @@ public class ActivityTest extends AbstractEntityTest {
                         "Visiting address"),
                 "kinnekulle.tolkien.se",
                 TimeFormat.SWEDISH_TIMEZONE,
-                TimeFormat.SWEDISH_LOCALE);
+                TimeFormat.SWEDISH_LOCALE,
+                WellKnownCurrency.SEK);
 
         activity = new Activity(
                 "activityShortDesc",

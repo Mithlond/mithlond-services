@@ -29,6 +29,7 @@ import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
@@ -83,7 +84,8 @@ public class GroupAndGuildTest extends AbstractEntityTest {
                     currentAddress,
                     "emailSuffix_" + i,
                     TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                    TimeFormat.SWEDISH_LOCALE);
+                    TimeFormat.SWEDISH_LOCALE,
+                    WellKnownCurrency.SEK);
         }
 
 

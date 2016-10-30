@@ -46,7 +46,6 @@ import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,6 +81,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         // Check sanity
         Validate.notNull(parameters, "parameters");
+        Validate.notNull(activeMembership, "activeMembership");
 
         if (log.isDebugEnabled()) {
             log.debug("Received " + parameters + " and activeMembership: " + activeMembership);
@@ -175,8 +175,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         final Organisation organisation = CommonPersistenceTasks.getOrganisation(entityManager, organisationName);
         final Category category = CommonPersistenceTasks.getAddressCategory(entityManager, addressCategory);
 
-        // Do we have a Responsible for the Activity?
-        // If the ActivityVO
+        // Is a Group responsible for the Activity?
         final Optional<Group> responsibleGroup =
                 validateActivityHasResponsibleAndRetrieveGroup(entityManager, activityVO);
 
@@ -198,40 +197,44 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 responsibleGroup.orElse(null),
                 activityVO.isOpenToGeneralPublic());
 
-        // Persist
-        entityManager.persist(toReturn);
-        entityManager.flush();
-
+        // Find the current timestamp, as interpreted within the TimeZone where the Activity takes place.
         final TimeZone activityTimeZone = organisation.getTimeZone();
-        final ZoneId activityZoneID = activityTimeZone.toZoneId();
+        final LocalDateTime now = LocalDateTime.now(activityTimeZone.toZoneId());
 
-        // Convert all inbound AdmissionVOs to proper Admissions
-        final List<Admission> allAdmissions = admissions.stream()
-                .map(c -> {
+        // Convert all AdmissionVOs to Admissions, and add to the admissions of the Activity to return.
+        activityVO.getAdmissions().stream().map(c -> {
 
-                    // Convert the AdmissionVO to an Admission
-                    final Membership currentMembership = CommonPersistenceTasks.getSingleMembership(
-                            entityManager, c.getAlias(), c.getOrganisation());
-                    final String admissionNote = createAdmissionNote(activeMembership, c, currentMembership);
+            // Convert the AdmissionVO to an Admission
+            final Membership admitted = CommonPersistenceTasks.getSingleMembership(
+                    entityManager,
+                    c.getAlias(),
+                    c.getOrganisation());
 
-                    // All Done.
-                    return new Admission(
-                            toReturn,
-                            currentMembership,
-                            LocalDateTime.now(activityZoneID),
-                            LocalDateTime.now(activityZoneID),
-                            admissionNote,
-                            c.isResponsible(),
-                            activeMembership);
-                })
-                .collect(Collectors.toList());
+            // Compile the admission note, which should be on the following format:
+            //
+            // a) If an admission note is supplied, insert it.
+            // b) If the admitted Membership is not the active Membership (i.e. someone is admitting someone
+            //    else), note who admitted whom.
+            //
+            final String admittedBySomeoneElse = " Anmäld av " + activeMembership.getAlias()
+                    + " (" + activeMembership.getOrganisation().getOrganisationName() + ")";
+            final String admissionNote = c.getNote().orElse("") // Use the note, if provided.
+                    + (!admitted.equals(activeMembership) ? admittedBySomeoneElse : "");
 
-        allAdmissions.forEach(a -> {
-            entityManager.persist(a);
-            allAdmissions.add(a);
-        });
+            // All Done.
+            return new Admission(
+                    toReturn,
+                    admitted,
+                    now,
+                    now,
+                    admissionNote,
+                    c.isResponsible(),
+                    activeMembership);
 
-        // Sync all IDs.
+        }).forEach(toReturn.getAdmissions()::add);
+
+        // Persist & Flush.
+        entityManager.persist(toReturn);
         entityManager.flush();
 
         // All Done.
@@ -565,22 +568,20 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     @Override
     public CategoriesAndAddresses getActivityLocationAddresses(final Long organisationID) {
 
-        // Find the IDs of all relevant categories
-        final Query query = entityManager.createQuery("select a.id from Category a"
+        // Find the CategoryIDs of all relevant categories
+        final TypedQuery<Category> query = entityManager.createQuery("select a from Category a"
                 + " where a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
-                + " order by a.categoryID")
+                + " order by a.categoryID", Category.class)
                 .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION, CategorizedAddress.ACTIVITY_CLASSIFICATION);
-        final List<Long> categoryJpaIDs = new ArrayList<>();
-        query.getResultList().forEach(c -> {
-
-            final Long currentJpaID = (Long) c;
-            if (!categoryJpaIDs.contains(currentJpaID)) {
-                categoryJpaIDs.add(currentJpaID);
-            }
-        });
+        final List<String> categoryIDs = new ArrayList<>();
+        query.getResultList().stream()
+                .filter(cat -> cat != null)
+                .map(Category::getCategoryID)
+                .filter(catID -> catID != null && !catID.isEmpty())
+                .forEach(categoryIDs::add);
 
         // Pad the ID Lists.
-        final int categoryIDsSize = AbstractJpaService.padAndGetSize(categoryJpaIDs, 0L);
+        final int categoryIDsSize = AbstractJpaService.padAndGetSize(categoryIDs, "none");
 
         // Extract all activity location CategorizedAddresses known to the Organisation.
         final List<CategorizedAddress> categorizedAddresses = JpaUtilities.findEntities(CategorizedAddress.class,
@@ -588,9 +589,16 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 true,
                 entityManager,
                 aQuery -> {
+                    /*
+                    query = "select a from CategorizedAddress a "
+                        + "where a.owningOrganisation.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
+                        + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_CATEGORYIDS
+                        + " or a.category.categoryID in :" + OrganisationPatterns.PARAM_CATEGORY_IDS + " ) "
+                        + " order by a.shortDesc"),
+                     */
                     aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, organisationID);
                     aQuery.setParameter(OrganisationPatterns.PARAM_NUM_CATEGORYIDS, categoryIDsSize);
-                    aQuery.setParameter(OrganisationPatterns.PARAM_CATEGORY_IDS, categoryJpaIDs);
+                    aQuery.setParameter(OrganisationPatterns.PARAM_CATEGORY_IDS, categoryIDs);
                 });
 
         CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
@@ -622,7 +630,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         final LocalDateTime startTime = Validate.notNull(activityVO.getStartTime(), "activityVO.getStartTime()");
         final LocalDateTime endTime = Validate.notNull(activityVO.getEndTime(), "activityVO.getEndTime()");
-        if (endTime.isAfter(startTime)) {
+        if (startTime.isAfter(endTime)) {
 
             final String endTimeString = TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(endTime);
             final String startTimeString = TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(startTime);

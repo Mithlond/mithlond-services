@@ -26,6 +26,7 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -47,7 +48,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * Holds all data for an Admission to an Activity.
@@ -136,29 +136,35 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      * after calling this constructor, implying the following required call pattern:</p>
      * <pre>
      *     <code>
-     *         final Admission incomplete = new Admission(someMembership, null);
+     *         final Admission protoAdmission = new Admission(someMembership, anAdmissionNote, activeMembership);
      *         final Activity someActivity = new Activity(....);
      *
      *         // Now make the Admission complete.
-     *         incomplete.setActivity(someActivity);
+     *         protoAdmission.initializeProtoAdmission(someActivity);
      *     </code>
      * </pre>
      *
      * @param admitted      The membership admitted.
      * @param admissionNote An optional admission note, holding
      *                      information about the admission.
-     * @param admittedBy      The membership creating this Admission.
+     * @param admittedBy    The membership creating this Admission.
+     * @see #initializeProtoAdmission(Activity)
      */
-    public Admission(final Membership admitted,
+    public Admission(
+            final Membership admitted,
             final String admissionNote,
             final Membership admittedBy) {
-        this(null, admitted, null, null, admissionNote, false, admittedBy);
+
+        // Assign internal state
+        this.admitted = admitted;
+        this.admissionNote = admissionNote;
+        this.admittedBy = admittedBy;
     }
 
     /**
      * Creates a new Admission instance wrapping the supplied data.
      *
-     * @param activity           The Activity to which the supplied Membership is admitted.
+     * @param activity           The non-null Activity to which the supplied Membership is admitted.
      * @param admitted           The membership admitted.
      * @param admissionTimestamp The timestamp when this Admission was initially created.
      * @param latestModifiedTime The timestamp when this Admission was latest updated.
@@ -167,10 +173,11 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      *                           message from the Admitted Membership to those arranging the Activity.
      * @param responsible        If {@code true}, the admitted Membership is considered responsible for the
      *                           activity to which this Admission is linked.
-     * @param admittedBy           The membership creating this Admission. Only non-null if a Membership other than the Admitted
+     * @param admittedBy         The membership creating this Admission. Only non-null if a Membership other than the Admitted
      *                           Membership actually was creating this Admission.
      */
-    public Admission(final Activity activity,
+    public Admission(
+            final Activity activity,
             final Membership admitted,
             final LocalDateTime admissionTimestamp,
             final LocalDateTime latestModifiedTime,
@@ -257,7 +264,7 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      */
     public void setAdmissionNote(final String admissionNote) {
 
-        if(admissionNote != null && (this.admissionNote == null || !admissionNote.equals(this.admissionNote))) {
+        if (admissionNote != null && (this.admissionNote == null || !admissionNote.equals(this.admissionNote))) {
 
             this.admissionNote = admissionNote;
             updateLastModifiedTimestamp();
@@ -294,12 +301,34 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
      */
     public void setActivity(final Activity activity) {
 
-        this.activity = Objects.requireNonNull(activity, "Cannot handle null 'activity' argument.");
+        // Assign the activity
+        this.activity = Validate.notNull(activity, "activity");
 
         // Admissions can never change activities, but we need to invoke this method during Unmarshalling.
+        // Therefore, the admission ID may be null when this method is invoked.
         if (admissionId != null) {
             admissionId.activityId = activity.getId();
         }
+    }
+
+    /**
+     * <p><strong>Note!</strong> This method is not part of the public API of the Admission.
+     * Instead, it is intended to be used to complete this Admission before persisting its corresponding
+     * Activity - i.e. when creating a new Activity. This method differs from {@link #setActivity(Activity)}
+     * in that it initializes the {@link #admissionTimestamp} and {@link #lastModifiedAt} timestamps.</p>
+     * <p>This method should only be called by frameworks; never by users.</p>
+     *
+     * @param activity The Activity to which this Admission points.
+     */
+    public void initializeProtoAdmission(final Activity activity) {
+
+        // First, assign the Activity
+        setActivity(activity);
+
+        // Update the timestamps
+        final LocalDateTime now = LocalDateTime.now();
+        this.admissionTimestamp = now;
+        this.lastModifiedAt = now;
     }
 
     /**
@@ -319,9 +348,9 @@ public class Admission implements Serializable, Comparable<Admission>, Validatab
 
         final boolean isAdmittedByChanged =
                 (this.admittedBy != null && (admittedBy == null || !this.admittedBy.equals(admittedBy)))
-                || this.admittedBy == null && admittedBy != null;
+                        || this.admittedBy == null && admittedBy != null;
 
-        if(isAdmittedByChanged) {
+        if (isAdmittedByChanged) {
             this.admittedBy = admittedBy;
             updateLastModifiedTimestamp();
         }

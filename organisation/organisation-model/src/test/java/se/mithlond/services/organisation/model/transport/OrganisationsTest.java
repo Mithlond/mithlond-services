@@ -28,6 +28,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
@@ -70,7 +71,8 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
                     address,
                     "emailSuffix_" + i,
                     TimeFormat.SWEDISH_TIMEZONE.normalized(),
-                    TimeFormat.SWEDISH_LOCALE));
+                    TimeFormat.SWEDISH_LOCALE,
+                    WellKnownCurrency.SEK));
 
             organisationVOs.add(new OrganisationVO((long) (25 + i), "name_" + i, "suffix_" + i));
         }
@@ -101,7 +103,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());

@@ -122,20 +122,20 @@ public class Activity extends Listable {
     private LocalDateTime endTime;
 
     /**
-     * The optional cost of the activity. Never negative.
+     * The cost of the activity. Never negative, but may be "0".
      */
     @Min(value = 0, message = "Cannot handle negative 'cost'.")
-    @Basic
-    @Column
-    @XmlElement
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true)
     private BigDecimal cost;
 
     /**
-     * The optional currency for the optional cost of the activity.
+     * The currency for the optional cost of the activity.
      */
-    @Basic
-    @Column
-    @XmlAttribute
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true)
     private String currency;
 
     /**

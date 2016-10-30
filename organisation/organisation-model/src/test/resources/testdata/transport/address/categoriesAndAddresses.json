@@ -74,6 +74,7 @@
         "timeZoneID": "Europe/Stockholm",
         "country": "SE",
         "language": "sv",
+        "standardCurrency": "SEK",
         "organisationName": "name",
         "suffix": "suffix",
         "phone": "phone",
