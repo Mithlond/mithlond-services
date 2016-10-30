@@ -32,6 +32,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -82,7 +83,7 @@ public abstract class AbstractTimestampedText extends NazgulEntity {
     /**
      * The optional/nullable Membership who last updated this AbstractTimestampedText.
      */
-    @Column
+    @JoinColumn
     @ManyToOne(fetch = FetchType.EAGER)
     @XmlElement
     private Membership lastUpdatedBy;

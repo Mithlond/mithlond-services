@@ -128,7 +128,7 @@ public class MenuStructureTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToJSon(menuStructure);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         // Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
