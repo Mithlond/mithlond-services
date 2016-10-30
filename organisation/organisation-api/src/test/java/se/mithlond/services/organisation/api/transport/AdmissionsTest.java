@@ -22,10 +22,8 @@
 package se.mithlond.services.organisation.api.transport;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.eclipse.persistence.jaxb.UnmarshallerProperties;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
@@ -53,6 +51,8 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
         for (int i = 0; i < 5; i++) {
             details.add(new AdmissionVO((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
         }
+
+        jaxb.add(Admissions.class);
     }
 
     @Test
@@ -95,7 +95,6 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
 
         // Assemble
         final String data = XmlTestUtils.readFully("testdata/admissions.xml");
-        jaxb.add(Admissions.class);
 
         // Act
         final Admissions resurrected = unmarshalFromXML(Admissions.class, data);
@@ -105,17 +104,11 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
         Assert.assertEquals(5, resurrected.getDetails().size());
     }
 
-    @Ignore("Does not work correctly.")
     @Test
     public void validateUnmarshallingFromJSon() throws Exception {
 
         // Assemble
         final String data = XmlTestUtils.readFully("testdata/admissions.json");
-        jaxb.add(Admissions.class);
-
-        final SortedMap<String, Object> unMarshallerProperties = jaxb.getUnMarshallerProperties();
-        unMarshallerProperties.put(UnmarshallerProperties.JSON_VALUE_WRAPPER, "false");
-        unMarshallerProperties.put(UnmarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
         // Act
         final Admissions resurrected = unmarshalFromJSON(Admissions.class, data);

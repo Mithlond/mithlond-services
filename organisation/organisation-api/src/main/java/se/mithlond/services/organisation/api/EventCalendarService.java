@@ -23,6 +23,7 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.model.activity.EventCalendar;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
@@ -42,11 +43,10 @@ public interface EventCalendarService extends JpaCudService {
      * Retrieves all EventCalendars owned by the supplied Organisation. Typically, EventCalendars are matched
      * with remove services such as cloud services from Google, Microsoft, Yahoo or the like.
      *
-     * @param organisationName   The name of the Organisation for which all remote EventCalendars should be retrieved.
-     * @param runtimeEnvironment The runtime environment type which should match all retrieved EventCalendars.
+     * @param organisationName The name of the Organisation for which all remote EventCalendars should be retrieved.
      * @return all Calendars owned by the supplied Organisation and having the supplied runtime environment type.
      */
-    List<EventCalendar> getCalendars(String organisationName, String runtimeEnvironment);
+    List<EventCalendar> getCalendars(String organisationName, Membership activeMembership);
 
     /**
      * <p>Pushes all [locally known] Activities to a [remote] EventCalendar, as follows:</p>
@@ -60,9 +60,15 @@ public interface EventCalendarService extends JpaCudService {
      * <li>Only Activities defined within the Organisation owning the provided EventCalendar will be managed.</li>
      * </ol>
      *
-     * @param calendar  The EventCalendar to push activity data to. Cannot be {@code null}.
-     * @param startTime Only events that starts after this startTime will be pushed. Cannot be {@code null}.
-     * @param endTime   Only events that ends before this endTime will be pushed. Cannot be {@code null}.
+     * @param calendarIdentifier     The ID of the EventCalendar to push activity data to. Cannot be {@code null} or empty.
+     * @param owningOrganisationName The name of the Organisation owning the EventCalendar to which activity
+     *                               information should be pushed. Cannot be {@code null} or empty.
+     * @param startTime              Only events that starts after this startTime will be pushed. Cannot be {@code null}.
+     * @param endTime                Only events that ends before this endTime will be pushed. Cannot be {@code null}.
      */
-    void pushActivities(EventCalendar calendar, LocalDate startTime, LocalDate endTime);
+    void pushActivities(String calendarIdentifier,
+            String owningOrganisationName,
+            LocalDate startTime,
+            LocalDate endTime,
+            Membership activeMembership);
 }

@@ -83,7 +83,7 @@ public final class Deployment {
         if (deploymentType == null) {
 
             // Find the deployment name.
-            deploymentType = getProperty(DEPLOYMENT_TYPE_KEY);
+            deploymentType = Surroundings.getProperty(DEPLOYMENT_TYPE_KEY);
 
             // Check sanity
             if (deploymentType == null || !deploymentType.matches(EXPECTED_DEPLOYMENT_NAME_PATTERN)) {
@@ -113,7 +113,7 @@ public final class Deployment {
         if (storageRootDirectory == null) {
 
             // Find the file storage root dir.
-            String path = getProperty(DEPLOYMENT_STORAGE_ROOTDIR_KEY);
+            String path = Surroundings.getProperty(DEPLOYMENT_STORAGE_ROOTDIR_KEY);
 
             // Check sanity
             if (path == null || !path.matches(EXPECTED_STORAGE_ROOTDIR_PATTERN)) {
@@ -147,16 +147,5 @@ public final class Deployment {
         return "Property [" + propertyName + "] not properly defined. "
                 + "Please define system or environment property [" + propertyName + "] to match the regular "
                 + "expression \"" + expectedPattern + "\" and restart the application.";
-    }
-
-    private static String getProperty(final String propertyName) {
-
-        String toReturn = System.getProperty(propertyName);
-        if (toReturn == null) {
-            toReturn = System.getenv(propertyName);
-        }
-
-        // All done.
-        return toReturn;
     }
 }

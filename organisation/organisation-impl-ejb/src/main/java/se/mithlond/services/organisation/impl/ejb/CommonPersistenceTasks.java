@@ -26,9 +26,11 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.EntityManager;
+import java.time.chrono.ChronoLocalDate;
 
 /**
  * Utility class holding JPA-related shared methods.
@@ -131,6 +133,35 @@ public final class CommonPersistenceTasks {
 
         // All Done.
         return toReturn;
+    }
+
+    /**
+     * Validates the interval supplied by the startInterval and endInterval arguments.
+     *
+     * @param startInterval               The start of the interval.
+     * @param nameOfStartIntervalArgument The name of the interval start, such as "activityVO.getStart()".
+     * @param endInterval                 The end of the interval.
+     * @param nameOfEndIntervalArgument   The name of the interval end, such as "activityVO.getEnd()".
+     * @param <T>                         The type of ChronoLocalDate used.
+     */
+    public static <T extends ChronoLocalDate> void validateInterval(final T startInterval,
+            final String nameOfStartIntervalArgument,
+            final T endInterval,
+            final String nameOfEndIntervalArgument) {
+
+        // Check sanity
+        final String startArg = nameOfStartIntervalArgument == null ? "startInterval" : nameOfStartIntervalArgument;
+        final String endArg = nameOfEndIntervalArgument == null ? "endInterval" : nameOfEndIntervalArgument;
+        Validate.notNull(startInterval, startArg);
+        Validate.notNull(endInterval, endArg);
+
+        if (startInterval.isAfter(endInterval)) {
+
+            final String endTimeString = TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(startInterval);
+            final String startTimeString = TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(endInterval);
+            throw new IllegalArgumentException("Intervallets sluttid [" + endTimeString
+                    + "] måste vara efter starttiden [" + startTimeString + "]");
+        }
     }
 
     /*

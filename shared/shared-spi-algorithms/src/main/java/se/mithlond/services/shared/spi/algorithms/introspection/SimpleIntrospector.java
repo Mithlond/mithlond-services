@@ -140,8 +140,7 @@ public final class SimpleIntrospector {
         Validate.notNull(methodPredicate, "methodPredicate");
 
         // All Done.
-        return Arrays.asList(object.getClass().getMethods())
-                .stream()
+        return Arrays.stream(object.getClass().getMethods())
                 .filter(methodPredicate)
                 .collect(Collectors.toMap(TO_JAVABEAN_PROPERTY_NAME, m -> m));
     }
