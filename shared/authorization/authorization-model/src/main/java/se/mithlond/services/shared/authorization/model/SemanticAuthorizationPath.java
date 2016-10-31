@@ -21,15 +21,41 @@
  */
 package se.mithlond.services.shared.authorization.model;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Specification of a semantically structured path defining authorization.
- * While technically a path can contain an arbitrary amount of segments, common practise restricts
- * SemanticAuthorizationPaths to 3 levels - Realm/Group/Qualifier.
- * Hence, all SemanticAuthorizationPaths must contain exactly 3 segments.
+ * While technically a path can contain an arbitrary amount of segments, this specification provides semantic
+ * meaning to 3 levels - Realm/Group/Qualifier. Any of these properties may be empty, in which case it indicates
+ * that any value (including nulls) match that particular segment within the SemanticAuthorizationPath.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizationPath> {
+
+    /**
+     * Enum specification of the segments used by a SemanticAuthorizationPath.
+     */
+    enum Segment {
+
+        /**
+         * The Realm segment, normally indicating the segment with the highest priority (i.e. topmost group)
+         * within a SemanticAuthorizationPath.
+         */
+        REALM,
+
+        /**
+         * The Group segment, normally indicating the segment between the realm and qualifier
+         * within a SemanticAuthorizationPath.
+         */
+        GROUP,
+
+        /**
+         * The Qualifier segment, normally indicating the segment with the lowest priority (i.e. bottom-most group)
+         * within a SemanticAuthorizationPath.
+         */
+        QUALIFIER
+    }
 
     /**
      * Separator used to split concatenated SemanticAuthorizationPaths from one another.
@@ -53,24 +79,40 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
     String SEGMENT_SEPARATOR_STRING = Character.toString(SEGMENT_SEPARATOR);
 
     /**
-     * @return The Realm of this AuthorizationPath. Should never be {@code null}.
+     * @return The Realm of this AuthorizationPath. Should never return a {@code null} value.
      */
-    String getRealm();
+    default String getRealm() {
+        return getSegment(Segment.REALM);
+    }
 
     /**
-     * @return The Group of this AuthorizationPath. Should never be {@code null}.
+     * @return The Group of this AuthorizationPath. Should never return a {@code null} value.
      */
-    String getGroup();
+    default String getGroup() {
+        return getSegment(Segment.GROUP);
+    }
 
     /**
-     * @return The qualifier of this AuthorizationPath. Should never be {@code null}.
+     * @return The qualifier of this AuthorizationPath. Should never return a {@code null} value.
      */
-    String getQualifier();
+    default String getQualifier() {
+        return getSegment(Segment.QUALIFIER);
+    }
+
+    /**
+     * Retrieves the given segment within this SemanticAuthorizationPath.
+     *
+     * @param segment the given segment within this SemanticAuthorizationPath.
+     * @return the given segment within this SemanticAuthorizationPath.
+     */
+    String getSegment(@NotNull final Segment segment);
 
     /**
      * @return A String/path representation of this SemanticAuthorizationPath.
      */
     default String getPath() {
-        return SEGMENT_SEPARATOR + getRealm() + SEGMENT_SEPARATOR + getGroup() + SEGMENT_SEPARATOR + getQualifier();
+        return SEGMENT_SEPARATOR + getRealm().trim()
+                + SEGMENT_SEPARATOR + getGroup().trim()
+                + SEGMENT_SEPARATOR + getQualifier().trim();
     }
 }

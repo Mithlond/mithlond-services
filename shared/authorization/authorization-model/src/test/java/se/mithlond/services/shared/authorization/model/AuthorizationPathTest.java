@@ -28,10 +28,8 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.authorization.model.helpers.AuthorizationPaths;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.Arrays;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -49,13 +47,40 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
 
         for (int i = 0; i < 10; i++) {
 
-            final String realm = i % 3 == 0 ? "" : "realm_" + i;
-            final String group = i % 5 == 0 ? "" : "group_" + i;
-            final String qualifier = i % 2 == 0 ? "" : "qualifier_" + i;
+            final String realm = i % 3 == 0 ? null : "realm_" + i;
+            final String group = i % 5 == 0 ? null : "group_" + i;
+            final String qualifier = i % 2 == 0 ? null : "qualifier_" + i;
 
             // Add the AuthorizationPath
             unitUnderTest.add(new AuthorizationPath(realm, group, qualifier));
         }
+    }
+
+    @Test
+    public void validateSplitUsingStandardLibrary() {
+
+        // Assemble
+        final String alt1 = "realm/group/qualifier";
+        final String alt2 = "/group/qualifier";
+        final String alt3 = "realm//qualifier";
+
+        // Act & Assert
+        final String[] split1 = alt1.split(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING, -1);
+        final String[] split2 = alt2.split(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING, -1);
+        final String[] split3 = alt3.split(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING, -1);
+
+        // Assert
+        Assert.assertEquals("realm", split1[0]);
+        Assert.assertEquals("group", split1[1]);
+        Assert.assertEquals("qualifier", split1[2]);
+
+        Assert.assertEquals("", split2[0]);
+        Assert.assertEquals("group", split2[1]);
+        Assert.assertEquals("qualifier", split2[2]);
+
+        Assert.assertEquals("realm", split3[0]);
+        Assert.assertEquals("", split3[1]);
+        Assert.assertEquals("qualifier", split3[2]);
     }
 
     @Test
@@ -69,7 +94,7 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         final String result = marshalToXML(new AuthorizationPaths(unitUnderTest));
 
         // Assert
-        // System.out.println("Got: " + result);.
+        // System.out.println("Got: " + result);
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
     }
 
@@ -90,7 +115,12 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         Assert.assertEquals(unitUnderTest.size(), resultPaths.size());
 
         for (AuthorizationPath current : unitUnderTest) {
-            Assert.assertTrue(resultPaths.contains(current));
+            Assert.assertTrue("Path '" + current.getPath() + "' was not found. Got: "
+                            + resultPaths.stream()
+                            .map(SemanticAuthorizationPath::getPath)
+                            .reduce((l, r) -> l + ", " + r)
+                            .orElse("<None>"),
+                    resultPaths.contains(current));
         }
     }
 
@@ -98,9 +128,9 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
     public void validateFactoryMethod() {
 
         // Assemble
-        final AuthorizationPath path1 = AuthorizationPath.create("foo/bar/baz");
-        final AuthorizationPath path2 = AuthorizationPath.create("/foo/bar/baz");
-        final AuthorizationPath path3 = AuthorizationPath.create("      foo/bar/baz     ");
+        final AuthorizationPath path1 = AuthorizationPath.parse("foo/bar/baz");
+        final AuthorizationPath path2 = AuthorizationPath.parse("/foo/bar/baz");
+        final AuthorizationPath path3 = AuthorizationPath.parse("      foo/bar/baz     ");
 
         // Act
 
@@ -115,50 +145,14 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
     public void validateExceptionOnEmptyPathToFactoryMethod() {
 
         // Act & Assert
-        AuthorizationPath.create("");
-    }
-
-    @Test
-    public void validateExceptionOnIncorrectNumberOfArgumentsInFactoryMethod() {
-
-        // Assemble
-        final SortedMap<String, Boolean> pathToExpectedSuccess = new TreeMap<>();
-        for (int i = 0; i < 10; i++) {
-
-            StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < i; j++) {
-                builder.append(AuthorizationPath.SEGMENT_SEPARATOR + "segment_" + j);
-            }
-
-            pathToExpectedSuccess.put(builder.toString(), i == 3);
-        }
-
-        /*
-        for(Map.Entry<String, Boolean> current : pathToExpectedSuccess.entrySet()) {
-            System.out.println(" Expected [" + current.getKey() + "] -->" + current.getValue());
-        }
-         */
-
-        final SortedMap<String, Boolean> pathToActualSuccess = new TreeMap<>();
-
-        // Act
-        for (Map.Entry<String, Boolean> current : pathToExpectedSuccess.entrySet()) {
-            pathToActualSuccess.put(current.getKey(), createMethodReturnedSuccessfully(current.getKey()));
-        }
-
-        // Assert
-        for (Map.Entry<String, Boolean> current : pathToActualSuccess.entrySet()) {
-
-            final String currentPath = current.getKey();
-            Assert.assertEquals(pathToExpectedSuccess.get(currentPath), pathToActualSuccess.get(currentPath));
-        }
+        AuthorizationPath.parse("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void validateExceptionOnPathSeparatorInPathArgument() {
 
         // Act & Assert
-        AuthorizationPath.create("/foo,/bar/baz");
+        AuthorizationPath.parse("/foo,/bar/baz");
     }
 
     @Test
@@ -168,7 +162,7 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         final String emptyGroupPath = "/foo/ /baz";
 
         // Act
-        final AuthorizationPath path1 = AuthorizationPath.create(emptyGroupPath);
+        final AuthorizationPath path1 = AuthorizationPath.parse(emptyGroupPath);
         final AuthorizationPath path2 = new AuthorizationPath("foo", "", "baz");
 
         // Assert
@@ -176,19 +170,5 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         Assert.assertEquals("", path1.getGroup());
         Assert.assertEquals("baz", path1.getQualifier());
         Assert.assertEquals(path1, path2);
-    }
-
-    //
-    // Private helpers
-    //
-
-    private boolean createMethodReturnedSuccessfully(final String path) {
-        try {
-            AuthorizationPath.create(path);
-        } catch (Exception e) {
-            return false;
-        }
-
-        return true;
     }
 }

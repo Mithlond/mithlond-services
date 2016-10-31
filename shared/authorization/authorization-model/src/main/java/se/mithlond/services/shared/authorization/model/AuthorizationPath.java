@@ -33,17 +33,19 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.util.StringTokenizer;
 
 /**
  * Immutable Entity implementation of a Path consisting of 3 named/semantic segments, realm, group and qualifier.
- * Any of these segments may be empty but not null. AuthorizationPaths constitute the definitions of which privileges
+ * Any of these segments may be empty. AuthorizationPaths constitute the definitions of which privileges
  * should be held in order to perform a particular operation or access certain content.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -53,8 +55,13 @@ import java.util.StringTokenizer;
         columnNames = {"auth_realm", "auth_group", "auth_qualifier"})})
 @Access(AccessType.FIELD)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID", "realm", "group", "qualifier"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID"})
 public class AuthorizationPath extends NazgulEntity implements SemanticAuthorizationPath {
+
+    /**
+     * The prefix placed before the XMLID to comply with the fact that all XMLIDs must start with a (proper) String.
+     */
+    public static final String AUTHORIZATION_PATH_XMLID_PREFIX = "authPath:";
 
     /**
      * XML ID representation of this AuthorizationPath.
@@ -66,30 +73,28 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
     private String xmlID;
 
     /**
-     * The Realm of this AuthorizationPath, which could be equal to the organisation's name.
-     * Never {@code null}.
+     * The Realm of this AuthorizationPath, which could be equal to an Organisation's name.
      */
     @Basic(optional = false)
     @Column(nullable = false, name = "auth_realm")
-    @XmlAttribute(required = true, name = "auth_realm")
+    @XmlTransient
     private String realm;
 
     /**
      * The Group of this AuthorizationPath, which could be equal to a Group name.
-     * Never {@code null}.
      */
     @Basic(optional = false)
     @Column(nullable = false, name = "auth_group")
-    @XmlAttribute(required = true, name = "auth_group")
+    @XmlTransient
     private String group;
 
     /**
      * The Qualifier of this AuthorizationPath, which could be equal to the name of a Sub-Group.
-     * ("Guildmaster", "Auditor" or "Spouse" for example). Never {@code null}.
+     * ("Guildmaster", "Auditor" or "Spouse" for example).
      */
     @Basic(optional = false)
     @Column(nullable = false, name = "auth_qualifier")
-    @XmlAttribute(required = true, name = "auth_qualifier")
+    @XmlTransient
     private String qualifier;
 
     /**
@@ -108,9 +113,10 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
     public AuthorizationPath(final String realm,
                              final String group,
                              final String qualifier) {
-        this.realm = realm;
-        this.group = group;
-        this.qualifier = qualifier;
+
+        this.realm = validateSegment(realm);
+        this.group = validateSegment(group);
+        this.qualifier = validateSegment(qualifier);
 
         // Prime the XML ID.
         // (Not really necessary here, true, but used in testing).
@@ -118,24 +124,32 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
     }
 
     /**
-     * @return The Realm of this AuthorizationPath. Never {@code null}.
+     * {@inheritDoc}
      */
-    public String getRealm() {
-        return realm;
-    }
+    @Override
+    public String getSegment(@NotNull final Segment segment) {
 
-    /**
-     * @return The Group of this AuthorizationPath. Never {@code null}.
-     */
-    public String getGroup() {
-        return group;
-    }
+        // Check sanity
+        Validate.notNull(segment, "segment");
 
-    /**
-     * @return The qualifier of this AuthorizationPath. Never {@code null}.
-     */
-    public String getQualifier() {
-        return qualifier;
+        String toReturn = realm;
+        switch (segment) {
+
+            case QUALIFIER:
+                toReturn = qualifier;
+                break;
+
+            case GROUP:
+                toReturn = group;
+                break;
+
+            default:
+                // Do nothing; toReturn is already assigned the realm value.
+                break;
+        }
+
+        // Don't return nulls. Ever.
+        return toReturn == null ? "" : toReturn;
     }
 
     /**
@@ -187,12 +201,12 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
         }
 
         // Delegate
-        int toReturn = realm.compareTo(that.getRealm());
+        int toReturn = this.getRealm().compareTo(that.getRealm());
         if (toReturn == 0) {
-            toReturn = group.compareTo(that.getGroup());
+            toReturn = this.getGroup().compareTo(that.getGroup());
         }
         if (toReturn == 0) {
-            toReturn = qualifier.compareTo(that.getQualifier());
+            toReturn = this.getQualifier().compareTo(that.getQualifier());
         }
         return toReturn;
     }
@@ -204,7 +218,29 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      */
     @SuppressWarnings("PMD")
     private void beforeMarshal(final Marshaller marshaller) {
-        this.xmlID = "authorizationPath" + toString().replace(SEGMENT_SEPARATOR, '_');
+        this.xmlID = AUTHORIZATION_PATH_XMLID_PREFIX + toString(); // .replace(SEGMENT_SEPARATOR, '_');
+    }
+
+    /**
+     * This method is called after all the properties (except IDREF) are unmarshalled for
+     * this object, but before this object is set to the parent object.
+     */
+    @SuppressWarnings("PMD")
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parentObject) {
+
+        // The XMLID must start with the #AUTHORIZATION_PATH_XMLID_PREFIX
+        if(!this.xmlID.startsWith(AUTHORIZATION_PATH_XMLID_PREFIX)) {
+            throw new IllegalStateException("Illegal XMLID value found while unmarshalling. "
+                    + "Must start with '" + AUTHORIZATION_PATH_XMLID_PREFIX + "'");
+        }
+
+        final String toParse = this.xmlID.substring(AUTHORIZATION_PATH_XMLID_PREFIX.length());
+        final AuthorizationPath tmp = parse(toParse);
+
+        // Assign the internal state
+        this.realm = tmp.getRealm();
+        this.group = tmp.getGroup();
+        this.qualifier = tmp.getQualifier();
     }
 
     /**
@@ -212,12 +248,7 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      */
     @Override
     protected void validateEntityState() throws InternalStateValidationException {
-
-        InternalStateValidationException.create()
-                .notNull(realm, "realm")
-                .notNull(group, "group")
-                .notNull(qualifier, "qualifier")
-                .endExpressionAndValidate();
+        // Do nothing.
     }
 
     /**
@@ -229,7 +260,7 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      *             None of the path segments can be {@code null} or empty.
      * @return An AuthorizationPath created from the supplied path.
      */
-    public static AuthorizationPath create(final String path) {
+    public static AuthorizationPath parse(final String path) {
 
         final String expectedFormat = " Expected argument format: [/]realm/group/qualifier.";
 
@@ -240,20 +271,40 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
                     + PATTERN_SEPARATOR + "' characters." + expectedFormat);
         }
 
-        // Expected pattern: [/]realm[/group[/qualifier]]
+        // Expected pattern: /realm[/group[/qualifier]]
+        // Peel off the initial "/" if present.
         final String effectivePath = path.trim().startsWith(SEGMENT_SEPARATOR_STRING)
-                ? path.trim()
-                : SEGMENT_SEPARATOR + path.trim();
+                ? path.substring(1)
+                : path.trim();
+        final String[] segments = effectivePath.split(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING, -1);
 
-        final StringTokenizer tok = new StringTokenizer(effectivePath, SEGMENT_SEPARATOR_STRING, false);
-        if (tok.countTokens() != 3) {
-            throw new IllegalArgumentException("Incorrect 'path' argument. Got [" + path + "]." + expectedFormat);
+        // Extract and validate the tokens to use.
+        final String realm = validateSegment(segments[0]);
+        final String group = segments.length > 1 ? validateSegment(segments[1]) : null;
+        final String qualifier = segments.length > 2 ? validateSegment(segments[2]) : null;
+
+        // All Done.
+        return new AuthorizationPath(realm, group, qualifier);
+    }
+
+    //
+    // Private helpers
+    //
+
+    private static String validateSegment(final String candidate) {
+
+        if(candidate != null) {
+            if(candidate.contains(SEGMENT_SEPARATOR_STRING)) {
+                throw new IllegalArgumentException("Segments cannot contain [" + SEGMENT_SEPARATOR_STRING
+                        + "]. Got: " + candidate);
+            }
+            if(candidate.contains(PATTERN_SEPARATOR_STRING)) {
+                throw new IllegalArgumentException("Segments cannot contain [" + PATTERN_SEPARATOR_STRING
+                        + "]. Got: " + candidate);
+            }
         }
 
-        // All done.
-        return new AuthorizationPath(
-                tok.nextToken().trim(),
-                tok.nextToken().trim(),
-                tok.nextToken().trim());
+        // All Done.
+        return candidate == null ? null : candidate.trim();
     }
 }

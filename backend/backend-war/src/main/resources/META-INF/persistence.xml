@@ -132,13 +132,13 @@
             -->
             <!-- property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/ -->
             <!-- property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/> -->
+            <property name="hibernate.hbm2ddl.auto" value="parse"/> -->
             <property name="hibernate.max_fetch_depth" value="4"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.format_sql" value="true"/>
-            <!-- property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>
-            <property name="javax.persistence.schema-generation.scripts.create-target" value="create_database.sql"/>
+            <!-- property name="javax.persistence.schema-generation.database.action" value="drop-and-parse"/>
+            <property name="javax.persistence.schema-generation.scripts.action" value="drop-and-parse"/>
+            <property name="javax.persistence.schema-generation.scripts.parse-target" value="create_database.sql"/>
             <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop_database.sql"/  -->
             <!-- property name="javax.persistence.sql-load-script-source" value="insert.sql"/ -->
             <!--
@@ -150,7 +150,7 @@
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <!-- property name="eclipselink.ddl-generation.output-mode" value="both"/>
-            <property name="eclipselink.create-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
+            <property name="eclipselink.parse-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
             <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/ -->
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>

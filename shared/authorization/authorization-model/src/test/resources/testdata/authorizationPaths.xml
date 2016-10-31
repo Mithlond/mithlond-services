@@ -20,17 +20,17 @@
   limitations under the License.
   #L%
   -->
-<authorization:authorizationPaths xmlns:authorization="http://xmlns.mithlond.se/xml/ns/authorization" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<authorization:authorizationPaths xmlns:authorization="http://xmlns.mithlond.se/xml/ns/authorization" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <paths>
-        <path xmlID="authorizationPath___" auth_realm="" auth_group="" auth_qualifier="" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath__group_3_qualifier_3" auth_realm="" auth_group="group_3" auth_qualifier="qualifier_3" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath__group_6_" auth_realm="" auth_group="group_6" auth_qualifier="" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath__group_9_qualifier_9" auth_realm="" auth_group="group_9" auth_qualifier="qualifier_9" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath_realm_1_group_1_qualifier_1" auth_realm="realm_1" auth_group="group_1" auth_qualifier="qualifier_1" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath_realm_2_group_2_" auth_realm="realm_2" auth_group="group_2" auth_qualifier="" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath_realm_4_group_4_" auth_realm="realm_4" auth_group="group_4" auth_qualifier="" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath_realm_5__qualifier_5" auth_realm="realm_5" auth_group="" auth_qualifier="qualifier_5" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath_realm_7_group_7_qualifier_7" auth_realm="realm_7" auth_group="group_7" auth_qualifier="qualifier_7" jpaId="0" version="0"/>
-        <path xmlID="authorizationPath_realm_8_group_8_" auth_realm="realm_8" auth_group="group_8" auth_qualifier="" jpaId="0" version="0"/>
+        <path jpaId="0" version="0" xmlID="authPath:///"/>
+        <path jpaId="0" version="0" xmlID="authPath://group_3/qualifier_3"/>
+        <path jpaId="0" version="0" xmlID="authPath://group_6/"/>
+        <path jpaId="0" version="0" xmlID="authPath://group_9/qualifier_9"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_1/group_1/qualifier_1"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_2/group_2/"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_4/group_4/"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_5//qualifier_5"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_7/group_7/qualifier_7"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_8/group_8/"/>
     </paths>
 </authorization:authorizationPaths>

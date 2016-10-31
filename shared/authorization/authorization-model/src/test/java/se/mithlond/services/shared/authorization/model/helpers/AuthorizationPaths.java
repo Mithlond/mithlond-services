@@ -35,8 +35,8 @@ import java.util.SortedSet;
 @XmlRootElement(namespace = Patterns.NAMESPACE)
 public class AuthorizationPaths {
 
-    @XmlElementWrapper(required = true, nillable = false)
-    @XmlElement(required = true, nillable = false, name = "path")
+    @XmlElementWrapper(required = true)
+    @XmlElement(required = true, name = "path")
     private SortedSet<AuthorizationPath> paths;
 
     public AuthorizationPaths() {

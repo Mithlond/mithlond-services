@@ -21,27 +21,32 @@
  */
 package se.mithlond.services.shared.authorization.api;
 
+import se.mithlond.services.shared.authorization.model.Patterns;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
- * <p>Utility class to generate and manage Patterns used to match (or not)
- * AuthorizationPath instances.</p>
+ * <p>Utility class to generate and manage Patterns used to match (or not) AuthorizationPath instances.</p>
  * <p>Each AuthorizationPattern has 3 segments used to match realm, group and qualifier respectively.
  * AuthorizationPatterns are synthesized into a regular expression pattern by joining on
  * {@code SemanticAuthorizationPath.SEGMENT_SEPARATOR} (i.e. "{@value SemanticAuthorizationPath#SEGMENT_SEPARATOR}").
- * Therefore, AuthorizationPatterns have the form {@code /realm/group/qualifier}.
+ * Therefore, AuthorizationPatterns have the form {@code realm/group/qualifier}.
  * Should one of the segments in the AuthorizationPattern be empty, it can be replaced by a regular expression
  * which matches any string/any text. This replacement pattern is <code>{@value Segmenter#ANY}</code>.</p>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  * @see SemanticAuthorizationPath#PATTERN_SEPARATOR_STRING
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID"})
 public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
 
     // Internal state
