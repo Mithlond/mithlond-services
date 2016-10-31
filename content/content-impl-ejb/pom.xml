@@ -45,6 +45,11 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>se.mithlond.services.organisation.api</groupId>
+            <artifactId>mithlond-services-organisation-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>se.mithlond.services.shared.test.entity</groupId>
             <artifactId>mithlond-services-shared-entity-test</artifactId>
             <version>1.0.0-SNAPSHOT</version>
