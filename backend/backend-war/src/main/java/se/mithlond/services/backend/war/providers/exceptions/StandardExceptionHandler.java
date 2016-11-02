@@ -65,12 +65,14 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
     @Override
     public Response toResponse(final Exception exception) {
 
+        final String exceptionStackTrace = extractExceptionStacktrace(exception);
+
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity("Failed to invoke service.")
+                .entity("Failed to invoke service.\n" + exceptionStackTrace)
                 .header(ERROR_CAUSE_HEADER, exception.getCause())
                 .header(INTERNAL_ERROR_TYPE_HEADER, exception)
-                .header(CAUSE_CHAIN_HEADER, extractExceptionStacktrace(exception))
-                .type(MediaType.APPLICATION_JSON)
+                .header(CAUSE_CHAIN_HEADER, exceptionStackTrace)
+                .type(MediaType.TEXT_PLAIN)
                 .build();
     }
 

@@ -21,8 +21,6 @@
  */
 package se.mithlond.services.content.model.articles;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.organisation.model.Organisation;
@@ -62,15 +60,12 @@ import java.util.List;
         @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE,
                 query = "select a from Article a "
                         + " where a.owner.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
-                        + " and a.lastModified > :" + ContentPatterns.PARAM_LAST_MODIFIED)
+                        + " and a.lastUpdated > :" + ContentPatterns.PARAM_LAST_MODIFIED)
 })
 @Entity
 @XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "sections"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends AbstractTimestampedText {
-
-    // Our Logger
-    private static final Logger log = LoggerFactory.getLogger(Article.class);
 
     /**
      * NamedQuery for getting Localizations having a given language.

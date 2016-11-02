@@ -107,6 +107,9 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
     public Organisations getOrganisation(final long jpaID, final boolean detailedRepresentation) {
 
         final Organisation organisation = entityManager.find(Organisation.class, jpaID);
+        if(organisation == null) {
+            throw new IllegalArgumentException("No organisation with ID " + jpaID + " found.");
+        }
 
         final Organisations toReturn = new Organisations();
         if (detailedRepresentation) {

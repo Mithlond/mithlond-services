@@ -68,7 +68,7 @@ public abstract class AbstractTimestampedText extends NazgulEntity {
     /**
      * The Membership who created/persisted this AbstractTimestampedText.
      */
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @XmlElement(required = true)
     private Membership createdBy;
