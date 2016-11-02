@@ -28,7 +28,6 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.authorization.model.helpers.AuthorizationPaths;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 

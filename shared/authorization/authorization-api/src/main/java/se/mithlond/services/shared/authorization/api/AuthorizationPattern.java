@@ -27,6 +27,8 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
@@ -46,13 +48,20 @@ import java.util.regex.Pattern;
  * @see SemanticAuthorizationPath#PATTERN_SEPARATOR_STRING
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID"})
+@XmlType(namespace = Patterns.NAMESPACE, propOrder = {"realmPattern", "groupPattern", "qualifierPattern"})
 public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
 
     // Internal state
+    @XmlElement
     private String realmPattern;
+
+    @XmlElement
     private String groupPattern;
+
+    @XmlElement
     private String qualifierPattern;
+
+    @XmlTransient
     private Pattern pattern;
 
     /**
