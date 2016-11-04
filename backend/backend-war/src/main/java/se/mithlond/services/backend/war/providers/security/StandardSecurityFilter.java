@@ -23,6 +23,7 @@ package se.mithlond.services.backend.war.providers.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.mithlond.services.backend.war.providers.security.access.MembershipAndMethodFinder;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
@@ -35,12 +36,16 @@ import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -55,7 +60,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Priority(Priorities.AUTHENTICATION)
-public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
+public class StandardSecurityFilter implements ContainerRequestFilter {
 
     /**
      * Default authentication required to invoke any method, unless annotated with
@@ -63,10 +68,16 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
     public static final AuthorizationPattern DEFAULT_AUTH_PATTERN = new AuthorizationPattern(Segmenter.ANY, "member");
 
     // Our log
-    private static final Logger log = LoggerFactory.getLogger(AbstractSecurityFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
+
+    @Inject
+    private MembershipAndMethodFinder accessFinder;
 
     @EJB
     private MembershipService membershipService;
+
+    @Context
+    private HttpServletRequest request;
 
     /**
      * {@inheritDoc}
@@ -75,11 +86,11 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
     public void filter(final ContainerRequestContext ctx) {
 
         // Find the authorization requirements of the currently invoked method.
-        final Method targetMethod = getTargetMethod(ctx);
-        String requiredAuthPatterns = null;
+        final Method targetMethod = accessFinder.getTargetMethod(ctx);
+        String requiredAuthPatterns;
 
         // Debug some?
-        printRequestInformation(ctx);
+        printRequestInformation(ctx, targetMethod);
 
         // Adhere to the standard WRT the @PermitAll annotation.
         if (!targetMethod.isAnnotationPresent(PermitAll.class)) {
@@ -108,7 +119,7 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
             }
 
             // Find the Membership of the active caller.
-            final OrganisationAndAlias holder = getOrganisationNameAndAlias(ctx);
+            final OrganisationAndAlias holder = accessFinder.getOrganisationNameAndAlias(ctx, request);
             final Membership activeMembership = membershipService.getMembership(
                     holder.getOrganisationName(), holder.getAlias());
 
@@ -152,22 +163,6 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
     }
 
     /**
-     * Retrieves the OrganisationAndAlias from the data within the supplied ContainerRequestContext.
-     *
-     * @param ctx The non-null ContainerRequestContext.
-     * @return The populated OrganisationAndAlias instance.
-     */
-    protected abstract OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx);
-
-    /**
-     * Retrieves the target Method being invoked within the current JAX-RS resource.
-     *
-     * @param ctx The active ContainerRequestContext.
-     * @return the target Method being invoked within the current JAX-RS resource.
-     */
-    protected abstract Method getTargetMethod(final ContainerRequestContext ctx);
-
-    /**
      * Retrieves the Authorizer used to authorize memberships for accessing resource methods.
      *
      * @return the Authorizer used to authorize memberships for accessing resource methods.
@@ -180,7 +175,7 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
     // Private helpers
     //
 
-    private void printRequestInformation(final ContainerRequestContext ctx) {
+    private void printRequestInformation(final ContainerRequestContext ctx, final Method method) {
 
         // Printout the HTTP headers, if available.
         if (log.isDebugEnabled()) {
@@ -211,7 +206,15 @@ public abstract class AbstractSecurityFilter implements ContainerRequestFilter {
             propertyMap.entrySet().stream()
                     .map(c -> "[" + c.getKey() + "]: " + c.getValue() + "\n")
                     .forEach(builder::append);
-            builder.append("====== [End Inbound Request Properties] ======\n");
+            builder.append("====== [End Inbound Request Properties] ======");
+
+            builder.append("\n\n====== [Target Method] ======\n");
+            builder.append(" Declaring Class: " + method.getDeclaringClass().getSimpleName() + "\n");
+            builder.append(" Return type    : " + method.getReturnType().getSimpleName() + "\n");
+            builder.append(" Annotations    : " + Arrays.stream(method.getAnnotations())
+                    .map(ann -> ann.annotationType().getSimpleName())
+                    .reduce((l, r) -> l + ", " + r).orElse("<None>"));
+            builder.append("\n\n====== [End Target Method] ======\n");
 
             log.debug(builder.toString());
         }

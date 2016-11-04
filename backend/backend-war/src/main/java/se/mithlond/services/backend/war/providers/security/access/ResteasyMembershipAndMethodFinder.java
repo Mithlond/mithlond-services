@@ -1,77 +1,47 @@
-/*
- * #%L
- * Nazgul Project: mithlond-services-backend-war
- * %%
- * Copyright (C) 2015 Mithlond
- * %%
- * Licensed under the jGuru Europe AB license (the "License"), based
- * on Apache License, Version 2.0; you may not use this file except
- * in compliance with the License.
- * 
- * You may obtain a copy of the License at
- * 
- *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-package se.mithlond.services.backend.war.providers.security.resteasy;
+package se.mithlond.services.backend.war.providers.security.access;
 
 import org.jboss.resteasy.core.ResourceMethodInvoker;
-import org.jboss.resteasy.spi.HttpRequest;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.mithlond.services.backend.war.providers.security.AbstractSecurityFilter;
 import se.mithlond.services.backend.war.providers.security.OrganisationAndAlias;
-import se.mithlond.services.shared.spi.algorithms.Deployment;
 
+import javax.enterprise.context.RequestScoped;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * RestEasy-flavoured AbstractSecurityFilter implementation.
+ * Resteasy-tailored implementation of the MembershipAndMethodFinder interface.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-// @Provider
-public class SecurityFilter extends AbstractSecurityFilter {
+@RequestScoped
+public class ResteasyMembershipAndMethodFinder implements Serializable, MembershipAndMethodFinder {
 
     // Our log
-    private static final Logger log = LoggerFactory.getLogger(SecurityFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(ResteasyMembershipAndMethodFinder.class);
 
     // Internal state
     private static final String METHOD_INVOKER_KEY = "org.jboss.resteasy.core.ResourceMethodInvoker";
-
-    @Context
-    private HttpRequest httpRequest;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx)
-            throws IllegalStateException {
+    public OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx,
+            final HttpServletRequest httpRequest) {
 
         if (log.isDebugEnabled()) {
             final String typeName = ctx == null ? "<none>" : ctx.getClass().getName();
             log.debug("Getting OrganisationAndAlias for ContainerRequestContext of type " + typeName);
-        }
-
-        // Development mode?
-        if (isDevelopmentEnvironment()) {
-            return getDevelopmentOrganisationAndAlias();
         }
 
         // Production mode.
@@ -121,50 +91,10 @@ public class SecurityFilter extends AbstractSecurityFilter {
      * {@inheritDoc}
      */
     @Override
-    protected Method getTargetMethod(final ContainerRequestContext ctx) {
+    public Method getTargetMethod(final ContainerRequestContext ctx) {
 
         // Dig out the invoked resource method.
         final ResourceMethodInvoker methodInvoker = (ResourceMethodInvoker) ctx.getProperty(METHOD_INVOKER_KEY);
         return methodInvoker.getMethod();
-    }
-
-    //
-    // Private helpers
-    //
-
-    private boolean isDevelopmentEnvironment() throws IllegalStateException {
-
-        String deploymentName = null;
-        try {
-            deploymentName = Deployment.getDeploymentType();
-        } catch (IllegalStateException e) {
-            // Ignore this.
-            if(log.isDebugEnabled()) {
-                log.error(e.getMessage());
-            }
-        }
-        final boolean isDevEnvironment = deploymentName != null && deploymentName.equalsIgnoreCase("development");
-
-        if (log.isDebugEnabled()) {
-            log.debug("Got DeploymentName: " + deploymentName + " --> isDevEnvironment: " + isDevEnvironment);
-        }
-
-        // All Done.
-        return isDevEnvironment;
-    }
-
-    private OrganisationAndAlias getDevelopmentOrganisationAndAlias() {
-        return new OrganisationAndAlias(getProperty("dev.organisation"), getProperty("dev.alias"));
-    }
-
-    private static String getProperty(final String propertyName) {
-
-        String toReturn = System.getProperty(propertyName);
-        if (toReturn == null) {
-            toReturn = System.getenv(propertyName);
-        }
-
-        // All done.
-        return toReturn;
     }
 }
