@@ -22,8 +22,13 @@
 package se.mithlond.services.content.api;
 
 import se.mithlond.services.content.model.transport.articles.Articles;
+import se.mithlond.services.content.model.transport.articles.ContentPaths;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 /**
@@ -38,17 +43,56 @@ public interface ContentService {
     /**
      * Retrieves Articles from the named owner, and identified by the content selection path.
      *
-     * @param contentOwner         The organisation owning the site for which a MenuStructure should be retrieved.
-     * @param contentSelectionPath A resource path defining which Articles should be retrieved. Articles are
-     *                             typically organized in a tree-like resource structure.
-     * @param callersAuthPaths     The SemanticAuthorizationPathProducer of the caller, used to determine which
-     *                             Articles should be retrieved. Typically, each authPath is a Membership.
+     * @param owningOrganisationID The JPA ID of the organisation owning the Articles to be retrieved.
+     * @param contentPath          A (resource) path defining which Articles should be retrieved.
+     *                             Articles are typically organized in a tree-like resource structure, as if placed
+     *                             within a normal file system.
+     * @param caller               The SemanticAuthorizationPathProducer of the caller, used to determine which
+     *                             Articles should be retrieved.
+     * @param startingDate         The LocalDate marking the start of the articles to search for.
+     * @param period               The period of dates to use in order to define an interval within which to search
+     *                             for Articles.
      * @return An Articles transport holder containing the Articles matching the supplied owner,
      * selectionPath and authentication paths.
-     * @throws UnknownOrganisationException if the menuOwner was not the name of an existing organisation.
      */
-    Articles getArticles(final String contentOwner,
-                         final String contentSelectionPath,
-                         final List<SemanticAuthorizationPathProducer> callersAuthPaths)
-            throws UnknownOrganisationException;
+    Articles getArticles(final Long owningOrganisationID,
+                         final String contentPath,
+                         final SemanticAuthorizationPathProducer caller,
+                         final LocalDate startingDate,
+                         final Period period);
+
+    /**
+     * Retrieves all articles matching the given ContentPaths for the supplied caller and with modification dates
+     * within the supplied time interval.
+     *
+     * @param contentPaths The non-null ContentPaths for the articles to retrieve.
+     * @param caller       The SemanticAuthorizationPathProducer of the caller, used to determine which
+     *                     Articles should be retrieved.
+     * @param startingDate The LocalDate marking the start of the articles to search for.
+     * @param period       The period of dates to use in order to define an interval within which to search
+     *                     for Articles.
+     * @return The Articles matching the supplied parameters.
+     */
+    Articles getArticles(final ContentPaths contentPaths,
+                         final SemanticAuthorizationPathProducer caller,
+                         final LocalDate startingDate,
+                         final Period period);
+
+    /**
+     * Finds the ContentPaths for articles available within the supplied organisation and viewable/accessable
+     * for the supplied caller.
+     *
+     * @param owningOrganisationID The JPA ID of the organisation owning the Articles on the ContentPaths
+     *                             to be retrieved.
+     * @param caller               The SemanticAuthorizationPathProducer of the caller, used to determine which
+     *                             Articles should be retrieved.
+     * @param startingDate         The LocalDate marking the start of the articles to search for.
+     * @param period               The period of dates to use in order to define an interval within which to search
+     *                             for Articles.
+     * @return A ContentPaths transport wrapper containing the requested ContentPaths.
+     */
+    ContentPaths getContentPaths(final Long owningOrganisationID,
+                                 final SemanticAuthorizationPathProducer caller,
+                                 final LocalDate startingDate,
+                                 final Period period);
 }

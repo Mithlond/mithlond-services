@@ -1,6 +1,6 @@
 /*
  * #%L
- * Nazgul Project: mithlond-services-organisation-impl-ejb
+ * Nazgul Project: mithlond-services-content-impl-ejb
  * %%
  * Copyright (C) 2015 - 2016 Mithlond
  * %%

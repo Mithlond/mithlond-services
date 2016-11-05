@@ -57,32 +57,21 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE,
+        @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CONTENT_PATH,
                 query = "select a from Article a "
-                        + " where a.owner.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
-                        + " and a.lastUpdated > :" + ContentPatterns.PARAM_LAST_MODIFIED),
-        @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_AND_CONTENT_PATH,
-                query = "select a from Article a "
-                        + " where a.owner.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " where a.owner.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
                         + " and a.contentPath like :" + ContentPatterns.PARAM_CONTENT_PATH
                         + " order by a.created desc, a.lastUpdated desc")
 })
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "sections", "contentPath"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "contentPath", "sections", "contentPath"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends AbstractTimestampedText {
 
     /**
-     * NamedQuery for getting Articles from an Organisation.
+     * NamedQuery for getting Articles from an Organisation by its JPA ID and the ContentPath of the Article to get.
      */
-    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE
-            = "Article.getByOrgAndLastModDate";
-
-    /**
-     * NamedQuery for getting Articles from an Organisation by its Content path
-     */
-    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_CONTENT_PATH = "Article.getByOrgAndContentPath";
-
+    public static final String NAMEDQ_GET_BY_ORGANISATION_ID_AND_CONTENT_PATH = "Article.getByOrgIdAndContentPath";
 
     /**
      * The Title of this Article.
@@ -129,32 +118,36 @@ public class Article extends AbstractTimestampedText {
      * Convenience constructor, creating an Article using the supplied data and
      * using the current timestamp ("now") for createdAt.
      *
-     * @param title  The title of this Article.
-     * @param author The Article author.
-     * @param owner  The Organisation owning (the content of) this Article.
+     * @param title       The title of this Article.
+     * @param contentPath The contentPath of this Article.
+     * @param author      The Article author.
+     * @param owner       The Organisation owning (the content of) this Article.
      */
     public Article(
             final String title,
+            final String contentPath,
             final Membership author,
             final Organisation owner) {
 
         // Delegate
-        this(null, author, title, owner);
+        this(null, author, title, contentPath, owner);
     }
 
     /**
      * Compound constructor creating an Article wrapping the supplied data.
      *
-     * @param title     The title of this Article.
-     * @param createdBy The Membership who (initially) created this Article.
-     * @param owner     The Organisation owning the Article. This implies Editor and responsibility for the text
-     *                  being published.
-     * @param created   The timestamp when this Article was created. If {@code null}, the current timestamp is used.
+     * @param title       The title of this Article.
+     * @param contentPath The contentPath of this Article.
+     * @param createdBy   The Membership who (initially) created this Article.
+     * @param owner       The Organisation owning the Article. This implies Editor and responsibility for the text
+     *                    being published.
+     * @param created     The timestamp when this Article was created. If {@code null}, the current timestamp is used.
      */
     public Article(final LocalDateTime created,
-            final Membership createdBy,
-            final String title,
-            final Organisation owner) {
+                   final Membership createdBy,
+                   final String title,
+                   final String contentPath,
+                   final Organisation owner) {
 
         // Delegate
         super((created == null ? LocalDateTime.now() : created), createdBy);
@@ -163,6 +156,7 @@ public class Article extends AbstractTimestampedText {
         this.sections = new ArrayList<>();
         this.title = title;
         this.owner = owner;
+        this.contentPath = contentPath;
     }
 
     /**
@@ -186,6 +180,13 @@ public class Article extends AbstractTimestampedText {
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * @return The ContentPath of this Article. Never null or empty.
+     */
+    public String getContentPath() {
+        return contentPath;
     }
 
     /**
@@ -228,6 +229,7 @@ public class Article extends AbstractTimestampedText {
 
         InternalStateValidationException.create()
                 .notNullOrEmpty(title, "title")
+                .notNullOrEmpty(contentPath, "contentPath")
                 .notNull(owner, "owner")
                 .endExpressionAndValidate();
     }
