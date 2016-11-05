@@ -46,6 +46,11 @@ public final class ContentPatterns {
      */
     public static final String PARAM_LAST_MODIFIED = "last_modified";
 
+    /**
+     * NamedQuery parameter name for content path.
+     */
+    public static final String PARAM_CONTENT_PATH = "content_path";
+
     /*
      * Hide utility-class constructors.
      */

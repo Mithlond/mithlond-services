@@ -60,18 +60,29 @@ import java.util.List;
         @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE,
                 query = "select a from Article a "
                         + " where a.owner.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
-                        + " and a.lastUpdated > :" + ContentPatterns.PARAM_LAST_MODIFIED)
+                        + " and a.lastUpdated > :" + ContentPatterns.PARAM_LAST_MODIFIED),
+        @NamedQuery(name = Article.NAMEDQ_GET_BY_ORGANISATION_AND_CONTENT_PATH,
+                query = "select a from Article a "
+                        + " where a.owner.organisationName like :" + OrganisationPatterns.PARAM_ORGANISATION_NAME
+                        + " and a.contentPath like :" + ContentPatterns.PARAM_CONTENT_PATH
+                        + " order by a.created desc, a.lastUpdated desc")
 })
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "sections"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "sections", "contentPath"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends AbstractTimestampedText {
 
     /**
-     * NamedQuery for getting Localizations having a given language.
+     * NamedQuery for getting Articles from an Organisation.
      */
     public static final String NAMEDQ_GET_BY_ORGANISATION_AND_LAST_MODIFICATION_DATE
             = "Article.getByOrgAndLastModDate";
+
+    /**
+     * NamedQuery for getting Articles from an Organisation by its Content path
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_AND_CONTENT_PATH = "Article.getByOrgAndContentPath";
+
 
     /**
      * The Title of this Article.
@@ -80,6 +91,14 @@ public class Article extends AbstractTimestampedText {
     @Column(nullable = false)
     @XmlElement(required = true)
     private String title;
+
+    /**
+     * The content path of this Article.
+     */
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @XmlElement(required = true)
+    private String contentPath;
 
     /**
      * The Organisation which formally owns this Article. Must not be null, in order
