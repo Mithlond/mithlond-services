@@ -95,9 +95,11 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
     String SEGMENT_SEPARATOR_STRING = Character.toString(SEGMENT_SEPARATOR);
 
     /**
-     * Segment pattern value for any String.
+     * Segment pattern value indicating no value. This is a constant used to pad realm, group and qualifier
+     * values whenever a "no-value" is required. Such (unusual) situations occur whenever earlier segments are
+     * irrelevant for the path.
      */
-    String ANY_STRING_PATTERN = "*";
+    String NO_VALUE = "__";
 
     /**
      * @return The Realm of this AuthorizationPath. Should never return a {@code null} value.

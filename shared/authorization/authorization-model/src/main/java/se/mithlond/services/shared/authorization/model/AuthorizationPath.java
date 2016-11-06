@@ -296,7 +296,7 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
         if (candidate == null) {
             throw new IllegalArgumentException("Segments cannot be null.");
         } else {
-            if(candidate.isEmpty()) {
+            if (candidate.isEmpty()) {
                 throw new IllegalArgumentException("Segments cannot be empty.");
             }
             if (candidate.contains(SEGMENT_SEPARATOR_STRING)) {
@@ -310,6 +310,6 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
         }
 
         // All Done.
-        return candidate.trim();
+        return candidate.trim().isEmpty() ? NO_VALUE : candidate.trim();
     }
 }
