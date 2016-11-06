@@ -23,7 +23,7 @@ package se.mithlond.services.backend.war.providers.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.mithlond.services.backend.war.providers.security.access.MembershipAndMethodFinder;
+import se.mithlond.services.backend.war.providers.security.access.MembershipFinder;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -71,13 +72,16 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
     @Inject
-    private MembershipAndMethodFinder accessFinder;
+    private MembershipFinder membershipFinder;
 
     @EJB
     private MembershipService membershipService;
 
     @Context
     private HttpServletRequest request;
+
+    @Context
+    private ResourceInfo resourceInfo;
 
     /**
      * {@inheritDoc}
@@ -86,7 +90,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     public void filter(final ContainerRequestContext ctx) {
 
         // Find the authorization requirements of the currently invoked method.
-        final Method targetMethod = accessFinder.getTargetMethod(ctx);
+        final Method targetMethod = resourceInfo.getResourceMethod();
         String requiredAuthPatterns;
 
         // Debug some?
@@ -119,7 +123,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             }
 
             // Find the Membership of the active caller.
-            final OrganisationAndAlias holder = accessFinder.getOrganisationNameAndAlias(ctx, request);
+            final OrganisationAndAlias holder = membershipFinder.getOrganisationNameAndAlias(ctx, request);
             final Membership activeMembership = membershipService.getMembership(
                     holder.getOrganisationName(), holder.getAlias());
 

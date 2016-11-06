@@ -22,15 +22,15 @@
   -->
 <authorization:authorizationPaths xmlns:authorization="http://xmlns.mithlond.se/xml/ns/authorization" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <paths>
-        <path jpaId="0" version="0" xmlID="authPath:///"/>
-        <path jpaId="0" version="0" xmlID="authPath://group_3/qualifier_3"/>
-        <path jpaId="0" version="0" xmlID="authPath://group_6/"/>
-        <path jpaId="0" version="0" xmlID="authPath://group_9/qualifier_9"/>
         <path jpaId="0" version="0" xmlID="authPath:/realm_1/group_1/qualifier_1"/>
-        <path jpaId="0" version="0" xmlID="authPath:/realm_2/group_2/"/>
-        <path jpaId="0" version="0" xmlID="authPath:/realm_4/group_4/"/>
-        <path jpaId="0" version="0" xmlID="authPath:/realm_5//qualifier_5"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_2/group_2/someOtherQualifier_2"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_4/group_4/someOtherQualifier_4"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_5/someOtherGroup_5/qualifier_5"/>
         <path jpaId="0" version="0" xmlID="authPath:/realm_7/group_7/qualifier_7"/>
-        <path jpaId="0" version="0" xmlID="authPath:/realm_8/group_8/"/>
+        <path jpaId="0" version="0" xmlID="authPath:/realm_8/group_8/someOtherQualifier_8"/>
+        <path jpaId="0" version="0" xmlID="authPath:/someOtherRealm_0/someOtherGroup_0/someOtherQualifier_0"/>
+        <path jpaId="0" version="0" xmlID="authPath:/someOtherRealm_3/group_3/qualifier_3"/>
+        <path jpaId="0" version="0" xmlID="authPath:/someOtherRealm_6/group_6/someOtherQualifier_6"/>
+        <path jpaId="0" version="0" xmlID="authPath:/someOtherRealm_9/group_9/qualifier_9"/>
     </paths>
 </authorization:authorizationPaths>

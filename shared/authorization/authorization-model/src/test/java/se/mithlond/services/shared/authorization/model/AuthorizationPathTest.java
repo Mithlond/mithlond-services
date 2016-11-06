@@ -28,8 +28,17 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.authorization.model.helpers.AuthorizationPaths;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -46,9 +55,9 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
 
         for (int i = 0; i < 10; i++) {
 
-            final String realm = i % 3 == 0 ? null : "realm_" + i;
-            final String group = i % 5 == 0 ? null : "group_" + i;
-            final String qualifier = i % 2 == 0 ? null : "qualifier_" + i;
+            final String realm = i % 3 == 0 ? "someOtherRealm_" + i : "realm_" + i;
+            final String group = i % 5 == 0 ? "someOtherGroup_" + i : "group_" + i;
+            final String qualifier = i % 2 == 0 ? "someOtherQualifier_" + i : "qualifier_" + i;
 
             // Add the AuthorizationPath
             unitUnderTest.add(new AuthorizationPath(realm, group, qualifier));
@@ -154,20 +163,95 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         AuthorizationPath.parse("/foo,/bar/baz");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void validateExceptionOnEmptySegment() {
+
+        // Act & Assert
+        new AuthorizationPath("foo", "", "baz");
+    }
+
     @Test
-    public void validateParsingEmptySegment() {
+    public void validateMatchingPaths() {
 
         // Assemble
-        final String emptyGroupPath = "/foo/ /baz";
+        final SortedMap<String, Boolean> expectedMatchMap = new TreeMap<>();
+        expectedMatchMap.put("**/baz", true);
+        expectedMatchMap.put("foo/**", true);
+        expectedMatchMap.put("foo/*/*", true);
+        expectedMatchMap.put("*/bar/*", true);
+        expectedMatchMap.put("**/bar/**", true);
+        expectedMatchMap.put("**", true);
+        expectedMatchMap.put("flep/**", false);
+        expectedMatchMap.put("foo/*/", false);
 
         // Act
-        final AuthorizationPath path1 = AuthorizationPath.parse(emptyGroupPath);
-        final AuthorizationPath path2 = new AuthorizationPath("foo", "", "baz");
+        final AuthorizationPath path1 = AuthorizationPath.parse("/foo/bar/baz");
+        final Path p1 = path1.toPath();
 
         // Assert
-        Assert.assertEquals("foo", path1.getRealm());
-        Assert.assertEquals("", path1.getGroup());
-        Assert.assertEquals("baz", path1.getQualifier());
-        Assert.assertEquals(path1, path2);
+        expectedMatchMap.entrySet().forEach(entry -> {
+
+            final Boolean expected = entry.getValue();
+            final String pathMatcherPattern = "glob:" + entry.getKey();
+            final Boolean actual = SemanticAuthorizationPath.matchGlobPattern(entry.getKey(), p1);
+
+            final String failureMessage = "Expected pattern [" + entry.getKey() + "] to match path [" + p1 + "]";
+            Assert.assertEquals(failureMessage, expected, actual);
+        });
+    }
+
+    @Test
+    public void validateJavaPaths() throws Exception {
+
+        // Assemble
+        final Path zeroParts = Paths.get("//");
+        final Path oneParts = Paths.get("realm");
+        final Path twoParts = Paths.get("realm", "group");
+        final Path threeParts = Paths.get("realm/group", "qualifier");
+        final Path secondAndThirdPart = Paths.get("", "group", "qualifier");
+        final Path fromURI = Paths.get(new URI("file:///some/path/to/a/file"));
+
+        final FileSystem fs = FileSystems.getDefault();
+        final String separator = fs.getSeparator();
+
+        // Act
+
+
+        // Assert
+        printout(zeroParts, separator);
+        printout(oneParts, separator);
+        printout(twoParts, separator);
+        printout(threeParts, separator);
+    }
+
+    private void printout(final Path path, final String separator) {
+
+        final String stringForm = path.normalize().toString();
+        System.out.println("Path [" + stringForm + "] contains " + path.getNameCount() + " segments.");
+
+
+        System.out.println("Printing the names of [" + stringForm + "]");
+
+        for (int i = 0; i < path.getNameCount(); i++) {
+            System.out.println("  .... [" + i + "]: " + path.getName(i));
+        }
+
+
+        if (stringForm != null && !stringForm.isEmpty()) {
+
+            System.out.println("Splitting [" + stringForm + "] into segments using separator [" + separator + "]");
+
+            AtomicInteger index = new AtomicInteger();
+            Arrays.stream(stringForm.split(separator, -1)).forEach(c -> {
+
+                String value = c;
+                if (c == null) {
+                    value = "<null>";
+                } else if (c.isEmpty()) {
+                    value = "<empty>";
+                }
+                System.out.println("  .... [" + index.getAndIncrement() + "]: " + value);
+            });
+        }
     }
 }

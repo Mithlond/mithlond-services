@@ -25,7 +25,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.content.model.articles.Section;
@@ -108,7 +107,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
         final LocalDateTime updatedAt = LocalDateTime.of(2016, Month.FEBRUARY, 15, 16, 17);
 
         // Create an Article
-        this.anArticle = new Article(createdAt, membership, "Article Title", organisation);
+        this.anArticle = new Article(createdAt, membership, "Article Title", "/some/path", organisation);
         anArticle.addSection(section1, membership);
         anArticle.addSection(section2, membership);
 
@@ -129,7 +128,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
@@ -143,7 +142,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);

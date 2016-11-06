@@ -64,7 +64,7 @@ import java.util.List;
                         + " order by a.created desc, a.lastUpdated desc")
 })
 @Entity
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "contentPath", "sections", "contentPath"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"title", "contentPath", "sections"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Article extends AbstractTimestampedText {
 
@@ -144,10 +144,10 @@ public class Article extends AbstractTimestampedText {
      * @param created     The timestamp when this Article was created. If {@code null}, the current timestamp is used.
      */
     public Article(final LocalDateTime created,
-                   final Membership createdBy,
-                   final String title,
-                   final String contentPath,
-                   final Organisation owner) {
+            final Membership createdBy,
+            final String title,
+            final String contentPath,
+            final Organisation owner) {
 
         // Delegate
         super((created == null ? LocalDateTime.now() : created), createdBy);

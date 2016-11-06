@@ -33,6 +33,7 @@
           "organisation": "organisation_FooBar"
         },
         "title": "Article Title",
+        "contentPath": "/some/path",
         "sections": [
           {
             "jpaId": 0,

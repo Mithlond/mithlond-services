@@ -21,14 +21,17 @@
  */
 package se.mithlond.services.backend.war.providers.security.access;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.mithlond.services.shared.spi.algorithms.Deployment;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.Produces;
 import java.util.stream.Stream;
 
 /**
- * CDI producer class returning {@link MembershipAndMethodFinder}s.
+ * CDI producer class returning {@link MembershipFinder}s.
  * This class must be handled by the Container, in order for its @Produces-annotated
  * CDI factory methods to be invoked properly.
  *
@@ -36,6 +39,9 @@ import java.util.stream.Stream;
  */
 @ApplicationScoped
 public class MembershipAndMethodFinderProducer {
+
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(MembershipAndMethodFinderProducer.class);
 
     /**
      * The environments known to this {@link MembershipAndMethodFinderProducer}.
@@ -51,13 +57,18 @@ public class MembershipAndMethodFinderProducer {
         UNIT_TEST
     }
 
+    @PostConstruct
+    private void afterConstruction() {
+        log.info("Producer instance [" + getClass().getSimpleName() + "] created.");
+    }
+
     /**
      * Factory method producing a MembershipAndMethodFinder.
      *
      * @return a MembershipAndMethodFinder tailored for the current deployment environment.
      */
     @Produces
-    public MembershipAndMethodFinder getAccessor() {
+    public MembershipFinder getAccessor() {
 
         KnownEnvironments currentEnvironment = KnownEnvironments.PRODUCTION;
 
@@ -72,10 +83,10 @@ public class MembershipAndMethodFinderProducer {
 
         }
 
-        MembershipAndMethodFinder toReturn = null;
+        MembershipFinder toReturn = null;
         switch (currentEnvironment) {
             case PRODUCTION:
-                toReturn = new ResteasyMembershipAndMethodFinder();
+                toReturn = new ResteasyMembershipFinder();
                 break;
 
             default:

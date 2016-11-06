@@ -127,7 +127,7 @@ public class AuthorizationPatternTest {
             Assert.assertEquals(expected.get(current.getKey()), current.getValue().toString());
         }
 
-        System.out.println("Got:  " + actual);
+        // System.out.println("Got:  " + actual);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class AuthorizationPatternTest {
         final List<String> incorrectPatterns = Arrays.asList("/a/b/c/d/e", "////", null);
 
         // Act & Assert
-        for(String current : incorrectPatterns) {
+        for (String current : incorrectPatterns) {
             try {
                 AuthorizationPattern.parseSingle(current);
                 Assert.fail("Expected failure for parsing pattern [" + current + "]");
@@ -164,7 +164,7 @@ public class AuthorizationPatternTest {
         // Assert
         final Iterator<AuthorizationPattern> patternIterator = parsed.iterator();
 
-        for (final String currentExpectedPattern: expected) {
+        for (final String currentExpectedPattern : expected) {
             final AuthorizationPattern actual = patternIterator.next();
             Assert.assertEquals(currentExpectedPattern, actual.toString());
         }

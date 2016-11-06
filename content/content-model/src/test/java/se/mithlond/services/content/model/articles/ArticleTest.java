@@ -40,6 +40,8 @@ import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -104,7 +106,7 @@ public class ArticleTest extends AbstractPlainJaxbTest {
         final LocalDateTime updatedAt = LocalDateTime.of(2016, Month.FEBRUARY, 15, 16, 17);
 
         // Create an Article
-        this.unitUnderTest = new Article(createdAt, membership, "Article Title", organisation);
+        this.unitUnderTest = new Article(createdAt, membership, "Article Title", "/some/path", organisation);
         unitUnderTest.addSection(section1, membership);
         unitUnderTest.addSection(section2, membership);
 

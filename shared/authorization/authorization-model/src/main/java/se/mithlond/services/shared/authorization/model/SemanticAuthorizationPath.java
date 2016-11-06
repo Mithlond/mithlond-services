@@ -22,6 +22,8 @@
 package se.mithlond.services.shared.authorization.model;
 
 import javax.validation.constraints.NotNull;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Specification of a semantically structured path defining authorization.
@@ -42,19 +44,33 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
          * The Realm segment, normally indicating the segment with the highest priority (i.e. topmost group)
          * within a SemanticAuthorizationPath.
          */
-        REALM,
+        REALM(0),
 
         /**
          * The Group segment, normally indicating the segment between the realm and qualifier
          * within a SemanticAuthorizationPath.
          */
-        GROUP,
+        GROUP(1),
 
         /**
          * The Qualifier segment, normally indicating the segment with the lowest priority (i.e. bottom-most group)
          * within a SemanticAuthorizationPath.
          */
-        QUALIFIER
+        QUALIFIER(2);
+
+        // Internal state
+        private int index;
+
+        Segment(final int index) {
+            this.index = index;
+        }
+
+        /**
+         * @return The index of this Segment.
+         */
+        public int getIndex() {
+            return index;
+        }
     }
 
     /**
@@ -77,6 +93,11 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
      * (Cast to a String).
      */
     String SEGMENT_SEPARATOR_STRING = Character.toString(SEGMENT_SEPARATOR);
+
+    /**
+     * Segment pattern value for any String.
+     */
+    String ANY_STRING_PATTERN = "*";
 
     /**
      * @return The Realm of this AuthorizationPath. Should never return a {@code null} value.
@@ -108,11 +129,34 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
     String getSegment(@NotNull final Segment segment);
 
     /**
+     * Converts this SemanticAuthorizationPath to a standard Java NIO Path.
+     * <strong>NOTE!</strong> This implies operations which are FileSystem dependent, implying that this
+     * method should be used with caution.
+     *
+     * @return A Java NIO Path with the structure
+     * <code>{@link #getRealm()} + "/" + {@link #getGroup()} + "/" + {@link #getQualifier()}</code>
+     */
+    default Path toPath() {
+        return Paths.get(getRealm(), getGroup(), getQualifier());
+    }
+
+    /**
      * @return A String/path representation of this SemanticAuthorizationPath.
      */
     default String getPath() {
         return SEGMENT_SEPARATOR + getRealm().trim()
                 + SEGMENT_SEPARATOR + getGroup().trim()
                 + SEGMENT_SEPARATOR + getQualifier().trim();
+    }
+
+    /**
+     * Standard glob pattern matching method for Paths.
+     *
+     * @param pattern a pattern to match to the supplied path. Should not contain the prefix "glob:".
+     * @return true if the supplied glob pattern matched, and false otherwise.
+     * @see java.nio.file.FileSystem#getPathMatcher(String)
+     */
+    static boolean matchGlobPattern(final String pattern, final Path path) {
+        return path.getFileSystem().getPathMatcher("glob:" + pattern).matches(path);
     }
 }

@@ -111,8 +111,8 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      * @param qualifier The Qualifier of this AuthorizationPath, which could be equal to the name of a Sub-Group.
      */
     public AuthorizationPath(final String realm,
-                             final String group,
-                             final String qualifier) {
+            final String group,
+            final String qualifier) {
 
         this.realm = validateSegment(realm);
         this.group = validateSegment(group);
@@ -218,7 +218,7 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      */
     @SuppressWarnings("PMD")
     private void beforeMarshal(final Marshaller marshaller) {
-        this.xmlID = AUTHORIZATION_PATH_XMLID_PREFIX + toString(); // .replace(SEGMENT_SEPARATOR, '_');
+        this.xmlID = AUTHORIZATION_PATH_XMLID_PREFIX + toString();
     }
 
     /**
@@ -229,7 +229,7 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parentObject) {
 
         // The XMLID must start with the #AUTHORIZATION_PATH_XMLID_PREFIX
-        if(!this.xmlID.startsWith(AUTHORIZATION_PATH_XMLID_PREFIX)) {
+        if (!this.xmlID.startsWith(AUTHORIZATION_PATH_XMLID_PREFIX)) {
             throw new IllegalStateException("Illegal XMLID value found while unmarshalling. "
                     + "Must start with '" + AUTHORIZATION_PATH_XMLID_PREFIX + "'");
         }
@@ -293,18 +293,23 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
 
     private static String validateSegment(final String candidate) {
 
-        if(candidate != null) {
-            if(candidate.contains(SEGMENT_SEPARATOR_STRING)) {
+        if (candidate == null) {
+            throw new IllegalArgumentException("Segments cannot be null.");
+        } else {
+            if(candidate.isEmpty()) {
+                throw new IllegalArgumentException("Segments cannot be empty.");
+            }
+            if (candidate.contains(SEGMENT_SEPARATOR_STRING)) {
                 throw new IllegalArgumentException("Segments cannot contain [" + SEGMENT_SEPARATOR_STRING
                         + "]. Got: " + candidate);
             }
-            if(candidate.contains(PATTERN_SEPARATOR_STRING)) {
+            if (candidate.contains(PATTERN_SEPARATOR_STRING)) {
                 throw new IllegalArgumentException("Segments cannot contain [" + PATTERN_SEPARATOR_STRING
                         + "]. Got: " + candidate);
             }
         }
 
         // All Done.
-        return candidate == null ? null : candidate.trim();
+        return candidate.trim();
     }
 }
