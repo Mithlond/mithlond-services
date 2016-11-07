@@ -248,7 +248,12 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      */
     @Override
     protected void validateEntityState() throws InternalStateValidationException {
-        // Do nothing.
+
+        InternalStateValidationException.create()
+                .notNullOrEmpty(realm, "realm")
+                .notNullOrEmpty(group, "group")
+                .notNullOrEmpty(qualifier, "qualifier")
+                .endExpressionAndValidate();
     }
 
     /**
