@@ -22,8 +22,8 @@
 package se.mithlond.services.content.api;
 
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
-import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 
 import javax.ejb.Local;
@@ -49,8 +49,8 @@ public interface NavigationService {
      * (i.e. perform write operations on) a MenuStructure. Note that this Function does not
      * gracefully handle {@code null} realmName values.
      */
-    Function<String, SortedSet<AuthorizationPattern>> REALM_AUTHORIZATION_PATTERN_FUNCTION =
-            realmName -> AuthorizationPattern.parse("/" + realmName + "/" + UPDATE_GROUP);
+    Function<String, SortedSet<GlobAuthorizationPattern>> REALM_AUTHORIZATION_PATTERN_FUNCTION =
+            realmName -> GlobAuthorizationPattern.parse("/" + realmName + "/" + UPDATE_GROUP);
 
     /**
      * Retrieves the MenuStructure available to a caller sporting the supplied Memberships.

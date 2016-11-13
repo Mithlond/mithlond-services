@@ -32,7 +32,7 @@ import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.membership.order.OrderLevel;
 import se.mithlond.services.organisation.model.membership.order.OrderLevelGrant;
 import se.mithlond.services.organisation.model.user.User;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 

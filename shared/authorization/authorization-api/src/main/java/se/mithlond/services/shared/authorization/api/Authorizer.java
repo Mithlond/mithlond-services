@@ -23,6 +23,7 @@ package se.mithlond.services.shared.authorization.api;
 
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
+import java.io.Serializable;
 import java.util.SortedSet;
 
 /**
@@ -30,7 +31,7 @@ import java.util.SortedSet;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public interface Authorizer {
+public interface Authorizer extends Serializable {
 
     /**
      * Parses the supplied requiredAuthorizationPatterns, and then validates if any of the
@@ -42,7 +43,7 @@ public interface Authorizer {
      *                                      AuthorizationPattern instances from the requiredAuthorizationPatterns.
      * @return {@code true} if the possessedPrivileges contained at least one SemanticAuthorizationPath which matched
      * one of the requiredAuthorizationPatterns.
-     * @see AuthorizationPattern#parse(String)
+     * @see GlobAuthorizationPattern#parse(String)
      */
     default boolean isAuthorized(final String requiredAuthorizationPatterns,
             final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
@@ -58,7 +59,7 @@ public interface Authorizer {
         }
 
         // Match each possessedPrivilege against all of the supplied privileges.
-        return isAuthorized(AuthorizationPattern.parse(requiredAuthorizationPatterns), possessedPrivileges);
+        return isAuthorized(GlobAuthorizationPattern.parse(requiredAuthorizationPatterns), possessedPrivileges);
     }
 
     /**
@@ -71,7 +72,7 @@ public interface Authorizer {
      * @return {@code true} if the possessedPrivileges contained at least one SemanticAuthorizationPath which matched
      * one of the requiredAuthorizationPatterns.
      */
-    boolean isAuthorized(final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+    boolean isAuthorized(final SortedSet<GlobAuthorizationPattern> requiredAuthorizationPatterns,
             final SortedSet<SemanticAuthorizationPath> possessedPrivileges);
 
     /**
@@ -101,8 +102,8 @@ public interface Authorizer {
         }
 
         // From here on, we need a SortedSet of AuthorizationPatterns.
-        final SortedSet<AuthorizationPattern> requiredPatterns =
-                AuthorizationPattern.parse(requiredAuthorizationPatterns);
+        final SortedSet<GlobAuthorizationPattern> requiredPatterns =
+                GlobAuthorizationPattern.parse(requiredAuthorizationPatterns);
 
         // Requirements, but no privileges == not authorized
         if (possessedPrivileges == null || possessedPrivileges.isEmpty()) {
@@ -114,7 +115,7 @@ public interface Authorizer {
 
         // Delegate
         validateAuthorization(
-                AuthorizationPattern.parse(requiredAuthorizationPatterns),
+                GlobAuthorizationPattern.parse(requiredAuthorizationPatterns),
                 possessedPrivileges,
                 operationDescription);
     }
@@ -137,7 +138,7 @@ public interface Authorizer {
      *                               privileges.
      */
     void validateAuthorization(
-            final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+            final SortedSet<GlobAuthorizationPattern> requiredAuthorizationPatterns,
             final SortedSet<SemanticAuthorizationPath> possessedPrivileges,
             final String operationDescription) throws UnauthorizedException;
 }

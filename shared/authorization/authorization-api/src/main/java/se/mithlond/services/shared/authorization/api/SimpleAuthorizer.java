@@ -54,7 +54,7 @@ public final class SimpleAuthorizer implements Authorizer {
      * {@inheritDoc}
      */
     @SuppressWarnings("all")
-    public boolean isAuthorized(final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+    public boolean isAuthorized(final SortedSet<GlobAuthorizationPattern> requiredAuthorizationPatterns,
             final SortedSet<SemanticAuthorizationPath> possessedPrivileges) {
 
         // No requirements == authorized.
@@ -67,7 +67,7 @@ public final class SimpleAuthorizer implements Authorizer {
             return false;
         }
 
-        for (AuthorizationPattern current : requiredAuthorizationPatterns) {
+        for (GlobAuthorizationPattern current : requiredAuthorizationPatterns) {
             for (SemanticAuthorizationPath currentPrivilege : possessedPrivileges) {
                 if (current.matches(currentPrivilege.toString())) {
 
@@ -86,7 +86,7 @@ public final class SimpleAuthorizer implements Authorizer {
      */
     @Override
     public void validateAuthorization(
-            final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns,
+            final SortedSet<GlobAuthorizationPattern> requiredAuthorizationPatterns,
             final SortedSet<SemanticAuthorizationPath> possessedPrivileges,
             final String operationDescription) throws UnauthorizedException {
 

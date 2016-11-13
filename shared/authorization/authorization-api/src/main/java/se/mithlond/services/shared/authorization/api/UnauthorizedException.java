@@ -45,7 +45,7 @@ public class UnauthorizedException extends RuntimeException implements Serializa
     // Internal state
     private String operationDescription;
     private SortedSet<SemanticAuthorizationPath> possessedPaths = new TreeSet<>();
-    private SortedSet<AuthorizationPattern> requiredAuthorizationPatterns = new TreeSet<>();
+    private SortedSet<GlobAuthorizationPattern> requiredAuthorizationPatterns = new TreeSet<>();
 
     /**
      * Compound constructor creating an UnauthorizedException indicating that a
@@ -57,7 +57,7 @@ public class UnauthorizedException extends RuntimeException implements Serializa
      */
     public UnauthorizedException(final String operationDescription,
             final SortedSet<SemanticAuthorizationPath> possessedPaths,
-            final SortedSet<AuthorizationPattern> requiredAuthorizationPatterns) {
+            final SortedSet<GlobAuthorizationPattern> requiredAuthorizationPatterns) {
 
         super();
 

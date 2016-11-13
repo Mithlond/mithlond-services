@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-shared-authorization-model
  * %%
- * Copyright (C) 2015 Mithlond
+ * Copyright (C) 2015 - 2016 Mithlond
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -42,4 +42,29 @@ public final class Patterns {
     private Patterns() {
         // Do nothing.
     }
+
+    /**
+     * Named parameter for the name of a realm.
+     */
+    public static final String PARAM_REALM_NAME = "realmName";
+
+    /**
+     * Named parameter for the name of a group.
+     */
+    public static final String PARAM_GROUP_NAME = "groupName";
+
+    /**
+     * Named parameter for the name of a qualifier.
+     */
+    public static final String PARAM_QUALIFIER_NAME = "qualifierName";
+
+    /**
+     * Named parameter for the JPA ID of a realm.
+     */
+    public static final String PARAM_REALM_ID = "realmJpaID";
+
+    /**
+     * Named parameter for the JPA ID of a group.
+     */
+    public static final String PARAM_GROUP_ID = "groupJpaID";
 }

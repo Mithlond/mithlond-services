@@ -24,7 +24,7 @@ package se.mithlond.services.shared.authorization.api;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import se.mithlond.services.shared.authorization.api.builder.AuthorizationPathBuilder;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import java.util.SortedSet;
@@ -40,8 +40,11 @@ public class SimpleAuthorizerTest {
 
     @Before
     public void setupSharedState() {
-        possessedPrivileges = AuthorizationPathBuilder.parse(
-                "/mithlond/village_idiots/member,/mithlond/council,/mithlond/dwarfGuild/guildMaster");
+
+        possessedPrivileges = new TreeSet<>();
+        possessedPrivileges.add(AuthorizationPath.parse("/mithlond/village_idiots/member"));
+        possessedPrivileges.add(AuthorizationPath.parse("/mithlond/council"));
+        possessedPrivileges.add(AuthorizationPath.parse("/mithlond/dwarfGuild/guildMaster"));
     }
 
     @Test
@@ -78,38 +81,41 @@ public class SimpleAuthorizerTest {
     }
 
     @Test
-    public void validateAuthorization() {
+    public void validateAuthorizationOnGlobPatternMatch() {
 
         // Assemble
-        final String authorizationPattern = "/mithlond/village_idiots";
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
 
-        final String villageIdiotsMember = "/mithlond/village_idiots/member";
-        final String plainMithlondMember = "/mithlond/members";
-        final String plainVillageIdiots = "/mithlond/village_idiots";
+        final String realm = "/mifflond/";
+        final String mifflondVillageIdiotsPattern = realm + "villageIdiots";
+        final SortedSet<SemanticAuthorizationPath> villageIdiotsMember = AuthorizationPath
+                .spliceAndParse(mifflondVillageIdiotsPattern + "/member");
+        final SortedSet<SemanticAuthorizationPath> memberOfSomeOtherGroup = AuthorizationPath
+                .spliceAndParse(realm + "someOtherGroup");
 
         // Act & Assert
-        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(villageIdiotsMember)));
-        Assert.assertFalse(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(plainMithlondMember)));
-        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(plainVillageIdiots)));
+        Assert.assertTrue(unitUnderTest.isAuthorized(mifflondVillageIdiotsPattern, villageIdiotsMember));
+        Assert.assertFalse(unitUnderTest.isAuthorized(mifflondVillageIdiotsPattern, memberOfSomeOtherGroup));
     }
 
     @Test
     public void validateAuthorizationUsingSlashTermination() {
 
         // Assemble
-        final String authorizationPattern = "/mithlond/";
+        final String authorizationPattern = "/mithlond/**";
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
 
         final String villageIdiotsMember = "/mithlond/village_idiots/member";
         final String plainMithlondMember = "/mithlond/members";
         final String plainVillageIdiots = "/mithlond/villageIdiots";
 
-
         // Act & Assert
-        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(villageIdiotsMember)));
-        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(plainMithlondMember)));
-        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern, getAuthPaths(plainVillageIdiots)));
+        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern,
+                wrapSingleAuthPathInSet(villageIdiotsMember)));
+        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern,
+                wrapSingleAuthPathInSet(plainMithlondMember)));
+        Assert.assertTrue(unitUnderTest.isAuthorized(authorizationPattern,
+                wrapSingleAuthPathInSet(plainVillageIdiots)));
     }
 
     @Test
@@ -117,11 +123,12 @@ public class SimpleAuthorizerTest {
 
         // Assemble
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
-        final SortedSet<AuthorizationPattern> patterns1 = AuthorizationPattern.parse("/forodrim/members," +
+        final SortedSet<GlobAuthorizationPattern> patterns1 = GlobAuthorizationPattern.parse("/forodrim/members," +
                 "/mithlond/members");
-        final SortedSet<AuthorizationPattern> patterns2 = AuthorizationPattern.parse("/mithlond/village_idiots/");
-        final SortedSet<AuthorizationPattern> patterns3 = AuthorizationPattern.parse("/mithlond/village_idiots/"
-                + Segmenter.ANY);
+        final SortedSet<GlobAuthorizationPattern> patterns2 = GlobAuthorizationPattern
+                .parse("/mithlond/village_idiots/");
+        final SortedSet<GlobAuthorizationPattern> patterns3 = GlobAuthorizationPattern
+                .parse("/mithlond/village_idiots/" + GlobAuthorizationPattern.ANY);
 
         // Act & Assert
         Assert.assertFalse(unitUnderTest.isAuthorized(patterns1, possessedPrivileges));
@@ -134,7 +141,7 @@ public class SimpleAuthorizerTest {
 
         // Assemble
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
-        final SortedSet<AuthorizationPattern> patterns1 = AuthorizationPattern.parse(
+        final SortedSet<GlobAuthorizationPattern> patterns1 = GlobAuthorizationPattern.parse(
                 "/forodrim/members,/mithlond/members");
 
         // Act & Assert
@@ -148,14 +155,33 @@ public class SimpleAuthorizerTest {
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
 
         // Act & Assert
-        unitUnderTest.validateAuthorization("/mithlond/village_idiots/", possessedPrivileges, "Irrelevant");
+        unitUnderTest.validateAuthorization("/mithlond/village_idiots/*", possessedPrivileges, "Irrelevant");
+    }
+
+    @Test
+    public void validateAuthorizationIgnoresInitialSlash() {
+
+        // Assemble
+        final String prefix = "mithlond/village_idiots/";
+        final String pattern = prefix + "*";
+        final String path = prefix + "members";
+
+        // Act
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern(path).matches(pattern));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern("/" + path).matches("/" + pattern));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern(path).matches("/" + pattern));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern("/" + path).matches(pattern));
     }
 
     //
     // Private helpers
     //
 
-    private SortedSet<SemanticAuthorizationPath> getAuthPaths(final String toParse) {
-        return AuthorizationPathBuilder.parse(toParse);
+    private SortedSet<SemanticAuthorizationPath> wrapSingleAuthPathInSet(final String toParse) {
+
+        SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+        toReturn.add(AuthorizationPath.parse(toParse));
+
+        return toReturn;
     }
 }

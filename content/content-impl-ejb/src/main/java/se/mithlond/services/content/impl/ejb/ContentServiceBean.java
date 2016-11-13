@@ -25,7 +25,7 @@ import se.mithlond.services.content.api.ContentService;
 import se.mithlond.services.content.model.transport.articles.Articles;
 import se.mithlond.services.content.model.transport.articles.ContentPaths;
 import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;

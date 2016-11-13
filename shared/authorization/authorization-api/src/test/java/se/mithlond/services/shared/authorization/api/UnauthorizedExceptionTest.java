@@ -23,7 +23,7 @@ package se.mithlond.services.shared.authorization.api;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.mithlond.services.shared.authorization.api.builder.AuthorizationPathBuilder;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import java.util.SortedSet;
@@ -40,8 +40,8 @@ public class UnauthorizedExceptionTest {
 
     @Before
     public void setupSharedState() {
-        possessedPaths1 = AuthorizationPathBuilder.parse(paths1);
-        possessedPaths2 = AuthorizationPathBuilder.parse(paths2);
+        possessedPaths1 = AuthorizationPath.spliceAndParse(paths1);
+        possessedPaths2 = AuthorizationPath.spliceAndParse(paths2);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -49,7 +49,7 @@ public class UnauthorizedExceptionTest {
     public void validateExceptionOnEmptyOperationsDescription() {
 
         // Assemble
-        final SortedSet<AuthorizationPattern> requiredPatterns = AuthorizationPattern.parse("/foo/bar");
+        final SortedSet<GlobAuthorizationPattern> requiredPatterns = GlobAuthorizationPattern.parse("/foo/bar");
 
         // Act & Assert
         new UnauthorizedException("", possessedPaths1, requiredPatterns);
@@ -60,7 +60,7 @@ public class UnauthorizedExceptionTest {
     public void validateExceptionOnNullOperationsDescription() {
 
         // Assemble
-        final SortedSet<AuthorizationPattern> requiredPatterns = AuthorizationPattern.parse("/foo/bar");
+        final SortedSet<GlobAuthorizationPattern> requiredPatterns = GlobAuthorizationPattern.parse("/foo/bar");
 
         // Act & Assert
         new UnauthorizedException(null, possessedPaths1, requiredPatterns);

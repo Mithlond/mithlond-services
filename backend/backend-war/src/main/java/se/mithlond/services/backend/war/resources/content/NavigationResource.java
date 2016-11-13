@@ -34,7 +34,7 @@ import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 
 import javax.ejb.EJB;
 import javax.ws.rs.DefaultValue;

@@ -26,7 +26,7 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
-import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
@@ -360,8 +360,8 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
      * {@inheritDoc}
      */
     @Override
-    public SortedSet<AuthorizationPattern> getRequiredAuthorizationPatterns() {
-        return authorizationPatterns == null ? null : AuthorizationPattern.parse(authorizationPatterns);
+    public SortedSet<GlobAuthorizationPattern> getRequiredAuthorizationPatterns() {
+        return authorizationPatterns == null ? null : GlobAuthorizationPattern.parse(authorizationPatterns);
     }
 
     /**

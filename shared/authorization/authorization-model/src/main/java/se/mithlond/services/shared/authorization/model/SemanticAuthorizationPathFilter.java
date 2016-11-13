@@ -40,7 +40,7 @@ public interface SemanticAuthorizationPathFilter {
      * and if the path is {@code null} the result should normally be a failure.
      *
      * @param pattern The {@link SemanticAuthorizationPath} to filter.
-     * @param path The pattern to filter with.
+     * @param path    The pattern to filter with.
      * @return true if the path matched the supplied pattern, and false otherwise.
      */
     boolean filter(String pattern, SemanticAuthorizationPath path);

@@ -22,7 +22,7 @@
 package se.mithlond.services.content.model.navigation;
 
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
-import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 
 import java.util.List;
 import java.util.SortedSet;
@@ -108,7 +108,7 @@ public interface AuthorizedNavItem {
      * A {@code null} return value from this method indicates that this PresentableLink does not have any protection,
      * and is hence viewable by all Users.
      */
-    SortedSet<AuthorizationPattern> getRequiredAuthorizationPatterns();
+    SortedSet<GlobAuthorizationPattern> getRequiredAuthorizationPatterns();
 
     /**
      * Retrieves the parent StandardMenu element of this AuthorizedNavItem.

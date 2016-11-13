@@ -23,13 +23,10 @@ package se.mithlond.services.content.api;
 
 import se.mithlond.services.content.model.transport.articles.Articles;
 import se.mithlond.services.content.model.transport.articles.ContentPaths;
-import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 /**
  * Service specification for retrieving content to clients. For the purpose of Mithlond services,

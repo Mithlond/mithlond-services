@@ -36,9 +36,9 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.localization.Localization;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
-import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
@@ -109,7 +109,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         // Populate the return menu structure
         final StandardMenu rawRootMenu = rawMenuStructure.getRootMenu();
         final String requiredAuthPatterns = rawRootMenu.getRequiredAuthorizationPatterns().stream()
-                .map(AuthorizationPattern::toString)
+                .map(GlobAuthorizationPattern::toString)
                 .reduce((left, right) -> left + "," + right)
                 .orElse(null);
 
@@ -157,7 +157,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                 : menuStructure.getOrganisationName();
 
         // Is the caller authorized to create or update the MenuStructure for the supplied realm?
-        final SortedSet<AuthorizationPattern> requiredPatterns = REALM_AUTHORIZATION_PATTERN_FUNCTION.apply(realm);
+        final SortedSet<GlobAuthorizationPattern> requiredPatterns = REALM_AUTHORIZATION_PATTERN_FUNCTION.apply(realm);
         simpleAuthorizer.validateAuthorization(
                 requiredPatterns,
                 possessedAuthPaths,

@@ -32,9 +32,9 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.helpers.GroupsAndGuilds;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
-import se.mithlond.services.shared.authorization.api.AuthorizationPattern;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -173,8 +173,8 @@ public class GroupAndGuildTest extends AbstractEntityTest {
 
         // Assemble
         final Authorizer simpleAuthorizer = SimpleAuthorizer.getInstance();
-        final SortedSet<AuthorizationPattern> org1Patterns = AuthorizationPattern.parse("/name_1");
-        final SortedSet<AuthorizationPattern> org1Group1Patterns = AuthorizationPattern.parse("/name_1/groupName_1");
+        final SortedSet<GlobAuthorizationPattern> org1Patterns = GlobAuthorizationPattern.parse("/name_1");
+        final SortedSet<GlobAuthorizationPattern> org1Group1Patterns = GlobAuthorizationPattern.parse("/name_1/groupName_1");
 
         final Map<Integer, SemanticAuthorizationPathProducer> index2ProducerMap = new TreeMap<>();
         final List<Group> groupsList = Arrays.asList(groupsAndGuilds);

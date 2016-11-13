@@ -43,7 +43,7 @@ import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.user.User;
-import se.mithlond.services.shared.authorization.api.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;

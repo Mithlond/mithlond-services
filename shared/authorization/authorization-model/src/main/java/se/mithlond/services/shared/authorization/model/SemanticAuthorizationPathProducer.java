@@ -29,6 +29,7 @@ import java.util.stream.Stream;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@FunctionalInterface
 public interface SemanticAuthorizationPathProducer {
 
     /**

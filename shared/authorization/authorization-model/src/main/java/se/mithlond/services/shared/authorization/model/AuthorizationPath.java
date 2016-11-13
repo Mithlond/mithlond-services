@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-shared-authorization-model
  * %%
- * Copyright (C) 2015 Mithlond
+ * Copyright (C) 2015 - 2016 Mithlond
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -30,6 +30,8 @@ import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
@@ -42,6 +44,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.SortedSet;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * Immutable Entity implementation of a Path consisting of 3 named/semantic segments, realm, group and qualifier.
@@ -51,12 +58,26 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = AuthorizationPath.NAMEDQ_GET_BY_PARAMS,
+                query = "select ap from AuthorizationPath ap where "
+                        + " ap.realm like :" + Patterns.PARAM_REALM_NAME
+                        + " and ap.group like :" + Patterns.PARAM_GROUP_NAME
+                        + " and ap.qualifier like :" + Patterns.PARAM_QUALIFIER_NAME
+                        + " order by ap.realm, ap.group")
+})
 @Table(uniqueConstraints = {@UniqueConstraint(name = "pathIsUnique",
         columnNames = {"auth_realm", "auth_group", "auth_qualifier"})})
 @Access(AccessType.FIELD)
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"xmlID"})
 public class AuthorizationPath extends NazgulEntity implements SemanticAuthorizationPath {
+
+    /**
+     * Named query retrieving an {@link AuthorizationPath} by its Realm, Group and Qualifier properties
+     * using 'like' comparisons on all 3 properties.
+     */
+    public static final String NAMEDQ_GET_BY_PARAMS = "AuthorizationPath.getByParams";
 
     /**
      * The prefix placed before the XMLID to comply with the fact that all XMLIDs must start with a (proper) String.
@@ -285,11 +306,108 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
 
         // Extract and validate the tokens to use.
         final String realm = validateSegment(segments[0]);
-        final String group = segments.length > 1 ? validateSegment(segments[1]) : null;
-        final String qualifier = segments.length > 2 ? validateSegment(segments[2]) : null;
+        final String group = segments.length > 1 ? validateSegment(segments[1]) : SemanticAuthorizationPath.NO_VALUE;
+        final String qualifier = segments.length > 2 ? validateSegment(segments[2]) : SemanticAuthorizationPath.NO_VALUE;
 
         // All Done.
         return new AuthorizationPath(realm, group, qualifier);
+    }
+
+    /**
+     * Splices the supplied toParse string into a SortedSet of AuthorizationPaths.
+     *
+     * @param toParse A non-empty string to splice and parse into a set of AuthorizationPaths.
+     * @return A non-null SortedSet containing AuthorizationPaths.
+     */
+    public static SortedSet<SemanticAuthorizationPath> spliceAndParse(final String toParse) {
+
+        // Check sanity
+        Validate.notEmpty(toParse, "toParse");
+
+        final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+
+        // Splice on separators, then delegate to the parse method.
+        Stream.of(toParse.split(SemanticAuthorizationPath.PATTERN_SEPARATOR_STRING, -1))
+                .forEach(splitPattern -> toReturn.add(AuthorizationPath.parse(splitPattern)));
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * Convenience method creating and returning a new {@link Builder} instance.
+     *
+     * @return A new, pristine Builder.
+     */
+    public static Builder getBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Simple Builder/Factory implementation to supp
+     */
+    @XmlTransient
+    public static class Builder implements Serializable {
+
+        // Internal state
+        private String realm = SemanticAuthorizationPath.NO_VALUE;
+        private String group = SemanticAuthorizationPath.NO_VALUE;
+        private String qualifier = SemanticAuthorizationPath.NO_VALUE;
+
+        /**
+         * Sets the value for this builder.
+         *
+         * @param realm A non-empty string for the assigned value.
+         * @return this Builder, for chaining.
+         * @see AuthorizationPath#getRealm()
+         */
+        public Builder withRealm(final String realm) {
+
+            // Check sanity and assign internal state
+            this.realm = Validate.notEmpty(realm, "realm");
+
+            // All Done.
+            return this;
+        }
+
+        /**
+         * Sets the value for this builder.
+         *
+         * @param group A non-empty string for the assigned value.
+         * @return this Builder, for chaining.
+         * @see AuthorizationPath#getGroup()
+         */
+        public Builder withGroup(final String group) {
+
+            // Check sanity and assign internal state
+            this.group = Validate.notEmpty(group, "group");
+
+            // All Done.
+            return this;
+        }
+
+        /**
+         * Sets the value for this builder.
+         *
+         * @param qualifier A non-empty string for the assigned value.
+         * @return this Builder, for chaining.
+         * @see AuthorizationPath#getQualifier()
+         */
+        public Builder withQualifier(final String qualifier) {
+
+            // Check sanity and assign internal state
+            this.qualifier = Validate.notEmpty(qualifier, "qualifier");
+
+            // All Done.
+            return this;
+        }
+
+        /**
+         * @return Retrieves the fully created AuthorizationPath instance, made up from the state of this Builder.
+         */
+        public AuthorizationPath build() {
+            return new AuthorizationPath(realm, group, qualifier);
+        }
     }
 
     //

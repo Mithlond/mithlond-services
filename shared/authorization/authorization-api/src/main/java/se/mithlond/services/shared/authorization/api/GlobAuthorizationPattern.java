@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.shared.authorization.api;
 
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.Patterns;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.Validate;
@@ -30,10 +31,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.regex.Pattern;
+import java.util.function.Consumer;
+
+import static se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING;
 
 /**
  * <p>Utility class to generate and manage Patterns used to match (or not) AuthorizationPath instances.</p>
@@ -42,35 +47,49 @@ import java.util.regex.Pattern;
  * {@code SemanticAuthorizationPath.SEGMENT_SEPARATOR} (i.e. "{@value SemanticAuthorizationPath#SEGMENT_SEPARATOR}").
  * Therefore, AuthorizationPatterns have the form {@code realm/group/qualifier}.
  * Should one of the segments in the AuthorizationPattern be empty, it can be replaced by a regular expression
- * which matches any string/any text. This replacement pattern is <code>{@value Segmenter#ANY}</code>.</p>
+ * which matches any string/any text. This replacement pattern is <code>{@value GlobAuthorizationPattern#ANY}</code>
+ * .</p>
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  * @see SemanticAuthorizationPath#PATTERN_SEPARATOR_STRING
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(namespace = Patterns.NAMESPACE, propOrder = {"realmPattern", "groupPattern", "qualifierPattern"})
-public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
+public class GlobAuthorizationPattern implements Comparable<GlobAuthorizationPattern> {
 
-    // Internal state
+    /**
+     * Glob pattern to match any text within the current segment.
+     *
+     * @see Path#forEach(Consumer)
+     */
+    public static final String ANY = "*";
+
+    /**
+     * The glob pattern for matching the name of a Realm, typically found within an AuthorizationPath.
+     */
     @XmlElement
     private String realmPattern;
 
+    /**
+     * The glob pattern for matching the name of a Group, typically found within an AuthorizationPath.
+     */
     @XmlElement
     private String groupPattern;
 
+    /**
+     * The glob pattern for matching the name of a Qualifier, typically found within an AuthorizationPath.
+     */
     @XmlElement
     private String qualifierPattern;
 
     @XmlTransient
-    private Pattern pattern;
+    private Path path;
 
     /**
      * Default constructor creating an AuthorizationPattern permitting any AuthorizationPath.
-     *
-     * @see Segmenter#ANY
      */
-    public AuthorizationPattern() {
-        this(Segmenter.ANY, Segmenter.ANY, Segmenter.ANY);
+    public GlobAuthorizationPattern() {
+        this(ANY, ANY, ANY);
     }
 
     /**
@@ -80,11 +99,11 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
      *
      * @param realmPattern A regexp pattern defining realms to permit.
      * @param groupPattern A regexp pattern defining group names to permit.
-     * @see Segmenter#ANY
      */
-    public AuthorizationPattern(final String realmPattern,
-                                final String groupPattern) {
-        this(realmPattern, groupPattern, Segmenter.ANY);
+    public GlobAuthorizationPattern(
+            final String realmPattern,
+            final String groupPattern) {
+        this(realmPattern, groupPattern, ANY);
     }
 
     /**
@@ -96,9 +115,9 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
      * @param qualifierPattern A regexp pattern defining qualifiers to permit.
      */
     @SuppressWarnings("PMD")
-    public AuthorizationPattern(final String realmPattern,
-                                final String groupPattern,
-                                final String qualifierPattern) {
+    public GlobAuthorizationPattern(final String realmPattern,
+            final String groupPattern,
+            final String qualifierPattern) {
 
         // Check sanity
         Validate.notNull(realmPattern, "realmPattern");
@@ -110,8 +129,7 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
         this.groupPattern = groupPattern;
         this.qualifierPattern = qualifierPattern;
 
-        // Should the initial '/' be optional when matching?
-        this.pattern = Pattern.compile(toString());
+        this.path = Paths.get(realmPattern, groupPattern, qualifierPattern);
     }
 
     /**
@@ -139,7 +157,7 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
         }
 
         // All done.
-        return (obj instanceof AuthorizationPattern && toString().equals(obj.toString()));
+        return (obj instanceof GlobAuthorizationPattern && toString().equals(obj.toString()));
     }
 
     /**
@@ -154,7 +172,7 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(final AuthorizationPattern that) {
+    public int compareTo(final GlobAuthorizationPattern that) {
         return that == null ? -1 : toString().compareTo(that.toString());
     }
 
@@ -166,25 +184,34 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
      * pattern of this AuthorizationPattern.
      */
     public boolean matches(final CharSequence sequence) {
+
+        // Check sanity
         if (sequence == null) {
             return false;
         }
 
+        // Handle initial "/"'s
+        String normalized = AuthorizationPath.parse(sequence.toString())
+                .toString()
+                .replace(SemanticAuthorizationPath.NO_VALUE, GlobAuthorizationPattern.ANY);
+        final String globPatternToMatch = "glob:"
+                + (normalized.startsWith("/") ? normalized.substring(1) : normalized);
+
         // Delegate.
-        return pattern.matcher(sequence).matches();
+        return this.path.getFileSystem().getPathMatcher(globPatternToMatch).matches(this.path);
     }
 
     /**
      * Parses the supplied concatenatedPatterns into several AuthorizationPattern instances.
      * Empty path segments (after trimming) will be replaced by
-     * {@code Segmenter.ANY} (i.e. <code>{@value Segmenter#ANY}</code>).
+     * {@link GlobAuthorizationPattern#ANY}.
      *
      * @param concatenatedPatterns A string containing concatenated AuthorizationPatterns.
      * @return a SortedSet containing AuthorizationPattern instances, extracted from the concatenatedPatterns string.
      */
-    public static SortedSet<AuthorizationPattern> parse(final String concatenatedPatterns) {
+    public static SortedSet<GlobAuthorizationPattern> parse(final String concatenatedPatterns) {
 
-        final SortedSet<AuthorizationPattern> toReturn = new TreeSet<>();
+        final SortedSet<GlobAuthorizationPattern> toReturn = new TreeSet<>();
         if (concatenatedPatterns != null) {
 
             final StringTokenizer tok = new StringTokenizer(
@@ -193,7 +220,7 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
                     false);
 
             while (tok.hasMoreTokens()) {
-                toReturn.add(parseSingle(tok.nextToken()));
+                toReturn.add(createSinglePattern(tok.nextToken()));
             }
         }
 
@@ -204,7 +231,7 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
     /**
      * Parses the supplied pattern string into a single AuthorizationPattern instance. The patternString cannot
      * contain more than 3 path segments. Empty path segments (after trimming) will be replaced by
-     * {@code Segmenter.ANY} (i.e. <code>{@value Segmenter#ANY}</code>).
+     * {@link GlobAuthorizationPattern#ANY}.
      *
      * @param patternString The pattern string to parse. Expected patternString format:
      *                      {@code [/]realm/group/qualifier}.
@@ -212,11 +239,35 @@ public class AuthorizationPattern implements Comparable<AuthorizationPattern> {
      * @throws IllegalArgumentException if the patternString contained
      *                                  {@code SemanticAuthorizationPath.PATTERN_SEPARATOR} or more than 3
      *                                  {@code SemanticAuthorizationPath.SEGMENT_SEPARATOR} characters.
-     * @see Segmenter#ANY
      */
-    public static AuthorizationPattern parseSingle(final String patternString) throws IllegalArgumentException {
+    public static GlobAuthorizationPattern createSinglePattern(final String patternString)
+            throws IllegalArgumentException {
 
-        final String[] segments = Segmenter.replaceEmptySegmentsWithAnyPattern(Segmenter.segment(patternString), true);
-        return new AuthorizationPattern(segments[0], segments[1], segments[2]);
+        // Check sanity
+        Validate.notEmpty(patternString, "patternString");
+
+        // Expected pattern: /realm[/group[/qualifier]]
+        // Peel off the initial "/" if present.
+        final String effectivePath = patternString.trim().startsWith(SEGMENT_SEPARATOR_STRING)
+                ? patternString.substring(1)
+                : patternString.trim();
+        final String[] segments = effectivePath.split(SEGMENT_SEPARATOR_STRING, -1);
+        if(segments.length > 3) {
+            throw new IllegalArgumentException("Expected pattern: /realm[/group[/qualifier]], but got: "
+                    + patternString);
+        }
+
+        final String realmPattern = segments.length > 0 && !segments[0].isEmpty()
+                ? segments[0]
+                : GlobAuthorizationPattern.ANY;
+        final String groupPattern = segments.length > 1 && !segments[1].isEmpty()
+                ? segments[1]
+                : GlobAuthorizationPattern.ANY;
+        final String qualifierPattern = segments.length > 2 && !segments[2].isEmpty()
+                ? segments[2]
+                : GlobAuthorizationPattern.ANY;
+
+        // All Done.
+        return new GlobAuthorizationPattern(realmPattern, groupPattern, qualifierPattern);
     }
 }

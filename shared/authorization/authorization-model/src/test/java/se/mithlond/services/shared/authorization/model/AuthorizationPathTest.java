@@ -28,7 +28,6 @@ import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.authorization.model.helpers.AuthorizationPaths;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
-import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -208,21 +207,52 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         final Path oneParts = Paths.get("realm");
         final Path twoParts = Paths.get("realm", "group");
         final Path threeParts = Paths.get("realm/group", "qualifier");
-        final Path secondAndThirdPart = Paths.get("", "group", "qualifier");
-        final Path fromURI = Paths.get(new URI("file:///some/path/to/a/file"));
 
         final FileSystem fs = FileSystems.getDefault();
         final String separator = fs.getSeparator();
 
         // Act
-
-
-        // Assert
         printout(zeroParts, separator);
         printout(oneParts, separator);
         printout(twoParts, separator);
         printout(threeParts, separator);
+
     }
+
+    @Test
+    public void validateBuilderInitialState() {
+
+        // Assemble
+        final String expectedPattern = "/__/__/__";
+        final AuthorizationPath.Builder unitUnderTest = AuthorizationPath.getBuilder();
+
+        // Act
+        final AuthorizationPath result = unitUnderTest.build();
+
+        // Assert
+        Assert.assertEquals(expectedPattern, result.toString());
+    }
+
+    @Test
+    public void validateBuildingAuthPath() {
+
+        // Assemble
+        final String groupName = "mithlond";
+
+        // Act
+        final AuthorizationPath unitUnderTest = AuthorizationPath.getBuilder()
+                        .withGroup(groupName)
+                        .build();
+
+        // Assert
+        Assert.assertEquals(SemanticAuthorizationPath.NO_VALUE, unitUnderTest.getRealm());
+        Assert.assertEquals(groupName, unitUnderTest.getGroup());
+        Assert.assertEquals(SemanticAuthorizationPath.NO_VALUE, unitUnderTest.getQualifier());
+    }
+
+    //
+    // Private helperss
+    //
 
     private void printout(final Path path, final String separator) {
 

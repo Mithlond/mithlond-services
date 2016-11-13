@@ -36,10 +36,10 @@ import java.util.TreeSet;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class AuthorizationPatternTest {
+public class GlobAuthorizationPatternTest {
 
     // Shared state
-    private String anySegment = "/" + Segmenter.ANY;
+    private String anySegment = "/" + GlobAuthorizationPattern.ANY;
 
     @Test
     public void validateInitialCreation() {
@@ -55,9 +55,9 @@ public class AuthorizationPatternTest {
         final String qualifiedPath = "/" + realm + "/" + group + "/" + qualifier;
 
         // Act
-        final AuthorizationPattern unitUnderTest1 = new AuthorizationPattern();
-        final AuthorizationPattern unitUnderTest2 = new AuthorizationPattern(realm, group);
-        final AuthorizationPattern unitUnderTest3 = new AuthorizationPattern(realm, group, qualifier);
+        final GlobAuthorizationPattern unitUnderTest1 = new GlobAuthorizationPattern();
+        final GlobAuthorizationPattern unitUnderTest2 = new GlobAuthorizationPattern(realm, group);
+        final GlobAuthorizationPattern unitUnderTest3 = new GlobAuthorizationPattern(realm, group, qualifier);
 
         // Assert
         Assert.assertEquals(fullAnyPath, unitUnderTest1.toString());
@@ -85,12 +85,12 @@ public class AuthorizationPatternTest {
         final String fullPatternWithoutInitialSeparator = "realm/group/qualifier";
 
         // Act
-        final AuthorizationPattern p1 = AuthorizationPattern.parseSingle(fullPattern);
-        final AuthorizationPattern p2 = AuthorizationPattern.parseSingle(fullPatternWithoutInitialSeparator);
-        final AuthorizationPattern p3 = AuthorizationPattern.parseSingle(realmGroupPattern);
-        final AuthorizationPattern p4 = AuthorizationPattern.parseSingle(realmGroupPatternWithoutInitialSeparator);
-        final AuthorizationPattern p5 = AuthorizationPattern.parseSingle(realmPattern);
-        final AuthorizationPattern p6 = AuthorizationPattern.parseSingle(realmPatternWithoutInitialSeparator);
+        final GlobAuthorizationPattern p1 = GlobAuthorizationPattern.createSinglePattern(fullPattern);
+        final GlobAuthorizationPattern p2 = GlobAuthorizationPattern.createSinglePattern(fullPatternWithoutInitialSeparator);
+        final GlobAuthorizationPattern p3 = GlobAuthorizationPattern.createSinglePattern(realmGroupPattern);
+        final GlobAuthorizationPattern p4 = GlobAuthorizationPattern.createSinglePattern(realmGroupPatternWithoutInitialSeparator);
+        final GlobAuthorizationPattern p5 = GlobAuthorizationPattern.createSinglePattern(realmPattern);
+        final GlobAuthorizationPattern p6 = GlobAuthorizationPattern.createSinglePattern(realmPatternWithoutInitialSeparator);
 
         // Assert
         Assert.assertEquals(fullPattern, p1.toString());
@@ -102,10 +102,31 @@ public class AuthorizationPatternTest {
     }
 
     @Test
-    public void validateParsingSingleAuthorizationPatterns() {
+    public void validateParseGlobAuthorizationPattern() {
 
         // Assemble
-        final SortedMap<String, AuthorizationPattern> actual = new TreeMap<>();
+        final String toParse = "/mifflond/*/member,mifflond/foo,/fjodjim";
+
+        // Act
+        final SortedSet<GlobAuthorizationPattern> parsed = GlobAuthorizationPattern.parse(toParse);
+        final SortedSet<String> patterns = new TreeSet<>();
+        parsed.forEach(gap -> patterns.add(gap.toString()));
+
+        // Assert
+        // System.out.println("Got: " + parsed);
+        // [/fjodjim/*/*, /mifflond/*/member, /mifflond/foo/*]
+        Assert.assertEquals(3, parsed.size());
+
+        Assert.assertTrue(patterns.contains("/fjodjim/*/*"));
+        Assert.assertTrue(patterns.contains("/mifflond/foo/*"));
+        Assert.assertTrue(patterns.contains("/mifflond/*/member"));
+    }
+
+    @Test
+    public void validateParsingAuthorizationPatterns() {
+
+        // Assemble
+        final SortedMap<String, GlobAuthorizationPattern> actual = new TreeMap<>();
         final SortedMap<String, String> expected = new TreeMap<>();
 
         expected.put("//mithlond/", anySegment + "/mithlond" + anySegment);
@@ -118,12 +139,12 @@ public class AuthorizationPatternTest {
 
         // Act
         for (Map.Entry<String, String> current : expected.entrySet()) {
-            actual.put(current.getKey(), AuthorizationPattern.parseSingle(current.getKey()));
+            actual.put(current.getKey(), GlobAuthorizationPattern.createSinglePattern(current.getKey()));
         }
 
         // Assert
         Assert.assertEquals(expected.size(), actual.size());
-        for (Map.Entry<String, AuthorizationPattern> current : actual.entrySet()) {
+        for (Map.Entry<String, GlobAuthorizationPattern> current : actual.entrySet()) {
             Assert.assertEquals(expected.get(current.getKey()), current.getValue().toString());
         }
 
@@ -139,7 +160,7 @@ public class AuthorizationPatternTest {
         // Act & Assert
         for (String current : incorrectPatterns) {
             try {
-                AuthorizationPattern.parseSingle(current);
+                GlobAuthorizationPattern.createSinglePattern(current);
                 Assert.fail("Expected failure for parsing pattern [" + current + "]");
             } catch (Exception e) {
                 // Ignore this.
@@ -159,14 +180,28 @@ public class AuthorizationPatternTest {
         expected.add(anySegment + anySegment + anySegment);
 
         // Act
-        final SortedSet<AuthorizationPattern> parsed = AuthorizationPattern.parse(toParse);
+        final SortedSet<GlobAuthorizationPattern> parsed = GlobAuthorizationPattern.parse(toParse);
 
         // Assert
-        final Iterator<AuthorizationPattern> patternIterator = parsed.iterator();
+        final Iterator<GlobAuthorizationPattern> patternIterator = parsed.iterator();
 
         for (final String currentExpectedPattern : expected) {
-            final AuthorizationPattern actual = patternIterator.next();
+            final GlobAuthorizationPattern actual = patternIterator.next();
             Assert.assertEquals(currentExpectedPattern, actual.toString());
         }
+    }
+
+    @Test
+    public void validateGlobMatchingForIdenticalPath() {
+
+        // Assemble
+        final String path = "/mifflond/foobar";
+        final GlobAuthorizationPattern globPattern = GlobAuthorizationPattern.createSinglePattern(path);
+
+        // Act
+        final boolean matches = globPattern.matches(path);
+
+        // Assert
+        Assert.assertTrue(matches);
     }
 }

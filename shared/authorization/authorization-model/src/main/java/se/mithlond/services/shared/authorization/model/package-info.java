@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-shared-authorization-model
  * %%
- * Copyright (C) 2015 Mithlond
+ * Copyright (C) 2015 - 2016 Mithlond
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
