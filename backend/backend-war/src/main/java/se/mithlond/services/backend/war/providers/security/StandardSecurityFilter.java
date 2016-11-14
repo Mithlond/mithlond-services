@@ -26,10 +26,9 @@ import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.providers.security.access.MembershipFinder;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
-import se.mithlond.services.shared.authorization.api.Segmenter;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 
 import javax.annotation.Priority;
@@ -66,7 +65,8 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     /**
      * Default authentication required to invoke any method, unless annotated with
      */
-    public static final GlobAuthorizationPattern DEFAULT_AUTH_PATTERN = new GlobAuthorizationPattern(Segmenter.ANY, "member");
+    public static final GlobAuthorizationPattern DEFAULT_AUTH_PATTERN
+            = new GlobAuthorizationPattern(GlobAuthorizationPattern.ANY, "member");
 
     // Our log
     private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);

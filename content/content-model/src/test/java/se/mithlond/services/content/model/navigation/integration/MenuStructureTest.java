@@ -155,7 +155,7 @@ public class MenuStructureTest extends AbstractEntityTest {
 
         final List<AbstractAuthorizedNavItem> firstChildren = first.getChildren();
         Assert.assertEquals(firstMenu.getChildren().size(), firstChildren.size());
-        Assert.assertEquals("/mithlond/members/(\\p{javaLetterOrDigit}|_)*",
+        Assert.assertEquals("/mithlond/members/*",
                 firstChildren.get(0).getRequiredAuthorizationPatterns().first().toString());
 
         final StandardMenuItem second = (StandardMenuItem) rootMenu.get(1);

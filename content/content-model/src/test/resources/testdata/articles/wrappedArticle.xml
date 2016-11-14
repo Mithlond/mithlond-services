@@ -107,6 +107,7 @@
                 <personalSettings/>
             </lastUpdatedBy>
             <title>Article Title</title>
+            <contentPath>/some/path</contentPath>
             <sections>
                 <section jpaId="0" version="0" showHeading="true">
                     <heading>section1_heading</heading>

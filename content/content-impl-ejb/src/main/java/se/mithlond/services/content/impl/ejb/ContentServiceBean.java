@@ -46,6 +46,7 @@ public class ContentServiceBean extends AbstractJpaService implements ContentSer
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("PMD")
     @Override
     public ContentPaths getContentPaths(final Long owningOrganisationID,
                                         final SemanticAuthorizationPathProducer caller,
