@@ -123,8 +123,8 @@ public class SimpleAuthorizerTest {
 
         // Assemble
         final SimpleAuthorizer unitUnderTest = SimpleAuthorizer.getInstance();
-        final SortedSet<GlobAuthorizationPattern> patterns1 = GlobAuthorizationPattern.parse("/forodrim/members," +
-                "/mithlond/members");
+        final SortedSet<GlobAuthorizationPattern> patterns1 = GlobAuthorizationPattern.parse(
+                "/forodrim/members,/mithlond/members");
         final SortedSet<GlobAuthorizationPattern> patterns2 = GlobAuthorizationPattern
                 .parse("/mithlond/village_idiots/");
         final SortedSet<GlobAuthorizationPattern> patterns3 = GlobAuthorizationPattern
@@ -167,10 +167,10 @@ public class SimpleAuthorizerTest {
         final String path = prefix + "members";
 
         // Act
-        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern(path).matches(pattern));
-        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern("/" + path).matches("/" + pattern));
-        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern(path).matches("/" + pattern));
-        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern("/" + path).matches(pattern));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern(pattern).matches(path));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern("/" + pattern).matches("/" + path));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern(pattern).matches("/" + path));
+        Assert.assertTrue(GlobAuthorizationPattern.createSinglePattern("/" + pattern).matches(path));
     }
 
     //

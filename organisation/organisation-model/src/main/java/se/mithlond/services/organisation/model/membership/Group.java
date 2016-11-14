@@ -364,7 +364,10 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
 
         // Create an AuthorizationPath for this Group, using an empty qualifier.
-        toReturn.add(new AuthorizationPath(organisation.getOrganisationName(), groupName, ""));
+        toReturn.add(new AuthorizationPath(
+                organisation.getOrganisationName(),
+                groupName,
+                SemanticAuthorizationPath.NO_VALUE));
 
         // All Done.
         return toReturn;

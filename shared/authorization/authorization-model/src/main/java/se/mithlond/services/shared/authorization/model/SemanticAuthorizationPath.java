@@ -139,7 +139,26 @@ public interface SemanticAuthorizationPath extends Comparable<SemanticAuthorizat
      * <code>{@link #getRealm()} + "/" + {@link #getGroup()} + "/" + {@link #getQualifier()}</code>
      */
     default Path toPath() {
-        return Paths.get(getRealm(), getGroup(), getQualifier());
+        return toPath(false);
+    }
+
+    /**
+     * Converts this SemanticAuthorizationPath to a standard Java NIO Path.
+     * <strong>NOTE!</strong> This implies operations which are FileSystem dependent, implying that this
+     * method should be used with caution.
+     *
+     * @param replaceNoValueWithStar if true, all occurrences of {@link #NO_VALUE} are replaced with a "*" char.
+     * @return A Java NIO Path with the structure
+     * <code>{@link #getRealm()} + "/" + {@link #getGroup()} + "/" + {@link #getQualifier()}</code>
+     */
+    default Path toPath(final boolean replaceNoValueWithStar) {
+
+        final String realm = replaceNoValueWithStar ? getRealm().replace(NO_VALUE, "*") : getRealm();
+        final String group = replaceNoValueWithStar ? getGroup().replace(NO_VALUE, "*") : getGroup();
+        final String qualifier = replaceNoValueWithStar ? getQualifier().replace(NO_VALUE, "*") : getQualifier();
+
+        // All Done.
+        return Paths.get(realm, group, qualifier);
     }
 
     /**

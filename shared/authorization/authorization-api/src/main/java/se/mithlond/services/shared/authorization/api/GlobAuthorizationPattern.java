@@ -190,15 +190,18 @@ public class GlobAuthorizationPattern implements Comparable<GlobAuthorizationPat
             return false;
         }
 
-        // Handle initial "/"'s
-        String normalized = AuthorizationPath.parse(sequence.toString())
-                .toString()
-                .replace(SemanticAuthorizationPath.NO_VALUE, GlobAuthorizationPattern.ANY);
-        final String globPatternToMatch = "glob:"
-                + (normalized.startsWith("/") ? normalized.substring(1) : normalized);
+        // Convert to a Path for the comparison
+        final AuthorizationPath tmpPath = AuthorizationPath.parse(sequence.toString());
+        final Path synteticPath = tmpPath.toPath(true);
 
-        // Delegate.
-        return this.path.getFileSystem().getPathMatcher(globPatternToMatch).matches(this.path);
+        // Delegate, and handle initial "/"'s
+        final String prefix = synteticPath.startsWith(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING)
+                && !this.path.toString().startsWith(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING)
+                ? SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING
+                : "";
+
+        final String globPattern = "glob:" + prefix + this.path.toString();
+        return this.path.getFileSystem().getPathMatcher(globPattern).matches(synteticPath);
     }
 
     /**
@@ -252,7 +255,7 @@ public class GlobAuthorizationPattern implements Comparable<GlobAuthorizationPat
                 ? patternString.substring(1)
                 : patternString.trim();
         final String[] segments = effectivePath.split(SEGMENT_SEPARATOR_STRING, -1);
-        if(segments.length > 3) {
+        if (segments.length > 3) {
             throw new IllegalArgumentException("Expected pattern: /realm[/group[/qualifier]], but got: "
                     + patternString);
         }
