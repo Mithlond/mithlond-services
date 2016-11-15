@@ -46,17 +46,21 @@ public interface ContentService {
      *                             within a normal file system.
      * @param caller               The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                             Articles should be retrieved.
-     * @param startingDate         The LocalDate marking the start of the articles to search for.
+     * @param endDate              The LocalDate marking the end of the interval for creation time
+     *                             articles to search for.
      * @param period               The period of dates to use in order to define an interval within which to search
      *                             for Articles.
+     * @param maxResults           The maximum results desired within the Articles wrapper.
+     * @param startAtIndex         The index within the search to start with.
      * @return An Articles transport holder containing the Articles matching the supplied owner,
      * selectionPath and authentication paths.
      */
     Articles getArticles(final Long owningOrganisationID,
-                         final String contentPath,
-                         final SemanticAuthorizationPathProducer caller,
-                         final LocalDate startingDate,
-                         final Period period);
+            final SemanticAuthorizationPathProducer caller,
+            final LocalDate endDate,
+            final Period period,
+            final Long maxResults,
+            final Long startAtIndex);
 
     /**
      * Retrieves all articles matching the given ContentPaths for the supplied caller and with modification dates
@@ -65,15 +69,14 @@ public interface ContentService {
      * @param contentPaths The non-null ContentPaths for the articles to retrieve.
      * @param caller       The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                     Articles should be retrieved.
-     * @param startingDate The LocalDate marking the start of the articles to search for.
-     * @param period       The period of dates to use in order to define an interval within which to search
-     *                     for Articles.
+     * @param maxResults   The maximum results desired within the Articles wrapper.
+     * @param startAtIndex The index within the search to start with.
      * @return The Articles matching the supplied parameters.
      */
     Articles getArticles(final ContentPaths contentPaths,
-                         final SemanticAuthorizationPathProducer caller,
-                         final LocalDate startingDate,
-                         final Period period);
+            final SemanticAuthorizationPathProducer caller,
+            final Long maxResults,
+            final Long startAtIndex);
 
     /**
      * Finds the ContentPaths for articles available within the supplied organisation and viewable/accessable
@@ -83,13 +86,18 @@ public interface ContentService {
      *                             to be retrieved.
      * @param caller               The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                             Articles should be retrieved.
-     * @param startingDate         The LocalDate marking the start of the articles to search for.
-     * @param period               The period of dates to use in order to define an interval within which to search
-     *                             for Articles.
+     * @param endDate              The LocalDate marking the end of the interval for creation time
+     *                             articles to search for.
+     * @param period               The period of dates to use in order to define an interval within which
+     *                             to search for Articles.
+     * @param maxResults           The maximum results desired within the ContentPaths wrapper.
+     * @param startAtIndex         The index within the search to start with.
      * @return A ContentPaths transport wrapper containing the requested ContentPaths.
      */
     ContentPaths getContentPaths(final Long owningOrganisationID,
-                                 final SemanticAuthorizationPathProducer caller,
-                                 final LocalDate startingDate,
-                                 final Period period);
+            final SemanticAuthorizationPathProducer caller,
+            final LocalDate endDate,
+            final Period period,
+            final Long maxResults,
+            final Long startAtIndex);
 }

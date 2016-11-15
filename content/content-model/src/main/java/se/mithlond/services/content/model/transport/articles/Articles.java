@@ -112,6 +112,15 @@ public class Articles extends AbstractSimpleTransporter {
     }
 
     /**
+     * Assigns the realm of this Articles transport object.
+     *
+     * @param realm A non-empty realm.
+     */
+    public void setRealm(final String realm) {
+        this.realm = Validate.notEmpty(realm, "realm");
+    }
+
+    /**
      * Retrieves the active selectionPath, which is a Path qualifier submitted to the backend service finding the
      * Articles wrapped in this transport object.
      *

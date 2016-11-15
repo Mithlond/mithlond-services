@@ -22,6 +22,7 @@
 package se.mithlond.services.content.model.transport.articles;
 
 import se.mithlond.services.content.model.ContentPatterns;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -65,6 +66,15 @@ public class ContentPaths extends AbstractSimpleTransporter {
      */
     public ContentPaths() {
         this.contentPaths = new ArrayList<>();
+    }
+
+    /**
+     * Assigns the realm of this ContentPaths transport object.
+     *
+     * @param realm A non-empty realm.
+     */
+    public void setRealm(final String realm) {
+        this.realm = Validate.notEmpty(realm, "realm");
     }
 
     /**

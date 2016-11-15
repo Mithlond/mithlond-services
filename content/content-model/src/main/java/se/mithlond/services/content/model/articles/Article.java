@@ -61,6 +61,20 @@ import java.util.List;
                 query = "select a from Article a "
                         + " where a.owner.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
                         + " and a.contentPath like :" + ContentPatterns.PARAM_CONTENT_PATH
+                        + " and a.created > :" + ContentPatterns.PARAM_INTERVAL_START
+                        + " and a.created < :" + ContentPatterns.PARAM_INTERVAL_END
+                        + " order by a.created desc, a.lastUpdated desc"),
+        @NamedQuery(name = Article.NAMEDQ_GET_CONTENT_PATHS_FOR_ORGANISATION,
+                query = "select a.contentPath from Article a "
+                        + " where a.owner.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
+                        + " and a.created > :" + ContentPatterns.PARAM_INTERVAL_START
+                        + " and a.created < :" + ContentPatterns.PARAM_INTERVAL_END
+                        + " order by a.created desc, a.lastUpdated desc"),
+        @NamedQuery(name = Article.NAMEDQ_GET_BY_CREATION_DATE_FOR_ORGANISATION,
+                query = "select a from Article a "
+                        + " where a.owner.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
+                        + " and a.created > :" + ContentPatterns.PARAM_INTERVAL_START
+                        + " and a.created < :" + ContentPatterns.PARAM_INTERVAL_END
                         + " order by a.created desc, a.lastUpdated desc")
 })
 @Entity
@@ -72,6 +86,16 @@ public class Article extends AbstractTimestampedText {
      * NamedQuery for getting Articles from an Organisation by its JPA ID and the ContentPath of the Article to get.
      */
     public static final String NAMEDQ_GET_BY_ORGANISATION_ID_AND_CONTENT_PATH = "Article.getByOrgIdAndContentPath";
+
+    /**
+     * NamedQuery for getting Articles from an Organisation by its JPA ID and the CreationDate of the Article to get.
+     */
+    public static final String NAMEDQ_GET_BY_CREATION_DATE_FOR_ORGANISATION = "Article.getByOrgIdAndCreationDate";
+
+    /**
+     * NamedQuery for getting the ContentPaths for all Articles owned by an Organisation.
+     */
+    public static final String NAMEDQ_GET_CONTENT_PATHS_FOR_ORGANISATION = "Article.getContentPathsForOrganisation";
 
     /**
      * The Title of this Article.

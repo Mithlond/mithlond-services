@@ -47,9 +47,24 @@ public final class ContentPatterns {
     public static final String PARAM_LAST_MODIFIED = "last_modified";
 
     /**
+     * NamedQuery parameter name for an interval start.
+     */
+    public static final String PARAM_INTERVAL_START = "interval_start";
+
+    /**
+     * NamedQuery parameter name for an interval end.
+     */
+    public static final String PARAM_INTERVAL_END = "interval_end";
+
+    /**
      * NamedQuery parameter name for content path.
      */
     public static final String PARAM_CONTENT_PATH = "content_path";
+
+    /**
+     * NamedQuery parameter name for content path.
+     */
+    public static final String PARAM_CONTENT_PATHS = "content_paths";
 
     /*
      * Hide utility-class constructors.

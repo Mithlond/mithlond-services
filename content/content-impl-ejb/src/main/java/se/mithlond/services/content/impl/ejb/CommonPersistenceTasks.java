@@ -30,6 +30,9 @@ import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.chrono.ChronoLocalDate;
 
 /**
@@ -68,6 +71,22 @@ public final class CommonPersistenceTasks {
 
         // All Done
         return organisation;
+    }
+
+    /**
+     * Retrieves the Organisation with the supplied organisation JPA ID.
+     *
+     * @param entityManager  The non-null entity manager.
+     * @param organisationID The JPA ID of the organisation to retrieve.
+     * @return The Organisation entity - or null if no organisation could be retrieved.
+     */
+    public static Organisation getOrganisation(final EntityManager entityManager, final long organisationID) {
+
+        try {
+            return entityManager.find(Organisation.class, organisationID);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Hittade ingen organisation med ID [" + organisationID + "]");
+        }
     }
 
     /**
@@ -163,6 +182,52 @@ public final class CommonPersistenceTasks {
             throw new IllegalArgumentException("Intervallets sluttid [" + endTimeString
                     + "] måste vara efter starttiden [" + startTimeString + "]");
         }
+    }
+
+    /**
+     * Finds the startTime originating from the supplied endTime and period.
+     *
+     * @param endTime The endTime to originate from.
+     * @param period  The period size.
+     * @return The start LocalDate.
+     */
+    public static LocalDate getStartTimeFrom(
+            final LocalDate endTime,
+            final Period period) {
+
+        final LocalDate effectiveEnd = endTime == null
+                ? LocalDate.now(TimeFormat.SWEDISH_TIMEZONE)
+                : endTime;
+
+        final Period effectivePeriod = period == null || period.isNegative()
+                ? Period.ofMonths(3)
+                : period;
+
+        // All Done.
+        return effectiveEnd.minus(effectivePeriod);
+    }
+
+    /**
+     * Finds the startTime originating from the supplied endTime and period.
+     *
+     * @param endTime The endTime to originate from.
+     * @param period  The period size.
+     * @return The start LocalDateTime.
+     */
+    public static LocalDateTime getStartTimeFrom(
+            final LocalDateTime endTime,
+            final Period period) {
+
+        final LocalDateTime effectiveEndTime = endTime == null
+                ? LocalDateTime.now(TimeFormat.SWEDISH_TIMEZONE)
+                : endTime;
+
+        final Period effectivePeriod = period == null || period.isNegative()
+                ? Period.ofMonths(3)
+                : period;
+
+        // All Done.
+        return effectiveEndTime.minus(effectivePeriod);
     }
 
     /*

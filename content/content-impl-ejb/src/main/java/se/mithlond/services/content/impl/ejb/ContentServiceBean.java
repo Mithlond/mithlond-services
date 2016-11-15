@@ -22,18 +22,24 @@
 package se.mithlond.services.content.impl.ejb;
 
 import se.mithlond.services.content.api.ContentService;
+import se.mithlond.services.content.model.ContentPatterns;
+import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.content.model.transport.articles.Articles;
 import se.mithlond.services.content.model.transport.articles.ContentPaths;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
+import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.spi.jaxb.ErrorCode;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Default ContentService POJO implementation.
@@ -42,45 +48,70 @@ import java.util.stream.Collectors;
  */
 public class ContentServiceBean extends AbstractJpaService implements ContentService {
 
+    // Internal state
+    private static final SimpleAuthorizer AUTHORIZER = SimpleAuthorizer.getInstance();
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("PMD")
     @Override
-    public ContentPaths getContentPaths(final Long owningOrganisationID,
-                                        final SemanticAuthorizationPathProducer caller,
-                                        final LocalDate startingDate,
-                                        final Period period) {
+    public ContentPaths getContentPaths(
+            final Long owningOrganisationID,
+            final SemanticAuthorizationPathProducer caller,
+            final LocalDate endDate,
+            final Period period,
+            final Long maxResults,
+            final Long startAtIndex) {
 
         final ContentPaths toReturn = new ContentPaths();
 
         if (owningOrganisationID != null && caller != null) {
 
-            // Calculate the effective interval
-            final LocalDate effStartDate = startingDate == null
-                    ? LocalDate.now(TimeFormat.SWEDISH_TIMEZONE)
-                    : startingDate;
-            final Period effPeriod = period == null
-                    ? Period.ofYears(1)
-                    : period;
+            try {
 
-            // Find the organisation
-            final Organisation org = entityManager.find(Organisation.class, owningOrganisationID);
-            if(org != null) {
+                // Find the organisation
+                final Organisation org = CommonPersistenceTasks.getOrganisation(entityManager, owningOrganisationID);
 
-                final List<String> authPaths = caller.getPaths()
-                        .stream()
-                        .map(SemanticAuthorizationPath::getPath)
-                        .collect(Collectors.toList());
+                // Set the realm to be the organisation name
+                toReturn.setRealm(org.getOrganisationName());
 
-                // Find the paths available
+                // Authorize the call within this service.
+                final SortedSet<GlobAuthorizationPattern> authPatterns = new TreeSet<>();
+                authPatterns.add(new GlobAuthorizationPattern(org.getOrganisationName(), GlobAuthorizationPattern.ANY));
 
+                if (AUTHORIZER.isAuthorized(authPatterns, caller.getPaths())) {
+
+                    // Calculate the effective interval
+                    final LocalDate intervalStart = endDate == null
+                            ? LocalDate.now(TimeFormat.SWEDISH_TIMEZONE)
+                            : endDate;
+                    final LocalDate intervalEnd = CommonPersistenceTasks.getStartTimeFrom(intervalStart, period);
+
+                    // Find the paths available
+                    final List<String> pathsFound = entityManager.createNamedQuery(
+                            Article.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CONTENT_PATH, String.class)
+                            .setParameter(ContentPatterns.PARAM_INTERVAL_START, intervalStart)
+                            .setParameter(ContentPatterns.PARAM_INTERVAL_END, intervalEnd)
+                            .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, org.getId())
+                            .setMaxResults(getEffective(maxResults).intValue())
+                            .setFirstResult(getOffset(startAtIndex).intValue())
+                            .getResultList();
+
+                    if (pathsFound != null) {
+                        toReturn.getContentPaths().addAll(pathsFound);
+                    }
+                } else {
+
+                    // Notify the user.
+                    toReturn.setError(ErrorCode.UNAUTHORIZED, "" + org.getOrganisationName());
+                }
+
+            } catch (Exception e) {
+                toReturn.setError(ErrorCode.INTERNAL_SERVER_ERROR, "" + e);
             }
         }
 
-        // Do we have an owning organisation?
-
+        // All Done.
         return toReturn;
     }
 
@@ -89,11 +120,53 @@ public class ContentServiceBean extends AbstractJpaService implements ContentSer
      */
     @Override
     public Articles getArticles(final Long owningOrganisationID,
-                                final String contentPath,
-                                final SemanticAuthorizationPathProducer caller,
-                                final LocalDate startingDate,
-                                final Period period) {
-        return null;
+            final SemanticAuthorizationPathProducer caller,
+            final LocalDate endDate,
+            final Period period,
+            final Long maxResults,
+            final Long startAtIndex) {
+
+        final Articles toReturn = new Articles();
+
+        if (owningOrganisationID != null && caller != null) {
+
+            try {
+
+                // Find the organisation
+                final Organisation org = CommonPersistenceTasks.getOrganisation(entityManager, owningOrganisationID);
+                toReturn.setRealm(org.getOrganisationName());
+
+                // Authorize the call within this service.
+                final SortedSet<GlobAuthorizationPattern> authPatterns = new TreeSet<>();
+                authPatterns.add(new GlobAuthorizationPattern(org.getOrganisationName(), GlobAuthorizationPattern.ANY));
+
+                if (AUTHORIZER.isAuthorized(authPatterns, caller.getPaths())) {
+
+
+                    final List<Article> articleResults = entityManager.createNamedQuery(
+                            Article.NAMEDQ_GET_BY_CREATION_DATE_FOR_ORGANISATION, Article.class)
+                            .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, org.getId())
+                            .setMaxResults(getEffective(maxResults).intValue())
+                            .setFirstResult(getOffset(startAtIndex).intValue())
+                            .getResultList();
+
+                    if (articleResults != null && !articleResults.isEmpty()) {
+                        toReturn.getArticleList().addAll(articleResults);
+                    }
+
+                } else {
+
+                    // Notify the user.
+                    toReturn.setError(ErrorCode.UNAUTHORIZED, "" + org.getOrganisationName());
+                }
+
+            } catch (Exception e) {
+                toReturn.setError(ErrorCode.INTERNAL_SERVER_ERROR, "" + e);
+            }
+        }
+
+        // All Done.
+        return toReturn;
     }
 
     /**
@@ -101,9 +174,76 @@ public class ContentServiceBean extends AbstractJpaService implements ContentSer
      */
     @Override
     public Articles getArticles(final ContentPaths contentPaths,
-                                final SemanticAuthorizationPathProducer caller,
-                                final LocalDate startingDate,
-                                final Period period) {
-        return null;
+            final SemanticAuthorizationPathProducer caller,
+            final Long maxResults,
+            final Long startAtIndex) {
+
+        final Articles toReturn = new Articles();
+
+        if (contentPaths != null && contentPaths.getContentPaths() != null) {
+
+            try {
+
+                // Extract the data from the ContentPaths
+                final String organisationName = contentPaths.getRealm();
+                final List<String> thePaths = contentPaths.getContentPaths();
+
+                // Find the organisation
+                final Organisation org = CommonPersistenceTasks.getOrganisation(entityManager, organisationName);
+                toReturn.setRealm(org.getOrganisationName());
+
+                // Authorize the call within this service.
+                final SortedSet<GlobAuthorizationPattern> authPatterns = new TreeSet<>();
+                authPatterns.add(new GlobAuthorizationPattern(org.getOrganisationName(), GlobAuthorizationPattern.ANY));
+
+                if (AUTHORIZER.isAuthorized(authPatterns, caller.getPaths())) {
+
+                    final List<Article> articleResults = entityManager.createNamedQuery(
+                            Article.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CONTENT_PATH, Article.class)
+                            .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, org.getId())
+                            .setParameter(ContentPatterns.PARAM_CONTENT_PATHS, thePaths)
+                            .setMaxResults(getEffective(maxResults).intValue())
+                            .setFirstResult(getOffset(startAtIndex).intValue())
+                            .getResultList();
+
+                    if (articleResults != null && !articleResults.isEmpty()) {
+                        toReturn.getArticleList().addAll(articleResults);
+                    }
+
+                } else {
+
+                    // Notify the user.
+                    toReturn.setError(ErrorCode.UNAUTHORIZED, "" + org.getOrganisationName());
+                }
+
+            } catch (Exception e) {
+                toReturn.setError(ErrorCode.INTERNAL_SERVER_ERROR, "" + e);
+            }
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
+    //
+    // Private helpers
+    //
+
+    private static Long getOffset(final Long receivedValue) {
+        return receivedValue == null ? 0L : Math.abs(receivedValue);
+    }
+
+    private static Long getEffective(
+            final Long receivedValue,
+            final long defaultMin,
+            final long defaultMax) {
+
+        return receivedValue == null
+                ? defaultMax
+                : Math.max(defaultMin, Math.min(defaultMax, receivedValue));
+    }
+
+    private static Long getEffective(final Long receivedValue) {
+        return getEffective(receivedValue, 40, 5);
     }
 }

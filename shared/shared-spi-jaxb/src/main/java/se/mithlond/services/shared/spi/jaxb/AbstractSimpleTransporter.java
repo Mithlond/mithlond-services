@@ -21,11 +21,15 @@
  */
 package se.mithlond.services.shared.spi.jaxb;
 
+import se.mithlond.services.shared.spi.algorithms.Validate;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.stream.Stream;
 
 /**
  * Abstract skeleton for a transporter which has an annotated XmlRootElement and implements Serializable.
@@ -33,15 +37,68 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = SharedJaxbPatterns.NAMESPACE)
-@XmlType(namespace = SharedJaxbPatterns.NAMESPACE)
+@XmlType(namespace = SharedJaxbPatterns.NAMESPACE, propOrder = {"errorDescription"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSimpleTransporter implements Serializable {
+
+    /**
+     * Optional/nullable error code corresponding to executing
+     */
+    @XmlAttribute
+    private Integer errorCode;
+
+    /**
+     * Optional/nullable description of a server-side error from this call.
+     */
+    @XmlAttribute
+    private String errorDescription;
+
+    /**
+     * Assigns the errorDescription element.
+     *
+     * @param errorDescription An optional/nullable description of the error for this AbstractSimpleTransporter.
+     */
+    public void setError(final ErrorCode errorCode, final String errorDescription) {
+
+        // Check sanity
+        Validate.notNull(errorCode, "errorCode");
+
+        // Assign internal state
+        this.errorCode = errorCode.getCode();
+        this.errorDescription = errorDescription;
+    }
+
+    /**
+     * @return retrieves the optional/nullable error description for this AbstractSimpleTransporter.
+     */
+    public String getErrorDescription() {
+        return errorDescription;
+    }
+
+    /**
+     * Retrieves the ErrorCode for this AbstractSimpleTransporter.
+     *
+     * @return the ErrorCode for this AbstractSimpleTransporter. May be null.
+     */
+    public ErrorCode getErrorCode() {
+
+        // Fail fast.
+        if(errorCode == null) {
+            return null;
+        }
+
+        // Filter and return
+        return Stream.of(ErrorCode.values())
+                .filter(ec -> ec.getCode() == errorCode)
+                .findFirst().orElse(null);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
-        return "[" + getClass().getSimpleName() + "]";
+        return "[" + getClass().getSimpleName() + "]"
+                + (getErrorDescription() != null ? " ERROR: " + getErrorDescription() : "");
     }
 }
