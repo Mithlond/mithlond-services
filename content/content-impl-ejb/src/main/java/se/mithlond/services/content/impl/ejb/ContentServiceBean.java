@@ -36,6 +36,8 @@ import se.mithlond.services.shared.spi.jaxb.ErrorCode;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.List;
 import java.util.SortedSet;
@@ -146,6 +148,12 @@ public class ContentServiceBean extends AbstractJpaService implements ContentSer
                     final List<Article> articleResults = entityManager.createNamedQuery(
                             Article.NAMEDQ_GET_BY_CREATION_DATE_FOR_ORGANISATION, Article.class)
                             .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, org.getId())
+                            .setParameter(ContentPatterns.PARAM_INTERVAL_START,
+                                    LocalDateTime.of(
+                                            CommonPersistenceTasks.getStartTimeFrom(endDate, period),
+                                            LocalTime.MIDNIGHT))
+                            .setParameter(ContentPatterns.PARAM_INTERVAL_END,
+                                    LocalDateTime.of(endDate, LocalTime.MIDNIGHT))
                             .setMaxResults(getEffective(maxResults).intValue())
                             .setFirstResult(getOffset(startAtIndex).intValue())
                             .getResultList();

@@ -1,24 +1,3 @@
-/*
- * #%L
- * Nazgul Project: mithlond-services-content-impl-ejb
- * %%
- * Copyright (C) 2015 Mithlond
- * %%
- * Licensed under the jGuru Europe AB license (the "License"), based
- * on Apache License, Version 2.0; you may not use this file except
- * in compliance with the License.
- * 
- * You may obtain a copy of the License at
- * 
- *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
 package se.mithlond.services.content.impl.ejb;
 
 import org.slf4j.Logger;
@@ -36,12 +15,12 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.localization.Localization;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
-import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.Authorizer;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
+import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
@@ -237,8 +216,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
     //
 
     private <T> void findAll(final List<T> resultHolder,
-                             final StandardMenu currentMenu,
-                             final Function<AbstractAuthorizedNavItem, T> visitorFunction) {
+            final StandardMenu currentMenu,
+            final Function<AbstractAuthorizedNavItem, T> visitorFunction) {
 
         // Check sanity
         Validate.notNull(resultHolder, "Cannot handle null 'resultHolder' argument.");
@@ -291,7 +270,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
 
         // Collect all found localizations.
         final SortedSet<Localization> allLocalizations = new TreeSet<>();
-        intermediary.stream().forEach(allLocalizations::addAll);
+        intermediary.forEach(allLocalizations::addAll);
 
         final List<Localization> alreadyPersisted = allLocalizations
                 .stream()

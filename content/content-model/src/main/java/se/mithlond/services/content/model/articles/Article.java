@@ -124,8 +124,7 @@ public class Article extends AbstractTimestampedText {
     /**
      * The Sections being aggregated into this Article.
      */
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
     @JoinTable(name = "article_sections")
     @XmlElementWrapper
     @XmlElement(name = "section")

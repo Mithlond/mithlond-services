@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Nazgul Project: mithlond-services-content-impl-ejb
+  %%
+  Copyright (C) 2015 Mithlond
+  %%
+  Licensed under the jGuru Europe AB license (the "License"), based
+  on Apache License, Version 2.0; you may not use this file except
+  in compliance with the License.
+  You may obtain a copy of the License at
+        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+    <persistence-unit name="InMemoryTestPU">
+
+        <!-- ===============================================
+          |  JPA Converters
+          +============================================== -->
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocalDateAttributeConverter</class>
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocalDateTimeAttributeConverter</class>
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocalTimeAttributeConverter</class>
+
+        <!-- ===============================================
+          |  Nazgul Core Entities
+          +============================================== -->
+        <class>se.jguru.nazgul.core.persistence.model.NazgulEntity</class>
+        <!-- ===============================================
+          |  Organisation Model Entities
+          +============================================== -->
+        <class>se.mithlond.services.organisation.model.Category</class>
+        <class>se.mithlond.services.organisation.model.Listable</class>
+        <class>se.mithlond.services.organisation.model.Organisation</class>
+        <class>se.mithlond.services.organisation.model.address.Address</class>
+        <class>se.mithlond.services.organisation.model.address.CategorizedAddress</class>
+        <class>se.mithlond.services.organisation.model.address.WellKnownAddressType</class>
+        <class>se.mithlond.services.organisation.model.membership.Membership</class>
+        <class>se.mithlond.services.organisation.model.membership.Group</class>
+        <class>se.mithlond.services.organisation.model.membership.GroupMembership</class>
+        <class>se.mithlond.services.organisation.model.membership.GroupMembershipId</class>
+        <class>se.mithlond.services.organisation.model.membership.guild.Guild</class>
+        <class>se.mithlond.services.organisation.model.membership.guild.GuildMembership</class>
+        <class>se.mithlond.services.organisation.model.membership.order.Order</class>
+        <class>se.mithlond.services.organisation.model.membership.order.OrderLevel</class>
+        <class>se.mithlond.services.organisation.model.membership.order.OrderLevelGrant</class>
+        <class>se.mithlond.services.organisation.model.membership.order.OrderLevelGrantId</class>
+        <class>se.mithlond.services.organisation.model.user.User</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
+        <class>se.mithlond.services.organisation.model.localization.Localization</class>
+        <class>se.mithlond.services.organisation.model.activity.Activity</class>
+        <class>se.mithlond.services.organisation.model.activity.Admission</class>
+        <class>se.mithlond.services.organisation.model.activity.AdmissionId</class>
+        <class>se.mithlond.services.organisation.model.activity.DressCode</class>
+        <class>se.mithlond.services.organisation.model.activity.EventCalendar</class>
+        <!-- ===============================================
+          |  Content Model Entities
+          +============================================== -->
+        <class>se.mithlond.services.content.model.articles.AbstractTimestampedText</class>
+        <class>se.mithlond.services.content.model.articles.Article</class>
+        <class>se.mithlond.services.content.model.articles.Section</class>
+        <class>se.mithlond.services.content.model.articles.media.BitmapImage</class>
+        <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>
+        <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
+        <class>se.mithlond.services.content.model.navigation.integration.MenuStructure</class>
+        <class>se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem</class>
+        <class>se.mithlond.services.content.model.navigation.integration.StandardMenu</class>
+        <class>se.mithlond.services.content.model.navigation.integration.StandardMenuItem</class>
+    </persistence-unit>
+</persistence>
