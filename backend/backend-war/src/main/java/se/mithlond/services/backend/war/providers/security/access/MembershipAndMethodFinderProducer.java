@@ -27,6 +27,7 @@ import se.mithlond.services.shared.spi.algorithms.Deployment;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.ws.rs.Produces;
 import java.util.stream.Stream;
 
@@ -68,6 +69,7 @@ public class MembershipAndMethodFinderProducer {
      * @return a MembershipAndMethodFinder tailored for the current deployment environment.
      */
     @Produces
+    @Default
     public MembershipFinder getAccessor() {
 
         KnownEnvironments currentEnvironment = KnownEnvironments.PRODUCTION;
@@ -86,12 +88,22 @@ public class MembershipAndMethodFinderProducer {
         MembershipFinder toReturn = null;
         switch (currentEnvironment) {
             case PRODUCTION:
+            case STAGING:
                 toReturn = new ResteasyMembershipFinder();
+                break;
+
+            case DEVELOPMENT:
+                toReturn = new EnvironmentPropertyMembershipExtractor();
                 break;
 
             default:
                 toReturn = null;
                 break;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("DeploymentType " + deploymentType + " ==> MembershipFinder of type "
+                    + (toReturn == null ? "<null>" : toReturn.getClass().getSimpleName()));
         }
 
         // All Done.

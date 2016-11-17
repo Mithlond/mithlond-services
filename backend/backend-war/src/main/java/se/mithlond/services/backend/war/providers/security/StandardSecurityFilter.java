@@ -23,6 +23,7 @@ package se.mithlond.services.backend.war.providers.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.mithlond.services.backend.war.providers.security.access.MembershipAndMethodFinderProducer;
 import se.mithlond.services.backend.war.providers.security.access.MembershipFinder;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.model.membership.Membership;
@@ -44,6 +45,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +61,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Provider
 @Priority(Priorities.AUTHENTICATION)
 public class StandardSecurityFilter implements ContainerRequestFilter {
 
@@ -72,7 +75,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
     @Inject
-    private MembershipFinder membershipFinder;
+    private MembershipAndMethodFinderProducer membershipFinderProducer;
 
     @EJB
     private MembershipService membershipService;
@@ -123,12 +126,17 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             }
 
             // Find the Membership of the active caller.
-            final OrganisationAndAlias holder = membershipFinder.getOrganisationNameAndAlias(ctx, request);
-            final Membership activeMembership = membershipService.getMembership(
-                    holder.getOrganisationName(), holder.getAlias());
+            final MembershipFinder finder = membershipFinderProducer.getAccessor();
+            Membership activeMembership = null;
+            if(finder != null) {
 
-            if (log.isDebugEnabled()) {
-                log.debug(holder.toString() + " and requiredAuthPatterns [" + requiredAuthPatterns + "]");
+                final OrganisationAndAlias holder = finder.getOrganisationNameAndAlias(ctx, request);
+                activeMembership = membershipService.getMembership(
+                        holder.getOrganisationName(), holder.getAlias());
+
+                if (log.isDebugEnabled()) {
+                    log.debug(holder.toString() + " and requiredAuthPatterns [" + requiredAuthPatterns + "]");
+                }
             }
 
             if (activeMembership == null) {
@@ -218,7 +226,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             builder.append(" Annotations    : " + Arrays.stream(method.getAnnotations())
                     .map(ann -> ann.annotationType().getSimpleName())
                     .reduce((l, r) -> l + ", " + r).orElse("<None>"));
-            builder.append("\n\n====== [End Target Method] ======\n");
+            builder.append("\n====== [End Target Method] ======\n");
 
             log.debug(builder.toString());
         }
