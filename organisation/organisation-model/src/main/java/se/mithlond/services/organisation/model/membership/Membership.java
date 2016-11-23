@@ -64,6 +64,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -273,11 +274,11 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @param organisation   The organisation of this Membership, i.e. where the user belongs.
      */
     public Membership(final String alias,
-            final String subAlias,
-            final String emailAlias,
-            final boolean loginPermitted,
-            final User user,
-            final Organisation organisation) {
+                      final String subAlias,
+                      final String emailAlias,
+                      final boolean loginPermitted,
+                      final User user,
+                      final Organisation organisation) {
 
         this(alias,
                 subAlias,
@@ -304,13 +305,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      *                         user of this membership belongs.
      */
     public Membership(final String alias,
-            final String subAlias,
-            final String emailAlias,
-            final boolean loginPermitted,
-            final User user,
-            final Organisation organisation,
-            final Set<OrderLevelGrant> orderLevelGrants,
-            final Set<GroupMembership> groupMemberships) {
+                      final String subAlias,
+                      final String emailAlias,
+                      final boolean loginPermitted,
+                      final User user,
+                      final Organisation organisation,
+                      final Set<OrderLevelGrant> orderLevelGrants,
+                      final Set<GroupMembership> groupMemberships) {
 
         this();
 
@@ -516,12 +517,12 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @see #addOrGetGroupMembership(Group)
      */
     public GuildMembership addOrUpdateGuildMembership(final Guild guild,
-            final boolean guildMaster,
-            final boolean deputyGuildMaster,
-            final boolean auditor) {
+                                                      final boolean guildMaster,
+                                                      final boolean deputyGuildMaster,
+                                                      final boolean auditor) {
 
         // Check sanity
-        Validate.notNull(guild, "Cannot handle null guild argument.");
+        Validate.notNull(guild, "guild");
 
         // Update existing GuildMembership?
         for (GroupMembership current : groupMemberships) {
@@ -566,11 +567,11 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      * @return The added or updated OrderLevelGrant.
      */
     public OrderLevelGrant addOrUpdateOrderLevelGrant(final OrderLevel orderLevel,
-            final ZonedDateTime grantedDate,
-            final String note) {
+                                                      final ZonedDateTime grantedDate,
+                                                      final String note) {
 
         // Check sanity
-        Validate.notNull(orderLevel, "Cannot handle null orderLevel argument.");
+        Validate.notNull(orderLevel, "orderLevel");
 
         // Update existing OrderLevelGrants?
         for (OrderLevelGrant current : orderLevelGrants) {
@@ -675,10 +676,10 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
 
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
         if (groupMemberships != null) {
-            groupMemberships.stream().forEach(current -> toReturn.addAll(current.getPaths()));
+            groupMemberships.forEach(current -> toReturn.addAll(current.getPaths()));
         }
         if (orderLevelGrants != null) {
-            orderLevelGrants.stream().forEach(current -> toReturn.addAll(current.getPaths()));
+            orderLevelGrants.forEach(current -> toReturn.addAll(current.getPaths()));
         }
 
         // All done.
@@ -695,8 +696,8 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
         // Re-assign the XmlTransient collections.
-        orderLevelGrants.stream().filter(c -> c != null).forEach(c -> c.setMembership(this));
-        groupMemberships.stream().filter(current -> current != null).forEach(c -> c.setMembership(this));
+        orderLevelGrants.stream().filter(Objects::nonNull).forEach(c -> c.setMembership(this));
+        groupMemberships.stream().filter(Objects::nonNull).forEach(c -> c.setMembership(this));
 
         if (log.isDebugEnabled()) {
             if (parent instanceof User) {
