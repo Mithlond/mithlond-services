@@ -38,7 +38,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * Resteasy-tailored implementation of the MembershipAndMethodFinder interface.
+ * RestEasy-tailored implementation of the MembershipAndMethodFinder interface.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -54,7 +54,8 @@ public class ResteasyMembershipFinder implements Serializable, MembershipFinder 
      * {@inheritDoc}
      */
     @Override
-    public OrganisationAndAlias getOrganisationNameAndAlias(final ContainerRequestContext ctx,
+    public OrganisationAndAlias getOrganisationNameAndAlias(
+            final ContainerRequestContext ctx,
             final HttpServletRequest httpRequest) {
 
         if (log.isDebugEnabled()) {

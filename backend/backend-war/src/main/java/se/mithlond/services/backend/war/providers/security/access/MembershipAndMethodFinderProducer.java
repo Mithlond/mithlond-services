@@ -29,6 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.ws.rs.Produces;
+import java.lang.reflect.Constructor;
 import java.util.stream.Stream;
 
 /**
@@ -57,6 +58,11 @@ public class MembershipAndMethodFinderProducer {
 
         UNIT_TEST
     }
+
+    /**
+     * MembershipFinder class property.
+     */
+    public static final String FINDER_CLASS_KEY = "nazgul_finder";
 
     @PostConstruct
     private void afterConstruction() {
@@ -87,23 +93,48 @@ public class MembershipAndMethodFinderProducer {
 
         MembershipFinder toReturn = null;
         switch (currentEnvironment) {
-            case PRODUCTION:
-            case STAGING:
-                toReturn = new ResteasyMembershipFinder();
-                break;
-
             case DEVELOPMENT:
-                toReturn = new EnvironmentPropertyMembershipExtractor();
+
+                // Custom creation logic.
+                String membershipFinderClass = System.getenv(FINDER_CLASS_KEY);
+                if (membershipFinderClass == null) {
+                    membershipFinderClass = System.getProperty(FINDER_CLASS_KEY);
+                }
+
+                if (membershipFinderClass != null && !membershipFinderClass.isEmpty()) {
+
+                    try {
+                        final Class<?> finderClass = Thread.currentThread()
+                                .getContextClassLoader()
+                                .loadClass(membershipFinderClass);
+
+                        Constructor<?> constructor = finderClass.getConstructor();
+                        Object membershipFinder = constructor.newInstance();
+
+                        if (membershipFinder instanceof MembershipFinder) {
+                            toReturn = (MembershipFinder) membershipFinder;
+                        }
+
+                    } catch (Exception e) {
+                        log.error("Could not create a MembershipFinder from class [" + membershipFinderClass + "]", e);
+                    }
+                }
+
+                // Fallback to default creation?
+                if (toReturn == null) {
+                    toReturn = new ResteasyMembershipFinder();
+                }
                 break;
 
             default:
-                toReturn = null;
+                toReturn = new ResteasyMembershipFinder();
                 break;
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("DeploymentType " + deploymentType + " ==> MembershipFinder of type "
-                    + (toReturn == null ? "<null>" : toReturn.getClass().getSimpleName()));
+            log.debug("DeploymentType " + deploymentType
+                    + " ==> MembershipFinder of type "
+                    + toReturn.getClass().getSimpleName());
         }
 
         // All Done.
