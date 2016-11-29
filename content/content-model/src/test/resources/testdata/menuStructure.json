@@ -2,7 +2,7 @@
   "content.menuStructure": {
     "jpaId": 0,
     "version": 0,
-    "localizations": [
+    "localeDefinitions": [
       {
         "jpaId": 0,
         "version": 0,
@@ -18,7 +18,7 @@
         "jpaId": 0,
         "version": 0,
         "suiteIdentifier": "rootMenuTexts",
-        "defaultLocalization": {
+        "defaultLocale": {
           "jpaId": 0,
           "version": 0,
           "compactStringForm": "sv..none..none"
@@ -46,7 +46,7 @@
               "jpaId": 0,
               "version": 0,
               "suiteIdentifier": "firstMenuTexts",
-              "defaultLocalization": {
+              "defaultLocale": {
                 "jpaId": 0,
                 "version": 0,
                 "compactStringForm": "sv..none..none"
@@ -76,7 +76,7 @@
                     "jpaId": 0,
                     "version": 0,
                     "suiteIdentifier": "membersPageTexts",
-                    "defaultLocalization": {
+                    "defaultLocale": {
                       "jpaId": 0,
                       "version": 0,
                       "compactStringForm": "sv..none..none"
@@ -102,7 +102,7 @@
                     "jpaId": 0,
                     "version": 0,
                     "suiteIdentifier": "membersIdeaPageTexts",
-                    "defaultLocalization": {
+                    "defaultLocale": {
                       "jpaId": 0,
                       "version": 0,
                       "compactStringForm": "sv..none..none"
@@ -139,7 +139,7 @@
               "jpaId": 0,
               "version": 0,
               "suiteIdentifier": "calendarPageTexts",
-              "defaultLocalization": {
+              "defaultLocale": {
                 "jpaId": 0,
                 "version": 0,
                 "compactStringForm": "sv..none..none"

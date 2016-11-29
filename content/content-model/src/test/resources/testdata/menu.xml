@@ -26,7 +26,7 @@
             <menu jpaId="0" version="0" domId="firstMenu">
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>firstMenuTexts</suiteIdentifier>
-                    <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
                     <localizedText locale="sv..none..none">Medlemsmeny</localizedText>
                 </localizedTexts>
                 <children>
@@ -41,7 +41,7 @@
                         <href>plainItemPage</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>plainItemPageTexts</suiteIdentifier>
-                            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
                             <localizedText locale="sv..none..none">Sök medlemmar</localizedText>
                         </localizedTexts>
                     </menuItem>
@@ -57,7 +57,7 @@
                         <href>plainItemPage2</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>StandardMenuItem_-2029894920</suiteIdentifier>
-                            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
                             <localizedText locale="sv..none..none">Redigera medlemmar</localizedText>
                         </localizedTexts>
                     </menuItem>
@@ -75,7 +75,7 @@
                 <href>plainItemPage3</href>
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>calendarPageTexts</suiteIdentifier>
-                    <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
                     <localizedText locale="sv..none..none">Kalenderuppgifter</localizedText>
                 </localizedTexts>
             </menuItem>
