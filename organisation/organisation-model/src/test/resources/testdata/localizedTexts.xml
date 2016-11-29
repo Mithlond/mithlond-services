@@ -20,18 +20,17 @@
   limitations under the License.
   #L%
   -->
-
 <organisation:localizedTextsHolder xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <localizations>
+    <localeDefinitions>
         <localization jpaId="0" version="0" compactStringForm="en..none..none"/>
         <localization jpaId="0" version="0" compactStringForm="en..US..none"/>
         <localization jpaId="0" version="0" compactStringForm="no..none..none"/>
         <localization jpaId="0" version="0" compactStringForm="sv..none..none"/>
-    </localizations>
+    </localeDefinitions>
     <localizedTextsList>
         <localization jpaId="0" version="0">
             <suiteIdentifier>Hello</suiteIdentifier>
-            <defaultLocalization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+            <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
             <localizedText locale="en..none..none">Hello</localizedText>
             <localizedText locale="en..US..none">Hi</localizedText>
             <localizedText locale="no..none..none">Morrn Da</localizedText>

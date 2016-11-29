@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.food;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
@@ -90,11 +91,17 @@ public class Allergies extends AbstractSimpleTransporter {
         }
     }
 
-    public Allergies(final Allergy... allergies) {
+    /**
+     * Creates an allergies transport wrapper containing the supplied Allergies.
+     *
+     * @param allergies an array of Allergy objects.
+     */
+    public Allergies(final LocaleDefinition localeDefinition, final Allergy... allergies) {
 
         // Delegate
         this();
 
+        // Populate this object.
         if (allergies != null) {
             Arrays.stream(allergies)
                     .filter(Objects::nonNull)
@@ -107,7 +114,10 @@ public class Allergies extends AbstractSimpleTransporter {
                         }
 
                         // Add the current allergy?
-                        final AllergyVO allergyVO = new AllergyVO(allergy);
+                        final AllergyVO allergyVO = new AllergyVO(allergy, localeDefinition);
+                        if(!this.allergyList.contains(allergyVO)) {
+                            this.allergyList.add(allergyVO);
+                        }
                     });
         }
     }

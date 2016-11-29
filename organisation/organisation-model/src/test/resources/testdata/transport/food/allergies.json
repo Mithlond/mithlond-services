@@ -34,40 +34,35 @@
     ],
     "allergyList": [
       {
-        "jpaID": 6,
-        "userJpaID": 2,
+        "jpaID": 2,
         "foodJpaID": 0,
         "description": "allergy_description_2",
         "foodName": "foodName_2",
         "severity": "severity_2"
       },
       {
-        "jpaID": 7,
-        "userJpaID": 3,
+        "jpaID": 3,
         "foodJpaID": 1,
         "description": "allergy_description_3",
         "foodName": "foodName_3",
         "severity": "severity_3"
       },
       {
-        "jpaID": 8,
-        "userJpaID": 4,
+        "jpaID": 4,
         "foodJpaID": 2,
         "description": "allergy_description_4",
         "foodName": "foodName_4",
         "severity": "severity_4"
       },
       {
-        "jpaID": 9,
-        "userJpaID": 5,
+        "jpaID": 5,
         "foodJpaID": 3,
         "description": "allergy_description_5",
         "foodName": "foodName_5",
         "severity": "severity_5"
       },
       {
-        "jpaID": 10,
-        "userJpaID": 6,
+        "jpaID": 6,
         "foodJpaID": 4,
         "description": "allergy_description_6",
         "foodName": "foodName_6",

@@ -89,7 +89,6 @@ public class AllergiesTest extends AbstractPlainJaxbTest {
         allergyList = new ArrayList<>();
         for (int i = 2; i < 7; i++) {
             allergyList.add(new AllergyVO(
-                    (long) i + 4,
                     "allergy_description_" + i,
                     "severity_" + i,
                     "foodName_" + i,

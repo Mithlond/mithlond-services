@@ -168,6 +168,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
         return Objects.equals(getDescription(), allergyVO.getDescription()) &&
                 Objects.equals(getSeverity(), allergyVO.getSeverity()) &&
                 Objects.equals(getFoodName(), allergyVO.getFoodName()) &&
+                Objects.equals(getFoodJpaID(), allergyVO.getFoodJpaID()) &&
                 Objects.equals(getJpaID(), allergyVO.getJpaID());
     }
 
