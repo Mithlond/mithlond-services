@@ -82,7 +82,7 @@ public class FoodPreference implements Serializable, Comparable<FoodPreference>,
 
     @ManyToOne
     @MapsId("categoryId")
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private Category category;
 
     @ManyToOne(optional = false)
@@ -102,7 +102,7 @@ public class FoodPreference implements Serializable, Comparable<FoodPreference>,
      * Category having the classification {@code FOOD_PREFERENCE_CATEGORY_CLASSIFICATION}.
      *
      * @param category The non-null Category for which this FoodPreference should be created.
-     * @param user The User having a FoodPreference.
+     * @param user     The User having a FoodPreference.
      */
     public FoodPreference(final Category category, final User user) {
 

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 
@@ -61,7 +61,7 @@ import java.util.stream.Collectors;
 })
 @Entity
 @XmlRootElement(namespace = ContentPatterns.NAMESPACE)
-@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"localizations", "organisationName", "rootMenu"})
+@XmlType(namespace = ContentPatterns.NAMESPACE, propOrder = {"localeDefinitions", "organisationName", "rootMenu"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MenuStructure extends NazgulEntity {
 
@@ -88,7 +88,7 @@ public class MenuStructure extends NazgulEntity {
     @XmlElementWrapper
     @XmlElement(name = "localization")
     @Transient
-    private List<Localization> localizations;
+    private List<LocaleDefinition> localeDefinitions;
 
     /**
      * The name of the Organisation for which this MenuStructure is defined.
@@ -112,7 +112,7 @@ public class MenuStructure extends NazgulEntity {
      * JAXB-friendly constructor.
      */
     public MenuStructure() {
-        localizations = new ArrayList<>();
+        localeDefinitions = new ArrayList<>();
     }
 
     /**
@@ -230,10 +230,10 @@ public class MenuStructure extends NazgulEntity {
      */
     @SuppressWarnings("all")
     private void beforeMarshal(final Marshaller marshaller) {
-        populateLocalizations(this.localizations, this.rootMenu);
+        populateLocalizations(this.localeDefinitions, this.rootMenu);
     }
 
-    private void populateLocalizations(final List<Localization> toPopulate, final StandardMenu menu) {
+    private void populateLocalizations(final List<LocaleDefinition> toPopulate, final StandardMenu menu) {
 
         // Start with the locally known Localizations
         menu.getLocalizedTexts().getContainedLocalizations()

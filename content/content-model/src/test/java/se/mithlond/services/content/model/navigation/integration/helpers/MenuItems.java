@@ -22,7 +22,7 @@
 package se.mithlond.services.content.model.navigation.integration.helpers;
 
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  */
 @XmlRootElement(namespace = ContentPatterns.NAMESPACE)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({StandardMenuItem.class, SeparatorMenuItem.class, LocalizedTexts.class, Localization.class})
+@XmlSeeAlso({StandardMenuItem.class, SeparatorMenuItem.class, LocalizedTexts.class, LocaleDefinition.class})
 public class MenuItems {
 
     // Internal state

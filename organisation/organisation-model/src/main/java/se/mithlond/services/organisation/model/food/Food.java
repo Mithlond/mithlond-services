@@ -41,6 +41,7 @@ import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -85,17 +86,27 @@ public class Food extends NazgulEntity implements Comparable<Food> {
      */
     public static final String FOOD_SUBCATEGORY_CLASSIFICATION = "food_subcategory";
 
-    // Internal state
+    /**
+     * The name of this Food.
+     */
     @Basic(optional = false)
     @Column(nullable = false)
     @XmlElement(nillable = false, required = true)
     private String foodName;
 
+    /**
+     * The top-level Categorisation of this Food.
+     */
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @XmlIDREF
     @XmlElement(required = true)
     private Category category;
 
+    /**
+     * The sub-level Categorisation of this Food.
+     */
     @ManyToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @XmlIDREF
     @XmlElement(required = true)
     private Category subCategory;
 
@@ -184,10 +195,10 @@ public class Food extends NazgulEntity implements Comparable<Food> {
 
         // Delegate
         int result = this.getFoodName().compareTo(that.getFoodName());
-        if(result == 0) {
+        if (result == 0) {
             result = this.getCategory().compareTo(that.getCategory());
         }
-        if(result == 0) {
+        if (result == 0) {
             result = this.getSubCategory().compareTo(that.getSubCategory());
         }
 
@@ -219,8 +230,8 @@ public class Food extends NazgulEntity implements Comparable<Food> {
      * @return The resulting Category with the supplied category and description.
      */
     public static Category getFoodTypeCategory(final String category,
-                                               final String description,
-                                               final boolean topLevelCategory) {
+            final String description,
+            final boolean topLevelCategory) {
 
         // Check sanity
         Validate.notEmpty(category, "Cannot handle null or empty category argument.");

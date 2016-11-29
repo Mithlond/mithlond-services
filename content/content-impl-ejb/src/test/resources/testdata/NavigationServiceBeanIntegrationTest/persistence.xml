@@ -59,7 +59,7 @@
         <!-- ===============================================
           |  Content Model Entities
           +============================================== -->
-        <class>se.mithlond.services.organisation.model.localization.Localization</class>
+        <class>se.mithlond.services.organisation.model.localization.LocaleDefinition</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
         <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>

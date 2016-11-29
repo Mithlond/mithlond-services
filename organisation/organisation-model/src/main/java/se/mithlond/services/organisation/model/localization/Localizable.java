@@ -37,7 +37,7 @@ public interface Localizable {
      * Standard locale unless another is provided.
      */
     @XmlTransient
-    Localization DEFAULT_LOCALE = new Localization("sv", "SE", null);
+    LocaleDefinition DEFAULT_LOCALE = new LocaleDefinition("sv", "SE", null);
 
     /**
      * Retrieves the default text of this AbstractAuthorizedNavItem.
@@ -51,11 +51,11 @@ public interface Localizable {
     /**
      * The text in the supplied locale.
      *
-     * @param localization The localization for which a text should be retrieved.
+     * @param localeDefinition The localization for which a text should be retrieved.
      * @return The text in the supplied locale, or {@link #DEFAULT_LOCALE} if no text was found for the supplied
      * Locale or if the supplied locale argument was {@code null}.
      */
-    String getText(Localization localization);
+    String getText(LocaleDefinition localeDefinition);
 
     /**
      * Retrieves the text for a locale with the supplied language and optional country.
@@ -74,6 +74,6 @@ public interface Localizable {
         final String nonEmptyLang = Validate.notEmpty(language, "language");
 
         // Delegate.
-        return getText(new Localization(nonEmptyLang, country, variant));
+        return getText(new LocaleDefinition(nonEmptyLang, country, variant));
     }
 }

@@ -22,7 +22,7 @@
 package se.mithlond.services.organisation.model.localization.helpers;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"localizations", "localizedTextsList"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"localeDefinitions", "localizedTextsList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTextsHolder {
 
@@ -51,7 +51,7 @@ public class LocalizedTextsHolder {
 
     @XmlElementWrapper
     @XmlElement(name = "localization")
-    private Set<Localization> localizations;
+    private Set<LocaleDefinition> localeDefinitions;
 
     @XmlElementWrapper
     @XmlElement(name = "localization")
@@ -59,7 +59,7 @@ public class LocalizedTextsHolder {
 
     public LocalizedTextsHolder() {
         this.localizedTextsList = new ArrayList<>();
-        this.localizations = new TreeSet<>();
+        this.localeDefinitions = new TreeSet<>();
     }
 
     public LocalizedTextsHolder(final List<LocalizedTexts> localizedTextsList) {
@@ -71,13 +71,13 @@ public class LocalizedTextsHolder {
         if (toAdd != null) {
             for (LocalizedTexts current : toAdd) {
 
-                final Set<Localization> locs = current.getContainedLocalizations()
+                final Set<LocaleDefinition> locs = current.getContainedLocalizations()
                         .stream()
                         .distinct()
                         .collect(Collectors.toSet());
 
-                localizations.addAll(locs.stream()
-                        .filter(currentLocalization -> !localizations.contains(currentLocalization))
+                localeDefinitions.addAll(locs.stream()
+                        .filter(currentLocalization -> !localeDefinitions.contains(currentLocalization))
                         .collect(Collectors.toSet()));
 
                 this.localizedTextsList.add(current);
@@ -95,7 +95,7 @@ public class LocalizedTextsHolder {
         return Collections.unmodifiableList(localizedTextsList);
     }
 
-    public Set<Localization> getLocalizations() {
-        return localizations;
+    public Set<LocaleDefinition> getLocaleDefinitions() {
+        return localeDefinitions;
     }
 }

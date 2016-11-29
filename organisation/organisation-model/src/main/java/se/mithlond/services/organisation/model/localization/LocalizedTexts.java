@@ -65,7 +65,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @Table(name = "localized_texts")
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocalization", "texts"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocale", "texts"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
@@ -77,7 +77,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     @Column(name = "localized_text")
     @MapKeyJoinColumn(name = "localization_id", referencedColumnName = "id")
     @XmlTransient
-    private Map<Localization, String> data;
+    private Map<LocaleDefinition, String> data;
 
     /**
      * A sequence of LocalizedTextTuples holding the transported localized texts resources.
@@ -92,7 +92,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST})
     @JoinColumn(name = "default_localization_id")
     @XmlElement(required = true)
-    private Localization defaultLocalization;
+    private LocaleDefinition defaultLocale;
 
     /**
      * A human-readable identifier for the suite of LocalizedTexts.
@@ -116,35 +116,35 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * Compound constructor creating a LocalizedTexts instance with the supplied Localization and Text.
      * The supplied Localization is also set to the default Localization of this LocalizedTexts.
      *
-     * @param suiteIdentifier     The human-readable suiteIdentifier of this LocalizedTexts instance.
-     * @param defaultLocalization The non-null Localization.
-     * @param text                The non-empty text.
+     * @param suiteIdentifier The human-readable suiteIdentifier of this LocalizedTexts instance.
+     * @param defaultLocale   The non-null Localization.
+     * @param text            The non-empty text.
      */
     public LocalizedTexts(final String suiteIdentifier,
-                          final Localization defaultLocalization,
-                          final String text) {
+            final LocaleDefinition defaultLocale,
+            final String text) {
 
         // First, delegate
         this();
 
         // Assign internal state
-        this.defaultLocalization = defaultLocalization;
+        this.defaultLocale = defaultLocale;
         this.suiteIdentifier = suiteIdentifier;
-        this.setText(defaultLocalization, text);
+        this.setText(defaultLocale, text);
     }
 
     /**
      * {@inheritDoc}
      */
-    public String getText(final Localization localization) {
+    public String getText(final LocaleDefinition localeDefinition) {
 
-        final Localization effectiveLocalization = localization == null ? defaultLocalization : localization;
+        final LocaleDefinition effectiveLocale = localeDefinition == null ? defaultLocale : localeDefinition;
 
-        final Map.Entry<Localization, String> firstEntry = data.entrySet().stream()
-                .filter(entry -> entry.getKey().equals(effectiveLocalization))
+        final Map.Entry<LocaleDefinition, String> firstEntry = data.entrySet().stream()
+                .filter(entry -> entry.getKey().equals(effectiveLocale))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No text localization for ["
-                        + effectiveLocalization.toString() + "]"));
+                        + effectiveLocale.toString() + "]"));
 
         // All done.
         return firstEntry.getValue();
@@ -153,19 +153,19 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     /**
      * Adds the supplied text for the given Localization.
      *
-     * @param localization A non-null Localization.
-     * @param text         A non-empty text.
-     * @return The former text for the supplied Localization, or {@code null} if no previous text was supplied for
-     * the supplied Localization.
+     * @param localeDefinition A non-null LocaleDefinition.
+     * @param text             A non-empty text.
+     * @return The former text for the supplied Localization, or {@code null} if no previous
+     * text was supplied for the supplied Localization.
      */
-    public String setText(final Localization localization, final String text) {
+    public String setText(final LocaleDefinition localeDefinition, final String text) {
 
         // Check sanity
-        final Localization nonNullLocalization = Validate.notNull(localization, "localization");
+        final LocaleDefinition nonNullLocale = Validate.notNull(localeDefinition, "localization");
         final String nonEmptyText = Validate.notEmpty(text, "text");
 
         // All done.
-        return data.put(nonNullLocalization, nonEmptyText);
+        return data.put(nonNullLocale, nonEmptyText);
     }
 
     /**
@@ -206,7 +206,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         // Delegate to internal state
         final LocalizedTexts that = (LocalizedTexts) o;
         return Objects.equals(data, that.data)
-                && Objects.equals(defaultLocalization, that.defaultLocalization)
+                && Objects.equals(defaultLocale, that.defaultLocale)
                 && Objects.equals(suiteIdentifier, that.suiteIdentifier);
     }
 
@@ -215,13 +215,13 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(data, defaultLocalization, suiteIdentifier);
+        return Objects.hash(data, defaultLocale, suiteIdentifier);
     }
 
     /**
      * @return A List containing all Localizations found within this LocalizedTexts.
      */
-    public List<Localization> getContainedLocalizations() {
+    public List<LocaleDefinition> getContainedLocalizations() {
         return data.keySet().stream().collect(Collectors.toList());
     }
 
@@ -230,36 +230,36 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * needs to be merged into an existing EntityManager transaction. This implies that all Localizations within the
      * internal data map should be replaced with their managed siblings as read from the local database.
      *
-     * @param managedLocalizations The non-null set of managed Localizations found within the local database.
+     * @param managedLocales The non-null set of managed Localizations found within the local database.
      */
-    public void assignManagedLocalizations(final Collection<Localization> managedLocalizations) {
+    public void assignManagedLocalizations(final Collection<LocaleDefinition> managedLocales) {
 
         // Check sanity
-        Validate.notNull(managedLocalizations, "Cannot handle null 'managedLocalizations' argument.");
+        Validate.notNull(managedLocales, "Cannot handle null 'managedLocalizations' argument.");
 
         // Update the defaultLocalization
-        final Optional<Localization> managedDefaultLocalization = managedLocalizations
+        final Optional<LocaleDefinition> managedDefaultLocalization = managedLocales
                 .stream()
-                .filter(current -> current.equals(defaultLocalization))
+                .filter(current -> current.equals(defaultLocale))
                 .findFirst();
         if (!managedDefaultLocalization.isPresent()) {
-            throw new IllegalArgumentException("Required managedLocalization [" + defaultLocalization + "] not found.");
+            throw new IllegalArgumentException("Required managedLocalization [" + defaultLocale + "] not found.");
         }
-        this.defaultLocalization = managedDefaultLocalization.get();
+        this.defaultLocale = managedDefaultLocalization.get();
 
         // Re-create the data map to hold the managed Localizations from the provided managedLocalizations Set.
         this.data = data.entrySet().stream().collect(Collectors.toMap(current -> {
 
             // Find the corresponding managed Localization within the 'managedLocalizations' Set.
-            final Localization key = current.getKey();
-            final Optional<Localization> managedLocalization = managedLocalizations
+            final LocaleDefinition key = current.getKey();
+            final Optional<LocaleDefinition> managedLocalization = managedLocales
                     .stream()
                     .filter(aLoc -> aLoc.equals(key))
                     .findFirst();
 
             if (!managedLocalization.isPresent()) {
                 throw new IllegalArgumentException("Existing Localization [" + key
-                        + "] was not found within the supplied managedLocalizations: " + managedLocalizations);
+                        + "] was not found within the supplied managedLocalizations: " + managedLocales);
             }
 
             // All done.
@@ -270,7 +270,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         if (log.isDebugEnabled()) {
 
             final PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
-            log.debug("DefaultLocalization. IsLoaded: " + persistenceUtil.isLoaded(defaultLocalization));
+            log.debug("DefaultLocalization. IsLoaded: " + persistenceUtil.isLoaded(defaultLocale));
 
             final String dataMsg = data.keySet().stream()
                     .map(c -> "Localization [" + c.toString() + "] IsLoaded: " + persistenceUtil.isLoaded(c))
@@ -287,7 +287,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     protected void validateEntityState() throws InternalStateValidationException {
 
         InternalStateValidationException.create()
-                .notNull(defaultLocalization, "defaultLocalization")
+                .notNull(defaultLocale, "defaultLocalization")
                 .notNullOrEmpty(data, "data")
                 .notNullOrEmpty(suiteIdentifier, "suiteIdentifier")
                 .endExpressionAndValidate();
@@ -308,7 +308,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         Validate.notEmpty(suiteIdentifier, "suiteIdentifier");
 
         // Create the Localization and its LocalizedTexts
-        return new LocalizedTexts(suiteIdentifier, new Localization(defaultLanguage), text);
+        return new LocalizedTexts(suiteIdentifier, new LocaleDefinition(defaultLanguage), text);
     }
 
     //
@@ -342,6 +342,6 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
 
         // Re-populate the data Map with the data from the transport tuple sequence
         data.clear();
-        texts.stream().forEach(current -> data.put(current.getLocalization(), current.getText()));
+        texts.forEach(current -> data.put(current.getLocalization(), current.getText()));
     }
 }

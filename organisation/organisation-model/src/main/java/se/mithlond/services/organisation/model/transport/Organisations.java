@@ -36,7 +36,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * XML transporter for Organisations and OrganisationVOs.
+ * JAXB transporter for Organisations and OrganisationVOs.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */

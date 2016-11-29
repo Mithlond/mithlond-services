@@ -22,7 +22,7 @@
 package se.mithlond.services.organisation.model.transport.localization;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -62,25 +62,25 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
     /**
      * Compound constructor, creating a LocalizedText wrapping the supplied values.
      *
-     * @param localization a non-null Localization.
+     * @param localeDefinition a non-null Localization.
      * @param text         a non-null text.
      */
-    public LocalizedTextVO(final Localization localization, final String text) {
+    public LocalizedTextVO(final LocaleDefinition localeDefinition, final String text) {
 
         // Check sanity
-        Validate.notNull(localization, "localization");
+        Validate.notNull(localeDefinition, "localization");
         Validate.notEmpty(text, "text");
 
         // Assign internal state
         this.text = text;
-        this.locale = localization.toString();
+        this.locale = localeDefinition.toString();
     }
 
     /**
      * @return The wrapped Localization.
      */
-    public Localization getLocalization() {
-        return Localization.parse(locale);
+    public LocaleDefinition getLocalization() {
+        return LocaleDefinition.parse(locale);
     }
 
     /**

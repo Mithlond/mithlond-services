@@ -23,7 +23,7 @@ package se.mithlond.services.content.model.navigation;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.shared.spi.algorithms.Validate;
@@ -225,8 +225,8 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      * {@inheritDoc}
      */
     @Override
-    public String getText(final Localization localization) {
-        return localizedTexts.getText(localization);
+    public String getText(final LocaleDefinition localeDefinition) {
+        return localizedTexts.getText(localeDefinition);
     }
 
     /**
@@ -409,7 +409,7 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
                 final String locID = Validate.notEmpty(localizationSuiteIdentifier, "localizationSuiteIdentifier");
                 localizedTexts = LocalizedTexts.build(locID, nonNullLangCode, nonNullText);
             } else {
-                localizedTexts.setText(new Localization(nonNullLangCode), nonNullText);
+                localizedTexts.setText(new LocaleDefinition(nonNullLangCode), nonNullText);
 
                 // Update the localizationSuite's identifier if possible.
                 if (localizationSuiteIdentifier != null && !localizationSuiteIdentifier.isEmpty()) {

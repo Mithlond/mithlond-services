@@ -22,7 +22,7 @@
 package se.mithlond.services.organisation.model.localization.helpers;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,25 +37,25 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = "localizations")
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = "localeDefinitions")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localizations {
 
     // Internal state
     @XmlElementWrapper
     @XmlElement(name = "localization")
-    private List<Localization> localizations;
+    private List<LocaleDefinition> localeDefinitions;
 
     public Localizations() {
-        this.localizations = new ArrayList<>();
+        this.localeDefinitions = new ArrayList<>();
     }
 
-    public Localizations(final List<Localization> localizations) {
+    public Localizations(final List<LocaleDefinition> localeDefinitions) {
         this();
-        this.localizations.addAll(localizations);
+        this.localeDefinitions.addAll(localeDefinitions);
     }
 
-    public List<Localization> getLocalizations() {
-        return localizations;
+    public List<LocaleDefinition> getLocaleDefinitions() {
+        return localeDefinitions;
     }
 }

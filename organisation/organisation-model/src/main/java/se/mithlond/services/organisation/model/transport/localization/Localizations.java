@@ -22,7 +22,7 @@
 package se.mithlond.services.organisation.model.transport.localization;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
@@ -44,16 +44,16 @@ import java.util.List;
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
-        propOrder = {"localizations", "localizedTexts", "localizedTextVOs"})
+        propOrder = {"localeDefinitions", "localizedTexts", "localizedTextVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Localizations extends AbstractSimpleTransporter {
 
     /**
-     * A List containing the {@link Localization} objects.
+     * A List containing the {@link LocaleDefinition} objects.
      */
     @XmlElementWrapper
     @XmlElement(name = "localization")
-    private List<Localization> localizations;
+    private List<LocaleDefinition> localeDefinitions;
 
     /**
      * A List holding shallow/VO {@link LocalizedTextVO} objects.
@@ -73,18 +73,18 @@ public class Localizations extends AbstractSimpleTransporter {
      * JAXB-friendly constructor
      */
     public Localizations() {
-        this.localizations = new ArrayList<>();
+        this.localeDefinitions = new ArrayList<>();
         this.localizedTextVOs = new ArrayList<>();
         this.localizedTexts = new ArrayList<>();
     }
 
     /**
-     * Retrieves an unmodifiable List containing the {@link Localization} objects transported.
+     * Retrieves an unmodifiable List containing the {@link LocaleDefinition} objects transported.
      *
-     * @return an unmodifiable List containing the {@link Localization} objects transported. Never null.
+     * @return an unmodifiable List containing the {@link LocaleDefinition} objects transported. Never null.
      */
-    public List<Localization> getLocalizations() {
-        return Collections.unmodifiableList(localizations);
+    public List<LocaleDefinition> getLocaleDefinitions() {
+        return Collections.unmodifiableList(localeDefinitions);
     }
 
     /**
@@ -106,17 +106,17 @@ public class Localizations extends AbstractSimpleTransporter {
     }
 
     /**
-     * Adds the supplied {@link Localization} objects to this transport.
+     * Adds the supplied {@link LocaleDefinition} objects to this transport.
      *
      * @param toAdd one or more objects to add.
      */
-    public void addLocalizations(final Localization... toAdd) {
+    public void addLocalizations(final LocaleDefinition... toAdd) {
 
         if (toAdd != null) {
             Arrays.asList(toAdd).stream()
                     .filter(c -> c != null)
-                    .filter(c -> !localizations.contains(c))
-                    .forEach(c -> localizations.add(c));
+                    .filter(c -> !localeDefinitions.contains(c))
+                    .forEach(c -> localeDefinitions.add(c));
         }
     }
 
@@ -148,11 +148,11 @@ public class Localizations extends AbstractSimpleTransporter {
                     .filter(c -> !localizedTexts.contains(c))
                     .forEach(c -> {
 
-                        final List<Localization> containedLocalizations = c.getContainedLocalizations();
-                        if (containedLocalizations != null && !containedLocalizations.isEmpty()) {
+                        final List<LocaleDefinition> containedLocales = c.getContainedLocalizations();
+                        if (containedLocales != null && !containedLocales.isEmpty()) {
                             addLocalizations(
-                                    containedLocalizations.toArray(
-                                            new Localization[containedLocalizations.size()]));
+                                    containedLocales.toArray(
+                                            new LocaleDefinition[containedLocales.size()]));
                         }
 
                         addLocalizations();

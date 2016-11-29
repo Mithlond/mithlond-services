@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
@@ -297,12 +297,12 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
         entityManager.flush();
 
         // Persist all contained Localizations
-        final List<Localization> containedLocalizations = rootMenu.getLocalizedTexts().getContainedLocalizations();
-        for (Localization current : containedLocalizations) {
+        final List<LocaleDefinition> containedLocales = rootMenu.getLocalizedTexts().getContainedLocalizations();
+        for (LocaleDefinition current : containedLocales) {
             entityManager.persist(current);
             entityManager.flush();
         }
-        rootMenu.getLocalizedTexts().assignManagedLocalizations(containedLocalizations);
+        rootMenu.getLocalizedTexts().assignManagedLocalizations(containedLocales);
 
         // Act
         final MenuStructure result = unitUnderTest.createOrUpdate(templateMenuStructure, producers);

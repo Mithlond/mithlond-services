@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-content-impl-ejb
+ * %%
+ * Copyright (C) 2015 - 2016 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package se.mithlond.services.content.impl.ejb;
 
 import org.slf4j.Logger;
@@ -13,7 +34,7 @@ import se.mithlond.services.content.model.navigation.integration.StandardMenu;
 import se.mithlond.services.content.model.navigation.integration.StandardMenuItem;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.Localization;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
@@ -144,9 +165,9 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         + "Caller lacks required AuthorizationPattern (" + requiredPatterns + ").");
 
         // Create or Retrieve all Localizations within the LocalizedTexts within the MenuStructure.
-        final Map<String, Localization> stringForm2LocalizationMap = getLocalizations(menuStructure)
+        final Map<String, LocaleDefinition> stringForm2LocalizationMap = getLocalizations(menuStructure)
                 .stream()
-                .collect(Collectors.toMap(Localization::toString, current -> current));
+                .collect(Collectors.toMap(LocaleDefinition::toString, current -> current));
 
         // Should we update the MenuStructure?
         final List<MenuStructure> menuStructures = entityManager.createNamedQuery(
@@ -246,17 +267,17 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         }
     }
 
-    private SortedSet<Localization> getLocalizations(final MenuStructure menuStructure) {
+    private SortedSet<LocaleDefinition> getLocalizations(final MenuStructure menuStructure) {
 
         final StandardMenu rootMenu = menuStructure.getRootMenu();
-        final List<List<Localization>> intermediary = new ArrayList<>();
+        final List<List<LocaleDefinition>> intermediary = new ArrayList<>();
 
         findAll(intermediary, rootMenu, anItem -> {
 
             if (anItem instanceof AbstractLinkedNavItem) {
 
                 // In this case, we should be able to find a Localization.
-                final List<Localization> toReturn = new ArrayList<>();
+                final List<LocaleDefinition> toReturn = new ArrayList<>();
 
                 // Populate and return
                 final AbstractLinkedNavItem alni = (AbstractLinkedNavItem) anItem;
@@ -269,14 +290,14 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         });
 
         // Collect all found localizations.
-        final SortedSet<Localization> allLocalizations = new TreeSet<>();
-        intermediary.forEach(allLocalizations::addAll);
+        final SortedSet<LocaleDefinition> allLocaleDefinitions = new TreeSet<>();
+        intermediary.forEach(allLocaleDefinitions::addAll);
 
-        final List<Localization> alreadyPersisted = allLocalizations
+        final List<LocaleDefinition> alreadyPersisted = allLocaleDefinitions
                 .stream()
                 .filter(current -> current.getId() != 0L)
                 .collect(Collectors.toList());
-        final List<Localization> needsPersisting = allLocalizations
+        final List<LocaleDefinition> needsPersisting = allLocaleDefinitions
                 .stream()
                 .filter(current -> current.getId() == 0L)
                 .filter(current -> !alreadyPersisted.contains(current))
@@ -292,8 +313,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                 ? alreadyPersisted.stream().distinct().map(NazgulEntity::getId).collect(Collectors.toList())
                 : new ArrayList<>();
 
-        final List<Localization> managedLocalizations = alreadyPersisted.size() > 0
-                ? entityManager.createNamedQuery(Localization.NAMEDQ_GET_BY_PRIMARY_KEYS, Localization.class)
+        final List<LocaleDefinition> managedLocales = alreadyPersisted.size() > 0
+                ? entityManager.createNamedQuery(LocaleDefinition.NAMEDQ_GET_BY_PRIMARY_KEYS, LocaleDefinition.class)
                 .setParameter(OrganisationPatterns.PARAM_IDS, alreadyPersistedIDs)
                 .getResultList()
                 : new ArrayList<>();
@@ -310,8 +331,8 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         final String language = current.getLocale().getLanguage();
 
                         // Find the Localization in question.
-                        final List<Localization> resultList = entityManager.createNamedQuery(
-                                Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY, Localization.class)
+                        final List<LocaleDefinition> resultList = entityManager.createNamedQuery(
+                                LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY, LocaleDefinition.class)
                                 .setParameter(OrganisationPatterns.PARAM_COUNTRY, country)
                                 .setParameter(OrganisationPatterns.PARAM_LANGUAGE, language)
                                 .getResultList();
@@ -321,7 +342,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                     })
                     .forEach(current -> {
 
-                        if (((Localization) current).getId() == 0L) {
+                        if (((LocaleDefinition) current).getId() == 0L) {
 
                             if (log.isDebugEnabled()) {
                                 log.debug("About to persist [" + current.toString() + "]");
@@ -333,13 +354,13 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         }
 
                         // Add the (now) managed Localization to the holder List.
-                        managedLocalizations.add((Localization) current);
+                        managedLocales.add((LocaleDefinition) current);
                     });
         }
 
         // Sort and return
-        final SortedSet<Localization> toReturn = new TreeSet<>();
-        toReturn.addAll(managedLocalizations);
+        final SortedSet<LocaleDefinition> toReturn = new TreeSet<>();
+        toReturn.addAll(managedLocales);
 
         if (log.isDebugEnabled()) {
             final PersistenceUtil utils = Persistence.getPersistenceUtil();
@@ -355,7 +376,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
 
     private void persistOrUpdate(
             final StandardMenu currentStandardMenu,
-            final Map<String, Localization> stringForm2LocalizationMap,
+            final Map<String, LocaleDefinition> stringForm2LocalizationMap,
             final EntityManager entityManager) {
 
         // Remove all Children from the supplied currentStandardMenu, to enable

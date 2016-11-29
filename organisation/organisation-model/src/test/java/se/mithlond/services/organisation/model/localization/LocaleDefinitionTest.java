@@ -35,11 +35,11 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class LocalizationTest extends AbstractPlainJaxbTest {
+public class LocaleDefinitionTest extends AbstractPlainJaxbTest {
 
     // Shared state
     private Localizations unitUnderTest;
-    private List<Localization> localizations;
+    private List<LocaleDefinition> localeDefinitions;
 
     @Before
     public void setupSharedState() {
@@ -59,12 +59,12 @@ public class LocalizationTest extends AbstractPlainJaxbTest {
                 .collect(Collectors.toList());
         */
 
-        localizations = new ArrayList<>();
-        localizations.add(new Localization("sv"));
-        localizations.add(new Localization("sv", "SE", null));
-        localizations.add(new Localization("en"));
-        localizations.add(new Localization("en", "GB", null));
-        Collections.sort(localizations);
+        localeDefinitions = new ArrayList<>();
+        localeDefinitions.add(new LocaleDefinition("sv"));
+        localeDefinitions.add(new LocaleDefinition("sv", "SE", null));
+        localeDefinitions.add(new LocaleDefinition("en"));
+        localeDefinitions.add(new LocaleDefinition("en", "GB", null));
+        Collections.sort(localeDefinitions);
 
         /*
         localizations.stream()
@@ -73,7 +73,7 @@ public class LocalizationTest extends AbstractPlainJaxbTest {
                 .forEach(System.out::println);
         */
 
-        unitUnderTest = new Localizations(localizations);
+        unitUnderTest = new Localizations(localeDefinitions);
         jaxb.add(Localizations.class);
     }
 
@@ -103,14 +103,14 @@ public class LocalizationTest extends AbstractPlainJaxbTest {
         // Assert
         Assert.assertNotNull(unmarshalled);
 
-        final List<Localization> localizations = unmarshalled.getLocalizations();
-        Assert.assertEquals(this.localizations.size(), localizations.size());
+        final List<LocaleDefinition> localeDefinitions = unmarshalled.getLocaleDefinitions();
+        Assert.assertEquals(this.localeDefinitions.size(), localeDefinitions.size());
 
-        for(int i = 0; i < localizations.size(); i++) {
-            Assert.assertEquals("left: " + this.localizations.get(i) + ", right: " + localizations.get(i),
-                    this.localizations.get(i), localizations.get(i));
-            Assert.assertEquals(0, this.localizations.get(i).compareTo(localizations.get(i)));
-            Assert.assertEquals(this.localizations.get(i).hashCode(), localizations.get(i).hashCode());
+        for(int i = 0; i < localeDefinitions.size(); i++) {
+            Assert.assertEquals("left: " + this.localeDefinitions.get(i) + ", right: " + localeDefinitions.get(i),
+                    this.localeDefinitions.get(i), localeDefinitions.get(i));
+            Assert.assertEquals(0, this.localeDefinitions.get(i).compareTo(localeDefinitions.get(i)));
+            Assert.assertEquals(this.localeDefinitions.get(i).hashCode(), localeDefinitions.get(i).hashCode());
         }
     }
 }

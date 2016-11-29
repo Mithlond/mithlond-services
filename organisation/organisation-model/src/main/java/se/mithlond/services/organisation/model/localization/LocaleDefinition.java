@@ -47,58 +47,58 @@ import java.util.StringTokenizer;
 
 /**
  * Definition for a persisted Locale; required since {@link Locale} is not JAXB- or JPA-annotated.
+ * The LocaleDefinitions hence has the appearance of an Enum, persisted within the Database.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE,
-                query = "select l from Localization l "
+        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE,
+                query = "select l from LocaleDefinition l "
                         + " where l.language like :" + OrganisationPatterns.PARAM_LANGUAGE),
-        @NamedQuery(name = Localization.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY,
-                query = "select l from Localization l "
+        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY,
+                query = "select l from LocaleDefinition l "
                         + " where l.language like :" + OrganisationPatterns.PARAM_LANGUAGE
                         + " and l.country like :" + OrganisationPatterns.PARAM_COUNTRY),
-        @NamedQuery(name = Localization.NAMEDQ_GET_BY_PRIMARY_KEYS,
-                query = "select l from Localization l "
+        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_PRIMARY_KEYS,
+                query = "select l from LocaleDefinition l "
                         + " where l.id in :" + OrganisationPatterns.PARAM_IDS)
 })
 @Entity
-@Table(name = "localized_definitions",
-        uniqueConstraints = {@UniqueConstraint(
-                name = "enum_localizations",
+@Table(name = "locale_definitions",
+        uniqueConstraints = {@UniqueConstraint(name = "enum_constraint_for_locales",
                 columnNames = {"language", "country", "variant"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = "compactStringForm")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Localization extends NazgulEntity implements Comparable<Localization> {
+public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleDefinition> {
 
     /**
      * NamedQuery for getting Localizations having a given language.
      */
-    public static final String NAMEDQ_GET_BY_LANGUAGE = "Localization.getByLanguage";
+    public static final String NAMEDQ_GET_BY_LANGUAGE = "LocaleDefinition.getByLanguage";
 
     /**
      * NamedQuery for getting Localizations having a given language.
      */
-    public static final String NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY = "Localization.getByLanguageAndCountry";
+    public static final String NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY = "LocaleDefinition.getByLanguageAndCountry";
 
     /**
      * NamedQuery for getting Localizations with primary keys in a provided Collection of values.
      */
-    public static final String NAMEDQ_GET_BY_PRIMARY_KEYS = "Localization.getByPrimaryKeys";
+    public static final String NAMEDQ_GET_BY_PRIMARY_KEYS = "LocaleDefinition.getByPrimaryKeys";
 
     private static final int COLUMN_WIDTH = 10;
     private static final String SEPARATOR = "..";
     private static final String NONE = "none";
 
     /**
-     * The XML identifier/compact string form of this Localization, synthesized as [language]:[country]:[variant].
+     * The XML identifier/compact string form of this LocaleDefinition, synthesized as [language]:[country]:[variant].
      */
     @Transient
     @XmlAttribute(required = true)
     private String compactStringForm;
 
     /**
-     * The language code for this Localization.
+     * The language code for this LocaleDefinition.
      */
     @Basic(optional = false)
     @Column(nullable = false, length = COLUMN_WIDTH)
@@ -106,14 +106,14 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
     private String language;
 
     /**
-     * The optional country code for this Localization.
+     * The optional country code for this LocaleDefinition.
      */
     @Column(length = COLUMN_WIDTH)
     @XmlTransient
     private String country;
 
     /**
-     * The optional variant for this Localization.
+     * The optional variant for this LocaleDefinition.
      */
     @Column(length = COLUMN_WIDTH)
     @XmlTransient
@@ -122,51 +122,51 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
     /**
      * JAXB/JPA-friendly constructor.
      */
-    public Localization() {
+    public LocaleDefinition() {
     }
 
     /**
-     * Convenience constructor to create a language-only localization.
+     * Convenience constructor to create a language-only LocaleDefinition.
      *
-     * @param language The language code for this Localization. Cannot be null or empty.
+     * @param language The language code for this LocaleDefinition. Cannot be null or empty.
      */
-    public Localization(final String language) {
+    public LocaleDefinition(final String language) {
         this(language, null, null);
     }
 
     /**
-     * Compound constructor creating a new Localization wrapping the supplied data.
+     * Compound constructor creating a new LocaleDefinition wrapping the supplied data.
      *
-     * @param language The language code for this Localization. Cannot be null or empty.
-     * @param country  The optional Country code for this Localization.
-     * @param variant  The optional Variant code for this Localization.
+     * @param language The language code for this LocaleDefinition. Cannot be null or empty.
+     * @param country  The optional Country code for this LocaleDefinition.
+     * @param variant  The optional Variant code for this LocaleDefinition.
      * @see Locale
      */
-    public Localization(final String language, final String country, final String variant) {
+    public LocaleDefinition(final String language, final String country, final String variant) {
         this.language = language;
         this.country = country;
         this.variant = variant;
     }
 
     /**
-     * Converts this Localization to a {@link Locale}.
+     * Converts this LocaleDefinition to a {@link Locale}.
      *
-     * @return a {@link Locale} corresponding to this Localization.
+     * @return a {@link Locale} corresponding to this LocaleDefinition.
      * @see Locale
      */
     public Locale getLocale() {
 
         if (variant == null && country == null) {
 
-            // Language-only localization
+            // Language-only LocaleDefinition
             return new Locale(language);
         } else if (variant == null) {
 
-            // Language-and-Country localization
+            // Language-and-Country LocaleDefinition
             return new Locale(language, country);
         }
 
-        // Full localization available.
+        // Full LocaleDefinition available.
         return new Locale(language, country, variant);
     }
 
@@ -192,7 +192,7 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
         if (!super.equals(o)) {
             return false;
         }
-        final Localization that = (Localization) o;
+        final LocaleDefinition that = (LocaleDefinition) o;
         return Objects.equals(language, that.language)
                 && Objects.equals(country, that.country)
                 && Objects.equals(variant, that.variant);
@@ -210,7 +210,7 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(final Localization that) {
+    public int compareTo(final LocaleDefinition that) {
 
         if (that == null) {
             return -1;
@@ -254,13 +254,13 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
     }
 
     /**
-     * Builder method creating a Localization from the supplied compactStringForm.
+     * Builder method creating a LocaleDefinition from the supplied compactStringForm.
      *
      * @param compactStringForm A compact string form supplied on the form
      *                          <code>[language]:[country]:[variant]</code>.
-     * @return A Localization created from the supplied compactForm.
+     * @return A LocaleDefinition created from the supplied compactForm.
      */
-    public static Localization parse(final String compactStringForm) {
+    public static LocaleDefinition parse(final String compactStringForm) {
 
         // Parse the compactStringForm to acquire the internal state variables
         final StringTokenizer tok = new StringTokenizer(compactStringForm, SEPARATOR, false);
@@ -279,7 +279,7 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
         final String variant = NONE.equalsIgnoreCase(tmpVariant) ? null : tmpVariant;
 
         // All done.
-        return new Localization(language, country, variant);
+        return new LocaleDefinition(language, country, variant);
     }
 
     //
@@ -314,7 +314,7 @@ public class Localization extends NazgulEntity implements Comparable<Localizatio
     @SuppressWarnings("PMD")
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
-        final Localization parsed = parse(compactStringForm);
+        final LocaleDefinition parsed = parse(compactStringForm);
         this.language = parsed.language;
         this.country = parsed.country;
         this.variant = parsed.variant;

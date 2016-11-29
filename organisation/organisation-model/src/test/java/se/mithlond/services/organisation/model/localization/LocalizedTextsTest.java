@@ -43,10 +43,10 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
     @Before
     public void setupSharedState() {
 
-        unitUnderTest = new LocalizedTexts("Hello", new Localization("sv"), "Hejsan");
-        unitUnderTest.setText(new Localization("no"), "Morrn Da");
-        unitUnderTest.setText(new Localization("en"), "Hello");
-        unitUnderTest.setText(new Localization("en", "US", null), "Hi");
+        unitUnderTest = new LocalizedTexts("Hello", new LocaleDefinition("sv"), "Hejsan");
+        unitUnderTest.setText(new LocaleDefinition("no"), "Morrn Da");
+        unitUnderTest.setText(new LocaleDefinition("en"), "Hello");
+        unitUnderTest.setText(new LocaleDefinition("en", "US", null), "Hi");
 
         holder = new LocalizedTextsHolder();
         holder.addAll(unitUnderTest);
@@ -83,15 +83,13 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
         // Assert
         Assert.assertNotNull(unmarshalled);
 
-        final Set<Localization> localizations = unmarshalled.getLocalizations();
+        final Set<LocaleDefinition> localeDefinitions = unmarshalled.getLocaleDefinitions();
         final List<LocalizedTexts> localizedTextsList = unmarshalled.getLocalizedTextsList();
 
-        Assert.assertEquals(holder.getLocalizations().size(), localizations.size());
-        holder.getLocalizations().stream()
-                .forEach(current -> Assert.assertTrue(localizations.contains(current)));
+        Assert.assertEquals(holder.getLocaleDefinitions().size(), localeDefinitions.size());
+        holder.getLocaleDefinitions().forEach(current -> Assert.assertTrue(localeDefinitions.contains(current)));
 
         Assert.assertEquals(holder.getLocalizedTextsList().size(), localizedTextsList.size());
-        holder.getLocalizedTextsList().stream()
-                .forEach(current -> Assert.assertTrue(localizedTextsList.contains(current)));
+        holder.getLocalizedTextsList().forEach(current -> Assert.assertTrue(localizedTextsList.contains(current)));
     }
 }

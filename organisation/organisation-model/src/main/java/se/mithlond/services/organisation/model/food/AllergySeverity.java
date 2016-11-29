@@ -58,10 +58,11 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Access(value = AccessType.FIELD)
 @Table(name = "allergy_severity",
-        uniqueConstraints = {@UniqueConstraint(
-                name = "unique_sort_order",
-                columnNames = {"severitySortOrder"})})
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"severitySortOrder", "description"})
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_sort_order", columnNames = {"severity_sort_order"})
+        })
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"severitySortOrder", "shortDescription", "fullDescription"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AllergySeverity extends NazgulEntity implements Comparable<AllergySeverity> {
 
@@ -74,12 +75,20 @@ public class AllergySeverity extends NazgulEntity implements Comparable<AllergyS
     private int severitySortOrder;
 
     /**
-     * A localized texts instance containing the description of this AllergySeverity.
+     * A localized texts instance containing the short description of this AllergySeverity.
      */
     @OneToOne(optional = false)
-    @JoinColumn(name = "localizedtexts_id")
+    @JoinColumn(name = "short_description_id")
     @XmlElement(required = true)
-    private LocalizedTexts description;
+    private LocalizedTexts shortDescription;
+
+    /**
+     * A localized texts instance containing the full description of this AllergySeverity.
+     */
+    @OneToOne(optional = false)
+    @JoinColumn(name = "full_description_id")
+    @XmlElement(required = true)
+    private LocalizedTexts fullDescription;
 
     /**
      * JAXB/JPA-friendly constructor.
@@ -92,11 +101,15 @@ public class AllergySeverity extends NazgulEntity implements Comparable<AllergyS
      *
      * @param severitySortOrder The sort order of the severity, with less severe allergies
      *                          having lower severitySortOrder values.
-     * @param description       A localized texts instance containing the description of this AllergySeverity.
+     * @param shortDescription       A localized texts instance containing the description of this AllergySeverity.
      */
-    public AllergySeverity(final int severitySortOrder, final LocalizedTexts description) {
+    public AllergySeverity(final int severitySortOrder,
+            final LocalizedTexts shortDescription,
+            final LocalizedTexts fullDescription) {
+
         this.severitySortOrder = severitySortOrder;
-        this.description = description;
+        this.shortDescription = shortDescription;
+        this.fullDescription = fullDescription;
     }
 
     /**
@@ -110,8 +123,15 @@ public class AllergySeverity extends NazgulEntity implements Comparable<AllergyS
     /**
      * @return A localized texts instance containing the description of this AllergySeverity.
      */
-    public LocalizedTexts getDescription() {
-        return description;
+    public LocalizedTexts getShortDescription() {
+        return shortDescription;
+    }
+
+    /**
+     * @return A localized texts instance containing the description of this AllergySeverity.
+     */
+    public LocalizedTexts getFullDescription() {
+        return fullDescription;
     }
 
     /**
@@ -141,7 +161,8 @@ public class AllergySeverity extends NazgulEntity implements Comparable<AllergyS
                 .create()
                 .notTrue(severitySortOrder <= 0, "Cannot handle zero or negative 'severitySortOrder'. (Got: "
                         + severitySortOrder + ")")
-                .notNull(description, "description")
+                .notNull(shortDescription, "shortDescription")
+                .notNull(fullDescription, "fullDescription")
                 .endExpressionAndValidate();
     }
 }

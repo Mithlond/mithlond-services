@@ -82,31 +82,47 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
      */
     public static final String NAMEDQ_GET_BY_FOODNAME = "Allergy.getAllergiesByFoodName";
 
-    // Internal state
+    /**
+     * The JPA Version of this Allergy.
+     */
     @Version
-    @XmlAttribute(required = false)
+    @XmlAttribute
     private long version;
 
     @EmbeddedId
     @XmlTransient
     private AllergyId allergyId;
 
+    /**
+     * The Food to which this Allergy refers.
+     */
     @ManyToOne
     @MapsId("foodId")
-    @XmlElement(required = true, nillable = false)
+    @XmlElement(required = true)
     private Food food;
 
+    /**
+     * The User having this Allergy.
+     */
     @ManyToOne(optional = false)
     @MapsId("userId")
     @XmlIDREF
     private User user;
 
+    /**
+     * The severity of this Allergy (i.e. of the User towards the Food of this Allergy)
+     */
     @OneToOne(optional = false)
+    @Column(nullable = false)
     @XmlElement(required = true)
     private AllergySeverity severity;
 
-    @Basic(optional = true) @Column(nullable = true)
-    @XmlElement(required = false, nillable = true)
+    /**
+     * An optional (i.e. nullable) free-text note of this Allergy.
+     */
+    @Basic
+    @Column
+    @XmlElement(nillable = true)
     private String note;
 
     /**
