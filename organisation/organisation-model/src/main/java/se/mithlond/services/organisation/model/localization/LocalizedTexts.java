@@ -42,6 +42,7 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceUtil;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -64,7 +65,10 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@Table(name = "localized_texts")
+@Table(name = "localized_texts",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "suiteIdentifierIsUnique", columnNames = {"suiteIdentifier"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocale", "texts"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
@@ -120,7 +124,8 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * @param defaultLocale   The non-null Localization.
      * @param text            The non-empty text.
      */
-    public LocalizedTexts(final String suiteIdentifier,
+    public LocalizedTexts(
+            final String suiteIdentifier,
             final LocaleDefinition defaultLocale,
             final String text) {
 
