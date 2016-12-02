@@ -21,16 +21,42 @@
  */
 package se.mithlond.services.organisation.api.parameters;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.TimeZone;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public class ActivitySearchParametersTest extends AbstractSearchParametersTest {
+
+    private static final ZoneId timeZoneID = ZoneId.of("Europe/Stockholm");
+    private static final TimeZone timeZone = TimeZone.getTimeZone(timeZoneID);
+
+    // Shared state
+    private TimeZone defaultTimeZone;
+
+    @Before
+    public void setupSharedState() {
+
+        // Set the TimeZone to a pre-determined one.
+        defaultTimeZone = TimeZone.getDefault();
+        TimeZone.setDefault(timeZone);
+    }
+
+    @After
+    public void teardownSharedState() {
+
+        // Restore the TimeZone.
+        TimeZone.setDefault(defaultTimeZone);
+    }
 
     @Test
     public void validateInitialState() {
@@ -46,10 +72,6 @@ public class ActivitySearchParametersTest extends AbstractSearchParametersTest {
         validateEmpty(unitUnderTest.getMembershipIDs());
 
         Assert.assertNotNull(unitUnderTest.getEndPeriod());
-        Assert.assertEquals(unitUnderTest.getStartPeriod(),
-                unitUnderTest.getEndPeriod()
-                        .minus(ActivitySearchParameters.ActivitySearchParametersBuilder.DEFAULT_PERIOD_SIZE)
-                        .plusDays(1));
         Assert.assertEquals("%", unitUnderTest.getFreeTextSearch());
     }
 
