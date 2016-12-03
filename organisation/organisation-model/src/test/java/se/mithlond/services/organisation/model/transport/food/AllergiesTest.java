@@ -25,13 +25,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -41,29 +42,27 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class AllergiesTest extends FoodsTest {
+public class AllergiesTest extends AbstractEntityTest {
 
     // Shared state
+    private FoodsAndCategories foodsAndCategories;
     private List<UserVO> users;
     private List<AllergyVO> allergyList;
     private Allergies allergies;
 
     private Organisation mifflond;
 
-    @Override
+    @Before
     public void setupSharedState() {
 
-        // #0) Perform FoodsTest setup
+        // #0) Create some Foods, Categories. And setup JAXB context.
         //
-        super.setupSharedState();
-
-        jaxb.add(Allergies.class);
-
-        // Setup the JAXB context
-        jaxb.add(Allergies.class);
-        jaxb.add(LocaleDefinition.class);
+        this.foodsAndCategories = new FoodsAndCategories();
+        jaxb.add(Foods.class, Allergies.class);
+        final LocaleDefinition defaultLocale = Localizable.DEFAULT_LOCALE;
 
         // #1) Create the organisation
+        //
         Address address = new Address(
                 "careOfLine",
                 "departmentName",
@@ -73,6 +72,7 @@ public class AllergiesTest extends FoodsTest {
                 "zipCode",
                 "country",
                 "description");
+
         mifflond = new Organisation("mifflond",
                 "suffix",
                 "phone",
@@ -83,6 +83,7 @@ public class AllergiesTest extends FoodsTest {
                 TimeFormat.SWEDISH_TIMEZONE.normalized(),
                 TimeFormat.SWEDISH_LOCALE,
                 WellKnownCurrency.SEK);
+        AbstractEntityTest.setJpaIDFor(mifflond, 1L);
 
         users = new ArrayList<>();
 
@@ -102,7 +103,7 @@ public class AllergiesTest extends FoodsTest {
                     (long) i));
         }
 
-        allergies = new Allergies(users, allergyList);
+        allergies = new Allergies(defaultLocale, users, allergyList);
     }
 
     @Test

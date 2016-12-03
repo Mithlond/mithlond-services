@@ -21,8 +21,7 @@ import java.util.stream.Stream;
 public class FoodsTest extends AbstractEntityTest {
 
     // Shared state
-    private Category vegetables, rootsAndBeets, diverse;
-    private Food cauliflower, carrot, beetroot;
+    private FoodsAndCategories foodsAndCategories;
 
     @Before
     public void setupSharedState() {
@@ -33,31 +32,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // #1) Setup some food Categories
         //
-        vegetables = Food.getFoodTypeCategory("Grönsaker",
-                "Grönsaker och Rotfrukter",
-                true);
-        setJpaIDFor(vegetables, 12);
-
-        rootsAndBeets = Food.getFoodTypeCategory("Rotfrukter och Betor",
-                "Rotfrukter; växer under jord",
-                false);
-        setJpaIDFor(rootsAndBeets, 25);
-
-        diverse = Food.getFoodTypeCategory("Diverse",
-                "Diverse / övrigt",
-                false);
-        setJpaIDFor(diverse, 20);
-
-        // #2) Create some Food substances within each category
-        //
-        beetroot = new Food("Rödbeta", "Beetroot", vegetables, rootsAndBeets);
-        setJpaIDFor(beetroot, 215);
-
-        carrot = new Food("Morot", "Carrot", vegetables, rootsAndBeets);
-        setJpaIDFor(carrot, 36);
-
-        cauliflower = new Food("Blomkål", "Cauliflower", vegetables, diverse);
-        setJpaIDFor(cauliflower, 24);
+        this.foodsAndCategories = new FoodsAndCategories();
     }
 
     @Test
@@ -67,9 +42,9 @@ public class FoodsTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/food/shallowFoods.xml");
         final Foods unitUnderTest = new Foods(true,
                 LocaleDefinition.SWEDISH_LANGUAGE,
-                cauliflower,
-                carrot,
-                beetroot);
+                foodsAndCategories.cauliflower,
+                foodsAndCategories.carrot,
+                foodsAndCategories.beetroot);
 
         // Act
         final String result = marshalToXML(unitUnderTest);
@@ -86,9 +61,9 @@ public class FoodsTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/food/shallowFoods.json");
         final Foods unitUnderTest = new Foods(true,
                 LocaleDefinition.SWEDISH_LANGUAGE,
-                cauliflower,
-                carrot,
-                beetroot);
+                foodsAndCategories.cauliflower,
+                foodsAndCategories.carrot,
+                foodsAndCategories.beetroot);
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
@@ -105,9 +80,9 @@ public class FoodsTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedFoods.xml");
         final Foods unitUnderTest = new Foods(false,
                 LocaleDefinition.SWEDISH_LANGUAGE,
-                cauliflower,
-                carrot,
-                beetroot);
+                foodsAndCategories.cauliflower,
+                foodsAndCategories.carrot,
+                foodsAndCategories.beetroot);
 
         // Act
         final String result = marshalToXML(unitUnderTest);
@@ -124,9 +99,9 @@ public class FoodsTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedFoods.json");
         final Foods unitUnderTest = new Foods(false,
                 LocaleDefinition.SWEDISH_LANGUAGE,
-                cauliflower,
-                carrot,
-                beetroot);
+                foodsAndCategories.cauliflower,
+                foodsAndCategories.carrot,
+                foodsAndCategories.beetroot);
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
@@ -202,12 +177,14 @@ public class FoodsTest extends AbstractEntityTest {
 
         // #1) Check the categories
         final SortedSet<Category> categories = foods.getCategories();
-        Stream.of(vegetables, rootsAndBeets, diverse)
+        Stream.of(foodsAndCategories.vegetables, foodsAndCategories.rootsAndBeets, foodsAndCategories.diverse)
                 .forEach(cat -> Assert.assertTrue("Category [" + cat + "] not found.",
                         categories.contains(cat)));
 
         // #2) Check the foods
-        final Stream<Food> foodStream = Stream.of(this.cauliflower, carrot, beetroot);
+        final Stream<Food> foodStream = Stream.of(foodsAndCategories.cauliflower,
+                foodsAndCategories.carrot,
+                foodsAndCategories.beetroot);
 
         if(shallow) {
 

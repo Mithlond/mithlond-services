@@ -24,8 +24,9 @@ package se.mithlond.services.organisation.model.transport.food;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
-import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
+import se.mithlond.services.organisation.model.user.User;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,9 +35,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Transport wrapper for Allergy-related VOs.
@@ -47,7 +48,7 @@ import java.util.Objects;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"users", "allergyList"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Allergies extends AbstractSimpleTransporter {
+public class Allergies extends AbstractLocalizedSimpleTransporter {
 
     /**
      * A List of all UserVOs for which the AllergyVOs within the allergyList pertains.
@@ -72,52 +73,109 @@ public class Allergies extends AbstractSimpleTransporter {
     }
 
     /**
-     * Compound constructor creating an Allergies transport wrapping the supplied objects.
+     * Compound constructor creating an Allergies transport wrapping the supplied data.
      *
-     * @param users       The List of UserVOs for which the transported AllergyVOs are valid.
-     * @param allergyList The List of shallow AllergyVOs transported.
+     * @param localeDefinition A non-null LocaleDefinition used throughout this Allergies transporter.
+     * @param users            The List of UserVOs to wrap within this Allergies transporter.
+     * @param allergyList      The List of AllergyVOs to wrap within this Allergies transporter.
      */
-    public Allergies(final List<UserVO> users, final List<AllergyVO> allergyList) {
+    public Allergies(final LocaleDefinition localeDefinition,
+            final List<UserVO> users,
+            final List<AllergyVO> allergyList) {
 
-        // First, delegate.
+        // Delegate
         this();
+        initialize(localeDefinition);
 
+        // Assign internal state
         if (users != null) {
-            this.users.addAll(users);
+            add(users.toArray(new UserVO[users.size()]));
         }
-
         if (allergyList != null) {
-            this.allergyList.addAll(allergyList);
+            add(allergyList.toArray(new AllergyVO[allergyList.size()]));
         }
     }
 
     /**
      * Creates an allergies transport wrapper containing the supplied Allergies.
      *
-     * @param allergies an array of Allergy objects.
+     * @param localeDefinition A non-null LocaleDefinition used throughout this Allergies transporter.
+     * @param allergies        The Allergy Entities to add to this Allergies transporter.
      */
     public Allergies(final LocaleDefinition localeDefinition, final Allergy... allergies) {
 
         // Delegate
         this();
 
-        // Populate this object.
+        // Assign internal state
+        initialize(localeDefinition);
+        add(allergies);
+    }
+
+    /**
+     * Adds the supplied UserVOs to this Allergies transport, provided they are not null or already added.
+     *
+     * @param users The UserVOs to add.
+     */
+    public void add(final UserVO... users) {
+
+        if (users != null) {
+
+            Stream.of(users)
+                    .filter(Objects::nonNull)
+                    .forEach(user -> {
+
+                        // Add the UserVOs, if missing from the current internal state
+                        if (!this.users.contains(user)) {
+                            this.users.add(user);
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Adds the supplied AllergyVOs to this Allergies transport, provided they are not null or already added.
+     *
+     * @param allergyVOs The AllergyVOs to add.
+     */
+    public void add(final AllergyVO... allergyVOs) {
+
+        if (allergyVOs != null) {
+
+            Stream.of(allergyVOs)
+                    .filter(Objects::nonNull)
+                    .forEach(allergyVO -> {
+
+                        if (!allergyList.contains(allergyVO)) {
+                            allergyList.add(allergyVO);
+                        }
+                    });
+        }
+    }
+
+    /**
+     * Adds the supplied AllergyVOs to this Allergies transport, provided they are not null or already added.
+     *
+     * @param allergies The Allergies to convert to shallow representation and add to this Allergies transport.
+     */
+    public void add(final Allergy... allergies) {
+
         if (allergies != null) {
-            Arrays.stream(allergies)
+
+            Stream.of(allergies)
                     .filter(Objects::nonNull)
                     .forEach(allergy -> {
 
-                        // Add the current User?
-                        final UserVO userVO = new UserVO(allergy.getUser());
-                        if(!this.users.contains(userVO)) {
-                            this.users.add(userVO);
-                        }
+                        // Extract the shallow-state Allergy data
+                        final User user = allergy.getUser();
+                        final UserVO userVO = new UserVO(user);
+                        final AllergyVO allergyVO = new AllergyVO(allergy, getLocaleDefinition());
 
-                        // Add the current allergy?
-                        final AllergyVO allergyVO = new AllergyVO(allergy, localeDefinition);
-                        if(!this.allergyList.contains(allergyVO)) {
-                            this.allergyList.add(allergyVO);
-                        }
+                        // Add the UserVOs, if missing from the current internal state
+                        add(userVO);
+
+                        // Add the AllergyVO, if missing from the current internal state
+                        add(allergyVO);
                     });
         }
     }
@@ -134,5 +192,15 @@ public class Allergies extends AbstractSimpleTransporter {
      */
     public List<AllergyVO> getAllergyList() {
         return allergyList;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return super.toString() + " with "
+                + users.size() + " users and "
+                + allergyList.size() + " allergies.";
     }
 }

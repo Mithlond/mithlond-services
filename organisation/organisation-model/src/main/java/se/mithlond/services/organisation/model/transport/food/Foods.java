@@ -25,8 +25,7 @@ import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
-import se.mithlond.services.shared.spi.algorithms.Validate;
-import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
+import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,19 +40,14 @@ import java.util.TreeSet;
 import java.util.stream.Stream;
 
 /**
+ * Transport class for Foods and related VOs and entities.
+ *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE,
-        propOrder = {"localeDefinition", "categories", "foods", "detailedFoods"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"categories", "foods", "detailedFoods"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Foods extends AbstractSimpleTransporter {
-
-    /**
-     * The LocaleDefinition used for all FoodVOs transported within this Foods wrapper.
-     */
-    @XmlElement
-    private LocaleDefinition localeDefinition;
+public class Foods extends AbstractLocalizedSimpleTransporter {
 
     /**
      * The Categories and SubCategories within which the FoodVOs are grouped.
@@ -81,6 +75,9 @@ public class Foods extends AbstractSimpleTransporter {
      */
     public Foods() {
 
+        // Delegate.
+        super();
+
         // Create internal state
         this.foods = new ArrayList<>();
         this.detailedFoods = new ArrayList<>();
@@ -100,8 +97,8 @@ public class Foods extends AbstractSimpleTransporter {
         // Delegate
         this();
 
-        // Check sanity
-        this.localeDefinition = Validate.notNull(localeDefinition, "localeDefinition");
+        // Initialize
+        initialize(localeDefinition);
 
         // Add all Foods.
         add(shallowRepresentation, foods);
@@ -134,20 +131,20 @@ public class Foods extends AbstractSimpleTransporter {
 
                 if (shallowRepresentation) {
 
-                    final FoodVO toAdd = new FoodVO(food, this.localeDefinition);
+                    final FoodVO toAdd = new FoodVO(food, this.getLocaleDefinition());
                     if (!this.foods.contains(toAdd)) {
                         this.foods.add(toAdd);
                     }
 
                 } else {
 
-                    final String localizedFoodName = food.getLocalizedFoodName().getText(this.localeDefinition);
+                    final String localizedFoodName = food.getLocalizedFoodName().getText(this.getLocaleDefinition());
                     Food existingFood = null;
                     if (!this.detailedFoods.isEmpty()) {
 
                         existingFood = this.detailedFoods.stream()
                                 .filter(current -> current.getLocalizedFoodName()
-                                        .getText(this.localeDefinition)
+                                        .getText(this.getLocaleDefinition())
                                         .equalsIgnoreCase(localizedFoodName))
                                 .findFirst()
                                 .orElse(null);
@@ -159,15 +156,6 @@ public class Foods extends AbstractSimpleTransporter {
                 }
             });
         }
-    }
-
-    /**
-     * Retrieves the LocaleDefinition used within this Foods transport wrapper.
-     *
-     * @return The non-null LocaleDefinition used within this Foods transport wrapper.
-     */
-    public LocaleDefinition getLocaleDefinition() {
-        return localeDefinition;
     }
 
     /**
@@ -202,8 +190,7 @@ public class Foods extends AbstractSimpleTransporter {
      */
     @Override
     public String toString() {
-        return super.toString() + " with LocaleDefinition " + localeDefinition
-                + " containing " + categories.size() + " categories. Also containing "
+        return super.toString() + " containing " + categories.size() + " categories. Also containing "
                 + detailedFoods.size() + " detailed, and " + foods.size()
                 + " shallow representations.";
     }

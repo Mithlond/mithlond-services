@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.food;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -103,21 +104,19 @@ public class AllergyVO extends AbstractSimpleTransportable {
      * a shallow-detail AllergyVO instance.
      *
      * @param allergy          The Allergy to convert.
-     * @param localeDefinition The optional (i.e. nullable) LocaleDefinition to use for describing the allergy severity.
+     * @param localeDefinition The LocaleDefinition to use for describing the allergy severity.
      */
     public AllergyVO(final Allergy allergy, final LocaleDefinition localeDefinition) {
 
         // Delegate
         super(allergy.getUser().getId());
+        Validate.notNull(localeDefinition, "localeDefinition");
 
         // Assign internal state
-        this.description = allergy.getFood().getLocalizedFoodName() + " : " +
-                (localeDefinition == null
-                        ? allergy.getSeverity().getFullDescription().getText()
-                        : allergy.getSeverity().getFullDescription().getText(localeDefinition));
-        this.severity = localeDefinition == null
-                ? allergy.getSeverity().getShortDescription().getText()
-                : allergy.getSeverity().getShortDescription().getText(localeDefinition);
+        this.description = allergy.getFood().getLocalizedFoodName().getText(localeDefinition)
+                + " : "
+                + allergy.getSeverity().getFullDescription().getText(localeDefinition);
+        this.severity = allergy.getSeverity().getShortDescription().getText(localeDefinition);
         this.foodName = allergy.getFood().getLocalizedFoodName().getText(localeDefinition);
         this.foodJpaID = allergy.getFood().getId();
     }
@@ -165,11 +164,11 @@ public class AllergyVO extends AbstractSimpleTransportable {
             return false;
         }
         final AllergyVO allergyVO = (AllergyVO) o;
-        return Objects.equals(getDescription(), allergyVO.getDescription()) &&
-                Objects.equals(getSeverity(), allergyVO.getSeverity()) &&
-                Objects.equals(getFoodName(), allergyVO.getFoodName()) &&
-                Objects.equals(getFoodJpaID(), allergyVO.getFoodJpaID()) &&
-                Objects.equals(getJpaID(), allergyVO.getJpaID());
+        return Objects.equals(getDescription(), allergyVO.getDescription())
+                && Objects.equals(getSeverity(), allergyVO.getSeverity())
+                && Objects.equals(getFoodName(), allergyVO.getFoodName())
+                && Objects.equals(getFoodJpaID(), allergyVO.getFoodJpaID())
+                && Objects.equals(getJpaID(), allergyVO.getJpaID());
     }
 
     /**
@@ -178,6 +177,45 @@ public class AllergyVO extends AbstractSimpleTransportable {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getDescription(), getSeverity(), getFoodName(), getJpaID());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(final AbstractSimpleTransportable cmp) {
+
+        if (cmp instanceof AllergyVO) {
+
+            final AllergyVO that = (AllergyVO) cmp;
+
+            // Check sanity
+            if (that == this) {
+                return 0;
+            }
+
+            // Delegate to internal state
+            final String thisDesc = this.getDescription() == null ? "" : this.getDescription();
+            final String thatDesc = that.getDescription() == null ? "" : that.getDescription();
+            int toReturn = thisDesc.compareTo(thatDesc);
+
+            if (toReturn == 0) {
+
+                final String thisSeverity = this.getSeverity() == null ? "" : this.getSeverity();
+                final String thatSeverity = that.getSeverity() == null ? "" : that.getSeverity();
+                toReturn = thisSeverity.compareTo(thatSeverity);
+            }
+
+            if (toReturn == 0) {
+                toReturn = this.getFoodName().compareTo(that.getFoodName());
+            }
+
+            // All Done.
+            return toReturn;
+        }
+
+        // Delegate
+        return -1;
     }
 
     /**
