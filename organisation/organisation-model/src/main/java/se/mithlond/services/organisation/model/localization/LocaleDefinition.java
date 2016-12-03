@@ -86,6 +86,21 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
      */
     public static final String NAMEDQ_GET_BY_PRIMARY_KEYS = "LocaleDefinition.getByPrimaryKeys";
 
+    /**
+     * Swedish LocaleDefinition, containing only a Language definition (and not a country).
+     */
+    public static final LocaleDefinition SWEDISH_LANGUAGE = new LocaleDefinition("sv");
+
+    /**
+     * English LocaleDefinition, containing only a Language definition (and not a country).
+     */
+    public static final LocaleDefinition ENGLISH_LANGUAGE = new LocaleDefinition("en");
+
+    /**
+     * Danish LocaleDefinition, containing only a Language definition (and not a country).
+     */
+    public static final LocaleDefinition DANISH_LANGUAGE = new LocaleDefinition("dk");
+
     private static final int COLUMN_WIDTH = 10;
     private static final String SEPARATOR = "..";
     private static final String NONE = "none";

@@ -59,7 +59,7 @@ import java.io.Serializable;
         @NamedQuery(name = Allergy.NAMEDQ_GET_ALL,
                 query = "select a from Allergy a order by a.severity"),
         @NamedQuery(name = Allergy.NAMEDQ_GET_BY_FOODNAME,
-                query = "select a from Allergy a where a.food.foodName like ?1 order by a.severity")
+                query = "select a from Allergy a where a.food.localizedFoodName like ?1 order by a.severity")
 })
 @Entity
 @Access(value = AccessType.FIELD)
@@ -238,8 +238,17 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
         // Delegate to internal state comparison.
         // Ignore the note for the purposes of the comparison.
         int toReturn = getSeverity().compareTo(that.getSeverity());
+
         if (toReturn == 0) {
-            toReturn = getFood().getFoodName().compareTo(that.getFood().getFoodName());
+
+            final String thisFoodName = this.getFood().getLocalizedFoodName().getText() == null
+                    ? ""
+                    : this.getFood().getLocalizedFoodName().getText();
+            final String thatFoodName = that.getFood().getLocalizedFoodName().getText() == null
+                    ? ""
+                    : that.getFood().getLocalizedFoodName().getText();
+
+            toReturn = thisFoodName.compareTo(thatFoodName);
         }
         if (toReturn == 0) {
             final long thisUserID = getUser() != null ? getUser().getId() : -1L;

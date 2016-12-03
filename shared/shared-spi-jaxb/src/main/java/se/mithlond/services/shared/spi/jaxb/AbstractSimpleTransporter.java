@@ -37,7 +37,7 @@ import java.util.stream.Stream;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = SharedJaxbPatterns.NAMESPACE)
-@XmlType(namespace = SharedJaxbPatterns.NAMESPACE, propOrder = {"errorDescription"})
+@XmlType(namespace = SharedJaxbPatterns.NAMESPACE, propOrder = {"errorCode", "errorDescription"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSimpleTransporter implements Serializable {
 
@@ -83,7 +83,7 @@ public abstract class AbstractSimpleTransporter implements Serializable {
     public ErrorCode getErrorCode() {
 
         // Fail fast.
-        if(errorCode == null) {
+        if (errorCode == null) {
             return null;
         }
 

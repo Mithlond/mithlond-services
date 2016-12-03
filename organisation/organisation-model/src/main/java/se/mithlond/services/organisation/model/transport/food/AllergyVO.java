@@ -111,14 +111,14 @@ public class AllergyVO extends AbstractSimpleTransportable {
         super(allergy.getUser().getId());
 
         // Assign internal state
-        this.description = allergy.getFood().getFoodName() + " : " +
+        this.description = allergy.getFood().getLocalizedFoodName() + " : " +
                 (localeDefinition == null
                         ? allergy.getSeverity().getFullDescription().getText()
                         : allergy.getSeverity().getFullDescription().getText(localeDefinition));
         this.severity = localeDefinition == null
                 ? allergy.getSeverity().getShortDescription().getText()
                 : allergy.getSeverity().getShortDescription().getText(localeDefinition);
-        this.foodName = allergy.getFood().getFoodName();
+        this.foodName = allergy.getFood().getLocalizedFoodName().getText(localeDefinition);
         this.foodJpaID = allergy.getFood().getId();
     }
 

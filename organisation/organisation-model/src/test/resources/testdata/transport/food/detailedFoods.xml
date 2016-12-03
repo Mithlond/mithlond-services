@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisation_transport:foods xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <localeDefinition jpaId="0" version="0" compactStringForm="sv..none..none"/>
+    <categories>
+        <category jpaId="20" version="0" xmlID="category_food_subcategory_Diverse">
+            <classification>food_subcategory</classification>
+            <categoryID>Diverse</categoryID>
+            <description>Diverse / övrigt</description>
+        </category>
+        <category jpaId="12" version="0" xmlID="category_food_category_Grönsaker">
+            <classification>food_category</classification>
+            <categoryID>Grönsaker</categoryID>
+            <description>Grönsaker och Rotfrukter</description>
+        </category>
+        <category jpaId="25" version="0" xmlID="category_food_subcategory_Rotfrukter_och_Betor">
+            <classification>food_subcategory</classification>
+            <categoryID>Rotfrukter och Betor</categoryID>
+            <description>Rotfrukter; växer under jord</description>
+        </category>
+    </categories>
+    <foods/>
+    <detailedFoods>
+        <detailedFood jpaId="24" version="0">
+            <localizedFoodName jpaId="0" version="0">
+                <suiteIdentifier>Food_Cauliflower</suiteIdentifier>
+                <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                <localizedText locale="en..none..none">Cauliflower</localizedText>
+                <localizedText locale="sv..none..none">Blomkål</localizedText>
+            </localizedFoodName>
+            <category>category_food_category_Grönsaker</category>
+            <subCategory>category_food_subcategory_Diverse</subCategory>
+        </detailedFood>
+        <detailedFood jpaId="36" version="0">
+            <localizedFoodName jpaId="0" version="0">
+                <suiteIdentifier>Food_Carrot</suiteIdentifier>
+                <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                <localizedText locale="en..none..none">Carrot</localizedText>
+                <localizedText locale="sv..none..none">Morot</localizedText>
+            </localizedFoodName>
+            <category>category_food_category_Grönsaker</category>
+            <subCategory>category_food_subcategory_Rotfrukter_och_Betor</subCategory>
+        </detailedFood>
+        <detailedFood jpaId="215" version="0">
+            <localizedFoodName jpaId="0" version="0">
+                <suiteIdentifier>Food_Beetroot</suiteIdentifier>
+                <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                <localizedText locale="en..none..none">Beetroot</localizedText>
+                <localizedText locale="sv..none..none">Rödbeta</localizedText>
+            </localizedFoodName>
+            <category>category_food_category_Grönsaker</category>
+            <subCategory>category_food_subcategory_Rotfrukter_och_Betor</subCategory>
+        </detailedFood>
+    </detailedFoods>
+</organisation_transport:foods>

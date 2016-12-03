@@ -24,9 +24,11 @@ package se.mithlond.services.organisation.model;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.junit.Assert;
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.regex.Pattern;
@@ -69,6 +71,28 @@ public abstract class AbstractEntityTest extends AbstractPlainJaxbTest {
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Assigns the JPA ID of the supplied NazgulEntity subclass by using
+     * the {@link NazgulEntity#setId(long)} method.
+     *
+     * @param toAssign The {@link NazgulEntity} subclass object which should have its JPA ID reassigned.
+     * @param jpaID    The new JPA ID.
+     * @param <T>      The explicit NazgulEntity subclass.
+     */
+    public static <T extends NazgulEntity> void setJpaIDFor(final T toAssign, final long jpaID) {
+
+        // protected void setId(final long id)
+
+        try {
+            final Method setIdMethod = NazgulEntity.class.getDeclaredMethod("setId", Long.TYPE);
+            setIdMethod.setAccessible(true);
+            setIdMethod.invoke(toAssign, jpaID);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not assign JpaID " + jpaID + " to instance of type "
+                    + toAssign.getClass().getSimpleName(), e);
         }
     }
 }

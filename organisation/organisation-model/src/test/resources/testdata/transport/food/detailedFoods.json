@@ -1,0 +1,115 @@
+{
+  "organisation_transport.foods": {
+    "localeDefinition": {
+      "jpaId": 0,
+      "version": 0,
+      "compactStringForm": "sv..none..none"
+    },
+    "categories": [
+      {
+        "jpaId": 20,
+        "version": 0,
+        "xmlID": "category_food_subcategory_Diverse",
+        "classification": "food_subcategory",
+        "categoryID": "Diverse",
+        "description": "Diverse / övrigt"
+      },
+      {
+        "jpaId": 12,
+        "version": 0,
+        "xmlID": "category_food_category_Grönsaker",
+        "classification": "food_category",
+        "categoryID": "Grönsaker",
+        "description": "Grönsaker och Rotfrukter"
+      },
+      {
+        "jpaId": 25,
+        "version": 0,
+        "xmlID": "category_food_subcategory_Rotfrukter_och_Betor",
+        "classification": "food_subcategory",
+        "categoryID": "Rotfrukter och Betor",
+        "description": "Rotfrukter; växer under jord"
+      }
+    ],
+    "detailedFoods": [
+      {
+        "jpaId": 24,
+        "version": 0,
+        "localizedFoodName": {
+          "jpaId": 0,
+          "version": 0,
+          "suiteIdentifier": "Food_Cauliflower",
+          "defaultLocale": {
+            "jpaId": 0,
+            "version": 0,
+            "compactStringForm": "sv..none..none"
+          },
+          "localizedText": [
+            {
+              "locale": "en..none..none",
+              "value": "Cauliflower"
+            },
+            {
+              "locale": "sv..none..none",
+              "value": "Blomkål"
+            }
+          ]
+        },
+        "category": "category_food_category_Grönsaker",
+        "subCategory": "category_food_subcategory_Diverse"
+      },
+      {
+        "jpaId": 36,
+        "version": 0,
+        "localizedFoodName": {
+          "jpaId": 0,
+          "version": 0,
+          "suiteIdentifier": "Food_Carrot",
+          "defaultLocale": {
+            "jpaId": 0,
+            "version": 0,
+            "compactStringForm": "sv..none..none"
+          },
+          "localizedText": [
+            {
+              "locale": "en..none..none",
+              "value": "Carrot"
+            },
+            {
+              "locale": "sv..none..none",
+              "value": "Morot"
+            }
+          ]
+        },
+        "category": "category_food_category_Grönsaker",
+        "subCategory": "category_food_subcategory_Rotfrukter_och_Betor"
+      },
+      {
+        "jpaId": 215,
+        "version": 0,
+        "localizedFoodName": {
+          "jpaId": 0,
+          "version": 0,
+          "suiteIdentifier": "Food_Beetroot",
+          "defaultLocale": {
+            "jpaId": 0,
+            "version": 0,
+            "compactStringForm": "sv..none..none"
+          },
+          "localizedText": [
+            {
+              "locale": "en..none..none",
+              "value": "Beetroot"
+            },
+            {
+              "locale": "sv..none..none",
+              "value": "Rödbeta"
+            }
+          ]
+        },
+        "category": "category_food_category_Grönsaker",
+        "subCategory": "category_food_subcategory_Rotfrukter_och_Betor"
+      }
+    ]
+  }
+}

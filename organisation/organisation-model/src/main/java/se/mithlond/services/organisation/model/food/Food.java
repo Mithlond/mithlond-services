@@ -21,21 +21,23 @@
  */
 package se.mithlond.services.organisation.model.food;
 
-import org.apache.commons.lang3.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,23 +54,23 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "Food.getAllFood",
-                query = "select a from Food a order by a.foodName"),
+        @NamedQuery(name = "Food.getAllFoodByLocalization",
+                query = "select f from Food f join LocalizedTexts lt on f.localizedFoodName"),
         @NamedQuery(name = "Food.getFoodByName",
-                query = "select a from Food a where a.foodName like ?1 order by a.foodName"),
+                query = "select a from Food a where a.localizedFoodName like ?1 order by a.localizedFoodName"),
         @NamedQuery(name = "Food.getFoodByCategory",
                 query = "select a from Food a where a.category.categoryID like ?1 and a.category.classification = '"
-                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' order by a.foodName"),
+                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' order by a.localizedFoodName"),
         @NamedQuery(name = "Food.getFoodByCategoryAndSubCategory",
                 query = "select a from Food a where a.category.categoryID like ?1 and a.category.classification = '"
                         + Food.FOOD_CATEGORY_CLASSIFICATION + "' and a.subCategory.categoryID like ?2 "
                         + "and a.subCategory.classification = '" + Food.FOOD_SUBCATEGORY_CLASSIFICATION + "' "
-                        + "order by a.foodName")
+                        + "order by a.localizedFoodName")
 })
 @Entity
 @Access(value = AccessType.FIELD)
 @Table(uniqueConstraints = {@UniqueConstraint(name = "foodNameIsUnique", columnNames = {"foodName"})})
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"foodName", "category", "subCategory"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"localizedFoodName", "category", "subCategory"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Food extends NazgulEntity implements Comparable<Food> {
 
@@ -87,12 +89,17 @@ public class Food extends NazgulEntity implements Comparable<Food> {
     public static final String FOOD_SUBCATEGORY_CLASSIFICATION = "food_subcategory";
 
     /**
-     * The name of this Food.
+     * The LocalizedText suite identifier prefix used for all food name localizations.
      */
-    @Basic(optional = false)
-    @Column(nullable = false)
-    @XmlElement(nillable = false, required = true)
-    private String foodName;
+    public static final String FOOD_LOCALIZATION_SUITE_PREFIX = "Food_";
+
+    /**
+     * A localized texts instance containing the name of this Food.
+     */
+    @OneToOne(optional = false)
+    @JoinColumn(name = "food_name_id")
+    @XmlElement(required = true)
+    private LocalizedTexts localizedFoodName;
 
     /**
      * The top-level Categorisation of this Food.
@@ -117,25 +124,46 @@ public class Food extends NazgulEntity implements Comparable<Food> {
     }
 
     /**
-     * Compound constructor wrapping the supplied data.
+     * Convenience constructor to create a Food entity with Swedish and English translations,
+     * and using the
      *
-     * @param foodName    The unique name of this Food..
-     * @param category    The top-level categorization for this Food (substance).
-     * @param subCategory The second-level categorization for this Food (substance).
+     * @param swedishFoodName The name of the Food substance in Swedish. Cannot be null or empty.
+     * @param englishFoodName The name of this Food substance in English. Cannot be null or empty.
+     * @param category        The top-level categorization for this Food (substance).
+     * @param subCategory     The second-level categorization for this Food (substance).
      */
-    public Food(final String foodName, final Category category, final Category subCategory) {
+    public Food(
+            final String swedishFoodName,
+            final String englishFoodName,
+            final Category category,
+            final Category subCategory) {
 
         // Assign internal state
-        this.foodName = foodName;
+        this.category = category;
+        this.subCategory = subCategory;
+        this.localizedFoodName = createFoodNameFor(swedishFoodName, englishFoodName);
+    }
+
+    /**
+     * Compound constructor wrapping the supplied data.
+     *
+     * @param localizedFoodName The unique name of this Food.
+     * @param category          The top-level categorization for this Food (substance).
+     * @param subCategory       The second-level categorization for this Food (substance).
+     */
+    public Food(final LocalizedTexts localizedFoodName, final Category category, final Category subCategory) {
+
+        // Assign internal state
+        this.localizedFoodName = localizedFoodName;
         this.category = category;
         this.subCategory = subCategory;
     }
 
     /**
-     * @return The name of this Food.
+     * @return The LocalizedTexts containing the localized name of this Food.
      */
-    public String getFoodName() {
-        return foodName;
+    public LocalizedTexts getLocalizedFoodName() {
+        return localizedFoodName;
     }
 
     /**
@@ -193,8 +221,15 @@ public class Food extends NazgulEntity implements Comparable<Food> {
             return 0;
         }
 
-        // Delegate
-        int result = this.getFoodName().compareTo(that.getFoodName());
+        // Delegate to internal state
+        final String thisFoodName = this.getLocalizedFoodName().getText() == null
+                ? ""
+                : this.getLocalizedFoodName().getText();
+        final String thatFoodName = that.getLocalizedFoodName().getText() == null
+                ? ""
+                : that.getLocalizedFoodName().getText();
+
+        int result = thisFoodName.compareTo(thatFoodName);
         if (result == 0) {
             result = this.getCategory().compareTo(that.getCategory());
         }
@@ -214,10 +249,40 @@ public class Food extends NazgulEntity implements Comparable<Food> {
 
         // Check sanity
         InternalStateValidationException.create()
-                .notNullOrEmpty(foodName, "name")
+                .notNull(localizedFoodName, "localizedFoodName")
                 .notNull(category, "category")
                 .notNull(subCategory, "subCategory")
                 .endExpressionAndValidate();
+    }
+
+    /**
+     * Convenience factory method retrieving a LocalizedTexts instance containing texts for
+     * 2 LocaleDefinitions (swedish and english). The default LocaleDefinition for the LocalizedTexts retrieved is
+     * Swedish and the suite identifier is created using the prefix {@link #FOOD_LOCALIZATION_SUITE_PREFIX} followed
+     * by the english food name with all whitespace replaced by '_' characters.
+     *
+     * @param swedishFoodName The swedish food name.
+     * @param englishFoodName The english food name.
+     * @return The LocalizedTexts instance to use for the {@link #localizedFoodName} of a Food instance.
+     */
+    public static LocalizedTexts createFoodNameFor(
+            final String swedishFoodName,
+            final String englishFoodName) {
+
+        // Check sanity
+        Validate.notEmpty(swedishFoodName, "swedishFoodName");
+        Validate.notEmpty(englishFoodName, "englishFoodName");
+
+        // Create the LocalizedText, using the englishFoodName as key
+        final String key = englishFoodName.trim().replaceAll(" ", "_");
+
+        final LocalizedTexts toReturn = new LocalizedTexts(FOOD_LOCALIZATION_SUITE_PREFIX + key,
+                LocaleDefinition.SWEDISH_LANGUAGE,
+                swedishFoodName);
+        toReturn.setText(LocaleDefinition.ENGLISH_LANGUAGE, englishFoodName);
+
+        // All Done.
+        return toReturn;
     }
 
     /**
@@ -227,15 +292,15 @@ public class Food extends NazgulEntity implements Comparable<Food> {
      * @param description      The non-empty description.
      * @param topLevelCategory if {@code true} the returned Category is a top-level categorization,
      *                         and otherwise a second-level (subCategory) categorization of Food.
-     * @return The resulting Category with the supplied category and description.
+     * @return The resulting (and non-managed/persisted) Category with the supplied category and description.
      */
     public static Category getFoodTypeCategory(final String category,
             final String description,
             final boolean topLevelCategory) {
 
         // Check sanity
-        Validate.notEmpty(category, "Cannot handle null or empty category argument.");
-        Validate.notEmpty(description, "Cannot handle null or empty description argument.");
+        Validate.notEmpty(category, "category");
+        Validate.notEmpty(description, "description");
 
         // All done.
         final String classification = topLevelCategory ? FOOD_CATEGORY_CLASSIFICATION : FOOD_SUBCATEGORY_CLASSIFICATION;

@@ -83,10 +83,15 @@ public enum TimeFormat {
     public static final ZoneId SWEDISH_TIMEZONE = java.time.ZoneId.of("Europe/Stockholm");
 
     /**
+     * The language code for Swedish.
+     */
+    public static final String SWEDISH_LANGUAGE_CODE = "sv";
+
+    /**
      * Swedish Locale, used for representing times and dates. This is the default Locale used
      * by internal DateTimeFormatter instances.
      */
-    public static final Locale SWEDISH_LOCALE = new Locale("sv", "SE");
+    public static final Locale SWEDISH_LOCALE = new Locale(SWEDISH_LANGUAGE_CODE, "SE");
 
     // Internal state
     private Locale defaultLocale;

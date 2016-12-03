@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.localization;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.Serializable;
 
 /**
  * Specification for a text which can be localized into several languages.
@@ -31,13 +32,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @FunctionalInterface
-public interface Localizable {
+public interface Localizable extends Serializable {
 
     /**
      * Standard locale unless another is provided.
      */
     @XmlTransient
-    LocaleDefinition DEFAULT_LOCALE = new LocaleDefinition("sv", "SE", null);
+    LocaleDefinition DEFAULT_LOCALE = new LocaleDefinition("sv", null, null);
 
     /**
      * Retrieves the default text of this AbstractAuthorizedNavItem.
@@ -64,8 +65,8 @@ public interface Localizable {
      *                 should be retrieved.
      * @param country  The country code (such as "SE") of a Locale for which the text of this
      *                 Localizable should be retrieved. The country code may be null.
-     * @param variant The variant of a Localization for which the text of this Localizable should be retrieved.
-     *                The variant can be {@code null}.
+     * @param variant  The variant of a Localization for which the text of this Localizable should be retrieved.
+     *                 The variant can be {@code null}.
      * @return the text for a locale with the supplied language and optional country.
      */
     default String getText(String language, String country, String variant) {

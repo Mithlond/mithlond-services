@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class AllergiesTest extends AbstractPlainJaxbTest {
+public class AllergiesTest extends FoodsTest {
 
     // Shared state
     private List<UserVO> users;
@@ -50,8 +50,14 @@ public class AllergiesTest extends AbstractPlainJaxbTest {
 
     private Organisation mifflond;
 
-    @Before
+    @Override
     public void setupSharedState() {
+
+        // #0) Perform FoodsTest setup
+        //
+        super.setupSharedState();
+
+        jaxb.add(Allergies.class);
 
         // Setup the JAXB context
         jaxb.add(Allergies.class);

@@ -116,7 +116,7 @@ public class Organisations extends AbstractSimpleTransporter {
      */
     @Override
     public String toString() {
-        return "Organisations containing " + organisations.size()
+        return super.toString() + " containing " + organisations.size()
                 + " detailed, and " + organisationVOs.size()
                 + " shallow representations.";
     }
