@@ -24,8 +24,18 @@
             <localizedFoodName jpaId="0" version="0">
                 <suiteIdentifier>Food_Cauliflower</suiteIdentifier>
                 <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                <localizedText locale="en..none..none">Cauliflower</localizedText>
-                <localizedText locale="sv..none..none">Blomkål</localizedText>
+                <texts>
+                    <texts version="0">
+                        <textLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                        <classifier>Default</classifier>
+                        <text>Blomkål</text>
+                    </texts>
+                    <texts version="0">
+                        <textLocale jpaId="0" version="0" compactStringForm="en..none..none"/>
+                        <classifier>Default</classifier>
+                        <text>Cauliflower</text>
+                    </texts>
+                </texts>
             </localizedFoodName>
             <category>category_food_category_Grönsaker</category>
             <subCategory>category_food_subcategory_Diverse</subCategory>
@@ -34,8 +44,18 @@
             <localizedFoodName jpaId="0" version="0">
                 <suiteIdentifier>Food_Carrot</suiteIdentifier>
                 <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                <localizedText locale="en..none..none">Carrot</localizedText>
-                <localizedText locale="sv..none..none">Morot</localizedText>
+                <texts>
+                    <texts version="0">
+                        <textLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                        <classifier>Default</classifier>
+                        <text>Morot</text>
+                    </texts>
+                    <texts version="0">
+                        <textLocale jpaId="0" version="0" compactStringForm="en..none..none"/>
+                        <classifier>Default</classifier>
+                        <text>Carrot</text>
+                    </texts>
+                </texts>
             </localizedFoodName>
             <category>category_food_category_Grönsaker</category>
             <subCategory>category_food_subcategory_Rotfrukter_och_Betor</subCategory>
@@ -44,8 +64,18 @@
             <localizedFoodName jpaId="0" version="0">
                 <suiteIdentifier>Food_Beetroot</suiteIdentifier>
                 <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                <localizedText locale="en..none..none">Beetroot</localizedText>
-                <localizedText locale="sv..none..none">Rödbeta</localizedText>
+                <texts>
+                    <texts version="0">
+                        <textLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                        <classifier>Default</classifier>
+                        <text>Rödbeta</text>
+                    </texts>
+                    <texts version="0">
+                        <textLocale jpaId="0" version="0" compactStringForm="en..none..none"/>
+                        <classifier>Default</classifier>
+                        <text>Beetroot</text>
+                    </texts>
+                </texts>
             </localizedFoodName>
             <category>category_food_category_Grönsaker</category>
             <subCategory>category_food_subcategory_Rotfrukter_och_Betor</subCategory>

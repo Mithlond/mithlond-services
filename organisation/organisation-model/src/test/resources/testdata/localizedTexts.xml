@@ -31,10 +31,28 @@
         <localization jpaId="0" version="0">
             <suiteIdentifier>Hello</suiteIdentifier>
             <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-            <localizedText locale="en..none..none">Hello</localizedText>
-            <localizedText locale="en..US..none">Hi</localizedText>
-            <localizedText locale="no..none..none">Morrn Da</localizedText>
-            <localizedText locale="sv..none..none">Hejsan</localizedText>
+            <texts>
+                <texts version="0">
+                    <textLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+                    <classifier>Default</classifier>
+                    <text>Hejsan</text>
+                </texts>
+                <texts version="0">
+                    <textLocale jpaId="0" version="0" compactStringForm="no..none..none"/>
+                    <classifier>Default</classifier>
+                    <text>Morrn Da</text>
+                </texts>
+                <texts version="0">
+                    <textLocale jpaId="0" version="0" compactStringForm="en..none..none"/>
+                    <classifier>Default</classifier>
+                    <text>Hello</text>
+                </texts>
+                <texts version="0">
+                    <textLocale jpaId="0" version="0" compactStringForm="en..US..none"/>
+                    <classifier>Default</classifier>
+                    <text>Hi</text>
+                </texts>
+            </texts>
         </localization>
     </localizedTextsList>
 </organisation:localizedTextsHolder>

@@ -235,7 +235,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     private Set<OrderLevelGrant> orderLevelGrants;
 
     /**
-     * A Map relating personal settings, such as contact information
+     * A Map relating personal settings, such as contact information.
      */
     @ElementCollection
     @MapKeyColumn(name = "settings_key")

@@ -25,6 +25,7 @@ import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -138,14 +139,20 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
 
                 } else {
 
-                    final String localizedFoodName = food.getLocalizedFoodName().getText(this.getLocaleDefinition());
+                    // Use the DEFAULT_CLASSIFIER for the food name localization.
+                    final String localizedFoodName = food.getLocalizedFoodName().getText(
+                            this.getLocaleDefinition(),
+                            Localizable.DEFAULT_CLASSIFIER);
+
                     Food existingFood = null;
                     if (!this.detailedFoods.isEmpty()) {
 
                         existingFood = this.detailedFoods.stream()
-                                .filter(current -> current.getLocalizedFoodName()
-                                        .getText(this.getLocaleDefinition())
-                                        .equalsIgnoreCase(localizedFoodName))
+                                .filter(current ->
+                                        current
+                                                .getLocalizedFoodName()
+                                                .getText(this.getLocaleDefinition(), Localizable.DEFAULT_CLASSIFIER)
+                                                .equalsIgnoreCase(localizedFoodName))
                                 .findFirst()
                                 .orElse(null);
                     }

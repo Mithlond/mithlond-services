@@ -44,14 +44,26 @@
             "version": 0,
             "compactStringForm": "sv..none..none"
           },
-          "localizedText": [
+          "texts": [
             {
-              "locale": "en..none..none",
-              "value": "Cauliflower"
+              "version": 0,
+              "textLocale": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "sv..none..none"
+              },
+              "classifier": "Default",
+              "text": "Blomkål"
             },
             {
-              "locale": "sv..none..none",
-              "value": "Blomkål"
+              "version": 0,
+              "textLocale": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "en..none..none"
+              },
+              "classifier": "Default",
+              "text": "Cauliflower"
             }
           ]
         },
@@ -70,14 +82,26 @@
             "version": 0,
             "compactStringForm": "sv..none..none"
           },
-          "localizedText": [
+          "texts": [
             {
-              "locale": "en..none..none",
-              "value": "Carrot"
+              "version": 0,
+              "textLocale": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "sv..none..none"
+              },
+              "classifier": "Default",
+              "text": "Morot"
             },
             {
-              "locale": "sv..none..none",
-              "value": "Morot"
+              "version": 0,
+              "textLocale": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "en..none..none"
+              },
+              "classifier": "Default",
+              "text": "Carrot"
             }
           ]
         },
@@ -96,14 +120,26 @@
             "version": 0,
             "compactStringForm": "sv..none..none"
           },
-          "localizedText": [
+          "texts": [
             {
-              "locale": "en..none..none",
-              "value": "Beetroot"
+              "version": 0,
+              "textLocale": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "sv..none..none"
+              },
+              "classifier": "Default",
+              "text": "Rödbeta"
             },
             {
-              "locale": "sv..none..none",
-              "value": "Rödbeta"
+              "version": 0,
+              "textLocale": {
+                "jpaId": 0,
+                "version": 0,
+                "compactStringForm": "en..none..none"
+              },
+              "classifier": "Default",
+              "text": "Beetroot"
             }
           ]
         },

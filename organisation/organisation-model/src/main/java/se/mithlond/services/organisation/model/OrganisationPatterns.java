@@ -92,6 +92,11 @@ public final class OrganisationPatterns {
     public static final String PARAM_CATEGORY_ID = "categoryID";
 
     /**
+     * NamedQuery parameter name for sub-CategoryID.
+     */
+    public static final String PARAM_SUBCATEGORY_ID = "subCategoryID";
+
+    /**
      * NamedQuery parameter name for environment identifier.
      */
     public static final String PARAM_ENVIRONMENT_ID = "environmentId";
@@ -245,6 +250,11 @@ public final class OrganisationPatterns {
      * NamedQuery parameter name for primary keys ("IDs").
      */
     public static final String PARAM_IDS = "ids";
+
+    /**
+     * NamedQuery parameter name for foodName.
+     */
+    public static final String PARAM_FOODNAME = "foodname";
 
     /*
      * Hide utility-class constructors.

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
 
 /**
  * Transport object for Localizations and Localized texts.
@@ -148,7 +149,7 @@ public class Localizations extends AbstractSimpleTransporter {
                     .filter(c -> !localizedTexts.contains(c))
                     .forEach(c -> {
 
-                        final List<LocaleDefinition> containedLocales = c.getContainedLocalizations();
+                        final SortedSet<LocaleDefinition> containedLocales = c.getContainedLocalizations();
                         if (containedLocales != null && !containedLocales.isEmpty()) {
                             addLocalizations(
                                     containedLocales.toArray(

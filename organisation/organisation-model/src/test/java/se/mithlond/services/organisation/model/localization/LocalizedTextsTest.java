@@ -43,10 +43,11 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
     @Before
     public void setupSharedState() {
 
-        unitUnderTest = new LocalizedTexts("Hello", new LocaleDefinition("sv"), "Hejsan");
-        unitUnderTest.setText(new LocaleDefinition("no"), "Morrn Da");
-        unitUnderTest.setText(new LocaleDefinition("en"), "Hello");
-        unitUnderTest.setText(new LocaleDefinition("en", "US", null), "Hi");
+        final String classifier = Localizable.DEFAULT_CLASSIFIER;
+        unitUnderTest = new LocalizedTexts("Hello", new LocaleDefinition("sv"), classifier, "Hejsan");
+        unitUnderTest.setText(new LocaleDefinition("no"), classifier, "Morrn Da");
+        unitUnderTest.setText(new LocaleDefinition("en"), classifier, "Hello");
+        unitUnderTest.setText(new LocaleDefinition("en", "US", null), classifier, "Hi");
 
         holder = new LocalizedTextsHolder();
         holder.addAll(unitUnderTest);

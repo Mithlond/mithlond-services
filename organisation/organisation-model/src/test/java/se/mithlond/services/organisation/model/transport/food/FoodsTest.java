@@ -11,8 +11,14 @@ import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
 
+import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -36,19 +42,36 @@ public class FoodsTest extends AbstractEntityTest {
     }
 
     @Test
+    public void validateLocales() {
+
+        // Language [da], Country [DK],  DisplayCountry [Danmark]
+        final SortedMap<String, Locale> stringForm2LocaleMap = new TreeMap<>();
+        Arrays.stream(DateFormat.getAvailableLocales())
+                .forEach(current -> stringForm2LocaleMap.put(current.toString(), current));
+
+        stringForm2LocaleMap.entrySet().forEach(current -> {
+
+            Locale locale = current.getValue();
+
+            System.out.println("Language [" + locale.getLanguage() + "], Country [" + locale.getCountry() + "], " +
+                    " DisplayCountry [" + locale.getDisplayCountry() + "]");
+        });
+    }
+
+    @Test
     public void validateMarshallingShallowToXML() {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/shallowFoods.xml");
         final Foods unitUnderTest = new Foods(true,
-                LocaleDefinition.SWEDISH_LANGUAGE,
+                Localizable.DEFAULT_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);
@@ -60,7 +83,7 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/shallowFoods.json");
         final Foods unitUnderTest = new Foods(true,
-                LocaleDefinition.SWEDISH_LANGUAGE,
+                Localizable.DEFAULT_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
@@ -79,14 +102,14 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedFoods.xml");
         final Foods unitUnderTest = new Foods(false,
-                LocaleDefinition.SWEDISH_LANGUAGE,
+                Localizable.DEFAULT_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);
@@ -98,7 +121,7 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedFoods.json");
         final Foods unitUnderTest = new Foods(false,
-                LocaleDefinition.SWEDISH_LANGUAGE,
+                Localizable.DEFAULT_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);

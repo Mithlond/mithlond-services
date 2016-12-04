@@ -26,6 +26,7 @@ import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationExc
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
@@ -38,13 +39,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
+
+import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_CATEGORY_ID;
+import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_FOODNAME;
+import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_LANGUAGE;
+import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_SUBCATEGORY_ID;
 
 /**
  * Entity implementation for Foods. Foods are classified in a 3-level tree to provide some structure as to
@@ -54,24 +58,32 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "Food.getAllFood", query = "select f from Food f"),
-        @NamedQuery(name = "Food.getFoodByLocalization",
-                query = "select a from Food a join a.localizedFoodName.data localized_text"
-                        + " where KEY(localized_text) = :localization order by VALUE(localized_text)"),
-        @NamedQuery(name = "Food.getFoodByCategory",
-                query = "select a from Food a join a.localizedFoodName.data localized_text"
-                        + " where a.category.categoryID like :category and a.category.classification"
-                        + " = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' order by VALUE(localized_text)"),
-        @NamedQuery(name = "Food.getFoodByCategoryAndSubCategory",
-                query = "select a from Food a join a.localizedFoodName.data localized_text "
-                        + " where a.category.categoryID like :category and a.category.classification = '"
-                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' and a.subCategory.categoryID like :subCategory "
-                        + "and a.subCategory.classification = '" + Food.FOOD_SUBCATEGORY_CLASSIFICATION + "' "
-                        + "order by VALUE(localized_text)")
+        @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_AND_FOODNAME,
+                query = "select a from Food a join a.localizedFoodName.texts localized_texts"
+                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " and localized_texts.text = :" + PARAM_FOODNAME
+                        + " order by localized_texts.text"),
+        @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE,
+                query = "select a from Food a join a.localizedFoodName.texts localized_texts"
+                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " order by localized_texts.text"),
+        @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_AND_CATEGORY_ID,
+                query = "select a from Food a join a.localizedFoodName.texts localized_texts"
+                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " and a.category.categoryID like :" + PARAM_CATEGORY_ID
+                        + " and a.category.classification = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' "
+                        + " order by localized_texts.text"),
+        @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_CATEGORY_AND_SUBCATEGORY,
+                query = "select a from Food a join a.localizedFoodName.texts localized_texts"
+                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " and a.category.categoryID like :" + PARAM_CATEGORY_ID
+                        + " and a.category.classification = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' "
+                        + " and a.subCategory.categoryID like :" + PARAM_SUBCATEGORY_ID
+                        + " and a.subCategory.classification = '" + Food.FOOD_SUBCATEGORY_CLASSIFICATION + "' "
+                        + " order by localized_texts.text")
 })
 @Entity
 @Access(value = AccessType.FIELD)
-@Table(uniqueConstraints = {@UniqueConstraint(name = "foodNameIsUnique", columnNames = {"foodName"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"localizedFoodName", "category", "subCategory"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Food extends NazgulEntity implements Comparable<Food> {
@@ -94,6 +106,30 @@ public class Food extends NazgulEntity implements Comparable<Food> {
      * The LocalizedText suite identifier prefix used for all food name localizations.
      */
     public static final String FOOD_LOCALIZATION_SUITE_PREFIX = "Food_";
+
+    /**
+     * NamedQuery to retrieve all Foods matching a given FoodName within a Language.
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE_AND_FOODNAME = "Food.getByLanguageAndFoodName";
+
+    /**
+     * NamedQuery to retrieve all Foods sorted by the foodName within a given language.
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE = "Food.getByLanguage";
+
+    /**
+     * NamedQuery to retrieve all Foods whose top-level category matches the ID given.
+     * Also requires the Language to cope with sorting the returned Foods (within UTF-8 Collation order).
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE_AND_CATEGORY_ID = "Food.getByLanguageAndCategoryID";
+
+    /**
+     * NamedQuery to retrieve all Foods whose top-level category matches a given ID, while also matching a
+     * supplied similar sub-level category ID. Also requires the Language to cope with sorting the returned
+     * Foods (within UTF-8 Collation order).
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE_CATEGORY_AND_SUBCATEGORY =
+            "Food.getByLanguageCategoryAndSubCategory";
 
     /**
      * A localized texts instance containing the name of this Food.
@@ -262,6 +298,7 @@ public class Food extends NazgulEntity implements Comparable<Food> {
      * 2 LocaleDefinitions (swedish and english). The default LocaleDefinition for the LocalizedTexts retrieved is
      * Swedish and the suite identifier is created using the prefix {@link #FOOD_LOCALIZATION_SUITE_PREFIX} followed
      * by the english food name with all whitespace replaced by '_' characters.
+     * This factory method uses {@link Localizable#DEFAULT_CLASSIFIER} as classifier.
      *
      * @param swedishFoodName The swedish food name.
      * @param englishFoodName The english food name.
@@ -275,13 +312,18 @@ public class Food extends NazgulEntity implements Comparable<Food> {
         Validate.notEmpty(swedishFoodName, "swedishFoodName");
         Validate.notEmpty(englishFoodName, "englishFoodName");
 
-        // Create the LocalizedText, using the englishFoodName as key
+        // Create the LocalizedText, using a mutated version of the englishFoodName as key
+        // while using Swedish as the default LocaleDefinition.
         final String key = englishFoodName.trim().replaceAll(" ", "_");
-
         final LocalizedTexts toReturn = new LocalizedTexts(FOOD_LOCALIZATION_SUITE_PREFIX + key,
-                LocaleDefinition.SWEDISH_LANGUAGE,
+                LocaleDefinition.SWEDISH_LOCALE,
+                Localizable.DEFAULT_CLASSIFIER,
                 swedishFoodName);
-        toReturn.setText(LocaleDefinition.ENGLISH_LANGUAGE, englishFoodName);
+
+        // Add the english translation as well
+        toReturn.setText(LocaleDefinition.ENGLISH_US_LOCALE,
+                Localizable.DEFAULT_CLASSIFIER,
+                englishFoodName);
 
         // All Done.
         return toReturn;

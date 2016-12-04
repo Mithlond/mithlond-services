@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.localization;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
@@ -87,19 +88,25 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
     public static final String NAMEDQ_GET_BY_PRIMARY_KEYS = "LocaleDefinition.getByPrimaryKeys";
 
     /**
-     * Swedish LocaleDefinition, containing only a Language definition (and not a country).
+     * Swedish LocaleDefinition (i.e. "sv_SE").
      */
-    public static final LocaleDefinition SWEDISH_LANGUAGE = new LocaleDefinition("sv");
+    public static final LocaleDefinition SWEDISH_LOCALE = new LocaleDefinition(
+            TimeFormat.SWEDISH_LOCALE.getLanguage(),
+            TimeFormat.SWEDISH_LOCALE.getCountry(),
+            null);
 
     /**
-     * English LocaleDefinition, containing only a Language definition (and not a country).
+     * English LocaleDefinition (i.e. "en_US").
      */
-    public static final LocaleDefinition ENGLISH_LANGUAGE = new LocaleDefinition("en");
+    public static final LocaleDefinition ENGLISH_US_LOCALE = new LocaleDefinition(
+            Locale.US.getLanguage(),
+            Locale.US.getCountry(),
+            null);
 
     /**
-     * Danish LocaleDefinition, containing only a Language definition (and not a country).
+     * Danish LocaleDefinition (i.e. "da_DK").
      */
-    public static final LocaleDefinition DANISH_LANGUAGE = new LocaleDefinition("dk");
+    public static final LocaleDefinition DANISH_LOCALE = new LocaleDefinition("da", "DK", null);
 
     private static final int COLUMN_WIDTH = 10;
     private static final String SEPARATOR = "..";

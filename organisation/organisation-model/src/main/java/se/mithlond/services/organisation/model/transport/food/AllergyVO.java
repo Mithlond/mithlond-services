@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.food;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
@@ -113,11 +114,12 @@ public class AllergyVO extends AbstractSimpleTransportable {
         Validate.notNull(localeDefinition, "localeDefinition");
 
         // Assign internal state
-        this.description = allergy.getFood().getLocalizedFoodName().getText(localeDefinition)
+        final String classifier = Localizable.DEFAULT_CLASSIFIER;
+        this.description = allergy.getFood().getLocalizedFoodName().getText(localeDefinition, classifier)
                 + " : "
-                + allergy.getSeverity().getFullDescription().getText(localeDefinition);
-        this.severity = allergy.getSeverity().getShortDescription().getText(localeDefinition);
-        this.foodName = allergy.getFood().getLocalizedFoodName().getText(localeDefinition);
+                + allergy.getSeverity().getFullDescription().getText(localeDefinition, classifier);
+        this.severity = allergy.getSeverity().getShortDescription().getText(localeDefinition, classifier);
+        this.foodName = allergy.getFood().getLocalizedFoodName().getText(localeDefinition, classifier);
         this.foodJpaID = allergy.getFood().getId();
     }
 

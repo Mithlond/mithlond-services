@@ -37,7 +37,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"locale", "text"})
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"locale", "text", "classifier"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
 
@@ -46,6 +46,12 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
      */
     @XmlAttribute(required = true)
     private String locale;
+
+    /**
+     * The classifier of this LocalizedTextVO.
+     */
+    @XmlAttribute
+    private String classifier;
 
     /**
      * The localized text.

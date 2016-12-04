@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.food;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
@@ -99,7 +100,7 @@ public class FoodVO extends AbstractSimpleTransportable {
         Validate.notNull(localeDefinition, "localeDefinition");
 
         // Assign internal state
-        this.foodName = food.getLocalizedFoodName().getText(localeDefinition);
+        this.foodName = food.getLocalizedFoodName().getText(localeDefinition, Localizable.DEFAULT_CLASSIFIER);
         this.categoryID = food.getCategory().getId();
         this.subCategoryID = food.getSubCategory().getId();
     }
