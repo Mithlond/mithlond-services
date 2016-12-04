@@ -54,18 +54,20 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "Food.getAllFoodByLocalization",
-                query = "select f from Food f join LocalizedTexts lt on f.localizedFoodName"),
-        @NamedQuery(name = "Food.getFoodByName",
-                query = "select a from Food a where a.localizedFoodName like ?1 order by a.localizedFoodName"),
+        @NamedQuery(name = "Food.getAllFood", query = "select f from Food f"),
+        @NamedQuery(name = "Food.getFoodByLocalization",
+                query = "select a from Food a join a.localizedFoodName.data localized_text"
+                        + " where KEY(localized_text) = :localization order by VALUE(localized_text)"),
         @NamedQuery(name = "Food.getFoodByCategory",
-                query = "select a from Food a where a.category.categoryID like ?1 and a.category.classification = '"
-                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' order by a.localizedFoodName"),
+                query = "select a from Food a join a.localizedFoodName.data localized_text"
+                        + " where a.category.categoryID like :category and a.category.classification"
+                        + " = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' order by VALUE(localized_text)"),
         @NamedQuery(name = "Food.getFoodByCategoryAndSubCategory",
-                query = "select a from Food a where a.category.categoryID like ?1 and a.category.classification = '"
-                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' and a.subCategory.categoryID like ?2 "
+                query = "select a from Food a join a.localizedFoodName.data localized_text "
+                        + " where a.category.categoryID like :category and a.category.classification = '"
+                        + Food.FOOD_CATEGORY_CLASSIFICATION + "' and a.subCategory.categoryID like :subCategory "
                         + "and a.subCategory.classification = '" + Food.FOOD_SUBCATEGORY_CLASSIFICATION + "' "
-                        + "order by a.localizedFoodName")
+                        + "order by VALUE(localized_text)")
 })
 @Entity
 @Access(value = AccessType.FIELD)

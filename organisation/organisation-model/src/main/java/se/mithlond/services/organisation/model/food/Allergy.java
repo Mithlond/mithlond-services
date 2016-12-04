@@ -33,6 +33,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
@@ -58,8 +59,8 @@ import java.io.Serializable;
                 query = "select a from Allergy a where a.user.id = ?1 order by a.severity"),
         @NamedQuery(name = Allergy.NAMEDQ_GET_ALL,
                 query = "select a from Allergy a order by a.severity"),
-        @NamedQuery(name = Allergy.NAMEDQ_GET_BY_FOODNAME,
-                query = "select a from Allergy a where a.food.localizedFoodName like ?1 order by a.severity")
+        @NamedQuery(name = Allergy.NAMEDQ_GET_BY_FOOD_ID,
+                query = "select a from Allergy a where a.food.id = :foodID order by a.severity")
 })
 @Entity
 @Access(value = AccessType.FIELD)
@@ -78,9 +79,9 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
     public static final String NAMEDQ_GET_ALL = "Allergy.getAll";
 
     /**
-     * {@link NamedQuery} which retrieves all Allergies for a given {@link Food} (identified by its name).
+     * {@link NamedQuery} which retrieves all Allergies for a given {@link Food} (identified by its JPA ID).
      */
-    public static final String NAMEDQ_GET_BY_FOODNAME = "Allergy.getAllergiesByFoodName";
+    public static final String NAMEDQ_GET_BY_FOOD_ID = "Allergy.getAllergiesByFoodId";
 
     /**
      * The JPA Version of this Allergy.
@@ -113,7 +114,7 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
      * The severity of this Allergy (i.e. of the User towards the Food of this Allergy)
      */
     @OneToOne(optional = false)
-    @Column(nullable = false)
+    @JoinColumn(nullable = false, name = "severity_id")
     @XmlElement(required = true)
     private AllergySeverity severity;
 
