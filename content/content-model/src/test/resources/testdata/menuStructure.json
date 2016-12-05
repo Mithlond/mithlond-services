@@ -6,7 +6,7 @@
       {
         "jpaId": 0,
         "version": 0,
-        "compactStringForm": "sv..none..none"
+        "compactStringForm": "sv..SE..none"
       }
     ],
     "organisationName": "name",
@@ -21,11 +21,11 @@
         "defaultLocale": {
           "jpaId": 0,
           "version": 0,
-          "compactStringForm": "sv..none..none"
+          "compactStringForm": "sv..SE..none"
         },
-        "localizedText": [
+        "textVOs": [
           {
-            "locale": "sv..none..none",
+            "locale": "sv..SE..none",
             "value": "Roooot"
           }
         ]
@@ -49,11 +49,11 @@
               "defaultLocale": {
                 "jpaId": 0,
                 "version": 0,
-                "compactStringForm": "sv..none..none"
+                "compactStringForm": "sv..SE..none"
               },
-              "localizedText": [
+              "textVOs": [
                 {
-                  "locale": "sv..none..none",
+                  "locale": "sv..SE..none",
                   "value": "Första Menyn"
                 }
               ]
@@ -79,11 +79,11 @@
                     "defaultLocale": {
                       "jpaId": 0,
                       "version": 0,
-                      "compactStringForm": "sv..none..none"
+                      "compactStringForm": "sv..SE..none"
                     },
-                    "localizedText": [
+                    "textVOs": [
                       {
-                        "locale": "sv..none..none",
+                        "locale": "sv..SE..none",
                         "value": "Medlemssida"
                       }
                     ]
@@ -105,11 +105,11 @@
                     "defaultLocale": {
                       "jpaId": 0,
                       "version": 0,
-                      "compactStringForm": "sv..none..none"
+                      "compactStringForm": "sv..SE..none"
                     },
-                    "localizedText": [
+                    "textVOs": [
                       {
-                        "locale": "sv..none..none",
+                        "locale": "sv..SE..none",
                         "value": "Idésida"
                       }
                     ]
@@ -142,11 +142,11 @@
               "defaultLocale": {
                 "jpaId": 0,
                 "version": 0,
-                "compactStringForm": "sv..none..none"
+                "compactStringForm": "sv..SE..none"
               },
-              "localizedText": [
+              "textVOs": [
                 {
-                  "locale": "sv..none..none",
+                  "locale": "sv..SE..none",
                   "value": "Aktivitetskalender"
                 }
               ]

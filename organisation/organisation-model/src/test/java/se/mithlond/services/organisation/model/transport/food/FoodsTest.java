@@ -18,7 +18,6 @@ import java.util.Locale;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -209,7 +208,7 @@ public class FoodsTest extends AbstractEntityTest {
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
 
-        if(shallow) {
+        if (shallow) {
 
             Assert.assertTrue(foods.getDetailedFoods().isEmpty());
 

@@ -61,6 +61,8 @@
           +============================================== -->
         <class>se.mithlond.services.organisation.model.localization.LocaleDefinition</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedText</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedTextId</class>
         <class>se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.AbstractLinkedNavItem</class>
         <class>se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem</class>

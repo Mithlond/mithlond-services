@@ -71,8 +71,9 @@
         <class>se.mithlond.services.organisation.model.food.FoodPreferenceId</class>
         <class>se.mithlond.services.organisation.model.localization.LocaleDefinition</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedText</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedTextId</class>
         <class>se.mithlond.services.organisation.model.membership.Membership</class>
-        <class>se.mithlond.services.organisation.model.membership.PersonalSettings</class>
         <class>se.mithlond.services.organisation.model.membership.Group</class>
         <class>se.mithlond.services.organisation.model.membership.GroupMembership</class>
         <class>se.mithlond.services.organisation.model.membership.GroupMembershipId</class>

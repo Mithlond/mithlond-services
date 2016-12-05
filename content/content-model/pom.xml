@@ -111,6 +111,7 @@
                         <goals>
                             <goal>schemagen</goal>
                         </goals>
+                        <phase></phase>
                         <configuration combine.children="override">
                             <transformSchemas>
                                 <transformSchema>

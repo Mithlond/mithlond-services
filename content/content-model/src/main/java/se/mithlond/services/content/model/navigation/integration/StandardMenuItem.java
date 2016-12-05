@@ -22,8 +22,9 @@
 package se.mithlond.services.content.model.navigation.integration;
 
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -77,10 +78,9 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
      * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
      *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
      * @param href                  The hypertext link of this AbstractLinkedNavItem.
-     * @param languageCode          The language code (as defined in {@link java.util.Locale}) of the text for
-     *                              this AbstractLinkedNavItem.
-     * @param text                  The non-empty text for this AbstractLinkedNavItem, supplied in the
-     *                              languageCode given.
+     * @param localeDefinition      The {@link LocaleDefinition} of the text for this StandardMenuItem.
+     * @param text                  The non-empty text for this StandardMenuItem, supplied
+     *                              in the localeDefinition given.
      */
     public StandardMenuItem(final String role,
             final String domId,
@@ -90,7 +90,7 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
             final boolean enabled,
             final String iconIdentifier,
             final String href,
-            final String languageCode,
+            final LocaleDefinition localeDefinition,
             final String text) {
 
         super(role,
@@ -101,7 +101,7 @@ public class StandardMenuItem extends AbstractLinkedNavItem {
                 enabled,
                 iconIdentifier,
                 href,
-                languageCode,
+                localeDefinition,
                 text);
     }
 

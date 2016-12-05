@@ -25,8 +25,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
-import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 import se.mithlond.services.organisation.model.localization.helpers.Localizations;
+import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +106,7 @@ public class LocaleDefinitionTest extends AbstractPlainJaxbTest {
         final List<LocaleDefinition> localeDefinitions = unmarshalled.getLocaleDefinitions();
         Assert.assertEquals(this.localeDefinitions.size(), localeDefinitions.size());
 
-        for(int i = 0; i < localeDefinitions.size(); i++) {
+        for (int i = 0; i < localeDefinitions.size(); i++) {
             Assert.assertEquals("left: " + this.localeDefinitions.get(i) + ", right: " + localeDefinitions.get(i),
                     this.localeDefinitions.get(i), localeDefinitions.get(i));
             Assert.assertEquals(0, this.localeDefinitions.get(i).compareTo(localeDefinitions.get(i)));

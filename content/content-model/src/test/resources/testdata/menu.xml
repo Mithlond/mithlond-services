@@ -26,8 +26,10 @@
             <menu jpaId="0" version="0" domId="firstMenu">
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>firstMenuTexts</suiteIdentifier>
-                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                    <localizedText locale="sv..none..none">Medlemsmeny</localizedText>
+                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                    <textVOs>
+                        <text locale="sv..SE..none">Medlemsmeny</text>
+                    </textVOs>
                 </localizedTexts>
                 <children>
                     <menuItem jpaId="0" version="0">
@@ -41,8 +43,10 @@
                         <href>plainItemPage</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>plainItemPageTexts</suiteIdentifier>
-                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                            <localizedText locale="sv..none..none">Sök medlemmar</localizedText>
+                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                            <textVOs>
+                                <text locale="sv..SE..none">Sök medlemmar</text>
+                            </textVOs>
                         </localizedTexts>
                     </menuItem>
                     <separator jpaId="0" version="0"/>
@@ -57,8 +61,10 @@
                         <href>plainItemPage2</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>StandardMenuItem_-2029894920</suiteIdentifier>
-                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                            <localizedText locale="sv..none..none">Redigera medlemmar</localizedText>
+                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                            <textVOs>
+                                <text locale="sv..SE..none">Redigera medlemmar</text>
+                            </textVOs>
                         </localizedTexts>
                     </menuItem>
                 </children>
@@ -75,8 +81,10 @@
                 <href>plainItemPage3</href>
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>calendarPageTexts</suiteIdentifier>
-                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
-                    <localizedText locale="sv..none..none">Kalenderuppgifter</localizedText>
+                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                    <textVOs>
+                        <text locale="sv..SE..none">Kalenderuppgifter</text>
+                    </textVOs>
                 </localizedTexts>
             </menuItem>
         </children>

@@ -23,9 +23,10 @@ package se.mithlond.services.content.model.navigation;
 
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
-import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.integration.StandardMenu;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.Localizable;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.CascadeType;
@@ -92,26 +93,26 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      *                              on the markup element rendered by this AbstractAuthorizedNavItem.
      * @param authorizationPatterns A concatenated string of AuthorizationPatterns to be used on this
      *                              AbstractAuthorizedNavItem.
-     * @param enabled               {@code false} to indicate that this AbstractAuthorizedNavItem should be disabled.
+     * @param enabled               {@code false} to indicate that this AbstractAuthorizedNavItem should be
+     *                              disabled.
      * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
      *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
      * @param href                  The hypertext link of this AbstractLinkedNavItem.
-     * @param languageCode          The language code (as defined in {@link java.util.Locale}) of the text for
-     *                              this AbstractLinkedNavItem.
+     * @param localeDefinition      The LocaleDefinition of the text for this AbstractLinkedNavItem.
      * @param text                  The non-empty text for this AbstractLinkedNavItem, supplied in the
-     *                              languageCode given.
+     *                              localeDefinition given.
      */
     @SuppressWarnings("all")
     public AbstractLinkedNavItem(final String role,
-                                 final String domId,
-                                 final Integer tabIndex,
-                                 final String cssClasses,
-                                 final String authorizationPatterns,
-                                 final boolean enabled,
-                                 final String iconIdentifier,
-                                 final String href,
-                                 final String languageCode,
-                                 final String text) {
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final String iconIdentifier,
+            final String href,
+            final LocaleDefinition localeDefinition,
+            final String text) {
 
         super(role,
                 domId,
@@ -140,7 +141,10 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
         }
 
         builder.append("_").append(hashCode());
-        this.localizedTexts = LocalizedTexts.build(builder.toString(), languageCode, text);
+        this.localizedTexts = new LocalizedTexts(builder.toString(),
+                localeDefinition,
+                Localizable.DEFAULT_CLASSIFIER,
+                text);
     }
 
     /**
@@ -165,15 +169,15 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      *                              {@link AbstractLinkedNavItem#setParent(StandardMenu)}
      */
     public AbstractLinkedNavItem(final String role,
-                                 final String domId,
-                                 final Integer tabIndex,
-                                 final String cssClasses,
-                                 final String authorizationPatterns,
-                                 final boolean enabled,
-                                 final String iconIdentifier,
-                                 final String href,
-                                 final LocalizedTexts localizedTexts,
-                                 final StandardMenu parent) {
+            final String domId,
+            final Integer tabIndex,
+            final String cssClasses,
+            final String authorizationPatterns,
+            final boolean enabled,
+            final String iconIdentifier,
+            final String href,
+            final LocalizedTexts localizedTexts,
+            final StandardMenu parent) {
 
         super(role,
                 domId,
@@ -225,8 +229,8 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
      * {@inheritDoc}
      */
     @Override
-    public String getText(final LocaleDefinition localeDefinition) {
-        return localizedTexts.getText(localeDefinition);
+    public String getText(final LocaleDefinition localeDefinition, final String classifier) {
+        return localizedTexts.getText(localeDefinition, classifier);
     }
 
     /**
@@ -360,14 +364,14 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
         /**
          * Builder method which calculates the
          *
-         * @param languageCode                The language code for which the supplied text should be used.
-         * @param text                        The display text within the supplied language code for this StandardMenu.
+         * @param languageCode The language code for which the supplied text should be used.
+         * @param text         The display text within the supplied language code for this StandardMenu.
          * @return this builder, for chaining.
          */
-        public T withLocalizedText(final String languageCode,  final String text) {
+        public T withLocalizedText(final String languageCode, final String text) {
 
             String suiteIdentifier = null;
-            if(localizedTexts != null) {
+            if (localizedTexts != null) {
                 suiteIdentifier = localizedTexts.getSuiteIdentifier();
             } else {
 
@@ -385,35 +389,49 @@ public abstract class AbstractLinkedNavItem extends AbstractAuthorizedNavItem im
             }
 
             // Delegate
-            return withLocalizedText(suiteIdentifier, languageCode, text);
+            final LocaleDefinition localeDefinition = LocaleDefinition.COMMON_LOCALES.stream()
+                    .filter(c -> languageCode.equals(c.getLocale().getLanguage()))
+                    .findFirst()
+                    .orElse(null);
+
+            return withLocalizedText(suiteIdentifier, localeDefinition, text);
         }
 
         /**
-         * @param localizationSuiteIdentifier The localizationSuite identifier for the LocalizedTexts.
-         * @param languageCode                The language code for which the supplied text should be used.
-         * @param text                        The display text within the supplied language code for this StandardMenu.
+         * @param suiteIdentifier  The {@link LocalizedTexts} suite identifier, i.e.
+         *                         {@link LocalizedTexts#suiteIdentifier}.
+         * @param localeDefinition The LocaleDefinition indicating which type of text is provided.
+         * @param text             The display text within the supplied LocaleDefinition for this StandardMenu.
          * @return this builder, for chaining.
          */
-        public T withLocalizedText(final String localizationSuiteIdentifier,
-                                   final String languageCode,
-                                   final String text) {
+        public T withLocalizedText(
+                final String suiteIdentifier,
+                final LocaleDefinition localeDefinition,
+                final String text) {
 
             // Check sanity
-            final String nonNullLangCode = Validate.notEmpty(languageCode, "languageCode");
-            final String nonNullText = Validate.notEmpty(text, "text");
+            Validate.notNull(localeDefinition, "localeDefinition");
+            final String effectiveText = Validate.notEmpty(text, "text");
 
             // Create or add the LocalizedTexts
             if (localizedTexts == null) {
 
                 // Check sanity
-                final String locID = Validate.notEmpty(localizationSuiteIdentifier, "localizationSuiteIdentifier");
-                localizedTexts = LocalizedTexts.build(locID, nonNullLangCode, nonNullText);
+                Validate.notEmpty(suiteIdentifier, "suiteIdentifier");
+
+                // Create the LocalizedTexts using Default classifier.
+                localizedTexts = new LocalizedTexts(
+                        suiteIdentifier,
+                        localeDefinition,
+                        Localizable.DEFAULT_CLASSIFIER,
+                        text);
             } else {
-                localizedTexts.setText(new LocaleDefinition(nonNullLangCode), nonNullText);
+
+                localizedTexts.setText(localeDefinition, Localizable.DEFAULT_CLASSIFIER, effectiveText);
 
                 // Update the localizationSuite's identifier if possible.
-                if (localizationSuiteIdentifier != null && !localizationSuiteIdentifier.isEmpty()) {
-                    localizedTexts.setSuiteIdentifier(localizationSuiteIdentifier);
+                if (suiteIdentifier != null && !suiteIdentifier.isEmpty()) {
+                    localizedTexts.setSuiteIdentifier(suiteIdentifier);
                 }
             }
 

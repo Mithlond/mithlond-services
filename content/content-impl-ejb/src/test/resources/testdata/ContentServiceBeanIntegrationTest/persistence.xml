@@ -57,6 +57,8 @@
         <class>se.mithlond.services.organisation.model.membership.order.OrderLevelGrantId</class>
         <class>se.mithlond.services.organisation.model.user.User</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedText</class>
+        <class>se.mithlond.services.organisation.model.localization.LocalizedTextId</class>
         <class>se.mithlond.services.organisation.model.localization.LocaleDefinition</class>
         <class>se.mithlond.services.organisation.model.activity.Activity</class>
         <class>se.mithlond.services.organisation.model.activity.Admission</class>

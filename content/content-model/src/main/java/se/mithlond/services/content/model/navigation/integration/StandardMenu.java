@@ -25,9 +25,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.AbstractLinkedNavItem;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.DiscriminatorValue;
@@ -116,8 +117,7 @@ public class StandardMenu extends AbstractLinkedNavItem {
      * @param iconIdentifier        An Icon identifier string. If {@code null} is returned, the client-side
      *                              rendering engine is instructed not to render an icon for this LinkedNavItem.
      * @param href                  The hypertext link of this AbstractLinkedNavItem.
-     * @param languageCode          The language code (as defined in {@link java.util.Locale}) of the text for
-     *                              this AbstractLinkedNavItem.
+     * @param localeDefinition      The {@link LocaleDefinition} of the text for this StandardMenu.
      * @param text                  The non-empty text for this AbstractLinkedNavItem, supplied in the
      *                              languageCode given.
      */
@@ -129,7 +129,7 @@ public class StandardMenu extends AbstractLinkedNavItem {
             final boolean enabled,
             final String iconIdentifier,
             final String href,
-            final String languageCode,
+            final LocaleDefinition localeDefinition,
             final String text) {
 
         // Delegate
@@ -141,7 +141,7 @@ public class StandardMenu extends AbstractLinkedNavItem {
                 enabled,
                 iconIdentifier,
                 href,
-                languageCode,
+                localeDefinition,
                 text);
     }
 

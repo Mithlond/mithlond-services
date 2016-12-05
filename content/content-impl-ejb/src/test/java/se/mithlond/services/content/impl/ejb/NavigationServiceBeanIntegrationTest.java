@@ -29,8 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.content.api.NavigationService;
-import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.content.model.navigation.integration.SeparatorMenuItem;
@@ -39,12 +37,14 @@ import se.mithlond.services.content.model.navigation.integration.StandardMenuIte
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
+import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.user.User;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.test.entity.AbstractIntegrationTest;
@@ -58,6 +58,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -238,7 +239,7 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
             // Ignore this
         }
 
-        final String[] tablesToReset = {"LOCALIZED_DEFINITIONS","LOCALIZED_TEXTS", "ORGANISATION"};
+        final String[] tablesToReset = {"LOCALIZED_DEFINITIONS", "LOCALIZED_TEXTS", "ORGANISATION"};
         final List<String> resetIndexStatements = Arrays.asList(tablesToReset).stream()
                 .map(current -> "ALTER TABLE \"" + current + "\" ALTER COLUMN \"ID\" RESTART WITH 0")
                 .collect(Collectors.toList());
@@ -297,7 +298,7 @@ public class NavigationServiceBeanIntegrationTest extends AbstractIntegrationTes
         entityManager.flush();
 
         // Persist all contained Localizations
-        final List<LocaleDefinition> containedLocales = rootMenu.getLocalizedTexts().getContainedLocalizations();
+        final SortedSet<LocaleDefinition> containedLocales = rootMenu.getLocalizedTexts().getContainedLocalizations();
         for (LocaleDefinition current : containedLocales) {
             entityManager.persist(current);
             entityManager.flush();

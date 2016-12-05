@@ -42,9 +42,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Definition for a persisted Locale; required since {@link Locale} is not JAXB- or JPA-annotated.
@@ -90,6 +94,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
     /**
      * Swedish LocaleDefinition (i.e. "sv_SE").
      */
+    @XmlTransient
     public static final LocaleDefinition SWEDISH_LOCALE = new LocaleDefinition(
             TimeFormat.SWEDISH_LOCALE.getLanguage(),
             TimeFormat.SWEDISH_LOCALE.getCountry(),
@@ -98,6 +103,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
     /**
      * English LocaleDefinition (i.e. "en_US").
      */
+    @XmlTransient
     public static final LocaleDefinition ENGLISH_US_LOCALE = new LocaleDefinition(
             Locale.US.getLanguage(),
             Locale.US.getCountry(),
@@ -106,7 +112,22 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
     /**
      * Danish LocaleDefinition (i.e. "da_DK").
      */
+    @XmlTransient
     public static final LocaleDefinition DANISH_LOCALE = new LocaleDefinition("da", "DK", null);
+
+    /**
+     * Norwegian Bokmål LocaleDefinition (i.e. "no_NO").
+     */
+    @XmlTransient
+    public static final LocaleDefinition NORWEGIAN_LOCALE = new LocaleDefinition("no", "NO", null);
+
+    /**
+     * <p>Unmodifiable Set containing un-managed version of the LocaleDefinition constants found within this class.</p>
+     */
+    @XmlTransient
+    public static final Set<LocaleDefinition> COMMON_LOCALES = Collections.unmodifiableSet(
+            Stream.of(SWEDISH_LOCALE, ENGLISH_US_LOCALE, DANISH_LOCALE, NORWEGIAN_LOCALE)
+                    .collect(Collectors.toSet()));
 
     private static final int COLUMN_WIDTH = 10;
     private static final String SEPARATOR = "..";
