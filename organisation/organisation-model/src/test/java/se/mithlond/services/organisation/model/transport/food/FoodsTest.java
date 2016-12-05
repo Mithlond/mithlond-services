@@ -108,7 +108,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);
@@ -127,7 +127,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);

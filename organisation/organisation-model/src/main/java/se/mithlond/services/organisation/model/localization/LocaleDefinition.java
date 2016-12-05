@@ -101,7 +101,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
             null);
 
     /**
-     * English LocaleDefinition (i.e. "en_UK").
+     * English LocaleDefinition (i.e. "en_GB").
      */
     @XmlTransient
     public static final LocaleDefinition ENGLISH_UK_LOCALE = new LocaleDefinition(

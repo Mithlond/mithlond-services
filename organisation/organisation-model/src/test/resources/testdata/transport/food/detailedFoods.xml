@@ -26,7 +26,7 @@
                 <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
                 <textVOs>
                     <text locale="sv..SE..none">Blomkål</text>
-                    <text locale="en..US..none">Cauliflower</text>
+                    <text locale="en..GB..none">Cauliflower</text>
                 </textVOs>
             </localizedFoodName>
             <category>category_food_category_Grönsaker</category>
@@ -38,7 +38,7 @@
                 <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
                 <textVOs>
                     <text locale="sv..SE..none">Morot</text>
-                    <text locale="en..US..none">Carrot</text>
+                    <text locale="en..GB..none">Carrot</text>
                 </textVOs>
             </localizedFoodName>
             <category>category_food_category_Grönsaker</category>
@@ -50,7 +50,7 @@
                 <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
                 <textVOs>
                     <text locale="sv..SE..none">Rödbeta</text>
-                    <text locale="en..US..none">Beetroot</text>
+                    <text locale="en..GB..none">Beetroot</text>
                 </textVOs>
             </localizedFoodName>
             <category>category_food_category_Grönsaker</category>

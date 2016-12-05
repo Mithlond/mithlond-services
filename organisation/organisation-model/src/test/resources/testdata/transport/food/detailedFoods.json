@@ -46,7 +46,7 @@
               "value": "Blomkål"
             },
             {
-              "locale": "en..US..none",
+              "locale": "en..GB..none",
               "value": "Cauliflower"
             }
           ]
@@ -72,7 +72,7 @@
               "value": "Morot"
             },
             {
-              "locale": "en..US..none",
+              "locale": "en..GB..none",
               "value": "Carrot"
             }
           ]
@@ -98,7 +98,7 @@
               "value": "Rödbeta"
             },
             {
-              "locale": "en..US..none",
+              "locale": "en..GB..none",
               "value": "Beetroot"
             }
           ]
