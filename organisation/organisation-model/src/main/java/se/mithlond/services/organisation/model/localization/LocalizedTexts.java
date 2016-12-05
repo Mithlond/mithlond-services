@@ -64,10 +64,10 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@Table(name = "localized_texts",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "suiteIdentifierIsUnique", columnNames = {"suiteIdentifier"})})
+@Table(name = "localized_text_suites",
+        uniqueConstraints = {@UniqueConstraint(
+                name = "unq_suite_identifier",
+                columnNames = {"suiteIdentifier"})})
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocale", "textVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {

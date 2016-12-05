@@ -11,6 +11,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,6 +32,7 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
+@Table(name = "localized_text")
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"textLocale", "classifier", "text", "version"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedText implements Serializable, Validatable, Comparable<LocalizedText> {
@@ -49,7 +52,8 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
      * The non-null LocaleDefinition for this LocalizedText.
      */
     @ManyToOne(optional = false)
-    @JoinColumn(nullable = false, name = "locale_definition_id")
+    @JoinColumn(nullable = false)
+    @MapsId("localeId")
     @XmlElement(required = true)
     private LocaleDefinition textLocale;
 
@@ -58,7 +62,8 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
      * (I.e. the parent of this detail object).
      */
     @ManyToOne(optional = false)
-    @JoinColumn(nullable = false, name = "suite_id")
+    @JoinColumn(nullable = false)
+    @MapsId("localizedTextsSuiteId")
     @XmlTransient
     private LocalizedTexts suite;
 
@@ -73,6 +78,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
      */
     @Basic(optional = false)
     @Column(nullable = false)
+    @MapsId("classifier")
     @XmlElement(required = true)
     private String classifier;
 

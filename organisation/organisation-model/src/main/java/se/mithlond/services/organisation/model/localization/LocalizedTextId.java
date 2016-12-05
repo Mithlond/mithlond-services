@@ -49,7 +49,7 @@ public class LocalizedTextId implements Serializable {
 
     // Shared state
     @Column(name = "suite_id")
-    public long localizedTextsId;
+    public long localizedTextsSuiteId;
 
     @Column(name = "locale_definition_id")
     public long localeId;
@@ -66,15 +66,15 @@ public class LocalizedTextId implements Serializable {
     /**
      * Compound constructor creating a LocalizedTextId object wrapping the supplied data/keys.
      *
-     * @param localizedTextsId The JPA ID of the {@link LocalizedTexts} parent object.
+     * @param localizedTextsSuiteId The JPA ID of the {@link LocalizedTexts} parent object.
      * @param localeId         The JPA ID of the {@link LocaleDefinition} for which this {@link LocalizedTextId}
      *                         pertains.
      * @param classifier       The non-empty classifier of this {@link LocalizedTextId}.
      */
-    public LocalizedTextId(final long localizedTextsId, final long localeId, final String classifier) {
+    public LocalizedTextId(final long localizedTextsSuiteId, final long localeId, final String classifier) {
 
         // Simply assign it already.
-        this.localizedTextsId = localizedTextsId;
+        this.localizedTextsSuiteId = localizedTextsSuiteId;
         this.localeId = localeId;
         this.classifier = Validate.notEmpty(classifier, "classifier");
     }
@@ -93,7 +93,7 @@ public class LocalizedTextId implements Serializable {
             final String thatClassifier = that.classifier == null ? "" : that.classifier;
 
             return this.localeId == that.localeId
-                    && this.localizedTextsId == that.localizedTextsId
+                    && this.localizedTextsSuiteId == that.localizedTextsSuiteId
                     && thisClassifier.equals(thatClassifier);
         }
 
@@ -106,7 +106,7 @@ public class LocalizedTextId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return (int) (this.localeId + this.localizedTextsId + this.classifier.hashCode()) % Integer.MAX_VALUE;
+        return (int) (this.localeId + this.localizedTextsSuiteId + this.classifier.hashCode()) % Integer.MAX_VALUE;
     }
 
     /**
@@ -115,7 +115,7 @@ public class LocalizedTextId implements Serializable {
     @Override
     public String toString() {
         return "LocalizedTextId [LocaleID: " + localeId
-                + ", LocalizedTextsID: " + localizedTextsId
+                + ", LocalizedTextsID: " + localizedTextsSuiteId
                 + ", Classifier: " + classifier + "]";
     }
 }
