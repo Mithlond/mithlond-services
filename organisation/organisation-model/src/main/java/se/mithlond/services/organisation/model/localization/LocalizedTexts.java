@@ -21,9 +21,12 @@
  */
 package se.mithlond.services.organisation.model.localization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.transport.localization.LocalizedTextVO;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Basic;
@@ -34,18 +37,24 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceUtil;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -59,20 +68,27 @@ import java.util.TreeSet;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "suiteIdentifierIsUnique", columnNames = {"suiteIdentifier"})})
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocale", "texts"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"suiteIdentifier", "defaultLocale", "textVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocalizedTexts extends NazgulEntity implements Localizable {
 
     // Our Logger
-    // private static final Logger log = LoggerFactory.getLogger(LocalizedTexts.class);
+    private static final Logger log = LoggerFactory.getLogger(LocalizedTexts.class);
 
     /**
      * The List of LocalizedText objects pertaining to this LocalizedTexts suite.
      */
     @OneToMany(mappedBy = "suite", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @XmlElementWrapper
-    @XmlElement
+    @XmlTransient
     private List<LocalizedText> texts;
+
+    /**
+     * A sequence of LocalizedTextTuples holding the transported localized texts resources.
+     */
+    @Transient
+    @XmlElementWrapper
+    @XmlElement(name = "text")
+    private List<LocalizedTextVO> textVOs;
 
     /**
      * The default Localization for this LocalizedTexts instance.
@@ -95,9 +111,8 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * JAXB/JPA-friendly constructor.
      */
     public LocalizedTexts() {
-
         this.texts = new ArrayList<>();
-        this.texts = new ArrayList<>();
+        this.textVOs = new ArrayList<>();
     }
 
     /**
@@ -196,6 +211,15 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     }
 
     /**
+     * Retrieves all LocalizedText children from this LocalizedTexts parent.
+     *
+     * @return all LocalizedText children from this LocalizedTexts parent.
+     */
+    public List<LocalizedText> getTexts() {
+        return texts;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -250,10 +274,6 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         // Check sanity
         Validate.notNull(managedLocales, "Cannot handle null 'managedLocalizations' argument.");
 
-        // TODO: Refactor this method to handle new Parent/child relationship between LocalizedTexts/LocalizedText
-
-        /*
-
         // Update the defaultLocalization
         final Optional<LocaleDefinition> managedDefaultLocalization = managedLocales
                 .stream()
@@ -264,38 +284,36 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
         }
         this.defaultLocale = managedDefaultLocalization.get();
 
-        // Re-create the data map to hold the managed Localizations from the provided managedLocalizations Set.
-        this.data = data.entrySet().stream().collect(Collectors.toMap(current -> {
+        // Re-assign the LocaleDefinitions within each LocalizedText
+        texts.forEach(current -> {
 
-            // Find the corresponding managed Localization within the 'managedLocalizations' Set.
-            final LocaleDefinition key = current.getKey();
-            final Optional<LocaleDefinition> managedLocalization = managedLocales
+            final LocaleDefinition unmanagedLocale = current.getTextLocale();
+            final Optional<LocaleDefinition> managedLocale = managedLocales
                     .stream()
-                    .filter(aLoc -> aLoc.equals(key))
+                    .filter(aLocale -> aLocale.equals(unmanagedLocale))
                     .findFirst();
 
-            if (!managedLocalization.isPresent()) {
-                throw new IllegalArgumentException("Existing Localization [" + key
-                        + "] was not found within the supplied managedLocalizations: " + managedLocales);
+            if (!managedLocale.isPresent()) {
+                throw new IllegalArgumentException("Existing Locale [" + unmanagedLocale
+                        + "] was not found within the supplied managedLocales: " + managedLocales);
             }
 
-            // All done.
-            return managedLocalization.get();
-
-        }, Map.Entry::getValue));
+            // Re-assign the managed Locale.
+            current.setTextLocale(managedLocale.get());
+        });
 
         if (log.isDebugEnabled()) {
 
             final PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
             log.debug("DefaultLocalization. IsLoaded: " + persistenceUtil.isLoaded(defaultLocale));
 
-            final String dataMsg = data.keySet().stream()
+            final String dataMsg = texts.stream().filter(Objects::nonNull)
+                    .map(LocalizedText::getTextLocale)
                     .map(c -> "Localization [" + c.toString() + "] IsLoaded: " + persistenceUtil.isLoaded(c))
                     .reduce((l, r) -> l + "," + r)
                     .orElse("<none>");
             log.debug("Data Localizations: " + dataMsg);
         }
-        */
     }
 
     /**
@@ -333,13 +351,37 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     }
 
     /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * after it has created an instance of this Class.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("PMD")
+    private void beforeMarshal(final Marshaller marshaller) {
+
+        // Convert the contained LocalizedTexts into LocalizedTextVOs.
+        final List<LocalizedTextVO> voSequence = new ArrayList<>();
+        texts.stream().map(LocalizedTextVO::new).forEach(voSequence::add);
+
+        // Populate the transport tuple sequence
+        this.textVOs.clear();
+        this.textVOs.addAll(voSequence);
+    }
+
+    /**
      * This method is called after all the properties (except IDREF) are unmarshalled for this object,
      * but before this object is set to the parent object.
      */
     @SuppressWarnings("PMD")
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
-        // Re-connect the children with this parent
-        texts.forEach(text -> text.setSuite(this));
+        // Re-populate the data Map with the data from the transport tuple sequence
+        texts.clear();
+        textVOs.stream()
+                .map(current -> new LocalizedText(current.getLocalization(),
+                        this,
+                        current.getClassifier(),
+                        current.getText()))
+                .forEach(texts::add);
     }
 }

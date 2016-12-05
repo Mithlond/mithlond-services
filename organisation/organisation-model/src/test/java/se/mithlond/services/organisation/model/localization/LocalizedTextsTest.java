@@ -24,12 +24,15 @@ package se.mithlond.services.organisation.model.localization;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.localization.helpers.LocalizedTextsHolder;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -56,7 +59,7 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
     }
 
     @Test
-    public void validateMarshalling() throws Exception {
+    public void validateMarshallingToXML() throws Exception {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/localizedTexts.xml");
@@ -67,6 +70,58 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
 
         // Assert
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
+    }
+
+    @Test
+    public void validateMarshallingWithUTF8CharsInClassifierToXML() throws Exception {
+
+        // Assemble
+        final String shortUtf8Classifier = "shåårtDesc";
+        unitUnderTest.setText(new LocaleDefinition("no"), shortUtf8Classifier, "Mårning Dø");
+        unitUnderTest.setText(new LocaleDefinition("en"), shortUtf8Classifier, "Hëllööö?");
+        unitUnderTest.setText(new LocaleDefinition("sv"), shortUtf8Classifier, "É du gô eller?");
+
+        final String expected = XmlTestUtils.readFully("testdata/localizedUtf8ClassifierTexts.xml");
+
+        // Act
+        final String result = marshalToXML(holder);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
+    }
+
+    @Test
+    public void validateMarshallingWithUTF8CharsInClassifierToJSon() throws Exception {
+
+        // Assemble
+        final String shortUtf8Classifier = "shåårtDesc";
+        unitUnderTest.setText(new LocaleDefinition("no"), shortUtf8Classifier, "Mårning Dø");
+        unitUnderTest.setText(new LocaleDefinition("en"), shortUtf8Classifier, "Hëllööö?");
+        unitUnderTest.setText(new LocaleDefinition("sv"), shortUtf8Classifier, "É du gô eller?");
+
+        final String expected = XmlTestUtils.readFully("testdata/localizedUtf8ClassifierTexts.json");
+
+        // Act
+        final String result = marshalToJSon(holder);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        JSONAssert.assertEquals(expected, result, true);
+    }
+
+    @Test
+    public void validateMarshallingToJSON() throws Exception {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/localizedTexts.json");
+
+        // Act
+        final String result = marshalToJSon(holder);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test
@@ -92,5 +147,57 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
 
         Assert.assertEquals(holder.getLocalizedTextsList().size(), localizedTextsList.size());
         holder.getLocalizedTextsList().forEach(current -> Assert.assertTrue(localizedTextsList.contains(current)));
+    }
+
+    @Test
+    public void validateUnmarshallingUtf8ClassifierTextsFromXML() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/localizedUtf8ClassifierTexts.xml");
+
+        // Act
+        final LocalizedTextsHolder unmarshalled = unmarshalFromXML(LocalizedTextsHolder.class, data);
+
+        // Assert
+        validateUnmarshalledUtf8Texts(unmarshalled);
+    }
+
+    @Test
+    public void validateUnmarshallingUtf8ClassifierTextsFromJSON() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/localizedUtf8ClassifierTexts.json");
+
+        // Act
+        final LocalizedTextsHolder unmarshalled = unmarshalFromJSON(LocalizedTextsHolder.class, data);
+
+        // Assert
+        validateUnmarshalledUtf8Texts(unmarshalled);
+    }
+
+    //
+    // Private helpers
+    //
+
+    private void validateUnmarshalledUtf8Texts(final LocalizedTextsHolder unmarshalled) {
+
+        final String shortUtf8Classifier = "shåårtDesc";
+        final Stream<String> expectedTextStream = Stream.of("Mårning Dø", "Hëllööö?", "É du gô eller?");
+
+        Assert.assertNotNull(unmarshalled);
+
+        final Set<LocalizedText> oddClassifierTexts = unmarshalled.getLocalizedTextsList()
+                .iterator()
+                .next()
+                .getTexts()
+                .stream()
+                .filter(lt -> shortUtf8Classifier.equals(lt.getClassifier()))
+                .collect(Collectors.toSet());
+
+        Assert.assertEquals(3, oddClassifierTexts.size());
+        oddClassifierTexts.forEach(c -> Assert.assertEquals(shortUtf8Classifier, c.getClassifier()));
+
+        expectedTextStream.forEach(c -> Assert.assertTrue(
+                oddClassifierTexts.stream().anyMatch(lt -> lt.getText().equals(c))));
     }
 }

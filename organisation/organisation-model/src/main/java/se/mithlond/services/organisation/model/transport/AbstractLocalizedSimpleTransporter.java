@@ -26,8 +26,8 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
     /**
      * The LocaleDefinition used for all AllergyVOs transported within this Allergies wrapper.
      */
-    @XmlElement(nillable = false)
-    private LocaleDefinition localeDefinition;
+    @XmlElement(required = true)
+    private String localeDefinition;
 
     /**
      * JAXB-friendly constructor.
@@ -42,8 +42,11 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
      */
     protected AbstractLocalizedSimpleTransporter(final LocaleDefinition localeDefinition) {
 
-        // Check sanity and
-        this.localeDefinition = Validate.notNull(localeDefinition, "localeDefinition");
+        // Check sanity
+        Validate.notNull(localeDefinition, "localeDefinition");
+
+        // Assign internal state
+        this.localeDefinition = localeDefinition.toString();
     }
 
     /**
@@ -63,13 +66,13 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
         // Complain if the local definition differs from the supplied one.
 
         if (this.localeDefinition == null) {
-            this.localeDefinition = effectiveLocale;
+            this.localeDefinition = effectiveLocale.toString();
 
-        } else if (!this.localeDefinition.equals(localeDefinition)) {
+        } else if (!this.localeDefinition.equals(localeDefinition.toString())) {
 
             // Refuse to overwrite existing LocaleDefinition
             throw new IllegalArgumentException("Cannot re-initialize LocaleDefinition from ("
-                    + this.localeDefinition + ") to (" + effectiveLocale + ")");
+                    + this.localeDefinition + ") to (" + effectiveLocale.toString() + ")");
         }
     }
 
@@ -79,7 +82,7 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
      * @return The non-null LocaleDefinition used within this Foods transport wrapper.
      */
     public LocaleDefinition getLocaleDefinition() {
-        return localeDefinition;
+        return LocaleDefinition.parse(this.localeDefinition);
     }
 
     /**
@@ -87,6 +90,6 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
      */
     @Override
     public String toString() {
-        return super.toString() + ", LocaleDefinition: " + localeDefinition.toString();
+        return super.toString() + ", LocaleDefinition: " + localeDefinition;
     }
 }

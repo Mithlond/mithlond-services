@@ -1,0 +1,71 @@
+{
+  "organisation.localizedTextsHolder": {
+    "localeDefinitions": [
+      {
+        "jpaId": 0,
+        "version": 0,
+        "compactStringForm": "en..none..none"
+      },
+      {
+        "jpaId": 0,
+        "version": 0,
+        "compactStringForm": "en..US..none"
+      },
+      {
+        "jpaId": 0,
+        "version": 0,
+        "compactStringForm": "no..none..none"
+      },
+      {
+        "jpaId": 0,
+        "version": 0,
+        "compactStringForm": "sv..none..none"
+      }
+    ],
+    "localizedTextsList": [
+      {
+        "jpaId": 0,
+        "version": 0,
+        "suiteIdentifier": "Hello",
+        "defaultLocale": {
+          "jpaId": 0,
+          "version": 0,
+          "compactStringForm": "sv..none..none"
+        },
+        "textVOs": [
+          {
+            "locale": "sv..none..none",
+            "value": "Hejsan"
+          },
+          {
+            "locale": "no..none..none",
+            "value": "Morrn Da"
+          },
+          {
+            "locale": "en..none..none",
+            "value": "Hello"
+          },
+          {
+            "locale": "en..US..none",
+            "value": "Hi"
+          },
+          {
+            "locale": "no..none..none",
+            "classifier": "shåårtDesc",
+            "value": "Mårning Dø"
+          },
+          {
+            "locale": "en..none..none",
+            "classifier": "shåårtDesc",
+            "value": "Hëllööö?"
+          },
+          {
+            "locale": "sv..none..none",
+            "classifier": "shåårtDesc",
+            "value": "É du gô eller?"
+          }
+        ]
+      }
+    ]
+  }
+}

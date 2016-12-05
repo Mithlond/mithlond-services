@@ -1,10 +1,6 @@
 {
   "organisation_transport.allergies": {
-    "localeDefinition": {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "sv..SE..none"
-    },
+    "localeDefinition": "sv..SE..none",
     "users": [
       {
         "jpaID": 1,

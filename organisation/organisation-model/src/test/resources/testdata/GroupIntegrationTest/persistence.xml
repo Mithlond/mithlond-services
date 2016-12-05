@@ -54,6 +54,7 @@
         <class>se.mithlond.services.organisation.model.membership.GroupMembershipId</class>
         <class>se.mithlond.services.organisation.model.membership.guild.Guild</class>
         <class>se.mithlond.services.organisation.model.membership.guild.GuildMembership</class>
+        <class>se.mithlond.services.organisation.model.localization.LocaleDefinition</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedTexts</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedText</class>
         <class>se.mithlond.services.organisation.model.localization.LocalizedTextId</class>

@@ -127,6 +127,17 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
     }
 
     /**
+     * (Re-)assigns the LocaleDefinition of this LocalizedText. This is not considered a public API method, but rather
+     * something done following a JAXB-unmarshalling when it should be possible to replace the unmanaged
+     * LocaleDefinition with one managed by the EntityManager.
+     *
+     * @param localeDefinition A non-null LocaleDefinition.
+     */
+    protected void setTextLocale(final LocaleDefinition localeDefinition) {
+        this.textLocale = Validate.notNull(localeDefinition, "localeDefinition");
+    }
+
+    /**
      * Retrieves the parent/suite of LocalizedText wherein this LocalizedText is a detail/part.
      *
      * @return The parent/suite of LocalizedText wherein this LocalizedText is a detail/part.

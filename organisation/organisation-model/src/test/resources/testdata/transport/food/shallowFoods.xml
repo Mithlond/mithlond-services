@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <organisation_transport:foods xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <localeDefinition jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+    <localeDefinition>sv..SE..none</localeDefinition>
     <categories>
         <category jpaId="20" version="0" xmlID="category_food_subcategory_Diverse">
             <classification>food_subcategory</classification>
@@ -19,9 +19,9 @@
         </category>
     </categories>
     <foods>
-        <food jpaID="24" categoryID="12" subCategoryID="20"/>
-        <food jpaID="36" categoryID="12" subCategoryID="25"/>
-        <food jpaID="215" categoryID="12" subCategoryID="25"/>
+        <food jpaID="24" foodName="Blomkål" categoryID="12" subCategoryID="20"/>
+        <food jpaID="36" foodName="Morot" categoryID="12" subCategoryID="25"/>
+        <food jpaID="215" foodName="Rödbeta" categoryID="12" subCategoryID="25"/>
     </foods>
     <detailedFoods/>
 </organisation_transport:foods>

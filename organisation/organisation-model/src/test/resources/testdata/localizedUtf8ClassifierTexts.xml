@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  #%L
-  Nazgul Project: mithlond-services-organisation-model
-  %%
-  Copyright (C) 2015 - 2016 Mithlond
-  %%
-  Licensed under the jGuru Europe AB license (the "License"), based
-  on Apache License, Version 2.0; you may not use this file except
-  in compliance with the License.
-  
-  You may obtain a copy of the License at
-  
-        http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-  #L%
-  -->
 <organisation:localizedTextsHolder xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <localeDefinitions>
         <localization jpaId="0" version="0" compactStringForm="en..none..none"/>
@@ -36,6 +15,9 @@
                 <text locale="no..none..none">Morrn Da</text>
                 <text locale="en..none..none">Hello</text>
                 <text locale="en..US..none">Hi</text>
+                <text locale="no..none..none" classifier="shåårtDesc">Mårning Dø</text>
+                <text locale="en..none..none" classifier="shåårtDesc">Hëllööö?</text>
+                <text locale="sv..none..none" classifier="shåårtDesc">É du gô eller?</text>
             </textVOs>
         </localization>
     </localizedTextsList>

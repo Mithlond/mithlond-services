@@ -1,10 +1,6 @@
 {
   "organisation_transport.foods": {
-    "localeDefinition": {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "sv..none..none"
-    },
+    "localeDefinition": "sv..SE..none",
     "categories": [
       {
         "jpaId": 20,
@@ -36,34 +32,22 @@
         "jpaId": 24,
         "version": 0,
         "localizedFoodName": {
-          "jpaId": 0,
+          "jpaId": 302,
           "version": 0,
           "suiteIdentifier": "Food_Cauliflower",
           "defaultLocale": {
             "jpaId": 0,
             "version": 0,
-            "compactStringForm": "sv..none..none"
+            "compactStringForm": "sv..SE..none"
           },
-          "texts": [
+          "textVOs": [
             {
-              "version": 0,
-              "textLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
-              },
-              "classifier": "Default",
-              "text": "Blomkål"
+              "locale": "sv..SE..none",
+              "value": "Blomkål"
             },
             {
-              "version": 0,
-              "textLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "en..none..none"
-              },
-              "classifier": "Default",
-              "text": "Cauliflower"
+              "locale": "en..US..none",
+              "value": "Cauliflower"
             }
           ]
         },
@@ -74,34 +58,22 @@
         "jpaId": 36,
         "version": 0,
         "localizedFoodName": {
-          "jpaId": 0,
+          "jpaId": 301,
           "version": 0,
           "suiteIdentifier": "Food_Carrot",
           "defaultLocale": {
             "jpaId": 0,
             "version": 0,
-            "compactStringForm": "sv..none..none"
+            "compactStringForm": "sv..SE..none"
           },
-          "texts": [
+          "textVOs": [
             {
-              "version": 0,
-              "textLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
-              },
-              "classifier": "Default",
-              "text": "Morot"
+              "locale": "sv..SE..none",
+              "value": "Morot"
             },
             {
-              "version": 0,
-              "textLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "en..none..none"
-              },
-              "classifier": "Default",
-              "text": "Carrot"
+              "locale": "en..US..none",
+              "value": "Carrot"
             }
           ]
         },
@@ -112,34 +84,22 @@
         "jpaId": 215,
         "version": 0,
         "localizedFoodName": {
-          "jpaId": 0,
+          "jpaId": 300,
           "version": 0,
           "suiteIdentifier": "Food_Beetroot",
           "defaultLocale": {
             "jpaId": 0,
             "version": 0,
-            "compactStringForm": "sv..none..none"
+            "compactStringForm": "sv..SE..none"
           },
-          "texts": [
+          "textVOs": [
             {
-              "version": 0,
-              "textLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..none..none"
-              },
-              "classifier": "Default",
-              "text": "Rödbeta"
+              "locale": "sv..SE..none",
+              "value": "Rödbeta"
             },
             {
-              "version": 0,
-              "textLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "en..none..none"
-              },
-              "classifier": "Default",
-              "text": "Beetroot"
+              "locale": "en..US..none",
+              "value": "Beetroot"
             }
           ]
         },

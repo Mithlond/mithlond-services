@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.model.transport.food;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -132,5 +133,37 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);
+    }
+
+    @Test
+    public void validateUnmarshallingFromXML() {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/transport/food/allergies.xml");
+
+        // Act
+        final Allergies resurrected = unmarshalFromXML(Allergies.class, data);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        Assert.assertNotNull(resurrected);
+        Assert.assertEquals(allergies.getUsers().size(), resurrected.getUsers().size());
+        Assert.assertEquals(allergies.getAllergyList().size(), resurrected.getAllergyList().size());
+    }
+
+    @Test
+    public void validateUnmarshallingFromJSON() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/transport/food/allergies.json");
+
+        // Act
+        final Allergies resurrected = unmarshalFromJSON(Allergies.class, data);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        Assert.assertNotNull(resurrected);
+        Assert.assertEquals(this.allergies.getUsers().size(), resurrected.getUsers().size());
+        Assert.assertEquals(this.allergies.getAllergyList().size(), resurrected.getAllergyList().size());
     }
 }
