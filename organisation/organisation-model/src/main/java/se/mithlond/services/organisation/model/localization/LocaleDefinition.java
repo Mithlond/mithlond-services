@@ -101,12 +101,12 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
             null);
 
     /**
-     * English LocaleDefinition (i.e. "en_US").
+     * English LocaleDefinition (i.e. "en_UK").
      */
     @XmlTransient
-    public static final LocaleDefinition ENGLISH_US_LOCALE = new LocaleDefinition(
-            Locale.US.getLanguage(),
-            Locale.US.getCountry(),
+    public static final LocaleDefinition ENGLISH_UK_LOCALE = new LocaleDefinition(
+            Locale.UK.getLanguage(),
+            Locale.UK.getCountry(),
             null);
 
     /**
@@ -126,7 +126,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
      */
     @XmlTransient
     public static final Set<LocaleDefinition> COMMON_LOCALES = Collections.unmodifiableSet(
-            Stream.of(SWEDISH_LOCALE, ENGLISH_US_LOCALE, DANISH_LOCALE, NORWEGIAN_LOCALE)
+            Stream.of(SWEDISH_LOCALE, ENGLISH_UK_LOCALE, DANISH_LOCALE, NORWEGIAN_LOCALE)
                     .collect(Collectors.toSet()));
 
     private static final int COLUMN_WIDTH = 10;

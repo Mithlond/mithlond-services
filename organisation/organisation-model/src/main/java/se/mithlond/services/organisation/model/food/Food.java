@@ -321,7 +321,7 @@ public class Food extends NazgulEntity implements Comparable<Food> {
                 swedishFoodName);
 
         // Add the english translation as well
-        toReturn.setText(LocaleDefinition.ENGLISH_US_LOCALE,
+        toReturn.setText(LocaleDefinition.ENGLISH_UK_LOCALE,
                 Localizable.DEFAULT_CLASSIFIER,
                 englishFoodName);
 
