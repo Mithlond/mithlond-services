@@ -29,35 +29,29 @@
     <display-name>services-backend-war</display-name>
     <module-name>services-backend-war</module-name>
 
-    <!-- error-page>
-        <error-code>404</error-code>
-        <location>/notfound</location>
-    </error-page -->
-
     <!--
         The KeyCloak server secures all resources within this backend WAR.
         The only role identified within this backend WAR is the
         "authenticated_user" (i.e. someone logged in via KeyCloak).
     -->
-    <!-- security-constraint>
+    <security-constraint>
         <web-resource-collection>
             <web-resource-name>resources</web-resource-name>
-            <url-pattern>/org/*</url-pattern>
+            <url-pattern>/resource/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>authenticated_user</role-name>
+            <role-name>mithlond-user</role-name>
         </auth-constraint>
         <user-data-constraint>
+            <!-- transport-guarantee>CONFIDENTIAL</transport-guarantee -->
             <transport-guarantee>NONE</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-        <realm-name>this is ignored currently</realm-name>
-    </login-config>
+
     <security-role>
-        <role-name>authenticated_user</role-name>
-    </security-role -->
+        <role-name>mithlond-user</role-name>
+    </security-role>
+    <!-- one security role per realm? -->
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

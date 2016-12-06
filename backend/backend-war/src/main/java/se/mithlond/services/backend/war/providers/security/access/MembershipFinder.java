@@ -34,6 +34,13 @@ import javax.ws.rs.container.ContainerRequestContext;
 public interface MembershipFinder {
 
     /**
+     * The OrganisationAndAlias instance retrieved by the
+     * {@link #getOrganisationNameAndAlias(ContainerRequestContext, HttpServletRequest)} method whenever an
+     * organisation and alias could not be established from the inbound request.
+     */
+    OrganisationAndAlias UNKNOWN_ORGANISATION_AND_ALIAS = new OrganisationAndAlias("Unknown", "Nobody");
+
+    /**
      * Retrieves the OrganisationAndAlias from the data within the supplied ContainerRequestContext.
      *
      * @param ctx     The non-null ContainerRequestContext.

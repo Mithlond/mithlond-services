@@ -63,9 +63,19 @@ public class ResteasyMembershipFinder implements Serializable, MembershipFinder 
             log.debug("Getting OrganisationAndAlias for ContainerRequestContext of type " + typeName);
         }
 
-        // Production mode.
-        final KeycloakSecurityContext securityContext = (KeycloakSecurityContext)
-                httpRequest.getAttribute(KeycloakSecurityContext.class.getName());
+        // #1) Find the inbound KeycloakSecurityContext.
+        //
+        final KeycloakSecurityContext securityContext = (KeycloakSecurityContext) httpRequest.getSession()
+                .getAttribute(KeycloakSecurityContext.class.getName());
+        if(securityContext == null) {
+
+            // Not logged in.
+            // All Done.
+            return MembershipFinder.UNKNOWN_ORGANISATION_AND_ALIAS;
+        }
+
+        // #2) Extract the data from the KeyCloak AccessToken.
+        //
         final AccessToken accessToken = securityContext.getToken();
 
         // Printout the JSon Web Token state.
@@ -101,8 +111,11 @@ public class ResteasyMembershipFinder implements Serializable, MembershipFinder 
             log.debug(builder.toString());
         }
 
-        // Preferred Username == Alias
-        // Realm == Organisation Name.
+        // #3) Create the OrganisationAndAlias holder:
+        //     a) Preferred Username == Alias
+        //     b) Realm == Organisation Name.
+        //
+        // All Done.s
         return new OrganisationAndAlias(securityContext.getRealm(), accessToken.getPreferredUsername());
     }
 }

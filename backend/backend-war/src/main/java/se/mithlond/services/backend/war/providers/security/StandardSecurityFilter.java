@@ -48,6 +48,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -97,7 +98,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
         String requiredAuthPatterns;
 
         // Debug some?
-        printRequestInformation(ctx, targetMethod);
+        printRequestInformation(ctx, targetMethod, request);
 
         // Adhere to the standard WRT the @PermitAll annotation.
         if (!targetMethod.isAnnotationPresent(PermitAll.class)) {
@@ -131,8 +132,16 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             if(finder != null) {
 
                 final OrganisationAndAlias holder = finder.getOrganisationNameAndAlias(ctx, request);
-                activeMembership = membershipService.getMembership(
-                        holder.getOrganisationName(), holder.getAlias());
+                if (log.isDebugEnabled()) {
+                    log.debug(holder.toString() + " and requiredAuthPatterns [" + requiredAuthPatterns + "]");
+                }
+
+                try {
+                    activeMembership = membershipService.getMembership(
+                            holder.getOrganisationName(), holder.getAlias());
+                } catch (Exception e) {
+                    log.error("Could not acquire activeMembership", e);
+                }
 
                 if (log.isDebugEnabled()) {
                     log.debug(holder.toString() + " and requiredAuthPatterns [" + requiredAuthPatterns + "]");
@@ -187,7 +196,9 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     // Private helpers
     //
 
-    private void printRequestInformation(final ContainerRequestContext ctx, final Method method) {
+    private void printRequestInformation(final ContainerRequestContext ctx,
+            final Method method,
+            final HttpServletRequest request) {
 
         // Printout the HTTP headers, if available.
         if (log.isDebugEnabled()) {
@@ -219,6 +230,13 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
                     .map(c -> "[" + c.getKey() + "]: " + c.getValue() + "\n")
                     .forEach(builder::append);
             builder.append("====== [End Inbound Request Properties] ======");
+
+            builder.append("\n\n====== [Inbound Request Attributes] ======\n");
+            Collections.list(request.getAttributeNames()).stream()
+                    .map(c -> "[" + c + " (" + (request.getAttribute(c) == null ? "<null>" : request.getAttribute(c)
+                            .getClass().getSimpleName()) + ")]: " + request.getAttribute(c) + "\n")
+                    .forEach(builder::append);
+            builder.append("====== [End Inbound Request Attributes] ======");
 
             builder.append("\n\n====== [Target Method] ======\n");
             builder.append(" Declaring Class: " + method.getDeclaringClass().getSimpleName() + "\n");
