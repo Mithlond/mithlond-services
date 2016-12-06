@@ -11,6 +11,8 @@ import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -108,7 +110,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);
@@ -127,7 +129,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);
@@ -185,9 +187,56 @@ public class FoodsTest extends AbstractEntityTest {
         validateFoods(resurrected, false);
     }
 
+
+    public void importFoodTranslations() throws Exception {
+
+        // Assemble
+        final String data = XmlTestUtils.readFully("testdata/transport/food/translatedFood.csv");
+        final BufferedReader reader = new BufferedReader(new StringReader(data));
+        final String preamble = "insert into localized_text (classifier, text, version, textlocale_id, suite_id)"
+                + " VALUES (";
+        final String insertSQL = "insert into localized_text (classifier, text, version, textlocale_id, suite_id)\n" +
+                "VALUES ('Default', 'dkFoodName', 1, 4, (select suite.id from localized_text ltext, " +
+                "localized_text_suites suite\n" +
+                "where ltext.suite_id = suite.id\n" +
+                "      and ltext.classifier = 'Default'\n" +
+                "      and ltext.textlocale_id = 1\n" +
+                "      and ltext.text = 'swFoodName'));";
+
+        // Act
+        String aLine = null;
+        while((aLine = reader.readLine()) != null) {
+
+            final String[] spliced = aLine.split(",", -1);
+
+            final String category = getArrayIndex(spliced, 0);
+            final String subCategory = getArrayIndex(spliced, 1);
+            final String swFoodName = getArrayIndex(spliced, 2);
+            final String enFoodName = getArrayIndex(spliced, 3);
+            final String dkFoodName = getArrayIndex(spliced, 4);
+
+            /*
+            if(!swFoodName.isEmpty() && !dkFoodName.isEmpty()) {
+                System.out.println(insertSQL.replace("dkFoodName", dkFoodName).replace("swFoodName", swFoodName));
+            }
+            */
+
+            if(!swFoodName.isEmpty() && !enFoodName.isEmpty()) {
+                System.out.println(insertSQL.replace("dkFoodName", enFoodName).replace("swFoodName", swFoodName));
+            }
+
+        }
+
+        // Assert
+    }
+
     //
     // Private helpers
     //
+
+    private static String getArrayIndex(final String[] array, final int index) {
+        return array.length > (index - 1) ? array[index] : "";
+    }
 
     private void validateFoods(final Foods foods, final boolean shallow) {
 

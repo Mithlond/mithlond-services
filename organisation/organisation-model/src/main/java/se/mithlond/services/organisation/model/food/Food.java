@@ -314,7 +314,8 @@ public class Food extends NazgulEntity implements Comparable<Food> {
 
         // Create the LocalizedText, using a mutated version of the englishFoodName as key
         // while using Swedish as the default LocaleDefinition.
-        final String key = englishFoodName.trim().replaceAll(" ", "_");
+        final String key = swedishFoodName.trim().replaceAll(" ", "_");
+        // TODO: Switch back to englishFoodName after translations
         final LocalizedTexts toReturn = new LocalizedTexts(FOOD_LOCALIZATION_SUITE_PREFIX + key,
                 LocaleDefinition.SWEDISH_LOCALE,
                 Localizable.DEFAULT_CLASSIFIER,

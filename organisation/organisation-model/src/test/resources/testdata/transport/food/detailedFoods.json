@@ -34,7 +34,7 @@
         "localizedFoodName": {
           "jpaId": 302,
           "version": 0,
-          "suiteIdentifier": "Food_Cauliflower",
+          "suiteIdentifier": "Food_Blomkål",
           "defaultLocale": {
             "jpaId": 0,
             "version": 0,
@@ -60,7 +60,7 @@
         "localizedFoodName": {
           "jpaId": 301,
           "version": 0,
-          "suiteIdentifier": "Food_Carrot",
+          "suiteIdentifier": "Food_Morot",
           "defaultLocale": {
             "jpaId": 0,
             "version": 0,
@@ -86,7 +86,7 @@
         "localizedFoodName": {
           "jpaId": 300,
           "version": 0,
-          "suiteIdentifier": "Food_Beetroot",
+          "suiteIdentifier": "Food_Rödbeta",
           "defaultLocale": {
             "jpaId": 0,
             "version": 0,
