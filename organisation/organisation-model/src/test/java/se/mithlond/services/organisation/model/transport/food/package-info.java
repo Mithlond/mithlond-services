@@ -20,9 +20,13 @@
  * #L%
  */
 /**
- * Package containing Orders and related entities.
+ * Package containing transport classes for entities.
+ * These transport classes are only JAXB-annotated and resides within a separate Namespace.
+ * Transport classes are either annotated with {@link javax.xml.bind.annotation.XmlRootElement} or have the suffix
+ * <strong>VO</strong> to indicate that they are ValueObjects simply used to transmit data.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
+ * @see javax.xml.bind.annotation.XmlRootElement
  */
 @XmlSchema(
         xmlns = {
@@ -42,7 +46,7 @@
         @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
 })
 @XmlAccessorType(XmlAccessType.FIELD)
-package se.mithlond.services.organisation.model.membership.order;
+package se.mithlond.services.organisation.model.transport.food;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.jaxb.SharedJaxbPatterns;

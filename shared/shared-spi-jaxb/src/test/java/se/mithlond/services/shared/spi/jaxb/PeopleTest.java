@@ -24,6 +24,7 @@ package se.mithlond.services.shared.spi.jaxb;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
@@ -74,7 +75,6 @@ public class PeopleTest extends AbstractPlainJaxbTest {
         // System.out.println("Got: " + marshalled);
 
         // Assert
-        Assert.assertEquals(expected.trim().replaceAll("\\p{Space}", ""),
-                marshalled.trim().replaceAll("\\p{Space}", ""));
+        JSONAssert.assertEquals(expected, marshalled, true);
     }
 }

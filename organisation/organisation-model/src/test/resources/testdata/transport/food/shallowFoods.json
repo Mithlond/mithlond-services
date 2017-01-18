@@ -1,51 +1,51 @@
 {
-  "organisation_transport.foods": {
-    "localeDefinition": "sv..SE..none",
-    "categories": [
-      {
-        "jpaId": 20,
-        "version": 0,
-        "xmlID": "category_food_subcategory_Diverse",
-        "classification": "food_subcategory",
-        "categoryID": "Diverse",
-        "description": "Diverse / övrigt"
-      },
-      {
-        "jpaId": 12,
-        "version": 0,
-        "xmlID": "category_food_category_Grönsaker",
-        "classification": "food_category",
-        "categoryID": "Grönsaker",
-        "description": "Grönsaker och Rotfrukter"
-      },
-      {
-        "jpaId": 25,
-        "version": 0,
-        "xmlID": "category_food_subcategory_Rotfrukter_och_Betor",
-        "classification": "food_subcategory",
-        "categoryID": "Rotfrukter och Betor",
-        "description": "Rotfrukter; växer under jord"
-      }
-    ],
-    "foods": [
-      {
-        "jpaID": 24,
-        "foodName": "Blomkål",
-        "categoryID": 12,
-        "subCategoryID": 20
-      },
-      {
-        "jpaID": 36,
-        "foodName": "Morot",
-        "categoryID": 12,
-        "subCategoryID": 25
-      },
-      {
-        "jpaID": 215,
-        "foodName": "Rödbeta",
-        "categoryID": 12,
-        "subCategoryID": 25
-      }
-    ]
-  }
+  "xsi.type": "organisation.foods",
+  "localeDefinition": "sv..SE..none",
+  "categories": [
+    {
+      "jpaId": 20,
+      "version": 0,
+      "xmlID": "category_food_subcategory_Diverse",
+      "classification": "food_subcategory",
+      "categoryID": "Diverse",
+      "description": "Diverse / övrigt"
+    },
+    {
+      "jpaId": 12,
+      "version": 0,
+      "xmlID": "category_food_category_Grönsaker",
+      "classification": "food_category",
+      "categoryID": "Grönsaker",
+      "description": "Grönsaker och Rotfrukter"
+    },
+    {
+      "jpaId": 25,
+      "version": 0,
+      "xmlID": "category_food_subcategory_Rotfrukter_och_Betor",
+      "classification": "food_subcategory",
+      "categoryID": "Rotfrukter och Betor",
+      "description": "Rotfrukter; växer under jord"
+    }
+  ],
+  "foods": [
+    {
+      "jpaID": 24,
+      "foodName": "Blomkål",
+      "categoryID": 12,
+      "subCategoryID": 20
+    },
+    {
+      "jpaID": 36,
+      "foodName": "Morot",
+      "categoryID": 12,
+      "subCategoryID": 25
+    },
+    {
+      "jpaID": 215,
+      "foodName": "Rödbeta",
+      "categoryID": 12,
+      "subCategoryID": 25
+    }
+  ],
+  "detailedFoods": []
 }

@@ -1,3 +1,24 @@
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-organisation-model
+ * %%
+ * Copyright (C) 2015 - 2017 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package se.mithlond.services.organisation.model.transport.food;
 
 import org.junit.Assert;
@@ -7,6 +28,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
@@ -35,7 +57,8 @@ public class FoodsTest extends AbstractEntityTest {
 
         // #0) Configure the JAXB context
         //
-        jaxb.add(Foods.class);
+        jaxb.add(Foods.class, FoodVO.class);
+        jaxb.mapXmlNamespacePrefix(OrganisationPatterns.NAMESPACE, "organisation");
 
         // #1) Setup some food Categories
         //

@@ -1,74 +1,73 @@
 {
-  "organisation_transport.allergies": {
-    "localeDefinition": "sv..SE..none",
-    "users": [
-      {
-        "jpaID": 1,
-        "firstName": "firstName_0",
-        "lastName": "lastName_0",
-        "birthday": "1971-02-01"
-      },
-      {
-        "jpaID": 2,
-        "firstName": "firstName_1",
-        "lastName": "lastName_1",
-        "birthday": "1972-02-02"
-      },
-      {
-        "jpaID": 3,
-        "firstName": "firstName_2",
-        "lastName": "lastName_2",
-        "birthday": "1973-02-03"
-      },
-      {
-        "jpaID": 4,
-        "firstName": "firstName_3",
-        "lastName": "lastName_3",
-        "birthday": "1974-02-04"
-      },
-      {
-        "jpaID": 5,
-        "firstName": "firstName_4",
-        "lastName": "lastName_4",
-        "birthday": "1975-02-05"
-      }
-    ],
-    "allergyList": [
-      {
-        "jpaID": 2,
-        "foodJpaID": 0,
-        "description": "allergy_description_2",
-        "foodName": "foodName_2",
-        "severity": "severity_2"
-      },
-      {
-        "jpaID": 3,
-        "foodJpaID": 1,
-        "description": "allergy_description_3",
-        "foodName": "foodName_3",
-        "severity": "severity_3"
-      },
-      {
-        "jpaID": 4,
-        "foodJpaID": 2,
-        "description": "allergy_description_4",
-        "foodName": "foodName_4",
-        "severity": "severity_4"
-      },
-      {
-        "jpaID": 5,
-        "foodJpaID": 3,
-        "description": "allergy_description_5",
-        "foodName": "foodName_5",
-        "severity": "severity_5"
-      },
-      {
-        "jpaID": 6,
-        "foodJpaID": 4,
-        "description": "allergy_description_6",
-        "foodName": "foodName_6",
-        "severity": "severity_6"
-      }
-    ]
-  }
+  "xsi.type": "organisation.allergies",
+  "localeDefinition": "sv..SE..none",
+  "users": [
+    {
+      "jpaID": 1,
+      "firstName": "firstName_0",
+      "lastName": "lastName_0",
+      "birthday": "1971-02-01"
+    },
+    {
+      "jpaID": 2,
+      "firstName": "firstName_1",
+      "lastName": "lastName_1",
+      "birthday": "1972-02-02"
+    },
+    {
+      "jpaID": 3,
+      "firstName": "firstName_2",
+      "lastName": "lastName_2",
+      "birthday": "1973-02-03"
+    },
+    {
+      "jpaID": 4,
+      "firstName": "firstName_3",
+      "lastName": "lastName_3",
+      "birthday": "1974-02-04"
+    },
+    {
+      "jpaID": 5,
+      "firstName": "firstName_4",
+      "lastName": "lastName_4",
+      "birthday": "1975-02-05"
+    }
+  ],
+  "allergyList": [
+    {
+      "jpaID": 2,
+      "foodJpaID": 0,
+      "description": "allergy_description_2",
+      "foodName": "foodName_2",
+      "severity": "severity_2"
+    },
+    {
+      "jpaID": 3,
+      "foodJpaID": 1,
+      "description": "allergy_description_3",
+      "foodName": "foodName_3",
+      "severity": "severity_3"
+    },
+    {
+      "jpaID": 4,
+      "foodJpaID": 2,
+      "description": "allergy_description_4",
+      "foodName": "foodName_4",
+      "severity": "severity_4"
+    },
+    {
+      "jpaID": 5,
+      "foodJpaID": 3,
+      "description": "allergy_description_5",
+      "foodName": "foodName_5",
+      "severity": "severity_5"
+    },
+    {
+      "jpaID": 6,
+      "foodJpaID": 4,
+      "description": "allergy_description_6",
+      "foodName": "foodName_6",
+      "severity": "severity_6"
+    }
+  ]
 }

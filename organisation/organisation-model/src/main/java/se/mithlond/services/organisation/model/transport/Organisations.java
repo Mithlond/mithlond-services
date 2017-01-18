@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Arrays;
 import java.util.SortedSet;
@@ -43,6 +44,7 @@ import java.util.TreeSet;
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"organisations", "organisationVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({Organisation.class, OrganisationVO.class})
 public class Organisations extends AbstractSimpleTransporter {
 
     /**
@@ -73,11 +75,11 @@ public class Organisations extends AbstractSimpleTransporter {
      *
      * @param organisations The Organisation instances to transport.
      */
-    public Organisations(final Organisation ... organisations) {
+    public Organisations(final Organisation... organisations) {
 
         this();
 
-        if(organisations != null) {
+        if (organisations != null) {
             this.organisations.addAll(Arrays.asList(organisations));
         }
     }
@@ -88,11 +90,11 @@ public class Organisations extends AbstractSimpleTransporter {
      *
      * @param organisationVOs The OrganisationVOs instances to transport.
      */
-    public Organisations(final OrganisationVO ... organisationVOs) {
+    public Organisations(final OrganisationVO... organisationVOs) {
 
         this();
 
-        if(organisationVOs != null) {
+        if (organisationVOs != null) {
             this.organisationVOs.addAll(Arrays.asList(organisationVOs));
         }
     }

@@ -169,11 +169,14 @@ public class PlainJaxbContextRule extends TestWatcher {
         marshallerProperties.put(Marshaller.JAXB_ENCODING, "UTF-8");
         marshallerProperties.put(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshallerProperties.put(RI_NAMESPACE_PREFIX_MAPPER_PROPERTY, namespacePrefixResolver);
+        marshallerProperties.put(MarshallerProperties.JSON_INCLUDE_ROOT, false);
         marshallerProperties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+        marshallerProperties.put(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, true);
 
         // Assign standard properties for the Unmarshaller
         unMarshallerProperties = new TreeMap<>();
         unMarshallerProperties.put(RI_NAMESPACE_PREFIX_MAPPER_PROPERTY, namespacePrefixResolver);
+        unMarshallerProperties.put(UnmarshallerProperties.JSON_INCLUDE_ROOT, false);
         unMarshallerProperties.put(UnmarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
     }
 
@@ -289,8 +292,8 @@ public class PlainJaxbContextRule extends TestWatcher {
      */
     @SuppressWarnings("all")
     public String marshal(final ClassLoader loader,
-            final boolean emitJSON,
-            final Object... objects) throws IllegalArgumentException {
+                          final boolean emitJSON,
+                          final Object... objects) throws IllegalArgumentException {
 
         // Create an EntityTransporter, to extract the types as required by the plain JAXBContext.
         final EntityTransporter<Object> transporter = new EntityTransporter<>();
@@ -441,9 +444,9 @@ public class PlainJaxbContextRule extends TestWatcher {
      * @see #add(Class[])
      */
     public <T> T unmarshal(final ClassLoader loader,
-            final boolean assumeJSonInput,
-            final Class<T> resultType,
-            final String toUnmarshal) {
+                           final boolean assumeJSonInput,
+                           final Class<T> resultType,
+                           final String toUnmarshal) {
 
         // Check sanity
         org.apache.commons.lang3.Validate.notNull(resultType, "Cannot handle null 'resultType' argument.");

@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.organisation.api.transport;
 
-import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,6 @@ import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.List;
-import java.util.SortedMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -75,18 +73,11 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/admissions.json");
 
-        final SortedMap<String, Object> marshallerProperties = jaxb.getMarshallerProperties();
-        marshallerProperties.put(MarshallerProperties.JSON_INCLUDE_ROOT, true);
-        marshallerProperties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-        marshallerProperties.put(MarshallerProperties.JSON_REDUCE_ANY_ARRAYS, true);
-
         // Act
         final String result = marshalToJSon(admissions);
         // System.out.println("Got: " + result);
-        // System.out.println("Got: " + jaxb.getMarshallerProperties());
 
         // Assert
-        // Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
         JSONAssert.assertEquals(expected, result, true);
     }
 

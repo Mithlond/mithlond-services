@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
 import se.mithlond.services.content.model.articles.Section;
 import se.mithlond.services.content.model.articles.media.BitmapImage;
@@ -117,6 +118,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
         unitUnderTest = new Articles("Mithlond", "/news/mithlond", Collections.singletonList(anArticle));
 
         jaxb.add(Articles.class, Article.class, Section.class, BitmapImage.class);
+        jaxb.mapXmlNamespacePrefix(ContentPatterns.TRANSPORT_NAMESPACE, "content_transport");
     }
 
 
@@ -128,7 +130,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
@@ -142,7 +144,7 @@ public class ArticlesTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);

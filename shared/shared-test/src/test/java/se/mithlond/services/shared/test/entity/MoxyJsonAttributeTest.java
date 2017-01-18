@@ -90,7 +90,7 @@ public class MoxyJsonAttributeTest extends AbstractPlainJaxbTest {
 
         // Act
         final String marshalled = marshalToJSon(report);
-        System.out.println("Got: " + marshalled);
+        // System.out.println("Got: " + marshalled);
 
         // Assert
         JSONAssert.assertEquals(expected, marshalled, false);

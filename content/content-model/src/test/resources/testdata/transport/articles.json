@@ -1,66 +1,72 @@
 {
-  "content_transport.articles": {
-    "realm": "Mithlond",
-    "selectionPath": "/news/mithlond",
-    "articleList": [
-      {
+  "xsi.type": "content_transport.articles",
+  "realm": "Mithlond",
+  "selectionPath": "/news/mithlond",
+  "articleList": [
+    {
+      "jpaId": 0,
+      "version": 0,
+      "created": "2016-02-14T12:04:00",
+      "lastUpdated": "2016-02-15T16:17:00",
+      "createdBy": {
         "jpaId": 0,
         "version": 0,
-        "created": "2016-02-14T12:04:00",
-        "lastUpdated": "2016-02-15T16:17:00",
-        "createdBy": {
+        "loginPermitted": true,
+        "alias": "ERF Häxxmästaren",
+        "subAlias": "Den onde",
+        "emailAlias": "haxx",
+        "user": "user_0_FirstName_LastName_1968_09_17",
+        "memberships": {
+          "groupMembership": []
+        },
+        "orderLevelGrants": [],
+        "organisation": "organisation_FooBar",
+        "personalSettings": []
+      },
+      "lastUpdatedBy": {
+        "jpaId": 0,
+        "version": 0,
+        "loginPermitted": true,
+        "alias": "ERF Häxxmästaren",
+        "subAlias": "Den onde",
+        "emailAlias": "haxx",
+        "user": "user_0_FirstName_LastName_1968_09_17",
+        "memberships": {
+          "groupMembership": []
+        },
+        "orderLevelGrants": [],
+        "organisation": "organisation_FooBar",
+        "personalSettings": []
+      },
+      "title": "Article Title",
+      "contentPath": "/some/path",
+      "sections": [
+        {
           "jpaId": 0,
           "version": 0,
-          "loginPermitted": true,
-          "alias": "ERF Häxxmästaren",
-          "subAlias": "Den onde",
-          "emailAlias": "haxx",
-          "user": "user_0_FirstName_LastName_1968_09_17",
-          "memberships": {
-          },
-          "organisation": "organisation_FooBar"
+          "showHeading": true,
+          "heading": "section1_heading",
+          "text": "section1_text",
+          "images": [
+            {
+              "jpaId": 0,
+              "version": 0,
+              "widthInPixels": 313,
+              "heightInPixels": 234,
+              "name": "example_jpg.jpg",
+              "contentType": "image/jpeg"
+            }
+          ]
         },
-        "lastUpdatedBy": {
+        {
           "jpaId": 0,
           "version": 0,
-          "loginPermitted": true,
-          "alias": "ERF Häxxmästaren",
-          "subAlias": "Den onde",
-          "emailAlias": "haxx",
-          "user": "user_0_FirstName_LastName_1968_09_17",
-          "memberships": {
-          },
-          "organisation": "organisation_FooBar"
-        },
-        "title": "Article Title",
-        "contentPath": "/some/path",
-        "sections": [
-          {
-            "jpaId": 0,
-            "version": 0,
-            "showHeading": true,
-            "heading": "section1_heading",
-            "text": "section1_text",
-            "images": [
-              {
-                "jpaId": 0,
-                "version": 0,
-                "widthInPixels": 313,
-                "heightInPixels": 234,
-                "name": "example_jpg.jpg",
-                "contentType": "image/jpeg"
-              }
-            ]
-          },
-          {
-            "jpaId": 0,
-            "version": 0,
-            "showHeading": true,
-            "heading": "section2_heading",
-            "text": "section2_text"
-          }
-        ]
-      }
-    ]
-  }
+          "showHeading": true,
+          "heading": "section2_heading",
+          "text": "section2_text",
+          "images": []
+        }
+      ]
+    }
+  ]
 }

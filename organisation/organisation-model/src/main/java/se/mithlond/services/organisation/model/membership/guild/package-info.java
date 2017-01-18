@@ -25,20 +25,21 @@
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlSchema(
-		xmlns = {
-				@XmlNs(prefix = "shared", namespaceURI = SharedJaxbPatterns.NAMESPACE),
-				@XmlNs(prefix = "organisation", namespaceURI = OrganisationPatterns.NAMESPACE),
-				@XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
-				@XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
-				@XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning")
-		}
+        xmlns = {
+                @XmlNs(prefix = "shared", namespaceURI = SharedJaxbPatterns.NAMESPACE),
+                @XmlNs(prefix = "organisation", namespaceURI = OrganisationPatterns.NAMESPACE),
+                @XmlNs(prefix = "organisation_transport", namespaceURI = OrganisationPatterns.TRANSPORT_NAMESPACE),
+                @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
+                @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
+                @XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning")
+        }
 )
 @XmlJavaTypeAdapters({
-		@XmlJavaTypeAdapter(type = LocalDate.class, value = LocalDateAdapter.class),
-		@XmlJavaTypeAdapter(type = LocalTime.class, value = LocalTimeAdapter.class),
-		@XmlJavaTypeAdapter(type = LocalDateTime.class, value = LocalDateTimeAdapter.class),
-		@XmlJavaTypeAdapter(type = ZonedDateTime.class, value = ZonedDateTimeAdapter.class),
-		@XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
+        @XmlJavaTypeAdapter(type = LocalDate.class, value = LocalDateAdapter.class),
+        @XmlJavaTypeAdapter(type = LocalTime.class, value = LocalTimeAdapter.class),
+        @XmlJavaTypeAdapter(type = LocalDateTime.class, value = LocalDateTimeAdapter.class),
+        @XmlJavaTypeAdapter(type = ZonedDateTime.class, value = ZonedDateTimeAdapter.class),
+        @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
 })
 @XmlAccessorType(XmlAccessType.FIELD)
 package se.mithlond.services.organisation.model.membership.guild;

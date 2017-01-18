@@ -66,20 +66,20 @@ public class MembershipResource extends AbstractResource {
     @Path("/all")
     @GET
     public Memberships getMemberships(@PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long orgJpaID,
-            @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED)
-            @DefaultValue("false")
-            final boolean includeLoginNotPermitted) {
+                                      @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED)
+                                      @DefaultValue("false")
+                                      final boolean includeLoginNotPermitted) {
 
         // Fire the JPQL query
         final List<Membership> memberships = membershipService.getMembershipsIn(orgJpaID, includeLoginNotPermitted);
 
         // Repackage into a Memberships wrapper.
         final Memberships toReturn = new Memberships();
-        memberships.stream().forEach(toReturn::addMembership);
+        memberships.forEach(toReturn::addMembership);
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
 
-            final String organisationName = memberships != null && !memberships.isEmpty()
+            final String organisationName = !memberships.isEmpty()
                     ? memberships.get(0).getOrganisation().getOrganisationName()
                     : "<unknown>";
 

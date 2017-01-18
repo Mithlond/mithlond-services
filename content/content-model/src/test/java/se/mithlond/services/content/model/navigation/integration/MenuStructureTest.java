@@ -132,7 +132,6 @@ public class MenuStructureTest extends AbstractEntityTest {
         // System.out.println("Got: " + result);
 
         // Assert
-        // Assert.assertEquals(expected.replaceAll("\\s+", ""), result.replaceAll("\\s+", ""));
         JSONAssert.assertEquals(expected, result, true);
     }
 

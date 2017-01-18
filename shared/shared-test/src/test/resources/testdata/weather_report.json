@@ -1,17 +1,15 @@
 {
-  "weatherReport": {
-    "weathers": [
-      {
-        "name": "Clear",
-        "isDangerous": false
-      },
-      {
-        "name": "Undefined"
-      },
-      {
-        "name": "Overcast",
-        "isDangerous": true
-      }
-    ]
-  }
+  "weathers": [
+    {
+      "name": "Clear",
+      "isDangerous": false
+    },
+    {
+      "name": "Undefined"
+    },
+    {
+      "name": "Overcast",
+      "isDangerous": true
+    }
+  ]
 }

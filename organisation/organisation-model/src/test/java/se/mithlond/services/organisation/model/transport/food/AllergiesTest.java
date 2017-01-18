@@ -28,6 +28,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
@@ -60,6 +61,8 @@ public class AllergiesTest extends AbstractEntityTest {
         //
         this.foodsAndCategories = new FoodsAndCategories();
         jaxb.add(Foods.class, Allergies.class);
+        jaxb.mapXmlNamespacePrefix(OrganisationPatterns.NAMESPACE, "organisation");
+        
         final LocaleDefinition defaultLocale = Localizable.DEFAULT_LOCALE;
 
         // #1) Create the organisation

@@ -1,49 +1,47 @@
 {
-  "barRound.barRound": {
-    "identifier": "fridayNightOut",
-    "customers": [
-      {
-        "name": "lennart",
-        "consumption": {
-          "consumptionRecords": [
-            {
-              "numConsumed": 1,
-              "beverage": {
-                "name": "DIPA",
-                "producer": "Poppels"
-              }
-            },
-            {
-              "numConsumed": 2,
-              "beverage": {
-                "name": "Root Beer",
-                "producer": "Ödeshögs Bryggeri"
-              }
+  "identifier": "fridayNightOut",
+  "customers": [
+    {
+      "name": "lennart",
+      "consumption": {
+        "consumptionRecords": [
+          {
+            "numConsumed": 1,
+            "beverage": {
+              "name": "DIPA",
+              "producer": "Poppels"
             }
-          ]
-        }
-      },
-      {
-        "name": "malin",
-        "consumption": {
-          "consumptionRecords": [
-            {
-              "numConsumed": 2,
-              "beverage": {
-                "name": "DIPA",
-                "producer": "Poppels"
-              }
-            },
-            {
-              "numConsumed": 1,
-              "beverage": {
-                "name": "Root Beer",
-                "producer": "Ödeshögs Bryggeri"
-              }
+          },
+          {
+            "numConsumed": 2,
+            "beverage": {
+              "name": "Root Beer",
+              "producer": "Ödeshögs Bryggeri"
             }
-          ]
-        }
+          }
+        ]
       }
-    ]
-  }
+    },
+    {
+      "name": "malin",
+      "consumption": {
+        "consumptionRecords": [
+          {
+            "numConsumed": 2,
+            "beverage": {
+              "name": "DIPA",
+              "producer": "Poppels"
+            }
+          },
+          {
+            "numConsumed": 1,
+            "beverage": {
+              "name": "Root Beer",
+              "producer": "Ödeshögs Bryggeri"
+            }
+          }
+        ]
+      }
+    }
+  ]
 }

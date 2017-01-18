@@ -1,143 +1,153 @@
 {
-  "core.entityTransporter": {
-    "entityClasses": [
-      "ch.qos.logback.classic.Logger",
-      "java.lang.String",
-      "java.lang.String$CaseInsensitiveComparator",
-      "java.time.LocalDate",
-      "java.time.LocalDateTime",
-      "java.util.TreeMap",
-      "org.aspectj.runtime.reflect.JoinPointImpl$StaticPartImpl",
-      "se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter",
-      "se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.type.JaxbAnnotatedCollection",
-      "se.mithlond.services.content.model.articles.Article",
-      "se.mithlond.services.content.model.articles.Section",
-      "se.mithlond.services.content.model.articles.media.BitmapImage",
-      "se.mithlond.services.organisation.model.Organisation",
-      "se.mithlond.services.organisation.model.address.Address",
-      "se.mithlond.services.organisation.model.membership.Membership",
-      "se.mithlond.services.organisation.model.user.User"
-    ],
-    "items": [
-      {
-        "jpaId": 0,
-        "version": 0,
-        "xmlID": "organisation_FooBar",
-        "timeZoneID": "Europe/Stockholm",
-        "country": "SE",
-        "language": "sv",
-        "standardCurrency": "EUR",
-        "xsi.type": "ns0.organisation",
-        "organisationName": "FooBar",
-        "suffix": "suffix",
-        "phone": "phone",
-        "bankAccountInfo": "bankAccountInfo",
-        "postAccountInfo": "postAccountInfo",
-        "emailSuffix": "emailSuffix",
-        "visitingAddress": {
-          "careOfLine": "careOfLine",
-          "departmentName": "departmentName",
-          "street": "street",
-          "number": "number",
-          "city": "city",
-          "zipCode": "zipCode",
-          "country": "country",
-          "description": "description"
-        }
+  "entityClasses": [
+    "ch.qos.logback.classic.Logger",
+    "java.lang.String",
+    "java.lang.String$CaseInsensitiveComparator",
+    "java.time.LocalDate",
+    "java.time.LocalDateTime",
+    "java.util.TreeMap",
+    "org.aspectj.runtime.reflect.JoinPointImpl$StaticPartImpl",
+    "se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.EntityTransporter",
+    "se.jguru.nazgul.core.xmlbinding.spi.jaxb.transport.type.JaxbAnnotatedCollection",
+    "se.mithlond.services.content.model.articles.Article",
+    "se.mithlond.services.content.model.articles.Section",
+    "se.mithlond.services.content.model.articles.media.BitmapImage",
+    "se.mithlond.services.organisation.model.Organisation",
+    "se.mithlond.services.organisation.model.address.Address",
+    "se.mithlond.services.organisation.model.membership.Membership",
+    "se.mithlond.services.organisation.model.user.User"
+  ],
+  "items": [
+    {
+      "jpaId": 0,
+      "version": 0,
+      "xmlID": "organisation_FooBar",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "EUR",
+      "xsi.type": "ns0.organisation",
+      "organisationName": "FooBar",
+      "suffix": "suffix",
+      "phone": "phone",
+      "bankAccountInfo": "bankAccountInfo",
+      "postAccountInfo": "postAccountInfo",
+      "emailSuffix": "emailSuffix",
+      "visitingAddress": {
+        "careOfLine": "careOfLine",
+        "departmentName": "departmentName",
+        "street": "street",
+        "number": "number",
+        "city": "city",
+        "zipCode": "zipCode",
+        "country": "country",
+        "description": "description"
+      }
+    },
+    {
+      "jpaId": 0,
+      "version": 0,
+      "xmlID": "user_0_FirstName_LastName_1968_09_17",
+      "personalNumberLast4Digits": 1234,
+      "xsi.type": "ns1.user",
+      "userIdentifierToken": "someToken",
+      "firstName": "FirstName",
+      "lastName": "LastName",
+      "birthday": "1968-09-17",
+      "homeAddress": {
+        "careOfLine": "careOfLine",
+        "departmentName": "departmentName",
+        "street": "street",
+        "number": "number",
+        "city": "city",
+        "zipCode": "zipCode",
+        "country": "country",
+        "description": "description"
       },
-      {
-        "jpaId": 0,
-        "version": 0,
-        "xmlID": "user_0_FirstName_LastName_1968_09_17",
-        "personalNumberLast4Digits": 1234,
-        "xsi.type": "ns1.user",
-        "userIdentifierToken": "someToken",
-        "firstName": "FirstName",
-        "lastName": "LastName",
-        "birthday": "1968-09-17",
-        "homeAddress": {
-          "careOfLine": "careOfLine",
-          "departmentName": "departmentName",
-          "street": "street",
-          "number": "number",
-          "city": "city",
-          "zipCode": "zipCode",
-          "country": "country",
-          "description": "description"
-        }
+      "memberships": [],
+      "contactDetails": []
+    },
+    {
+      "jpaId": 0,
+      "version": 0,
+      "loginPermitted": true,
+      "xsi.type": "ns2.membership",
+      "alias": "ERF Häxxmästaren",
+      "subAlias": "Den onde",
+      "emailAlias": "haxx",
+      "user": "user_0_FirstName_LastName_1968_09_17",
+      "memberships": {
+        "groupMembership": []
       },
-      {
+      "orderLevelGrants": [],
+      "organisation": "organisation_FooBar",
+      "personalSettings": []
+    },
+    {
+      "jpaId": 0,
+      "version": 0,
+      "created": "2016-02-14T12:04:00",
+      "lastUpdated": "2016-02-15T16:17:00",
+      "xsi.type": "ns3.article",
+      "createdBy": {
         "jpaId": 0,
         "version": 0,
         "loginPermitted": true,
-        "xsi.type": "ns2.membership",
         "alias": "ERF Häxxmästaren",
         "subAlias": "Den onde",
         "emailAlias": "haxx",
         "user": "user_0_FirstName_LastName_1968_09_17",
         "memberships": {
+          "groupMembership": []
         },
-        "organisation": "organisation_FooBar"
+        "orderLevelGrants": [],
+        "organisation": "organisation_FooBar",
+        "personalSettings": []
       },
-      {
+      "lastUpdatedBy": {
         "jpaId": 0,
         "version": 0,
-        "created": "2016-02-14T12:04:00",
-        "lastUpdated": "2016-02-15T16:17:00",
-        "xsi.type": "ns3.article",
-        "createdBy": {
+        "loginPermitted": true,
+        "alias": "ERF Häxxmästaren",
+        "subAlias": "Den onde",
+        "emailAlias": "haxx",
+        "user": "user_0_FirstName_LastName_1968_09_17",
+        "memberships": {
+          "groupMembership": []
+        },
+        "orderLevelGrants": [],
+        "organisation": "organisation_FooBar",
+        "personalSettings": []
+      },
+      "title": "Article Title",
+      "contentPath": "/some/path",
+      "sections": [
+        {
           "jpaId": 0,
           "version": 0,
-          "loginPermitted": true,
-          "alias": "ERF Häxxmästaren",
-          "subAlias": "Den onde",
-          "emailAlias": "haxx",
-          "user": "user_0_FirstName_LastName_1968_09_17",
-          "memberships": {
-          },
-          "organisation": "organisation_FooBar"
+          "showHeading": true,
+          "heading": "section1_heading",
+          "text": "section1_text",
+          "images": [
+            {
+              "jpaId": 0,
+              "version": 0,
+              "widthInPixels": 313,
+              "heightInPixels": 234,
+              "name": "example_jpg.jpg",
+              "contentType": "image/jpeg"
+            }
+          ]
         },
-        "lastUpdatedBy": {
+        {
           "jpaId": 0,
           "version": 0,
-          "loginPermitted": true,
-          "alias": "ERF Häxxmästaren",
-          "subAlias": "Den onde",
-          "emailAlias": "haxx",
-          "user": "user_0_FirstName_LastName_1968_09_17",
-          "memberships": {
-          },
-          "organisation": "organisation_FooBar"
-        },
-        "title": "Article Title",
-        "contentPath": "/some/path",
-        "sections": [
-          {
-            "jpaId": 0,
-            "version": 0,
-            "showHeading": true,
-            "heading": "section1_heading",
-            "text": "section1_text",
-            "images": [
-              {
-                "jpaId": 0,
-                "version": 0,
-                "widthInPixels": 313,
-                "heightInPixels": 234,
-                "name": "example_jpg.jpg",
-                "contentType": "image/jpeg"
-              }
-            ]
-          },
-          {
-            "jpaId": 0,
-            "version": 0,
-            "showHeading": true,
-            "heading": "section2_heading",
-            "text": "section2_text"
-          }
-        ]
-      }
-    ]
-  }
+          "showHeading": true,
+          "heading": "section2_heading",
+          "text": "section2_text",
+          "images": []
+        }
+      ]
+    }
+  ]
 }

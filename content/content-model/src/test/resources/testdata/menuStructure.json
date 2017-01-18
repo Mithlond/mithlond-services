@@ -1,159 +1,158 @@
 {
-  "content.menuStructure": {
+  "xsi.type": "content.menuStructure",
+  "jpaId": 0,
+  "version": 0,
+  "localeDefinitions": [
+    {
+      "jpaId": 0,
+      "version": 0,
+      "compactStringForm": "sv..SE..none"
+    }
+  ],
+  "organisationName": "name",
+  "rootMenu": {
     "jpaId": 0,
     "version": 0,
-    "localeDefinitions": [
-      {
+    "domId": "rootMenu",
+    "localizedTexts": {
+      "jpaId": 0,
+      "version": 0,
+      "suiteIdentifier": "rootMenuTexts",
+      "defaultLocale": {
         "jpaId": 0,
         "version": 0,
         "compactStringForm": "sv..SE..none"
-      }
-    ],
-    "organisationName": "name",
-    "rootMenu": {
-      "jpaId": 0,
-      "version": 0,
-      "domId": "rootMenu",
-      "localizedTexts": {
-        "jpaId": 0,
-        "version": 0,
-        "suiteIdentifier": "rootMenuTexts",
-        "defaultLocale": {
+      },
+      "textVOs": [
+        {
+          "locale": "sv..SE..none",
+          "value": "Roooot"
+        }
+      ]
+    },
+    "children": {
+      "menu": [
+        {
           "jpaId": 0,
           "version": 0,
-          "compactStringForm": "sv..SE..none"
-        },
-        "textVOs": [
-          {
-            "locale": "sv..SE..none",
-            "value": "Roooot"
-          }
-        ]
-      },
-      "children": {
-        "menu": [
-          {
+          "domId": "firstMenu",
+          "tabIndex": 1,
+          "cssClasses": [
+            "icon-fixed-width"
+          ],
+          "iconIdentifier": "cog",
+          "href": "/firstMenu",
+          "localizedTexts": {
             "jpaId": 0,
             "version": 0,
-            "domId": "firstMenu",
-            "tabIndex": 1,
-            "cssClasses": [
-              "icon-fixed-width"
-            ],
-            "iconIdentifier": "cog",
-            "href": "/firstMenu",
-            "localizedTexts": {
+            "suiteIdentifier": "firstMenuTexts",
+            "defaultLocale": {
               "jpaId": 0,
               "version": 0,
-              "suiteIdentifier": "firstMenuTexts",
-              "defaultLocale": {
-                "jpaId": 0,
-                "version": 0,
-                "compactStringForm": "sv..SE..none"
-              },
-              "textVOs": [
-                {
-                  "locale": "sv..SE..none",
-                  "value": "Första Menyn"
-                }
-              ]
+              "compactStringForm": "sv..SE..none"
             },
-            "children": {
-              "menuItem": [
-                {
-                  "jpaId": 0,
-                  "version": 0,
-                  "domId": "membersPage",
-                  "cssClasses": [
-                    "icon-fixed-width"
-                  ],
-                  "authPatterns": [
-                    "/mithlond/members"
-                  ],
-                  "iconIdentifier": "man",
-                  "href": "/members/list",
-                  "localizedTexts": {
-                    "jpaId": 0,
-                    "version": 0,
-                    "suiteIdentifier": "membersPageTexts",
-                    "defaultLocale": {
-                      "jpaId": 0,
-                      "version": 0,
-                      "compactStringForm": "sv..SE..none"
-                    },
-                    "textVOs": [
-                      {
-                        "locale": "sv..SE..none",
-                        "value": "Medlemssida"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "jpaId": 0,
-                  "version": 0,
-                  "domId": "membersIdeaPage",
-                  "cssClasses": [
-                    "icon-fixed-width"
-                  ],
-                  "iconIdentifier": "lightbulb",
-                  "href": "/mithlond/members/ideas",
-                  "localizedTexts": {
-                    "jpaId": 0,
-                    "version": 0,
-                    "suiteIdentifier": "membersIdeaPageTexts",
-                    "defaultLocale": {
-                      "jpaId": 0,
-                      "version": 0,
-                      "compactStringForm": "sv..SE..none"
-                    },
-                    "textVOs": [
-                      {
-                        "locale": "sv..SE..none",
-                        "value": "Idésida"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "separator": [
-                {
-                  "jpaId": 0,
-                  "version": 0
-                }
-              ]
-            }
-          }
-        ],
-        "menuItem": [
-          {
-            "jpaId": 0,
-            "version": 0,
-            "domId": "plainItemPage3",
-            "authPatterns": [
-              "/forodrim/members",
-              "/mithlond/members"
-            ],
-            "href": "/calendar",
-            "localizedTexts": {
-              "jpaId": 0,
-              "version": 0,
-              "suiteIdentifier": "calendarPageTexts",
-              "defaultLocale": {
+            "textVOs": [
+              {
+                "locale": "sv..SE..none",
+                "value": "Första Menyn"
+              }
+            ]
+          },
+          "children": {
+            "menuItem": [
+              {
                 "jpaId": 0,
                 "version": 0,
-                "compactStringForm": "sv..SE..none"
-              },
-              "textVOs": [
-                {
-                  "locale": "sv..SE..none",
-                  "value": "Aktivitetskalender"
+                "domId": "membersPage",
+                "cssClasses": [
+                  "icon-fixed-width"
+                ],
+                "authPatterns": [
+                  "/mithlond/members"
+                ],
+                "iconIdentifier": "man",
+                "href": "/members/list",
+                "localizedTexts": {
+                  "jpaId": 0,
+                  "version": 0,
+                  "suiteIdentifier": "membersPageTexts",
+                  "defaultLocale": {
+                    "jpaId": 0,
+                    "version": 0,
+                    "compactStringForm": "sv..SE..none"
+                  },
+                  "textVOs": [
+                    {
+                      "locale": "sv..SE..none",
+                      "value": "Medlemssida"
+                    }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "jpaId": 0,
+                "version": 0,
+                "domId": "membersIdeaPage",
+                "cssClasses": [
+                  "icon-fixed-width"
+                ],
+                "iconIdentifier": "lightbulb",
+                "href": "/mithlond/members/ideas",
+                "localizedTexts": {
+                  "jpaId": 0,
+                  "version": 0,
+                  "suiteIdentifier": "membersIdeaPageTexts",
+                  "defaultLocale": {
+                    "jpaId": 0,
+                    "version": 0,
+                    "compactStringForm": "sv..SE..none"
+                  },
+                  "textVOs": [
+                    {
+                      "locale": "sv..SE..none",
+                      "value": "Idésida"
+                    }
+                  ]
+                }
+              }
+            ],
+            "separator": [
+              {
+                "jpaId": 0,
+                "version": 0
+              }
+            ]
           }
-        ]
-      }
+        }
+      ],
+      "menuItem": [
+        {
+          "jpaId": 0,
+          "version": 0,
+          "domId": "plainItemPage3",
+          "authPatterns": [
+            "/forodrim/members",
+            "/mithlond/members"
+          ],
+          "href": "/calendar",
+          "localizedTexts": {
+            "jpaId": 0,
+            "version": 0,
+            "suiteIdentifier": "calendarPageTexts",
+            "defaultLocale": {
+              "jpaId": 0,
+              "version": 0,
+              "compactStringForm": "sv..SE..none"
+            },
+            "textVOs": [
+              {
+                "locale": "sv..SE..none",
+                "value": "Aktivitetskalender"
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }

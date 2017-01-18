@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -47,6 +48,10 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
 
     @Before
     public void setupSharedState() {
+
+        jaxb.mapXmlNamespacePrefix(OrganisationPatterns.NAMESPACE, "organisation");
+        jaxb.mapXmlNamespacePrefix(OrganisationPatterns.TRANSPORT_NAMESPACE, "organisation_transport");
+        
         unitUnderTest = new Organisations();
         organisations = new ArrayList<>();
         organisationVOs = new ArrayList<>();
@@ -103,7 +108,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
@@ -118,7 +123,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);
