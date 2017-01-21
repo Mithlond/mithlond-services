@@ -1,0 +1,131 @@
+{
+  "xsi.type": "organisation.memberships",
+  "organisations": [],
+  "groups": {
+    "group": []
+  },
+  "users": [],
+  "memberships": [],
+  "membershipVOs": [
+    {
+      "jpaID": 90,
+      "loginPermitted": false,
+      "alias": "alias_0",
+      "organisation": "name_0",
+      "subAlias": "subAlias_0",
+      "emailAlias": "emailAlias_0"
+    },
+    {
+      "jpaID": 102,
+      "loginPermitted": false,
+      "alias": "alias_12",
+      "organisation": "name_0",
+      "subAlias": "subAlias_12",
+      "emailAlias": "emailAlias_12"
+    },
+    {
+      "jpaID": 93,
+      "loginPermitted": false,
+      "alias": "alias_3",
+      "organisation": "name_0",
+      "subAlias": "subAlias_3",
+      "emailAlias": "emailAlias_3"
+    },
+    {
+      "jpaID": 96,
+      "loginPermitted": false,
+      "alias": "alias_6",
+      "organisation": "name_0",
+      "subAlias": "subAlias_6",
+      "emailAlias": "emailAlias_6"
+    },
+    {
+      "jpaID": 99,
+      "loginPermitted": false,
+      "alias": "alias_9",
+      "organisation": "name_0",
+      "subAlias": "subAlias_9",
+      "emailAlias": "emailAlias_9"
+    },
+    {
+      "jpaID": 91,
+      "loginPermitted": true,
+      "alias": "alias_1",
+      "organisation": "name_1",
+      "subAlias": "subAlias_1",
+      "emailAlias": "emailAlias_1"
+    },
+    {
+      "jpaID": 100,
+      "loginPermitted": true,
+      "alias": "alias_10",
+      "organisation": "name_1",
+      "subAlias": "subAlias_10",
+      "emailAlias": "emailAlias_10"
+    },
+    {
+      "jpaID": 103,
+      "loginPermitted": true,
+      "alias": "alias_13",
+      "organisation": "name_1",
+      "subAlias": "subAlias_13",
+      "emailAlias": "emailAlias_13"
+    },
+    {
+      "jpaID": 94,
+      "loginPermitted": true,
+      "alias": "alias_4",
+      "organisation": "name_1",
+      "subAlias": "subAlias_4",
+      "emailAlias": "emailAlias_4"
+    },
+    {
+      "jpaID": 97,
+      "loginPermitted": true,
+      "alias": "alias_7",
+      "organisation": "name_1",
+      "subAlias": "subAlias_7",
+      "emailAlias": "emailAlias_7"
+    },
+    {
+      "jpaID": 101,
+      "loginPermitted": true,
+      "alias": "alias_11",
+      "organisation": "name_2",
+      "subAlias": "subAlias_11",
+      "emailAlias": "emailAlias_11"
+    },
+    {
+      "jpaID": 104,
+      "loginPermitted": true,
+      "alias": "alias_14",
+      "organisation": "name_2",
+      "subAlias": "subAlias_14",
+      "emailAlias": "emailAlias_14"
+    },
+    {
+      "jpaID": 92,
+      "loginPermitted": true,
+      "alias": "alias_2",
+      "organisation": "name_2",
+      "subAlias": "subAlias_2",
+      "emailAlias": "emailAlias_2"
+    },
+    {
+      "jpaID": 95,
+      "loginPermitted": true,
+      "alias": "alias_5",
+      "organisation": "name_2",
+      "subAlias": "subAlias_5",
+      "emailAlias": "emailAlias_5"
+    },
+    {
+      "jpaID": 98,
+      "loginPermitted": true,
+      "alias": "alias_8",
+      "organisation": "name_2",
+      "subAlias": "subAlias_8",
+      "emailAlias": "emailAlias_8"
+    }
+  ]
+}

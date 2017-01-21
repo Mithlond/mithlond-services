@@ -52,7 +52,7 @@ import java.util.Set;
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
-        propOrder = {"organisations", "groups", "users", "memberships"})
+        propOrder = {"organisations", "groups", "users", "memberships", "membershipVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Memberships extends AbstractSimpleTransporter {
 
@@ -88,6 +88,13 @@ public class Memberships extends AbstractSimpleTransporter {
     private List<Membership> memberships;
 
     /**
+     * All {@link Membership}s transported in this wrapper.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "membership")
+    private List<MembershipVO> membershipVOs;
+
+    /**
      * JAXB-friendly constructor.
      */
     public Memberships() {
@@ -95,6 +102,7 @@ public class Memberships extends AbstractSimpleTransporter {
         organisations = new ArrayList<>();
         groups = new ArrayList<>();
         memberships = new ArrayList<>();
+        membershipVOs = new ArrayList<>();
     }
 
     /**
@@ -186,6 +194,23 @@ public class Memberships extends AbstractSimpleTransporter {
     }
 
     /**
+     * Adds the supplied MemberhipVO to this Memberships transport.
+     * Does not add the organisation of the
+     *
+     * @param toAdd The MembershipVO to add to this Memberships transport.
+     */
+    public void addMembershipVO(final MembershipVO toAdd) {
+
+        // Check sanity
+        final MembershipVO nonNull = Objects.requireNonNull(toAdd, "Cannot handle null 'toAdd' argument.");
+
+        // Add the Organisation, unless already added.
+        if (!this.membershipVOs.contains(nonNull)) {
+            this.membershipVOs.add(nonNull);
+        }
+    }
+
+    /**
      * @return The users within this Memberships transport.
      */
     public List<User> getUsers() {
@@ -211,5 +236,12 @@ public class Memberships extends AbstractSimpleTransporter {
      */
     public List<Membership> getMemberships() {
         return Collections.unmodifiableList(memberships);
+    }
+
+    /**
+     * @return The membershipVOs within this Memberships transport.
+     */
+    public List<MembershipVO> getMembershipVOs() {
+        return membershipVOs;
     }
 }

@@ -22,6 +22,7 @@
 package se.mithlond.services.organisation.model.transport.membership;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
@@ -106,6 +107,24 @@ public class MembershipVO extends AbstractSimpleTransportable {
         this.subAlias = subAlias;
         this.emailAlias = emailAlias;
         this.loginPermitted = loginPermitted;
+    }
+
+    /**
+     * Copy constructor creating a MembershipVO object wrapping the state supplied within the given Membership.
+     *
+     * @param membership A non-null Membership object, used as a template to copy state to this MembershipVO object.
+     */
+    public MembershipVO(final Membership membership) {
+
+        // Delegate
+        super(membership.getId());
+
+        // Assign internal state
+        this.alias = Validate.notEmpty(membership.getAlias(), "alias");
+        this.organisation = new OrganisationVO(membership.getOrganisation());
+        this.subAlias = membership.getSubAlias();
+        this.emailAlias = membership.getEmailAlias();
+        this.loginPermitted = membership.isLoginPermitted();
     }
 
     /**

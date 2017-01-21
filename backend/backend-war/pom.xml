@@ -36,6 +36,7 @@
         <webapp.dir>${project.build.directory}/exploded/webapp-rest.war</webapp.dir>
         <swagger.dir>${webapp.dir}/swagger</swagger.dir>
         <swagger.version>1.5.10</swagger.version>
+        <keycloak.version>2.5.0.Final</keycloak.version>
     </properties>
 
     <!-- +=============================================== -->
@@ -82,7 +83,7 @@
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-core</artifactId>
-            <version>1.9.3.Final</version>
+            <version>${keycloak.version}</version>
             <scope>provided</scope>
         </dependency>
 

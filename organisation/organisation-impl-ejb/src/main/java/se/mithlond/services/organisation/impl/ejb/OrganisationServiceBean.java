@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.impl.ejb;
 
+import org.jboss.ejb3.annotation.SecurityDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.OrganisationService;
@@ -53,6 +54,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@SecurityDomain("keycloak")
 @Stateless
 public class OrganisationServiceBean extends AbstractJpaService implements OrganisationService {
 
@@ -65,8 +67,8 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
     @Override
     public Organisations getOrganisations(final boolean detailedRepresentation) {
 
-        if(log.isDebugEnabled()) {
-            log.debug("Fetching organisation data for " + (detailedRepresentation ? "detailed": "shallow")
+        if (log.isDebugEnabled()) {
+            log.debug("Fetching organisation data for " + (detailedRepresentation ? "detailed" : "shallow")
                     + " representation");
         }
 
@@ -92,7 +94,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                             .collect(Collectors.toList()));
         }
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("All Done. Returning " + toReturn);
         }
 
@@ -107,7 +109,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
     public Organisations getOrganisation(final long jpaID, final boolean detailedRepresentation) {
 
         final Organisation organisation = entityManager.find(Organisation.class, jpaID);
-        if(organisation == null) {
+        if (organisation == null) {
             throw new IllegalArgumentException("No organisation with ID " + jpaID + " found.");
         }
 
@@ -230,7 +232,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         final CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
 
-        if(!addressJpaIDs.isEmpty()) {
+        if (!addressJpaIDs.isEmpty()) {
 
             // Collect all JPA IDs
             final List<Long> ids = addressJpaIDs.stream().filter(id -> id != null).collect(Collectors.toList());
@@ -279,10 +281,10 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      */
     @Override
     public CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-                                                               final String fullDesc,
-                                                               final Address address,
-                                                               final Long categoryID,
-                                                               final Long organisationID) {
+            final String fullDesc,
+            final Address address,
+            final Long categoryID,
+            final Long organisationID) {
 
         // Check sanity
         Validate.notEmpty(shortDesc, "shortDesc");
@@ -302,7 +304,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
         if (category == null) {
             throw new IllegalArgumentException("Hittade ingen kategori med ID [" + categoryID + "]");
         }
-        if(!CategorizedAddress.ACTIVITY_CLASSIFICATION.equals(category.getClassification())) {
+        if (!CategorizedAddress.ACTIVITY_CLASSIFICATION.equals(category.getClassification())) {
             throw new IllegalArgumentException("Kategori [" + category + "] härrör inte till aktiviteter.");
         }
 

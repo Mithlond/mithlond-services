@@ -1,0 +1,957 @@
+{
+  "xsi.type": "organisation.memberships",
+  "organisations": [
+    {
+      "jpaId": 10,
+      "version": 0,
+      "xmlID": "organisation_name_0",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_0",
+      "suffix": "suffix_0",
+      "phone": "phone_0",
+      "bankAccountInfo": "bankAccountInfo_0",
+      "postAccountInfo": "postAccountInfo_0",
+      "emailSuffix": "emailSuffix_0",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_0",
+        "departmentName": "departmentName_0",
+        "street": "street_0",
+        "number": "number_0",
+        "city": "city_0",
+        "zipCode": "zipCode_0",
+        "country": "country_0",
+        "description": "description_0"
+      }
+    },
+    {
+      "jpaId": 11,
+      "version": 0,
+      "xmlID": "organisation_name_1",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_1",
+      "suffix": "suffix_1",
+      "phone": "phone_1",
+      "bankAccountInfo": "bankAccountInfo_1",
+      "postAccountInfo": "postAccountInfo_1",
+      "emailSuffix": "emailSuffix_1",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_1",
+        "departmentName": "departmentName_1",
+        "street": "street_1",
+        "number": "number_1",
+        "city": "city_1",
+        "zipCode": "zipCode_1",
+        "country": "country_1",
+        "description": "description_1"
+      }
+    },
+    {
+      "jpaId": 12,
+      "version": 0,
+      "xmlID": "organisation_name_2",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_2",
+      "suffix": "suffix_2",
+      "phone": "phone_2",
+      "bankAccountInfo": "bankAccountInfo_2",
+      "postAccountInfo": "postAccountInfo_2",
+      "emailSuffix": "emailSuffix_2",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_2",
+        "departmentName": "departmentName_2",
+        "street": "street_2",
+        "number": "number_2",
+        "city": "city_2",
+        "zipCode": "zipCode_2",
+        "country": "country_2",
+        "description": "description_2"
+      }
+    }
+  ],
+  "groups": {
+    "group": [
+      {
+        "jpaId": 30,
+        "version": 0,
+        "organisationReference": "organisation_name_0",
+        "xmlID": "group_name_0_groupName_0",
+        "groupName": "groupName_0",
+        "description": "description_0",
+        "emailList": "emailList_0"
+      },
+      {
+        "jpaId": 31,
+        "version": 0,
+        "organisationReference": "organisation_name_1",
+        "xmlID": "group_name_1_groupName_1",
+        "groupName": "groupName_1",
+        "description": "description_1",
+        "emailList": "emailList_1"
+      },
+      {
+        "jpaId": 32,
+        "version": 0,
+        "organisationReference": "organisation_name_2",
+        "parent": "group_name_1_groupName_1",
+        "xmlID": "group_name_2_groupName_2",
+        "groupName": "groupName_2",
+        "description": "description_2",
+        "emailList": "emailList_2"
+      },
+      {
+        "jpaId": 33,
+        "version": 0,
+        "organisationReference": "organisation_name_0",
+        "parent": "group_name_2_groupName_2",
+        "xmlID": "group_name_0_groupName_3",
+        "groupName": "groupName_3",
+        "description": "description_3",
+        "emailList": "emailList_3"
+      },
+      {
+        "jpaId": 34,
+        "version": 0,
+        "organisationReference": "organisation_name_1",
+        "parent": "group_name_0_groupName_3",
+        "xmlID": "group_name_1_groupName_4",
+        "groupName": "groupName_4",
+        "description": "description_4",
+        "emailList": "emailList_4"
+      }
+    ],
+    "guild": [
+      {
+        "jpaId": 40,
+        "version": 0,
+        "organisationReference": "organisation_name_0",
+        "xmlID": "guild_name_0_guildName_0",
+        "groupName": "guildName_0",
+        "description": "description_0",
+        "emailList": "emailList_0",
+        "quenyaName": "quenyaName_0",
+        "quenyaPrefix": "quenyaPrefix_0"
+      },
+      {
+        "jpaId": 41,
+        "version": 0,
+        "organisationReference": "organisation_name_1",
+        "xmlID": "guild_name_1_guildName_1",
+        "groupName": "guildName_1",
+        "description": "description_1",
+        "emailList": "emailList_1",
+        "quenyaName": "quenyaName_1",
+        "quenyaPrefix": "quenyaPrefix_1"
+      },
+      {
+        "jpaId": 42,
+        "version": 0,
+        "organisationReference": "organisation_name_2",
+        "xmlID": "guild_name_2_guildName_2",
+        "groupName": "guildName_2",
+        "description": "description_2",
+        "emailList": "emailList_2",
+        "quenyaName": "quenyaName_2",
+        "quenyaPrefix": "quenyaPrefix_2"
+      },
+      {
+        "jpaId": 43,
+        "version": 0,
+        "organisationReference": "organisation_name_0",
+        "xmlID": "guild_name_0_guildName_3",
+        "groupName": "guildName_3",
+        "description": "description_3",
+        "emailList": "emailList_3",
+        "quenyaName": "quenyaName_3",
+        "quenyaPrefix": "quenyaPrefix_3"
+      },
+      {
+        "jpaId": 44,
+        "version": 0,
+        "organisationReference": "organisation_name_1",
+        "xmlID": "guild_name_1_guildName_4",
+        "groupName": "guildName_4",
+        "description": "description_4",
+        "emailList": "emailList_4",
+        "quenyaName": "quenyaName_4",
+        "quenyaPrefix": "quenyaPrefix_4"
+      }
+    ]
+  },
+  "users": [
+    {
+      "jpaId": 50,
+      "version": 0,
+      "xmlID": "user_50_firstName_0_lastName_0_1975_05_01",
+      "personalNumberLast4Digits": 101,
+      "userIdentifierToken": "userIdentifierToken_0",
+      "firstName": "firstName_0",
+      "lastName": "lastName_0",
+      "birthday": "1975-05-01",
+      "homeAddress": {
+        "street": "homeStreet_0",
+        "number": "homeNumber_0",
+        "city": "homeCity_0",
+        "zipCode": "homeZipCode_0",
+        "country": "homeCountry_0",
+        "description": "homeAddress_0"
+      },
+      "memberships": [],
+      "contactDetails": [
+        {
+          "key": "cell_phone",
+          "value": "03123450"
+        }
+      ]
+    },
+    {
+      "jpaId": 52,
+      "version": 0,
+      "xmlID": "user_52_firstName_2_lastName_2_1977_07_03",
+      "personalNumberLast4Digits": 103,
+      "userIdentifierToken": "userIdentifierToken_2",
+      "firstName": "firstName_2",
+      "lastName": "lastName_2",
+      "birthday": "1977-07-03",
+      "homeAddress": {
+        "street": "homeStreet_2",
+        "number": "homeNumber_2",
+        "city": "homeCity_2",
+        "zipCode": "homeZipCode_2",
+        "country": "homeCountry_2",
+        "description": "homeAddress_2"
+      },
+      "memberships": [],
+      "contactDetails": [
+        {
+          "key": "cell_phone",
+          "value": "03123452"
+        }
+      ]
+    },
+    {
+      "jpaId": 53,
+      "version": 0,
+      "xmlID": "user_53_firstName_3_lastName_3_1978_08_04",
+      "personalNumberLast4Digits": 104,
+      "userIdentifierToken": "userIdentifierToken_3",
+      "firstName": "firstName_3",
+      "lastName": "lastName_3",
+      "birthday": "1978-08-04",
+      "homeAddress": {
+        "street": "homeStreet_3",
+        "number": "homeNumber_3",
+        "city": "homeCity_3",
+        "zipCode": "homeZipCode_3",
+        "country": "homeCountry_3",
+        "description": "homeAddress_3"
+      },
+      "memberships": [],
+      "contactDetails": [
+        {
+          "key": "cell_phone",
+          "value": "03123453"
+        }
+      ]
+    },
+    {
+      "jpaId": 51,
+      "version": 0,
+      "xmlID": "user_51_firstName_1_lastName_1_1976_06_02",
+      "personalNumberLast4Digits": 102,
+      "userIdentifierToken": "userIdentifierToken_1",
+      "firstName": "firstName_1",
+      "lastName": "lastName_1",
+      "birthday": "1976-06-02",
+      "homeAddress": {
+        "street": "homeStreet_1",
+        "number": "homeNumber_1",
+        "city": "homeCity_1",
+        "zipCode": "homeZipCode_1",
+        "country": "homeCountry_1",
+        "description": "homeAddress_1"
+      },
+      "memberships": [],
+      "contactDetails": [
+        {
+          "key": "cell_phone",
+          "value": "03123451"
+        }
+      ]
+    },
+    {
+      "jpaId": 54,
+      "version": 0,
+      "xmlID": "user_54_firstName_4_lastName_4_1979_09_05",
+      "personalNumberLast4Digits": 105,
+      "userIdentifierToken": "userIdentifierToken_4",
+      "firstName": "firstName_4",
+      "lastName": "lastName_4",
+      "birthday": "1979-09-05",
+      "homeAddress": {
+        "street": "homeStreet_4",
+        "number": "homeNumber_4",
+        "city": "homeCity_4",
+        "zipCode": "homeZipCode_4",
+        "country": "homeCountry_4",
+        "description": "homeAddress_4"
+      },
+      "memberships": [],
+      "contactDetails": [
+        {
+          "key": "cell_phone",
+          "value": "03123454"
+        }
+      ]
+    }
+  ],
+  "memberships": [
+    {
+      "jpaId": 90,
+      "version": 0,
+      "loginPermitted": false,
+      "alias": "alias_0",
+      "subAlias": "subAlias_0",
+      "emailAlias": "emailAlias_0",
+      "user": "user_50_firstName_0_lastName_0_1975_05_01",
+      "memberships": {
+        "groupMembership": []
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_0",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_0"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_0"
+        }
+      ]
+    },
+    {
+      "jpaId": 102,
+      "version": 0,
+      "loginPermitted": false,
+      "alias": "alias_12",
+      "subAlias": "subAlias_12",
+      "emailAlias": "emailAlias_12",
+      "user": "user_52_firstName_2_lastName_2_1977_07_03",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_0_groupName_0"
+          },
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_0_groupName_3"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_0",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_12"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_12"
+        }
+      ]
+    },
+    {
+      "jpaId": 93,
+      "version": 0,
+      "loginPermitted": false,
+      "alias": "alias_3",
+      "subAlias": "subAlias_3",
+      "emailAlias": "emailAlias_3",
+      "user": "user_53_firstName_3_lastName_3_1978_08_04",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_0",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_3"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_3"
+        }
+      ]
+    },
+    {
+      "jpaId": 96,
+      "version": 0,
+      "loginPermitted": false,
+      "alias": "alias_6",
+      "subAlias": "subAlias_6",
+      "emailAlias": "emailAlias_6",
+      "user": "user_51_firstName_1_lastName_1_1976_06_02",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_0",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_6"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_6"
+        }
+      ]
+    },
+    {
+      "jpaId": 99,
+      "version": 0,
+      "loginPermitted": false,
+      "alias": "alias_9",
+      "subAlias": "subAlias_9",
+      "emailAlias": "emailAlias_9",
+      "user": "user_54_firstName_4_lastName_4_1979_09_05",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_0_groupName_3"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_0",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_9"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_9"
+        }
+      ]
+    },
+    {
+      "jpaId": 91,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_1",
+      "subAlias": "subAlias_1",
+      "emailAlias": "emailAlias_1",
+      "user": "user_51_firstName_1_lastName_1_1976_06_02",
+      "memberships": {
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_1",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_1"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_1"
+        }
+      ]
+    },
+    {
+      "jpaId": 100,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_10",
+      "subAlias": "subAlias_10",
+      "emailAlias": "emailAlias_10",
+      "user": "user_50_firstName_0_lastName_0_1975_05_01",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_0_groupName_3"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_1",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_10"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_10"
+        }
+      ]
+    },
+    {
+      "jpaId": 103,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_13",
+      "subAlias": "subAlias_13",
+      "emailAlias": "emailAlias_13",
+      "user": "user_53_firstName_3_lastName_3_1978_08_04",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_0_groupName_0"
+          },
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_0_groupName_3"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_2_guildName_2"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_1",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_13"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_13"
+        }
+      ]
+    },
+    {
+      "jpaId": 94,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_4",
+      "subAlias": "subAlias_4",
+      "emailAlias": "emailAlias_4",
+      "user": "user_54_firstName_4_lastName_4_1979_09_05",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_1",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_4"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_4"
+        }
+      ]
+    },
+    {
+      "jpaId": 97,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_7",
+      "subAlias": "subAlias_7",
+      "emailAlias": "emailAlias_7",
+      "user": "user_52_firstName_2_lastName_2_1977_07_03",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_1",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_7"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_7"
+        }
+      ]
+    },
+    {
+      "jpaId": 101,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_11",
+      "subAlias": "subAlias_11",
+      "emailAlias": "emailAlias_11",
+      "user": "user_51_firstName_1_lastName_1_1976_06_02",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_0_groupName_0"
+          },
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_0_groupName_3"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_2",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_11"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_11"
+        }
+      ]
+    },
+    {
+      "jpaId": 104,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_14",
+      "subAlias": "subAlias_14",
+      "emailAlias": "emailAlias_14",
+      "user": "user_54_firstName_4_lastName_4_1979_09_05",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_0_groupName_0"
+          },
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_0_groupName_3"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_2_guildName_2"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_2",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_14"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_14"
+        }
+      ]
+    },
+    {
+      "jpaId": 92,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_2",
+      "subAlias": "subAlias_2",
+      "emailAlias": "emailAlias_2",
+      "user": "user_52_firstName_2_lastName_2_1977_07_03",
+      "memberships": {
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_2",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_2"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_2"
+        }
+      ]
+    },
+    {
+      "jpaId": 95,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_5",
+      "subAlias": "subAlias_5",
+      "emailAlias": "emailAlias_5",
+      "user": "user_50_firstName_0_lastName_0_1975_05_01",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_2",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_5"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_5"
+        }
+      ]
+    },
+    {
+      "jpaId": 98,
+      "version": 0,
+      "loginPermitted": true,
+      "alias": "alias_8",
+      "subAlias": "subAlias_8",
+      "emailAlias": "emailAlias_8",
+      "user": "user_53_firstName_3_lastName_3_1978_08_04",
+      "memberships": {
+        "groupMembership": [
+          {
+            "group": "group_name_2_groupName_2"
+          },
+          {
+            "group": "group_name_1_groupName_4"
+          }
+        ],
+        "guildMembership": [
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_0_guildName_0"
+          },
+          {
+            "guildMaster": false,
+            "deputyGuildMaster": false,
+            "auditor": false,
+            "group": "guild_name_1_guildName_1"
+          }
+        ]
+      },
+      "orderLevelGrants": [],
+      "organisation": "organisation_name_2",
+      "personalSettings": [
+        {
+          "key": "CellPhone",
+          "value": "CellPhone_8"
+        },
+        {
+          "key": "Skype",
+          "value": "Skype_8"
+        }
+      ]
+    }
+  ],
+  "membershipVOs": []
+}

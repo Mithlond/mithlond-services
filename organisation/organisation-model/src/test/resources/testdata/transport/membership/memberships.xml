@@ -715,4 +715,5 @@
             </personalSettings>
         </membership>
     </memberships>
+    <membershipVOs/>
 </organisation_transport:memberships>

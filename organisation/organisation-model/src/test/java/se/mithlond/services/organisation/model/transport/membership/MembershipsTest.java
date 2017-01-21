@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.membership;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
@@ -215,6 +216,42 @@ public class MembershipsTest extends AbstractPlainJaxbTest {
 
         // Assert
         Assert.assertTrue(XmlTestUtils.compareXmlIgnoringWhitespace(expected, result).identical());
+    }
+
+    @Test
+    public void validateMarshallingMembershipsToJSon() throws Exception {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/transport/membership/memberships.json");
+        final Memberships unitUnderTest = new Memberships();
+        unitUnderTest.addOrganisations(organisations);
+        unitUnderTest.addGroups(groupsAndGuilds);
+        memberships.forEach(unitUnderTest::addMembership);
+
+        // Act
+        final String result = marshalToJSon(unitUnderTest);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        JSONAssert.assertEquals(expected, result, true);
+    }
+
+    @Test
+    public void validateMarshallingMembershipVOsToJSon() throws Exception {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/transport/membership/membershipVOs.json");
+        final Memberships unitUnderTest = new Memberships();
+        memberships.stream()
+                .map(MembershipVO::new)
+                .forEach(unitUnderTest::addMembershipVO);
+
+        // Act
+        final String result = marshalToJSon(unitUnderTest);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test

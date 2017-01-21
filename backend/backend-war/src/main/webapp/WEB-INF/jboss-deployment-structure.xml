@@ -39,6 +39,7 @@
             <module name="org.slf4j"/>
             <module name="javax.ejb.api"/>
             <module name="javax.validation.api"/>
+            <module name="org.jboss.ejb3"/>
             <!--
                 EclipseLink is used both for Persistence and for JAXRS provisioning.
                 Note that this requires modifications to the standard module.xml in
@@ -47,8 +48,9 @@
             <module name="org.eclipse.persistence" services="import"/>
             <!--
                 Include Keycloak, as we use it for securing the webapp.
+                <module name="org.keycloak.keycloak-core"/>
             -->
-            <module name="org.keycloak.keycloak-core"/>
+            <module name="org.keycloak.keycloak-wildfly-adapter"/>
         </dependencies>
     </deployment>
 </jboss-deployment-structure>
