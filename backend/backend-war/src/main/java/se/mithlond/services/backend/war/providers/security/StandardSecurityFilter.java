@@ -31,6 +31,7 @@ import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
+import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
@@ -45,7 +46,6 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,7 +75,8 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     // Our log
     private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
-    @Inject
+
+    // Internal state
     private MembershipAndMethodFinderProducer membershipFinderProducer;
 
     @EJB
@@ -87,9 +88,19 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     @Context
     private ResourceInfo resourceInfo;
 
+    @Inject
+    public StandardSecurityFilter(final MembershipAndMethodFinderProducer membershipFinderProducer) {
+
+        // Assign internal state
+        this.membershipFinderProducer = Validate.notNull(
+                membershipFinderProducer,
+                "membershipFinderProducer");
+    }
+
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("all")
     @Override
     public void filter(final ContainerRequestContext ctx) {
 
@@ -129,7 +140,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             // Find the Membership of the active caller.
             final MembershipFinder finder = membershipFinderProducer.getAccessor();
             Membership activeMembership = null;
-            if(finder != null) {
+            if (finder != null) {
 
                 final OrganisationAndAlias holder = finder.getOrganisationNameAndAlias(ctx, request);
                 if (log.isDebugEnabled()) {
@@ -197,8 +208,8 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     //
 
     private void printRequestInformation(final ContainerRequestContext ctx,
-            final Method method,
-            final HttpServletRequest request) {
+                                         final Method method,
+                                         final HttpServletRequest request) {
 
         // Printout the HTTP headers, if available.
         if (log.isDebugEnabled()) {
