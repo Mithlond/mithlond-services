@@ -124,7 +124,22 @@ public class GroupAndGuildTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateMarshalling() throws Exception {
+    public void validateMarshallingToJSON() throws Exception {
+
+        // Assemble
+        // final String expected = XmlTestUtils.readFully("testdata/groupsAndGuilds.json");
+        final GroupsAndGuilds toMarshal = new GroupsAndGuilds(groupsAndGuilds);
+
+        // Act
+        final String result = marshalToJSon(toMarshal);
+
+        // Assert
+        System.out.println("Got: " + result);
+        // validateIdenticalContent(expected, result);
+    }
+
+    @Test
+    public void validateMarshallingToXML() throws Exception {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/groupsAndGuilds.xml");

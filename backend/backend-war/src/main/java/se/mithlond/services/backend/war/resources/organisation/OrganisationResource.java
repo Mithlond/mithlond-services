@@ -29,6 +29,7 @@ import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -59,6 +60,7 @@ public class OrganisationResource extends AbstractResource {
      *                                 instances.
      * @return An Organisations holder populated with all Organisations known.
      */
+    @PermitAll
     @GET
     @Path("/all")
     public Organisations getOrganisations(

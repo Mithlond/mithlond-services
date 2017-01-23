@@ -23,12 +23,14 @@ package se.mithlond.services.organisation.model.transport.membership;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Group;
+import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.transport.AbstractOrganisationalVO;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -54,6 +56,12 @@ public class GroupVO extends AbstractOrganisationalVO {
     private String parentGroupName;
 
     /**
+     * Indicates if the Group of this GroupVO is a Guild (true), or a Group (false/null).
+     */
+    @XmlAttribute
+    private Boolean isGuild;
+
+    /**
      * JAXB-friendly constructor.
      */
     public GroupVO() {
@@ -73,13 +81,18 @@ public class GroupVO extends AbstractOrganisationalVO {
             final OrganisationVO organisation,
             final String name,
             final String parentGroupName,
-            final String description) {
+            final String description,
+            final boolean isGuild) {
 
         super(jpaID, organisation, name);
 
         // Assign internal state
         this.parentGroupName = parentGroupName;
         this.description = description;
+
+        if (isGuild) {
+            this.isGuild = true;
+        }
     }
 
     /**
@@ -96,6 +109,9 @@ public class GroupVO extends AbstractOrganisationalVO {
         initialize(aGroup.getId(), new OrganisationVO(aGroup.getOrganisation()), aGroup.getGroupName());
         this.parentGroupName = aGroup.getParent() != null ? aGroup.getParent().getGroupName() : null;
         this.description = aGroup.getDescription();
+        if (aGroup instanceof Guild) {
+            this.isGuild = true;
+        }
     }
 
     /**
@@ -110,5 +126,12 @@ public class GroupVO extends AbstractOrganisationalVO {
      */
     public String getParentGroupName() {
         return parentGroupName;
+    }
+
+    /**
+     * @return {@code true} if this GroupVO represents a {@link Guild} (rather than "only" a {@link Group}).
+     */
+    public boolean isGuild() {
+        return isGuild != null && isGuild;
     }
 }

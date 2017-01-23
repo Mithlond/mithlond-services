@@ -31,8 +31,8 @@
 
     <!--
         The KeyCloak server secures all resources within this backend WAR.
-        The only role identified within this backend WAR is the
-        "authenticated_user" (i.e. someone logged in via KeyCloak).
+
+        TODO: We should apply a basic role name per Realm, as this backend WAR is a Multi-Tenant application.
     -->
     <security-constraint>
         <web-resource-collection>
@@ -42,16 +42,21 @@
         <auth-constraint>
             <role-name>mithlond-user</role-name>
         </auth-constraint>
-        <user-data-constraint>
-            <!-- transport-guarantee>CONFIDENTIAL</transport-guarantee -->
-            <transport-guarantee>NONE</transport-guarantee>
-        </user-data-constraint>
     </security-constraint>
 
+    <!--
+        Ensure that KeyCloak is actually used.
+    -->
+    <login-config>
+        <auth-method>KEYCLOAK</auth-method>
+    </login-config>
+
+    <!--
+        Multi-tenancy: One security role per realm?
+     -->
     <security-role>
         <role-name>mithlond-user</role-name>
     </security-role>
-    <!-- one security role per realm? -->
 
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>

@@ -1,0 +1,93 @@
+{
+  "xsi.type": "organisation_transport.groups",
+  "organisationsVOs": [
+    {
+      "jpaID": 1,
+      "organisationName": "name_0",
+      "description": "suffix_0"
+    },
+    {
+      "jpaID": 2,
+      "organisationName": "name_1",
+      "description": "suffix_1"
+    },
+    {
+      "jpaID": 3,
+      "organisationName": "name_2",
+      "description": "suffix_2"
+    }
+  ],
+  "groups": {
+    "group": []
+  },
+  "groupVOs": [
+    {
+      "jpaID": 4,
+      "organisation": "name_0",
+      "name": "groupName_0",
+      "description": "groupDescription_0"
+    },
+    {
+      "jpaID": 5,
+      "isGuild": true,
+      "organisation": "name_0",
+      "name": "guildName_0",
+      "description": "guildDescription_0"
+    },
+    {
+      "jpaID": 6,
+      "organisation": "name_1",
+      "name": "groupName_1",
+      "description": "groupDescription_1"
+    },
+    {
+      "jpaID": 7,
+      "isGuild": true,
+      "organisation": "name_1",
+      "name": "guildName_1",
+      "description": "guildDescription_1"
+    },
+    {
+      "jpaID": 8,
+      "organisation": "name_2",
+      "name": "groupName_2",
+      "parentGroupName": "groupName_1",
+      "description": "groupDescription_2"
+    },
+    {
+      "jpaID": 9,
+      "isGuild": true,
+      "organisation": "name_2",
+      "name": "guildName_2",
+      "description": "guildDescription_2"
+    },
+    {
+      "jpaID": 10,
+      "organisation": "name_0",
+      "name": "groupName_3",
+      "parentGroupName": "groupName_2",
+      "description": "groupDescription_3"
+    },
+    {
+      "jpaID": 11,
+      "isGuild": true,
+      "organisation": "name_0",
+      "name": "guildName_3",
+      "description": "guildDescription_3"
+    },
+    {
+      "jpaID": 12,
+      "organisation": "name_1",
+      "name": "groupName_4",
+      "parentGroupName": "groupName_3",
+      "description": "groupDescription_4"
+    },
+    {
+      "jpaID": 13,
+      "isGuild": true,
+      "organisation": "name_1",
+      "name": "guildName_4",
+      "description": "guildDescription_4"
+    }
+  ]
+}

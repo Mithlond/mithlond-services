@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.membership;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -43,9 +45,16 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"groups", "groupVOs"})
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"organisationsVOs", "groups", "groupVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Groups extends AbstractSimpleTransporter {
+
+    /**
+     * A Set of full/detailed {@link Group} objects.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "organisationVO")
+    private SortedSet<OrganisationVO> organisationsVOs;
 
     /**
      * A Set of full/detailed {@link Group} objects.
@@ -68,6 +77,7 @@ public class Groups extends AbstractSimpleTransporter {
      * JAXB-friendly constructor.
      */
     public Groups() {
+        this.organisationsVOs = new TreeSet<>();
         this.groups = new TreeSet<>();
         this.groupVOs = new TreeSet<>();
     }
@@ -81,9 +91,8 @@ public class Groups extends AbstractSimpleTransporter {
 
         this();
 
-        if (groups != null) {
-            this.groups.addAll(Arrays.asList(groups));
-        }
+        // Add internal state
+        this.addGroups(groups);
     }
 
     /**
@@ -95,8 +104,62 @@ public class Groups extends AbstractSimpleTransporter {
 
         this();
 
-        if (groupVOs != null) {
-            this.groupVOs.addAll(Arrays.asList(groupVOs));
+        // Add internal state
+        this.addGroupVOs(groupVOs);
+    }
+
+    /**
+     * Adds the supplied GroupVOs to this Groups transport.
+     *
+     * @param groups An array of GroupVOs.
+     */
+    public void addGroupVOs(final GroupVO ... groups) {
+
+        if (groups != null && groups.length > 0) {
+
+            // Add all OrganisationVOs not already added.
+            Arrays.stream(groups)
+                    .filter(Objects::nonNull)
+                    .map(GroupVO::getOrganisation)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .filter(c -> !organisationsVOs.contains(c))
+                    .forEach(c -> organisationsVOs.add(c));
+
+            // Now, add all GroupVOs not already added
+            Arrays.stream(groups)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .filter(c -> !this.groupVOs.contains(c))
+                    .forEach(c -> this.groupVOs.add(c));
+        }
+    }
+
+    /**
+     * Adds the supplied Group objects to this Groups transport.
+     *
+     * @param groups An array of Groups.
+     */
+    public void addGroups(final Group... groups) {
+
+        if (groups != null && groups.length > 0) {
+
+            // Add all OrganisationVOs not already added.
+            Arrays.stream(groups)
+                    .filter(Objects::nonNull)
+                    .map(Group::getOrganisation)
+                    .filter(Objects::nonNull)
+                    .map(OrganisationVO::new)
+                    .distinct()
+                    .filter(c -> !organisationsVOs.contains(c))
+                    .forEach(c -> organisationsVOs.add(c));
+
+            // Now, add all Groups not already added
+            Arrays.stream(groups)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .filter(c -> !this.groups.contains(c))
+                    .forEach(c -> this.groups.add(c));
         }
     }
 
