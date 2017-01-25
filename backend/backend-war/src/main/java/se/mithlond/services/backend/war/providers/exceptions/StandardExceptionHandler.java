@@ -72,6 +72,10 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
                 .header(ERROR_CAUSE_HEADER, exception.getCause())
                 .header(INTERNAL_ERROR_TYPE_HEADER, exception)
                 .header(CAUSE_CHAIN_HEADER, exceptionStackTrace)
+
+                // Add the CORS headers to the error response as well.
+                // .header(HttpHeadersFilter.PREFIX + "Origin", "*")
+                // .header(HttpHeadersFilter.PREFIX + "Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
                 .type(MediaType.TEXT_PLAIN)
                 .build();
     }

@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.organisation.impl.ejb;
 
-import org.jboss.ejb3.annotation.SecurityDomain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.OrganisationService;
@@ -54,7 +53,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@SecurityDomain("keycloak")
+// @SecurityDomain("keycloak")
 @Stateless
 public class OrganisationServiceBean extends AbstractJpaService implements OrganisationService {
 

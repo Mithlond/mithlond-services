@@ -1,4 +1,4 @@
-package se.mithlond.services.organisation.model.membership;
+package se.mithlond.services.organisation.model.transport.membership;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +9,8 @@ import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
+import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
-import se.mithlond.services.organisation.model.transport.membership.GroupVO;
-import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 

@@ -75,7 +75,6 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     // Our log
     private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
-
     // Internal state
     private MembershipAndMethodFinderProducer membershipFinderProducer;
 

@@ -35,7 +35,7 @@ import java.io.IOException;
  * and backend hosts.
  */
 @Provider
-public class HttpHeadersFilter implements ContainerResponseFilter {
+public class HttpCORSHeadersFilter implements ContainerResponseFilter {
 
     /**
      * The prefix for all Access-Control HTTP headers.
@@ -56,7 +56,8 @@ public class HttpHeadersFilter implements ContainerResponseFilter {
         // Add headers to permit browsers to connect to a host other than the
         // one which was used to get the Presentation itself.
         responseHeaders.add(PREFIX + "Origin", "*");
-        responseHeaders.add(PREFIX + "Headers", "origin, content-type, accept");
+        responseHeaders.add(PREFIX + "Credentials", "true");
+        responseHeaders.add(PREFIX + "Headers", "origin, content-type, accept, authorization");
         responseHeaders.add(PREFIX + "Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
     }
 }

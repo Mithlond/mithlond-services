@@ -60,7 +60,6 @@ public class OrganisationResource extends AbstractResource {
      *                                 instances.
      * @return An Organisations holder populated with all Organisations known.
      */
-    @PermitAll
     @GET
     @Path("/all")
     public Organisations getOrganisations(

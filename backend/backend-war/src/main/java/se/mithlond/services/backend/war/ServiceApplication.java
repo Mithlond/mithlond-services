@@ -22,7 +22,10 @@
 package se.mithlond.services.backend.war;
 
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -44,8 +47,12 @@ import java.util.TreeMap;
 @ApplicationPath("/resource")
 public class ServiceApplication extends Application {
 
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(ServiceApplication.class);
+
     // Internal state
     @Context private ServletContext context;
+
     private Set<Class<?>> jaxRsClasses;
     private Set<Object> jaxRsSingletons;
 
@@ -57,6 +64,24 @@ public class ServiceApplication extends Application {
         // Create internal state.
         this.jaxRsClasses = new HashSet<>();
         this.jaxRsSingletons = new HashSet<>();
+    }
+
+    @PostConstruct
+    public void logState() {
+
+        log.info("ServiceApplication launched.");
+
+        final Set<Class<?>> classes = getClasses();
+        log.info("Got [" + classes.size() + "] Classes");
+        classes.forEach(current -> log.info("Class [" + current.getCanonicalName() + "]"));
+
+        final Set<Object> singletons = getSingletons();
+        log.info("Got [" + singletons.size() + "] Singletons");
+        singletons.forEach(current -> log.info("Singleton [" + current.getClass().getCanonicalName() + "]"));
+
+        final SortedMap<String, Object> props = new TreeMap<>(getProperties());
+        log.info("Got [" + props.size() + "] properties");
+        props.entrySet().forEach(pr -> log.info("Property [" + pr.getKey() + "]: " + pr.getValue()));
     }
 
     /**

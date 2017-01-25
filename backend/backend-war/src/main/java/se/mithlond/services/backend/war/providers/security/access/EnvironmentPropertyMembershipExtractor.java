@@ -50,8 +50,18 @@ public class EnvironmentPropertyMembershipExtractor implements MembershipFinder 
      */
     public static final String ALIAS_KEY = "nazgul_alias";
 
+    // Internal state
+    private final ServletPropertyAccessor propertyAccessor;
+
+    /**
+     * Compound constructor, injecting all required state into this EnvironmentPropertyMembershipExtractor.
+     *
+     * @param propertyAccessor The property accessor, which extracts information from Servlet Contexts.
+     */
     @Inject
-    private ServletPropertyAccessor propertyAccessor;
+    public EnvironmentPropertyMembershipExtractor(final ServletPropertyAccessor propertyAccessor) {
+        this.propertyAccessor = propertyAccessor;
+    }
 
     /**
      * {@inheritDoc}
