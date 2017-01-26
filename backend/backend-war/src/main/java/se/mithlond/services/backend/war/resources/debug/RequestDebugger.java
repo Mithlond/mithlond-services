@@ -1,5 +1,9 @@
 package se.mithlond.services.backend.war.resources.debug;
 
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.representations.AccessToken;
+import org.keycloak.representations.IDToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.providers.headers.HttpCORSHeadersFilter;
@@ -15,6 +19,7 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,10 +94,42 @@ public class RequestDebugger extends AbstractResource {
                 "isSecure",
                 Collections.singletonList(securityContext.isSecure()),
                 builder);
-        this.log("SecurityContext",
-                "getUserPrincipal",
-                Collections.singletonList(securityContext.getUserPrincipal()),
-                builder);
+        builder.append("   [authenticationScheme]: " + securityContext.getAuthenticationScheme() + "\n");
+        final Principal userPrincipal = securityContext.getUserPrincipal();
+
+        if(userPrincipal != null) {
+
+            builder.append("   [userPrincipal Name]: " + userPrincipal.getName() + "\n");
+            builder.append("   [userPrincipal toString()]: " + userPrincipal.toString() + "\n");
+            builder.append("   [userPrincipal class]: " + userPrincipal.getClass().getName() + "\n");
+
+            if(userPrincipal instanceof KeycloakPrincipal) {
+
+                final KeycloakPrincipal kcPrincipal = (KeycloakPrincipal) userPrincipal;
+                final KeycloakSecurityContext kcSecContext = kcPrincipal.getKeycloakSecurityContext();
+
+                builder.append("   [ksSecContext realm]: " + kcSecContext.getRealm() + "\n");
+                builder.append("   [ksSecContext idTokenString]: " + kcSecContext.getIdTokenString() + "\n");
+                builder.append("   [ksSecContext tokenString]: " + kcSecContext.getTokenString() + "\n");
+
+                final IDToken idToken = kcSecContext.getIdToken();
+                if(idToken != null) {
+                    builder.append("   [IDToken birthdate]: " + idToken.getBirthdate() + "\n");
+                    builder.append("   [IDToken name]: " + idToken.getName() + "\n");
+                    builder.append("   [IDToken email]: " + idToken.getEmail() + "\n");
+                }
+
+                final AccessToken accessToken = kcSecContext.getToken();
+
+                if(accessToken != null) {
+                    final AccessToken.Access realmAccess = accessToken.getRealmAccess();
+                    builder.append("   [RealmAccess roles]: " + realmAccess.getRoles() + "\n");
+                }
+            }
+        } else {
+
+            builder.append("   [userPrincipal]: " + userPrincipal + "\n");
+        }
 
         // Extract the result, log it, and send back the response.
         final String result = builder.toString();
