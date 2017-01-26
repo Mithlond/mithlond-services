@@ -25,16 +25,19 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
 /**
- * ContainerResponseFilter which adds required HTTP headers for {@code Access-Control-*}
+ * <p>ContainerResponseFilter which adds required HTTP headers for {@code Access-Control-*}
  * in order to permit browsers to connect with RESTful requests to a host other than the
  * one which was used to get the Presentation itself. This permits splitting presentation
- * and backend hosts.
+ * and backend hosts.</p>
+ * <p>The CORS HTTP headers are set within the application server instead, to
+ * cope with setting these headers even when error messages are returned from
+ * a Keycloak-managed Client.</p>
  */
-@Provider
+// @Provider
+// @PreMatching
 public class HttpCORSHeadersFilter implements ContainerResponseFilter {
 
     /**

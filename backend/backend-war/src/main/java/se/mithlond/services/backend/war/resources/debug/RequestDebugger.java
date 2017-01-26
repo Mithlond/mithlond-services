@@ -6,8 +6,9 @@ import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.IDToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.mithlond.services.backend.war.providers.headers.HttpCORSHeadersFilter;
 import se.mithlond.services.backend.war.resources.AbstractResource;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
+import se.mithlond.services.organisation.model.transport.Organisations;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
@@ -97,13 +98,13 @@ public class RequestDebugger extends AbstractResource {
         builder.append("   [authenticationScheme]: " + securityContext.getAuthenticationScheme() + "\n");
         final Principal userPrincipal = securityContext.getUserPrincipal();
 
-        if(userPrincipal != null) {
+        if (userPrincipal != null) {
 
             builder.append("   [userPrincipal Name]: " + userPrincipal.getName() + "\n");
             builder.append("   [userPrincipal toString()]: " + userPrincipal.toString() + "\n");
             builder.append("   [userPrincipal class]: " + userPrincipal.getClass().getName() + "\n");
 
-            if(userPrincipal instanceof KeycloakPrincipal) {
+            if (userPrincipal instanceof KeycloakPrincipal) {
 
                 final KeycloakPrincipal kcPrincipal = (KeycloakPrincipal) userPrincipal;
                 final KeycloakSecurityContext kcSecContext = kcPrincipal.getKeycloakSecurityContext();
@@ -113,7 +114,7 @@ public class RequestDebugger extends AbstractResource {
                 builder.append("   [ksSecContext tokenString]: " + kcSecContext.getTokenString() + "\n");
 
                 final IDToken idToken = kcSecContext.getIdToken();
-                if(idToken != null) {
+                if (idToken != null) {
                     builder.append("   [IDToken birthdate]: " + idToken.getBirthdate() + "\n");
                     builder.append("   [IDToken name]: " + idToken.getName() + "\n");
                     builder.append("   [IDToken email]: " + idToken.getEmail() + "\n");
@@ -121,7 +122,7 @@ public class RequestDebugger extends AbstractResource {
 
                 final AccessToken accessToken = kcSecContext.getToken();
 
-                if(accessToken != null) {
+                if (accessToken != null) {
                     final AccessToken.Access realmAccess = accessToken.getRealmAccess();
                     builder.append("   [RealmAccess roles]: " + realmAccess.getRoles() + "\n");
                 }
@@ -139,9 +140,10 @@ public class RequestDebugger extends AbstractResource {
 
         // All Done.
         return Response.status(Response.Status.OK)
-                .entity(jsonData)
-                .header(HttpCORSHeadersFilter.PREFIX + "Origin", "*")
                 .type(MediaType.APPLICATION_JSON)
+                .entity(new Organisations(
+                        new OrganisationVO(42L, "Fjodjim", "Tokholms Toksällskap"))
+                )
                 .build();
     }
 
