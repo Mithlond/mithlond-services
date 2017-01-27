@@ -2,17 +2,17 @@
   "xsi.type": "organisation_transport.groups",
   "organisationsVOs": [
     {
-      "jpaID": 1,
+      "jpaId": 1,
       "organisationName": "name_0",
       "description": "suffix_0"
     },
     {
-      "jpaID": 2,
+      "jpaId": 2,
       "organisationName": "name_1",
       "description": "suffix_1"
     },
     {
-      "jpaID": 3,
+      "jpaId": 3,
       "organisationName": "name_2",
       "description": "suffix_2"
     }

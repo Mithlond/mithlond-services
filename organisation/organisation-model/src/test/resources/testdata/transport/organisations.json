@@ -1,0 +1,106 @@
+{
+  "xsi.type": "organisation_transport.organisations",
+  "organisations": [
+    {
+      "jpaId": 0,
+      "version": 0,
+      "xmlID": "organisation_name_0",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_0",
+      "suffix": "suffix_0",
+      "phone": "phone_0",
+      "bankAccountInfo": "bankAccountInfo_0",
+      "postAccountInfo": "postAccountInfo_0",
+      "emailSuffix": "emailSuffix_0",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_0",
+        "departmentName": "departmentName_0",
+        "street": "street_0",
+        "number": "number_0",
+        "city": "city_0",
+        "zipCode": "zipCode_0",
+        "country": "country_0",
+        "description": "description_0"
+      }
+    },
+    {
+      "jpaId": 0,
+      "version": 0,
+      "xmlID": "organisation_name_1",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_1",
+      "suffix": "suffix_1",
+      "phone": "phone_1",
+      "bankAccountInfo": "bankAccountInfo_1",
+      "postAccountInfo": "postAccountInfo_1",
+      "emailSuffix": "emailSuffix_1",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_1",
+        "departmentName": "departmentName_1",
+        "street": "street_1",
+        "number": "number_1",
+        "city": "city_1",
+        "zipCode": "zipCode_1",
+        "country": "country_1",
+        "description": "description_1"
+      }
+    },
+    {
+      "jpaId": 0,
+      "version": 0,
+      "xmlID": "organisation_name_2",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_2",
+      "suffix": "suffix_2",
+      "phone": "phone_2",
+      "bankAccountInfo": "bankAccountInfo_2",
+      "postAccountInfo": "postAccountInfo_2",
+      "emailSuffix": "emailSuffix_2",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_2",
+        "departmentName": "departmentName_2",
+        "street": "street_2",
+        "number": "number_2",
+        "city": "city_2",
+        "zipCode": "zipCode_2",
+        "country": "country_2",
+        "description": "description_2"
+      }
+    },
+    {
+      "jpaId": 0,
+      "version": 0,
+      "xmlID": "organisation_name_3",
+      "timeZoneID": "Europe/Stockholm",
+      "country": "SE",
+      "language": "sv",
+      "standardCurrency": "SEK",
+      "organisationName": "name_3",
+      "suffix": "suffix_3",
+      "phone": "phone_3",
+      "bankAccountInfo": "bankAccountInfo_3",
+      "postAccountInfo": "postAccountInfo_3",
+      "emailSuffix": "emailSuffix_3",
+      "visitingAddress": {
+        "careOfLine": "careOfLine_3",
+        "departmentName": "departmentName_3",
+        "street": "street_3",
+        "number": "number_3",
+        "city": "city_3",
+        "zipCode": "zipCode_3",
+        "country": "country_3",
+        "description": "description_3"
+      }
+    }
+  ],
+  "organisationVOs": []
+}

@@ -2,12 +2,12 @@
   "xsi.type": "shared.people",
   "personList": [
     {
-      "jpaID": 25,
+      "jpaId": 25,
       "firstName": "Allan",
       "lastName": "Octamac"
     },
     {
-      "jpaID": 32,
+      "jpaId": 32,
       "firstName": "Ellen",
       "lastName": "Ectamac"
     }

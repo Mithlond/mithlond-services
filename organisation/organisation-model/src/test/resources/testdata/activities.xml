@@ -52,7 +52,7 @@
         </activity>
     </activities>
     <activityVOs>
-        <activityVO jpaID="0" startTime="2016-06-20T17:00:00" endTime="2016-06-20T22:15:00" isOpenToGeneralPublic="true" addressCategory="Visiting address" cancelled="false">
+        <activityVO jpaId="0" startTime="2016-06-20T17:00:00" endTime="2016-06-20T22:15:00" isOpenToGeneralPublic="true" addressCategory="Visiting address" cancelled="false">
             <organisation>The Organisation</organisation>
             <shortDesc>activityShortDesc</shortDesc>
             <fullDesc>activityFullDesc</fullDesc>

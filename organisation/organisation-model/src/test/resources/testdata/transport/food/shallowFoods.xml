@@ -41,9 +41,9 @@
         </category>
     </categories>
     <foods>
-        <food jpaID="24" foodName="Blomkål" categoryID="12" subCategoryID="20"/>
-        <food jpaID="36" foodName="Morot" categoryID="12" subCategoryID="25"/>
-        <food jpaID="215" foodName="Rödbeta" categoryID="12" subCategoryID="25"/>
+        <food jpaId="24" foodName="Blomkål" categoryID="12" subCategoryID="20"/>
+        <food jpaId="36" foodName="Morot" categoryID="12" subCategoryID="25"/>
+        <food jpaId="215" foodName="Rödbeta" categoryID="12" subCategoryID="25"/>
     </foods>
     <detailedFoods/>
 </organisation_transport:foods>

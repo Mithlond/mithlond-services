@@ -96,16 +96,16 @@
         </organisation>
     </organisations>
     <organisationVOs>
-        <organisationVO jpaID="25" organisationName="name_0">
+        <organisationVO jpaId="25" organisationName="name_0">
             <description>suffix_0</description>
         </organisationVO>
-        <organisationVO jpaID="26" organisationName="name_1">
+        <organisationVO jpaId="26" organisationName="name_1">
             <description>suffix_1</description>
         </organisationVO>
-        <organisationVO jpaID="27" organisationName="name_2">
+        <organisationVO jpaId="27" organisationName="name_2">
             <description>suffix_2</description>
         </organisationVO>
-        <organisationVO jpaID="28" organisationName="name_3">
+        <organisationVO jpaId="28" organisationName="name_3">
             <description>suffix_3</description>
         </organisationVO>
     </organisationVOs>

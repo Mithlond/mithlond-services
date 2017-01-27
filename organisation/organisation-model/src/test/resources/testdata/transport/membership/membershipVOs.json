@@ -8,7 +8,7 @@
   "memberships": [],
   "membershipVOs": [
     {
-      "jpaID": 90,
+      "jpaId": 90,
       "loginPermitted": false,
       "alias": "alias_0",
       "organisation": "name_0",
@@ -16,7 +16,7 @@
       "emailAlias": "emailAlias_0"
     },
     {
-      "jpaID": 102,
+      "jpaId": 102,
       "loginPermitted": false,
       "alias": "alias_12",
       "organisation": "name_0",
@@ -24,7 +24,7 @@
       "emailAlias": "emailAlias_12"
     },
     {
-      "jpaID": 93,
+      "jpaId": 93,
       "loginPermitted": false,
       "alias": "alias_3",
       "organisation": "name_0",
@@ -32,7 +32,7 @@
       "emailAlias": "emailAlias_3"
     },
     {
-      "jpaID": 96,
+      "jpaId": 96,
       "loginPermitted": false,
       "alias": "alias_6",
       "organisation": "name_0",
@@ -40,7 +40,7 @@
       "emailAlias": "emailAlias_6"
     },
     {
-      "jpaID": 99,
+      "jpaId": 99,
       "loginPermitted": false,
       "alias": "alias_9",
       "organisation": "name_0",
@@ -48,7 +48,7 @@
       "emailAlias": "emailAlias_9"
     },
     {
-      "jpaID": 91,
+      "jpaId": 91,
       "loginPermitted": true,
       "alias": "alias_1",
       "organisation": "name_1",
@@ -56,7 +56,7 @@
       "emailAlias": "emailAlias_1"
     },
     {
-      "jpaID": 100,
+      "jpaId": 100,
       "loginPermitted": true,
       "alias": "alias_10",
       "organisation": "name_1",
@@ -64,7 +64,7 @@
       "emailAlias": "emailAlias_10"
     },
     {
-      "jpaID": 103,
+      "jpaId": 103,
       "loginPermitted": true,
       "alias": "alias_13",
       "organisation": "name_1",
@@ -72,7 +72,7 @@
       "emailAlias": "emailAlias_13"
     },
     {
-      "jpaID": 94,
+      "jpaId": 94,
       "loginPermitted": true,
       "alias": "alias_4",
       "organisation": "name_1",
@@ -80,7 +80,7 @@
       "emailAlias": "emailAlias_4"
     },
     {
-      "jpaID": 97,
+      "jpaId": 97,
       "loginPermitted": true,
       "alias": "alias_7",
       "organisation": "name_1",
@@ -88,7 +88,7 @@
       "emailAlias": "emailAlias_7"
     },
     {
-      "jpaID": 101,
+      "jpaId": 101,
       "loginPermitted": true,
       "alias": "alias_11",
       "organisation": "name_2",
@@ -96,7 +96,7 @@
       "emailAlias": "emailAlias_11"
     },
     {
-      "jpaID": 104,
+      "jpaId": 104,
       "loginPermitted": true,
       "alias": "alias_14",
       "organisation": "name_2",
@@ -104,7 +104,7 @@
       "emailAlias": "emailAlias_14"
     },
     {
-      "jpaID": 92,
+      "jpaId": 92,
       "loginPermitted": true,
       "alias": "alias_2",
       "organisation": "name_2",
@@ -112,7 +112,7 @@
       "emailAlias": "emailAlias_2"
     },
     {
-      "jpaID": 95,
+      "jpaId": 95,
       "loginPermitted": true,
       "alias": "alias_5",
       "organisation": "name_2",
@@ -120,7 +120,7 @@
       "emailAlias": "emailAlias_5"
     },
     {
-      "jpaID": 98,
+      "jpaId": 98,
       "loginPermitted": true,
       "alias": "alias_8",
       "organisation": "name_2",

@@ -23,10 +23,10 @@
 
 <shared:abstractSimpleTransporter xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="shared:people">
     <personList>
-        <person jpaID="25" firstName="Allan">
+        <person jpaId="25" firstName="Allan">
             <lastName>Octamac</lastName>
         </person>
-        <person jpaID="32" firstName="Ellen">
+        <person jpaId="32" firstName="Ellen">
             <lastName>Ectamac</lastName>
         </person>
     </personList>

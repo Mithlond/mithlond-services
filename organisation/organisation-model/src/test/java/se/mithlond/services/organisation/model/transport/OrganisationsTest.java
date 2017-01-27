@@ -115,6 +115,21 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
     }
 
     @Test
+    public void validateMarshallingToJSON() throws Exception {
+
+        // Assemble
+        unitUnderTest.getOrganisations().addAll(organisations);
+        final String expected = XmlTestUtils.readFully("testdata/transport/organisations.json");
+
+        // Act
+        final String result = marshalToJSon(unitUnderTest);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        JSONAssert.assertEquals(expected, result, true);
+    }
+
+    @Test
     public void validateMarshallingOnlyVOsToJSON() throws Exception {
 
         // Assemble
@@ -123,7 +138,7 @@ public class OrganisationsTest extends AbstractPlainJaxbTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);

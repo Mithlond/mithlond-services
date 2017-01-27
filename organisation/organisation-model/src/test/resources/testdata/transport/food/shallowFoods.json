@@ -29,19 +29,19 @@
   ],
   "foods": [
     {
-      "jpaID": 24,
+      "jpaId": 24,
       "foodName": "Blomkål",
       "categoryID": 12,
       "subCategoryID": 20
     },
     {
-      "jpaID": 36,
+      "jpaId": 36,
       "foodName": "Morot",
       "categoryID": 12,
       "subCategoryID": 25
     },
     {
-      "jpaID": 215,
+      "jpaId": 215,
       "foodName": "Rödbeta",
       "categoryID": 12,
       "subCategoryID": 25

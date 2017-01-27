@@ -24,54 +24,54 @@
 <organisation_transport:allergies xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <localeDefinition>sv..SE..none</localeDefinition>
     <users>
-        <user jpaID="1">
+        <user jpaId="1">
             <firstName>firstName_0</firstName>
             <lastName>lastName_0</lastName>
             <birthday>1971-02-01</birthday>
         </user>
-        <user jpaID="2">
+        <user jpaId="2">
             <firstName>firstName_1</firstName>
             <lastName>lastName_1</lastName>
             <birthday>1972-02-02</birthday>
         </user>
-        <user jpaID="3">
+        <user jpaId="3">
             <firstName>firstName_2</firstName>
             <lastName>lastName_2</lastName>
             <birthday>1973-02-03</birthday>
         </user>
-        <user jpaID="4">
+        <user jpaId="4">
             <firstName>firstName_3</firstName>
             <lastName>lastName_3</lastName>
             <birthday>1974-02-04</birthday>
         </user>
-        <user jpaID="5">
+        <user jpaId="5">
             <firstName>firstName_4</firstName>
             <lastName>lastName_4</lastName>
             <birthday>1975-02-05</birthday>
         </user>
     </users>
     <allergyList>
-        <allergy jpaID="2" foodJpaID="0">
+        <allergy jpaId="2" foodJpaID="0">
             <description>allergy_description_2</description>
             <foodName>foodName_2</foodName>
             <severity>severity_2</severity>
         </allergy>
-        <allergy jpaID="3" foodJpaID="1">
+        <allergy jpaId="3" foodJpaID="1">
             <description>allergy_description_3</description>
             <foodName>foodName_3</foodName>
             <severity>severity_3</severity>
         </allergy>
-        <allergy jpaID="4" foodJpaID="2">
+        <allergy jpaId="4" foodJpaID="2">
             <description>allergy_description_4</description>
             <foodName>foodName_4</foodName>
             <severity>severity_4</severity>
         </allergy>
-        <allergy jpaID="5" foodJpaID="3">
+        <allergy jpaId="5" foodJpaID="3">
             <description>allergy_description_5</description>
             <foodName>foodName_5</foodName>
             <severity>severity_5</severity>
         </allergy>
-        <allergy jpaID="6" foodJpaID="4">
+        <allergy jpaId="6" foodJpaID="4">
             <description>allergy_description_6</description>
             <foodName>foodName_6</foodName>
             <severity>severity_6</severity>
