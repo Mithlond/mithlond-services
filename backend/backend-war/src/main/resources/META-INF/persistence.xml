@@ -119,21 +119,10 @@
                       value="create_mithlond_database.sql"/>
             <property name="javax.persistence.schema-generation.scripts.drop-target"
                       value="drop_mithlond_database.sql"/>
-            <!-- property name="javax.persistence.sql-load-script-source" value="META-INF/standard_population.sql"/ -->
-            <!--
-                OpenJPA2 custom properties.
-            -->
-            <property name="openjpa.jdbc.DBDictionary" value="org.apache.openjpa.jdbc.sql.PostgresDictionary"/>
-            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
-            <property name="openjpa.InverseManager" value="true"/>
-            <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
-            <property name="openjpa.Log" value="DefaultLevel=WARN, Tool=INFO, SQL=TRACE"/>
+            
             <!--
                 Hibernate custom properties.
             -->
-            <!-- property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/ -->
-            <!-- property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="parse"/> -->
             <property name="hibernate.max_fetch_depth" value="4"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.format_sql" value="true"/>
@@ -141,7 +130,6 @@
             <property name="javax.persistence.schema-generation.scripts.action" value="drop-and-parse"/>
             <property name="javax.persistence.schema-generation.scripts.parse-target" value="create_database.sql"/>
             <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop_database.sql"/  -->
-            <!-- property name="javax.persistence.sql-load-script-source" value="insert.sql"/ -->
             <!--
                EclipseLink custom properties.
             -->
@@ -150,11 +138,16 @@
             <property name="eclipselink.logging.logger" value="ServerLogger"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
             <!-- property name="eclipselink.ddl-generation.output-mode" value="both"/>
             <property name="eclipselink.parse-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
             <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/ -->
-            <property name="eclipselink.logging.level.sql" value="FINE"/>
-            <property name="eclipselink.logging.parameters" value="true"/>
+            <!--
+                Customizer for EclipseLink to handle missing RelationalDescriptors.
+             -->
+            <property name="eclipselink.session.customizer"
+                      value="se.mithlond.services.backend.war.customization.EclipseLinkCustomizer"/>
         </properties>
     </persistence-unit>
 </persistence>

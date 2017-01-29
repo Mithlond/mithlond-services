@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
@@ -75,7 +75,7 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
     @XmlTransient
     private GroupMembershipId groupMembershipId;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @MapsId("groupId")
     @XmlIDREF
     @XmlElement(required = true)
@@ -83,7 +83,7 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
 
     // This must be XmlTransient to avoid a cyclic graph in the XSD.
     // Handled by a callback method from the Membership side.
-    @ManyToOne
+    @ManyToOne(optional = false)
     @MapsId("membershipId")
     @XmlTransient
     private Membership membership;

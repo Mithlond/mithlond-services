@@ -237,8 +237,7 @@ public class GroupAndGuildTest extends AbstractEntityTest {
             final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
 
             if (groupsOrGuilds != null) {
-                Arrays.asList(groupsOrGuilds)
-                        .stream()
+                Arrays.stream(groupsOrGuilds)
                         .map(Group::getPaths)
                         .forEach(toReturn::addAll);
             }

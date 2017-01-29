@@ -59,6 +59,11 @@ public class DynamicOriginCORSFilter implements ContainerRequestFilter, Containe
     public static final String ACCESS_CONTROL_ORIGIN_HTTP_HEADER = "Access-Control-Allow-Origin";
 
     /**
+     * The Http header property key for the CORS origin header.
+     */
+    public static final String ORIGIN_KEY = "Origin";
+
+    /**
      * The value of the getMethod for HTTP OPTIONS calls.
      */
     public static final String OPTIONS_METHOD = "OPTIONS";
@@ -77,7 +82,7 @@ public class DynamicOriginCORSFilter implements ContainerRequestFilter, Containe
     public void filter(final ContainerRequestContext requestContext) throws IOException {
 
         // TODO: If we get no "Origin" header, calculate it from the URI supplied.
-        final String dynamicOrigin = requestContext.getHeaderString("Origin");
+        final String dynamicOrigin = requestContext.getHeaderString(ORIGIN_KEY);
 
         // If this is an OPTIONS call (i.e. pre-flight CORS call), we
         // should simply append the dynamic origin header and return.

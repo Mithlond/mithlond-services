@@ -21,10 +21,15 @@
  */
 package se.mithlond.services.backend.war.providers.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.mithlond.services.backend.war.providers.headers.DynamicOriginCORSFilter;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -43,6 +48,9 @@ import java.util.List;
 @Provider
 public class StandardExceptionHandler implements ExceptionMapper<Exception> {
 
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(StandardExceptionHandler.class);
+
     /**
      * Header where the internal error is bound.
      */
@@ -59,6 +67,9 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
      */
     public static final String CAUSE_CHAIN_HEADER = RestfulParameters.OUTBOUND_HEADER_PREFIX + "CauseChain";
 
+    @Context
+    private HttpServletRequest req;
+
     /**
      * {@inheritDoc}
      */
@@ -67,15 +78,30 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
 
         final String exceptionStackTrace = extractExceptionStacktrace(exception);
 
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+        final Response.ResponseBuilder responseBuilder = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity("Failed to invoke service.\n" + exceptionStackTrace)
                 .header(ERROR_CAUSE_HEADER, exception.getCause())
                 .header(INTERNAL_ERROR_TYPE_HEADER, exception)
-                .header(CAUSE_CHAIN_HEADER, exceptionStackTrace)
+                .header(CAUSE_CHAIN_HEADER, exceptionStackTrace);
 
-                // Add the CORS headers to the error response as well.
-                // .header(HttpHeadersFilter.PREFIX + "Origin", "*")
-                // .header(HttpHeadersFilter.PREFIX + "Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+        if (req != null) {
+
+            // Add the CORS Allow-Origin header to the error response as well.
+            // This permits the Browser to display error message data.
+            final String origin = req.getHeader(DynamicOriginCORSFilter.ORIGIN_KEY);
+            responseBuilder.header(DynamicOriginCORSFilter.ACCESS_CONTROL_ORIGIN_HTTP_HEADER, origin);
+
+            log.debug("Added CORS header [" + DynamicOriginCORSFilter.ACCESS_CONTROL_ORIGIN_HTTP_HEADER + "] with the" +
+                    " value [" + origin + "] to the response.");
+            
+        } else {
+
+            log.warn("HttpServletRequest not injected. Not adding [" + DynamicOriginCORSFilter
+                    .ACCESS_CONTROL_ORIGIN_HTTP_HEADER + "] header.");
+        }
+
+        // All Done.
+        return responseBuilder
                 .type(MediaType.TEXT_PLAIN)
                 .build();
     }
@@ -114,7 +140,7 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
         final int numViolations = ex.getConstraintViolations().size();
         int index = 0;
 
-        for(ConstraintViolation<?> current : ex.getConstraintViolations()) {
+        for (ConstraintViolation<?> current : ex.getConstraintViolations()) {
             final String msg = "  Constraint [" + index++ + "/" + numViolations + "]: " + current.getMessage() + "\n";
             toReturn.append(msg);
         }
