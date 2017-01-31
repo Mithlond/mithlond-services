@@ -22,7 +22,6 @@
 package se.mithlond.services.backend.war.customization;
 
 import org.eclipse.persistence.config.SessionCustomizer;
-import org.eclipse.persistence.descriptors.ClassDescriptor;
 import org.eclipse.persistence.descriptors.InheritancePolicy;
 import org.eclipse.persistence.descriptors.RelationalDescriptor;
 import org.eclipse.persistence.internal.databaseaccess.Platform;
@@ -38,12 +37,10 @@ import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 
 import java.sql.Types;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * <p>Customizer for EclipseLink to handle missing RelationalDescriptors.</p>
@@ -86,6 +83,11 @@ public class EclipseLinkCustomizer implements SessionCustomizer {
         final DatabaseLogin login = session.getLogin();
         final Platform datasourcePlatform = session.getDatasourcePlatform();
 
+        log.info("Before augmenting RelationalDescriptors: \n");
+        logRelationalDescriptorInformation(GroupMembership.class, session);
+        logRelationalDescriptorInformation(Group.class, session);
+        logRelationalDescriptorInformation(Guild.class, session);
+
         // Amend the GroupMembership RelationalDescriptor to
         // cope with the values within the DiscriminatorColumn, as found
         // within Group and Guild.
@@ -101,14 +103,14 @@ public class EclipseLinkCustomizer implements SessionCustomizer {
         final StringBuilder tmp = new StringBuilder();
         attributeMappings.entrySet().forEach(entry ->
                 tmp.append("\n Attribute [" + entry.getKey() + "]: " + entry.getValue().toString()));
-        log.info("Got attributeMappings for GroupMembership: "+ tmp.toString());
+        log.info("Got attributeMappings for GroupMembership: " + tmp.toString());
 
         // Attribute [group]: org.eclipse.persistence.mappings.ManyToOneMapping[group]
         final DatabaseMapping groupMapping = groupMembershipDescriptor.getMappingForAttributeName("group");
-        if(groupMapping.isManyToOneMapping()) {
+        if (groupMapping.isManyToOneMapping()) {
 
             final ManyToOneMapping m21Mapping = (ManyToOneMapping) groupMapping;
-            
+
         }
 
         final Map groupMembershipIndicatorMapping = groupMembershipDescriptor
@@ -127,12 +129,13 @@ public class EclipseLinkCustomizer implements SessionCustomizer {
 
         groupMembershipIndicatorMapping.put("guild", Guild.class);
         groupMembershipIndicatorMapping.put(Guild.class, "guild");
-        */
-
-        // Log after the augmentation ... 
+        
+        // Log after the augmentation ...
+        log.info("After augmenting RelationalDescriptors: \n");
         logRelationalDescriptorInformation(GroupMembership.class, session);
         logRelationalDescriptorInformation(Group.class, session);
         logRelationalDescriptorInformation(Guild.class, session);
+        */
     }
 
     //

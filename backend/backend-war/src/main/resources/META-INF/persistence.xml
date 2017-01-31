@@ -146,8 +146,8 @@
             <!--
                 Customizer for EclipseLink to handle missing RelationalDescriptors.
              -->
-            <property name="eclipselink.session.customizer"
-                      value="se.mithlond.services.backend.war.customization.EclipseLinkCustomizer"/>
+            <!-- property name="eclipselink.session.customizer"
+                      value="se.mithlond.services.backend.war.customization.EclipseLinkCustomizer"/ -->
         </properties>
     </persistence-unit>
 </persistence>

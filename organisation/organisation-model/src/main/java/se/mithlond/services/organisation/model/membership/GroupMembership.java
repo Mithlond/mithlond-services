@@ -33,8 +33,13 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Version;
@@ -55,6 +60,9 @@ import java.util.TreeSet;
  */
 @Entity
 @Access(value = AccessType.FIELD)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "membership_type")
+@DiscriminatorValue("group")
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"group"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupMembership implements Serializable, Comparable<GroupMembership>,

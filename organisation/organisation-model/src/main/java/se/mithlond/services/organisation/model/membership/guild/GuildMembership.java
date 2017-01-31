@@ -31,7 +31,12 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -46,6 +51,7 @@ import java.util.TreeSet;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
+@DiscriminatorValue("guild")
 @Access(value = AccessType.FIELD)
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"guildMaster", "deputyGuildMaster", "auditor"})
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -83,12 +89,15 @@ public class GuildMembership extends GroupMembership {
     }
 
     // Internal state
+    @Basic
     @XmlAttribute(required = true)
     private boolean guildMaster;
 
+    @Basic
     @XmlAttribute(required = true)
     private boolean deputyGuildMaster;
 
+    @Basic
     @XmlAttribute(required = true)
     private boolean auditor;
 
