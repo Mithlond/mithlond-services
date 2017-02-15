@@ -61,6 +61,11 @@ public class GroupIdSearchParameters
      * Serializable-friendly constructor.
      */
     public GroupIdSearchParameters() {
+
+        // Create internal state
+        this.groupIDs = new ArrayList<>();
+        this.organisationIDs = new ArrayList<>();
+        this.classifierIDs = new ArrayList<>();
     }
 
     /**
@@ -74,11 +79,10 @@ public class GroupIdSearchParameters
             final List<Long> organisationIDs,
             final List<Long> classifierIDs) {
 
-        // Create internal state
-        this.groupIDs = new ArrayList<>();
-        this.organisationIDs = new ArrayList<>();
-        this.classifierIDs = new ArrayList<>();
+        // Delegate
+        this();
 
+        // Assign internal state
         this.groupIDs.addAll(groupIDs);
         this.organisationIDs.addAll(organisationIDs);
         this.classifierIDs.addAll(classifierIDs);

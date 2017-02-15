@@ -53,7 +53,6 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-// @SecurityDomain("keycloak")
 @Stateless
 public class OrganisationServiceBean extends AbstractJpaService implements OrganisationService {
 
