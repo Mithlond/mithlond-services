@@ -139,7 +139,6 @@
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.logging.level.sql" value="FINE"/>
-            <property name="eclipselink.logging.parameters" value="true"/>
             <!-- property name="eclipselink.ddl-generation.output-mode" value="both"/>
             <property name="eclipselink.parse-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
             <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/ -->
