@@ -27,7 +27,10 @@ import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.MembershipService;
+import se.mithlond.services.organisation.api.OrganisationService;
+import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
 
 import javax.ejb.EJB;
@@ -54,6 +57,9 @@ public class MembershipResource extends AbstractResource {
     @EJB
     private MembershipService membershipService;
 
+    @EJB
+    private OrganisationService organisationService;
+
     /**
      * Retrieves a {@link Memberships} wrapper containing all Membership (or MembershipVO), including the
      * OrganisationVO of the Organisation
@@ -66,15 +72,39 @@ public class MembershipResource extends AbstractResource {
     @Path("/all")
     @GET
     public Memberships getMemberships(@PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long orgJpaID,
-            @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED)
-            @DefaultValue("false")
-            final boolean includeLoginNotPermitted) {
+                                      @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED)
+                                      @DefaultValue("false") final boolean includeLoginNotPermitted,
+                                      @QueryParam(RestfulParameters.DETAILS)
+                                      @DefaultValue("false") final boolean getAllDetails) {
+
+        // Create the return value
+        final Memberships toReturn = new Memberships();
+
+        // Which mode should we fire?
+        if (getAllDetails) {
+
+            // First, find all groups within the supplied organisation
+            final Groups groups = organisationService.getGroups(GroupIdSearchParameters.builder()
+                    .withOrganisationIDs(orgJpaID)
+                    .withDetailedResponsePreferred(true)
+                    .build());
+
+            if (log.isDebugEnabled()) {
+                log.debug("Retrieved [" + groups.getGroups().size() + "] Groups: "
+                        + groups.getGroups().stream()
+                        .map(aGroup -> "[" + aGroup.getClass().getSimpleName() + "]: " + aGroup.getGroupName())
+                        .reduce((l, r) -> l + ", " + r)
+                        .orElse("<none>"));
+            }
+
+            // Add all groups to the Memberships
+            groups.getGroups().forEach(toReturn::addGroups);
+        }
 
         // Fire the JPQL query
         final List<Membership> memberships = membershipService.getMembershipsIn(orgJpaID, includeLoginNotPermitted);
 
         // Repackage into a Memberships wrapper.
-        final Memberships toReturn = new Memberships();
         memberships.forEach(toReturn::addMembership);
 
         if (log.isDebugEnabled()) {
