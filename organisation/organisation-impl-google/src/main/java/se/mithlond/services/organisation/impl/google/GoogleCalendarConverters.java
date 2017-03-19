@@ -42,6 +42,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -49,8 +50,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Utility class converting Google Calendar-API-related entities
- * to and from corresponding Mithlond entities.
+ * Utility class converting Google Calendar-API-related entities to and from corresponding Mithlond entities.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -61,7 +61,43 @@ public final class GoogleCalendarConverters {
 
     // Google Calendar API Constants
     private static final String CALENDAR_EVENT_KIND = "calendar#event";
+    private static final String CALENDAR_CALENDAR_KIND = "calendar#calendar";
     private static final String ACTIVITY_ID_PROPERTY = "activityId";
+    private static final String JPA_ID_PROPERTY = "jpaId";
+
+    /**
+     * Converts a local EventCalendar to a Google Calendar instance.
+     */
+    @SuppressWarnings("all")
+    public static final Function<EventCalendar, Calendar> EVENTCALENDAR_TO_GOOGLE_CALENDAR = (eventCalendar) -> {
+
+        // Handle nulls
+        if (eventCalendar == null) {
+            return null;
+        }
+
+        // #1) Get the location of this Calendar ... in its own locale.
+        final Locale organisationLocale = eventCalendar.getOwningOrganisation().getLocale();
+        final String displayCountry = organisationLocale.getDisplayCountry(organisationLocale);
+
+        // #2) Create the google calendar instance.
+        final Calendar toReturn = new Calendar()
+                .setTimeZone(eventCalendar.getTimeZoneID().getId())
+                .setDescription(eventCalendar.getFullDesc())
+                .setKind(CALENDAR_CALENDAR_KIND)
+                .setLocation(displayCountry)
+                .setSummary(eventCalendar.getShortDesc());
+
+        // #3) Map the EventCalendar JPA ID as an UnknownKey
+        final Map<String, Object> unknownKeys = toReturn.getUnknownKeys() == null
+                ? new TreeMap<>()
+                : toReturn.getUnknownKeys();
+        unknownKeys.put(JPA_ID_PROPERTY, eventCalendar.getId());
+        toReturn.setUnknownKeys(unknownKeys);
+
+        // All Done.
+        return toReturn;
+    };
 
     /**
      * Converts a Google DateTime instance to a joda-time DateTime one.
@@ -90,15 +126,16 @@ public final class GoogleCalendarConverters {
             return null;
         }
 
-        final long epochSecond = java8Time.atZone(TimeFormat.SWEDISH_TIMEZONE).toEpochSecond();
+        final long epochMilliSecond = java8Time.atZone(TimeFormat.SWEDISH_TIMEZONE).toEpochSecond() * 1000;
 
         // All done.
-        return new com.google.api.client.util.DateTime(epochSecond);
+        return new com.google.api.client.util.DateTime(epochMilliSecond);
     };
 
     /**
      * Function converting an Admission into a Google Calendar EventAttendee.
      */
+    @SuppressWarnings("all")
     public static final Function<Admission, EventAttendee> ADMISSION_2_ATTENDEE_CONVERTER = (admission) -> {
 
         // #1) Extract the admitted Membership.
@@ -136,13 +173,13 @@ public final class GoogleCalendarConverters {
     }
 
     /**
-     * Converts this GoogleEventCalendar into a corresponding {@link EventCalendar} object
-     * which can be written to local persistent storage.
+     * Converts the supplied EventCalendar to a corresponding Google Calendar instance.
      *
+     * @param eventCalendar The EventCalendar to convert.
      * @return An EventCalendar entity corresponding uniquely to this GoogleEventCalendar.
      */
-    public static EventCalendar convertToEventCalendar(final Calendar googleCalendar) {
-        return null;
+    public static Calendar convert(final EventCalendar eventCalendar) {
+        return EVENTCALENDAR_TO_GOOGLE_CALENDAR.apply(eventCalendar);
     }
 
     /**
@@ -315,100 +352,6 @@ public final class GoogleCalendarConverters {
         return updated[0] ? event : null;
     }
 
-    private static SortedMap<String, EventAttendee> sortAttendees(final Event event) {
-
-        final SortedMap<String, EventAttendee> toReturn = new TreeMap<>();
-        for (EventAttendee current : event.getAttendees()) {
-            toReturn.put(current.getEmail(), current);
-        }
-
-        return toReturn;
-    }
-
-    private static void checkEqualityAndUpdateIfRequired(final boolean[] updated,
-                                                         final String keyName,
-                                                         final Event original,
-                                                         final Event comparison) {
-
-        final Object originalValue = original.get(keyName);
-        final Object comparisonValue = comparison.get(keyName);
-
-        // Weed out the fringe cases where one or both values are null.
-        boolean bothValuesAreNull = originalValue == null && comparisonValue == null;
-        boolean oneValueIsNull = (originalValue == null && comparisonValue != null)
-                || (originalValue != null && comparisonValue == null);
-
-        if (oneValueIsNull) {
-
-            if (log.isDebugEnabled()) {
-                log.debug("Property [" + keyName + "] differs; original [" + originalValue + "] and comparison ["
-                        + comparisonValue + "]. Updating original.");
-            }
-
-            // Update the original event.
-            original.set(keyName, comparisonValue);
-            updated[0] = true;
-        }
-
-        if (bothValuesAreNull || oneValueIsNull) {
-
-            // All done.
-            return;
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("Property [" + keyName + "] has type (original:" + originalValue.getClass().getName()
-                    + ") and (comparison:" + comparisonValue.getClass().getName() + ")");
-        }
-
-        // We should only compare Strings
-        String originalString;
-        String comparisonString;
-        if (originalValue instanceof String && comparisonValue instanceof String) {
-
-            // Just cast the values.
-            originalString = (String) originalValue;
-            comparisonString = (String) comparisonValue;
-
-        } else if (originalValue instanceof com.google.api.client.util.DateTime
-                && comparisonValue instanceof com.google.api.client.util.DateTime) {
-
-            // Convert to Strings.
-            originalString = originalValue.toString();
-            comparisonString = comparisonValue.toString();
-
-        } else if (originalValue instanceof EventDateTime && comparisonValue instanceof EventDateTime) {
-
-            final EventDateTime originalTime = (EventDateTime) originalValue;
-            final EventDateTime comparisonTime = (EventDateTime) comparisonValue;
-
-            // Convert to Strings
-            originalString = TimeFormat.XML_TRANSPORT.print(
-                    GOOGLE_TIME_TO_JAVA8TIME.apply(originalTime.getDateTime()));
-            comparisonString = TimeFormat.XML_TRANSPORT.print(
-                    GOOGLE_TIME_TO_JAVA8TIME.apply(comparisonTime.getDateTime()));
-
-        } else {
-
-            // Complain
-            throw new IllegalArgumentException("Could not compare values of type [original: "
-                    + originalValue.getClass().getName() + "] and [comparison: "
-                    + comparisonValue.getClass().getName() + "]");
-        }
-
-        // Compare and update if required
-        if (!originalString.equals(comparisonString)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Property [" + keyName + "] differs; original [" + originalString
-                        + "] and comparison [" + comparisonString + "]. Updating original.");
-            }
-
-            // Update and return
-            original.set(keyName, comparisonValue);
-            updated[0] = true;
-        }
-    }
-
     /**
      * Retrieves the ActivityID from the supplied Event. This method will only retrieve a proper integer
      * if the given Event was not null and also converted from an Activity by the {@code convert()} method.
@@ -577,5 +520,99 @@ public final class GoogleCalendarConverters {
 
         // Finally, assign the reminders to the Event.
         event.setReminders(reminders);
+    }
+
+    private static SortedMap<String, EventAttendee> sortAttendees(final Event event) {
+
+        final SortedMap<String, EventAttendee> toReturn = new TreeMap<>();
+        for (EventAttendee current : event.getAttendees()) {
+            toReturn.put(current.getEmail(), current);
+        }
+
+        return toReturn;
+    }
+
+    private static void checkEqualityAndUpdateIfRequired(final boolean[] updated,
+                                                         final String keyName,
+                                                         final Event original,
+                                                         final Event comparison) {
+
+        final Object originalValue = original.get(keyName);
+        final Object comparisonValue = comparison.get(keyName);
+
+        // Weed out the fringe cases where one or both values are null.
+        boolean bothValuesAreNull = originalValue == null && comparisonValue == null;
+        boolean oneValueIsNull = (originalValue == null && comparisonValue != null)
+                || (originalValue != null && comparisonValue == null);
+
+        if (oneValueIsNull) {
+
+            if (log.isDebugEnabled()) {
+                log.debug("Property [" + keyName + "] differs; original [" + originalValue + "] and comparison ["
+                        + comparisonValue + "]. Updating original.");
+            }
+
+            // Update the original event.
+            original.set(keyName, comparisonValue);
+            updated[0] = true;
+        }
+
+        if (bothValuesAreNull || oneValueIsNull) {
+
+            // All done.
+            return;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Property [" + keyName + "] has type (original:" + originalValue.getClass().getName()
+                    + ") and (comparison:" + comparisonValue.getClass().getName() + ")");
+        }
+
+        // We should only compare Strings
+        String originalString;
+        String comparisonString;
+        if (originalValue instanceof String && comparisonValue instanceof String) {
+
+            // Just cast the values.
+            originalString = (String) originalValue;
+            comparisonString = (String) comparisonValue;
+
+        } else if (originalValue instanceof com.google.api.client.util.DateTime
+                && comparisonValue instanceof com.google.api.client.util.DateTime) {
+
+            // Convert to Strings.
+            originalString = originalValue.toString();
+            comparisonString = comparisonValue.toString();
+
+        } else if (originalValue instanceof EventDateTime && comparisonValue instanceof EventDateTime) {
+
+            final EventDateTime originalTime = (EventDateTime) originalValue;
+            final EventDateTime comparisonTime = (EventDateTime) comparisonValue;
+
+            // Convert to Strings
+            originalString = TimeFormat.XML_TRANSPORT.print(
+                    GOOGLE_TIME_TO_JAVA8TIME.apply(originalTime.getDateTime()));
+            comparisonString = TimeFormat.XML_TRANSPORT.print(
+                    GOOGLE_TIME_TO_JAVA8TIME.apply(comparisonTime.getDateTime()));
+
+        } else {
+
+            // Complain
+            throw new IllegalArgumentException("Could not compare values of type [original: "
+                    + originalValue.getClass().getName() + "] and [comparison: "
+                    + comparisonValue.getClass().getName() + "]");
+        }
+
+        // Compare and update if required
+        if (!originalString.equals(comparisonString)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Property [" + keyName + "] differs; original [" + originalString
+                        + "] and comparison [" + comparisonString + "]. Updating original.");
+            }
+
+            // Update and return
+            original.set(keyName, comparisonValue);
+            updated[0] = true;
+        }
     }
 }
