@@ -60,6 +60,11 @@
         <class>se.mithlond.services.organisation.model.Category</class>
         <class>se.mithlond.services.organisation.model.Listable</class>
         <class>se.mithlond.services.organisation.model.Organisation</class>
+        <class>se.mithlond.services.organisation.model.activity.Activity</class>
+        <class>se.mithlond.services.organisation.model.activity.Admission</class>
+        <class>se.mithlond.services.organisation.model.activity.AdmissionId</class>
+        <class>se.mithlond.services.organisation.model.activity.DressCode</class>
+        <class>se.mithlond.services.organisation.model.activity.EventCalendar</class>
         <class>se.mithlond.services.organisation.model.address.Address</class>
         <class>se.mithlond.services.organisation.model.address.CategorizedAddress</class>
         <class>se.mithlond.services.organisation.model.address.WellKnownAddressType</class>
