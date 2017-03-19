@@ -34,7 +34,6 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;

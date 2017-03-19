@@ -25,9 +25,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
- * Common utility class reading and writing properties from the java Sysmt
+ * Common utility class reading and writing properties from the java System,
+ * as well as locally available configuration files.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -36,6 +44,13 @@ public final class Surroundings {
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(Surroundings.class);
+
+    /*
+     * Hide constructor for utility classes.
+     */
+    private Surroundings() {
+        // Do nothing
+    }
 
     /**
      * <p>Retrieves a property (value) from the surroundings of the running threads.
@@ -72,5 +87,122 @@ public final class Surroundings {
 
         // All done.
         return toReturn;
+    }
+
+    /**
+     * Retrieves the data from a local configuration file, placed in a standardized file structure under the
+     * {@link Deployment#getStorageRootDirectory()}, namely <code>organisationName + File.separator
+     * + Deployment.getDeploymentType() + serviceNameOrPath.replace("/", File.separator)
+     * + File.separator + fileName</code>.
+     * This is the standard structure for all non-packaged source configuration files used by the services. Examples
+     * of such non-packaged source configuration files are credentials, license keys and similar types of content.
+     *
+     * @param organisationName  The name of the organisation for which a locally stored configuration file should be
+     *                          retrieved.
+     * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
+     *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
+     * @param fileName          The name of the configuration file for which to acquire a
+     * @return An InputStream connected to the configuration file as specified by the supplied parameters.
+     */
+    public static InputStream getLocalConfigurationFile(final String organisationName,
+                                                        final String serviceNameOrPath,
+                                                        final String fileName) {
+
+        // Check sanity
+        Validate.notEmpty(organisationName, "organisationName");
+        Validate.notEmpty(serviceNameOrPath, "serviceNameOrPath");
+        Validate.notEmpty(fileName, "fileName");
+
+        // Synthesize the path to the local configuration file.
+        final File configurationFile = new File(Deployment.getStorageRootDirectory(),
+                organisationName
+                        + File.separator
+                        + Deployment.getDeploymentType()
+                        + File.separator
+                        + serviceNameOrPath.replace("/", File.separator)
+                        + File.separator
+                        + fileName);
+
+        // Check sanity
+        final boolean fileExists = configurationFile.exists() && configurationFile.isFile();
+        if (!fileExists) {
+            throw new IllegalArgumentException("Local configuration file ["
+                    + configurationFile.getAbsolutePath()
+                    + "] does not exist.");
+        }
+
+        // Open a stream to the File.
+        // Don't use a Reader, as the File may contain binary data.
+        try {
+            return new FileInputStream(configurationFile);
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("Local configuration file ["
+                    + configurationFile.getAbsolutePath()
+                    + "] could not be opened.", e);
+        }
+    }
+
+    /**
+     * Retrieves the (text) data from a local configuration file, placed in a standardized file structure under the
+     * {@link Deployment#getStorageRootDirectory()}, namely <code>organisationName + File.separator
+     * + Deployment.getDeploymentType() + serviceNameOrPath.replace("/", File.separator)
+     * + File.separator + fileName</code>.
+     * This is the standard structure for all non-packaged source configuration files used by the services. Examples
+     * of such non-packaged source configuration files are credentials, license keys and similar types of content.
+     *
+     * @param organisationName  The name of the organisation for which a locally stored configuration file should be
+     *                          retrieved.
+     * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
+     *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
+     * @param fileName          The name of the configuration file for which to acquire a
+     * @return A BufferedReader connected to the configuration file as specified by the supplied parameters.
+     */
+    public static BufferedReader getLocalConfigurationTextFile(final String organisationName,
+                                                               final String serviceNameOrPath,
+                                                               final String fileName) {
+
+        // Delegate
+        final InputStream stream = getLocalConfigurationFile(organisationName, serviceNameOrPath, fileName);
+
+        // Wrap within a Reader
+        return new BufferedReader(new InputStreamReader(stream));
+    }
+
+    /**
+     * Retrieves the (text) data from a local configuration file, placed in a standardized file structure under the
+     * {@link Deployment#getStorageRootDirectory()}, namely <code>organisationName + File.separator
+     * + Deployment.getDeploymentType() + serviceNameOrPath.replace("/", File.separator)
+     * + File.separator + fileName</code>.
+     * This is the standard structure for all non-packaged source configuration files used by the services. Examples
+     * of such non-packaged source configuration files are credentials, license keys and similar types of content.
+     *
+     * @param organisationName  The name of the organisation for which a locally stored configuration file should be
+     *                          retrieved.
+     * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
+     *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
+     * @param fileName          The name of the configuration file for which to acquire a
+     * @return The content of the configuration file, typed as a String.
+     */
+    public static String getLocalConfigurationTextFileAsString(final String organisationName,
+                                                               final String serviceNameOrPath,
+                                                               final String fileName) {
+        // First, delegate
+        final BufferedReader in = getLocalConfigurationTextFile(organisationName,
+                serviceNameOrPath,
+                fileName);
+
+        // Read the whole file
+        final StringBuilder builder = new StringBuilder();
+        String aLine;
+        try {
+            while ((aLine = in.readLine()) != null) {
+                builder.append(aLine).append(System.getProperty("line.separator"));
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not convert local configuration file data to a String.", e);
+        }
+
+        // All Done.
+        return builder.toString();
     }
 }

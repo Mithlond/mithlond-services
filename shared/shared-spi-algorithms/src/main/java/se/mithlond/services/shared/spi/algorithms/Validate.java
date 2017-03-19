@@ -21,11 +21,14 @@
  */
 package se.mithlond.services.shared.spi.algorithms;
 
+import javax.xml.bind.annotation.XmlTransient;
+
 /**
  * Simple argument validator, inspired by the commons-lang.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>
  */
+@XmlTransient
 public final class Validate {
 
     /**
@@ -64,7 +67,7 @@ public final class Validate {
      *                     a better exception message.
      * @return The non-empty String submitted.
      * @throws IllegalArgumentException if the submitted {@code aString} is empty.
-     * @throws NullPointerException if the supplied {@code aString} is null.
+     * @throws NullPointerException     if the supplied {@code aString} is null.
      */
     public static String notEmpty(final String aString, final String argumentName) {
 

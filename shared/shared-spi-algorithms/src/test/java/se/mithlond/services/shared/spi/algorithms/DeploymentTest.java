@@ -34,29 +34,10 @@ import java.util.TreeMap;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class DeploymentTest {
-
-    @Before
-    public void setupSharedState() {
-
-        try {
-            final Field deploymentName = Deployment.class.getDeclaredField("deploymentType");
-            deploymentName.setAccessible(true);
-            if(deploymentName.get(null) != null) {
-                deploymentName.set(null, null);
-            }
-        } catch (Exception e) {
-            throw new IllegalStateException("Could not null out deploymentName", e);
-        }
-    }
-
-    @After
-    public void teardownSharedPropertyState() {
-        System.clearProperty(Deployment.DEPLOYMENT_TYPE_KEY);
-    }
+public class DeploymentTest extends AbstractDeploymentTest {
 
     @Test
-    public void validateDeploymentName() {
+    public void validateDeploymentNameIsSetFromSystemProperty() {
 
         // Assemble
         final String deploymentName = "FooBar";
@@ -67,7 +48,7 @@ public class DeploymentTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void validateExceptionOnIncorrectDeploymentName() {
+    public void validateExceptionOnDeploymentNameNotMatchingRequiredPattern() {
 
         // Assemble
         final String incorrectDeploymentName = "Foo Bar";
@@ -78,7 +59,7 @@ public class DeploymentTest {
     }
 
     @Test
-    public void validateMatchingPatterns() {
+    public void validateMatchingPatternsForExpectedStorageRootDirectory() {
 
         // Assemble
         final SortedMap<String, Boolean> actual = new TreeMap<>();
@@ -88,7 +69,7 @@ public class DeploymentTest {
         expected.put("noInitialSlash/so/illegal", false);
         expected.put("\\windoze\\path\\separators", true);
         expected.put("/foo-bar_/is/ok", true);
-        expected.put("/Users/lj/Development/Projects/Tolkien/mithlond-services/content/content-impl-ejb/target/test"
+        expected.put("/Users/lj/Development/Projects/Mithlond/mithlond-services/content/content-impl-ejb/target/test"
                 + "-classes/testdata/storageroot", true);
 
         // Act

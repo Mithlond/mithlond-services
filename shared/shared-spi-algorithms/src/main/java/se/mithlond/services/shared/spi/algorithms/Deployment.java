@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.shared.spi.algorithms;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.File;
 
 /**
@@ -29,6 +30,7 @@ import java.io.File;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@XmlTransient
 public final class Deployment {
 
     /**

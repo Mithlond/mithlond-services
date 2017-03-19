@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.shared.spi.algorithms;
 
+import javax.xml.bind.annotation.XmlTransient;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -38,6 +39,7 @@ import java.util.TimeZone;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@XmlTransient
 public enum TimeFormat {
 
     /**
