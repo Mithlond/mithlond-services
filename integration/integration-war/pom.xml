@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- +=============================================== -->
+    <!-- | Section 1:  Project information                -->
+    <!-- +=============================================== -->
+    <parent>
+        <groupId>se.mithlond.codestyle.poms</groupId>
+        <artifactId>mithlond-codestyle-war-parent</artifactId>
+        <version>1.9.0</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>se.mithlond.services.backend.war</groupId>
+    <artifactId>mithlond-services-backend-war</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>${project.artifactId}</name>
+    <description>Mithlond Service: Backend (WAR, version ${project.version})</description>
+    <url>${site.top.url}/${path.in.reactor}</url>
+
+    <properties>
+        <!--
+            Define the name and type of this reactor
+        -->
+        <path.in.reactor>backend/backend-war</path.in.reactor>
+        <reactor.name>mithlond-services</reactor.name>
+
+        <!-- Build-controlling properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss.sssZ</maven.build.timestamp.format>
+        <webapp.dir>${project.build.directory}/exploded/webapp-rest.war</webapp.dir>
+        <swagger.dir>${webapp.dir}/swagger</swagger.dir>
+        <swagger.version>1.5.10</swagger.version>
+        <keycloak.version>2.5.0.Final</keycloak.version>
+    </properties>
+
+    <!-- +=============================================== -->
+    <!-- | Section 2:  Dependency (management) settings   -->
+    <!-- +=============================================== -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.9</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <!-- Internal dependencies -->
+        <dependency>
+            <groupId>se.mithlond.services.content.impl.ejb</groupId>
+            <artifactId>mithlond-services-content-impl-ejb</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>se.mithlond.services.organisation.impl.ejb</groupId>
+            <artifactId>mithlond-services-organisation-impl-ejb</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>se.mithlond.services.shared.authorization.api</groupId>
+            <artifactId>mithlond-services-shared-authorization-api</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>se.mithlond.services.shared.test.entity</groupId>
+            <artifactId>mithlond-services-shared-entity-test</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- External dependencies -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-core</artifactId>
+            <version>${keycloak.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>se.jguru.nazgul.test.xmlbinding</groupId>
+            <artifactId>nazgul-core-xmlbinding-test</artifactId>
+            <version>${nazgul-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- +=============================================== -->
+    <!-- | Section 3:  Build settings                     -->
+    <!-- +=============================================== -->
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+        </testResources>
+
+        <pluginManagement>
+            <plugins>
+
+                <!--
+                    Generates a Swagger.JSON file describing the backend's RESTful API.
+                    Unlike swagger-core, swagger-maven-plugin does not actively serve the
+                    spec with the rest of the application; it generates the spec as a build
+                    artifact to be used in downstream Swagger tooling.
+
+                    Why:    Generate the swagger description file.
+                    When:   Standard lifecycle, compile.
+                -->
+                <plugin>
+                    <groupId>com.github.kongchen</groupId>
+                    <artifactId>swagger-maven-plugin</artifactId>
+                    <version>3.1.4</version>
+                    <configuration>
+                        <apiSources>
+                            <apiSource>
+                                <host>localhost:8080</host>
+                                <basePath>/backend/resource</basePath>
+                                <outputPath>${swagger.dir}</outputPath>
+                                <swaggerDirectory>${swagger.dir}</swaggerDirectory>
+                                <attachSwaggerArtifact>true</attachSwaggerArtifact>
+                                <schemes>
+                                    <scheme>http</scheme>
+                                    <scheme>https</scheme>
+                                </schemes>
+                                <info>
+                                    <title>${project.description}</title>
+                                    <version>${project.version}</version>
+                                    <license>
+                                        <name>jGuru Europe Corporate Source License, based on The Apache Software License, Version 2.0</name>
+                                        <url>http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt</url>
+                                    </license>
+                                    <contact>
+                                        <name>jGuru Europe AB</name>
+                                        <url>http://www.jguru.se</url>
+                                    </contact>
+                                </info>
+                                <locations>
+                                    <location>se.mithlond.services.backend.war.resources.content</location>
+                                </locations>
+                            </apiSource>
+                        </apiSources>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.commons</groupId>
+                            <artifactId>commons-lang3</artifactId>
+                            <version>3.4</version>
+                        </dependency>
+                        <!-- Lock down jUnit to avoid requiring ancient RedHat versions. -->
+                        <dependency>
+                            <groupId>junit</groupId>
+                            <artifactId>junit</artifactId>
+                            <version>3.8.1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <!--
+                Generate Swagger artifacts.
+            -->
+            <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-swagger-json-file</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                Ensure that we generate XSDs for all our model projects.
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>schemagen</id>
+                        <!-- phase/ -->
+                        <goals>
+                            <goal>schemagen</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                Create a GIT token file, to enable Tokenizing the build products with GIT properties.
+            -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.1.15</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--
+                        Point out the .git directory.
+                    -->
+                    <dotGitDirectory>${project.basedir}/../../.git</dotGitDirectory>
+                    <!-- includeOnlyProperties>
+                        <includeOnlyProperty>git.commit.id.abbrev</includeOnlyProperty>
+                    </includeOnlyProperties -->
+                </configuration>
+            </plugin>
+
+            <!--
+                Copy all static resources to the target/webapp-tmp directory.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>webapp-work-dir</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/webapp-tmp</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir}/src/main/webapp</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                Create a war using the static resources from target/webapp-tmp
+            -->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!--
+                            Create an exploded WAR in addition to the normal, packaged one.
+                         -->
+                        <id>default-war</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <webappDirectory>${webapp.dir}</webappDirectory>
+                            <warSourceDirectory>${project.build.directory}/webapp-tmp</warSourceDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- +=============================================== -->
+    <!-- | Section 4:  External systems                   -->
+    <!-- +=============================================== -->
+
+    <!--
+        Compensate for Maven standard variable extrapolation.
+        Git requires steady URLs (... but Subversion requires path extrapolation, hence the problem).
+     -->
+    <distributionManagement>
+        <site>
+            <id>github</id>
+            <url>${distroManagement.url}</url>
+        </site>
+    </distributionManagement>
+
+    <scm>
+        <connection>${scm.connection.url}</connection>
+        <developerConnection>${scm.devConnection.url}</developerConnection>
+        <url>${scm.url}</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- +=============================================== -->
+    <!-- | Section 5:  Profiles                           -->
+    <!-- +=============================================== -->
+    <profiles>
+
+        <profile>
+            <id>wildfly10_jee7</id>
+            <activation>
+                <property>
+                    <name>!jee.container</name>
+                </property>
+            </activation>
+
+            <properties>
+                <resteasy.version>3.0.14.Final</resteasy.version>
+            </properties>
+
+
+            <dependencyManagement>
+                <dependencies>
+                    <!--
+                        JBoss distributes a complete set of Java EE 7 APIs including a Bill of Materials (BOM).
+                        A BOM specifies the versions of a "stack" (or a collection) of artifacts.
+                        We use this here so that we always get the correct versions of artifacts.
+                        Here we use the jboss-javaee-7.0-with-tools stack (you can read this as the JBoss stack of the
+                        Java EE 7 APIs, with some extras tools for your project, such as Arquillian for testing) and
+                        the jboss-javaee-7.0-with-hibernate stack you can read this as the JBoss stack of the Java EE
+                        7 APIs, with extras from the Hibernate family of projects).
+
+                        Define the version of JBoss' Java EE 7 APIs we want to import.
+                        All dependencies from org.jboss.spec will have their version defined by this BOM.
+                    -->
+                    <dependency>
+                        <groupId>org.wildfly.bom</groupId>
+                        <artifactId>wildfly-javaee7-with-tools</artifactId>
+                        <version>${version.jboss.bom}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jboss.spec</groupId>
+                        <artifactId>jboss-javaee-all-7.0</artifactId>
+                        <version>${version.jboss.spec.javaee.7.0}</version>
+                        <type>pom</type>
+                        <scope>import</scope>
+                    </dependency>
+
+                    <!--
+                        All imports below are examples which should be used in individual leaf projects.
+                        They all retrieve their exact versions from the jboss-javaee-7.0-with-tools bom above.
+
+                        However, the maven-enforcer-plugin cannot extrapolate their dependencies unless explicitly
+                        provided. This implies that the variables given in the jboss-javaee-7.0-1.0.0.Final.pom et. al.
+                        must be provided explicitly again...
+
+                        // Lennart, 2014-06-14
+                     -->
+                    <!-- Example: CDI API import -->
+                    <!-- dependency>
+                        <groupId>javax.enterprise</groupId>
+                        <artifactId>cdi-api</artifactId>
+                        <scope>provided</scope>
+                    </dependency -->
+
+                    <!-- Example: Common Annotations API (JSR-250) import -->
+                    <!-- dependency>
+                        <groupId>org.jboss.spec.javax.annotation</groupId>
+                        <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+                        <scope>provided</scope>
+                    </dependency -->
+
+                    <!-- Example: EJB API import -->
+                    <!-- dependency>
+                        <groupId>org.jboss.spec.javax.ejb</groupId>
+                        <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+                        <scope>provided</scope>
+                    </dependency -->
+
+                    <!-- Example: JPA API import -->
+                    <!-- dependency>
+                        <groupId>org.hibernate.javax.persistence</groupId>
+                        <artifactId>hibernate-jpa-2.1-api</artifactId>
+                        <scope>provided</scope>
+                    </dependency -->
+                </dependencies>
+            </dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxb-provider</artifactId>
+                    <version>${resteasy.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-jaxrs</artifactId>
+                    <version>${resteasy.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-client</artifactId>
+                    <version>${resteasy.version}</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+
+            <build>
+                <pluginManagement>
+                    <plugins>
+
+                        <!--
+                            The wildfly-maven-plugin is used to work with the wildfly application server, to perform
+                            scripted operations such as remote deployment on the
+
+                            Why:  Performs automatic operations on Wildfly AppServers
+                        -->
+                        <plugin>
+                            <groupId>org.wildfly.plugins</groupId>
+                            <artifactId>wildfly-maven-plugin</artifactId>
+                            <version>${version.wildfly.maven.plugin}</version>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
