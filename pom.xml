@@ -37,6 +37,7 @@
         <module>shared</module>
         <module>organisation</module>
         <module>content</module>
+        <module>integration</module>
         <module>backend</module>
     </modules>
 

@@ -26,7 +26,9 @@ import se.mithlond.services.organisation.model.activity.EventCalendar;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
+import javax.ejb.Asynchronous;
 import javax.ejb.Local;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,6 +40,12 @@ import java.util.List;
  */
 @Local
 public interface EventCalendarService extends JpaCudService {
+
+    /**
+     * The JNDI name of the EventCalendar request Queue, to which push commands are sent for further processing
+     * within another thread/transaction.
+     */
+    String EVENT_CALENDAR_REQUEST_QUEUE = "java:global/jms/nazgul/services/eventcalendar/request";
 
     /**
      * Retrieves all EventCalendars owned by the supplied Organisation. Typically, EventCalendars are matched
@@ -66,9 +74,10 @@ public interface EventCalendarService extends JpaCudService {
      * @param startTime              Only events that starts after this startTime will be pushed. Cannot be {@code null}.
      * @param endTime                Only events that ends before this endTime will be pushed. Cannot be {@code null}.
      */
-    void pushActivities(String calendarIdentifier,
-            String owningOrganisationName,
-            LocalDate startTime,
-            LocalDate endTime,
-            Membership activeMembership);
+    @Asynchronous
+    void pushActivities(@NotNull String calendarIdentifier,
+                        @NotNull String owningOrganisationName,
+                        @NotNull LocalDate startTime,
+                        @NotNull LocalDate endTime,
+                        @NotNull Membership activeMembership);
 }

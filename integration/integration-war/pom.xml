@@ -14,29 +14,30 @@
         <relativePath/>
     </parent>
 
-    <groupId>se.mithlond.services.backend.war</groupId>
-    <artifactId>mithlond-services-backend-war</artifactId>
+    <groupId>se.mithlond.services.integration.war</groupId>
+    <artifactId>mithlond-services-integration-war</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Backend (WAR, version ${project.version})</description>
+    <description>Mithlond Service: Integration (WAR, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
 
     <properties>
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>backend/backend-war</path.in.reactor>
+        <path.in.reactor>integration/integration-war</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
 
         <!-- Build-controlling properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss.sssZ</maven.build.timestamp.format>
-        <webapp.dir>${project.build.directory}/exploded/webapp-rest.war</webapp.dir>
+        <webapp.dir>${project.build.directory}/exploded/webapp-interation.war</webapp.dir>
         <swagger.dir>${webapp.dir}/swagger</swagger.dir>
         <swagger.version>1.5.10</swagger.version>
         <keycloak.version>2.5.0.Final</keycloak.version>
+        <camel.version>2.18.3</camel.version>
     </properties>
 
     <!-- +=============================================== -->
@@ -79,6 +80,8 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -91,6 +94,12 @@
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jms</artifactId>
+            <version>${camel.version}</version>
         </dependency>
 
         <dependency>
@@ -344,129 +353,5 @@
     <!-- +=============================================== -->
     <!-- | Section 5:  Profiles                           -->
     <!-- +=============================================== -->
-    <profiles>
-
-        <profile>
-            <id>wildfly10_jee7</id>
-            <activation>
-                <property>
-                    <name>!jee.container</name>
-                </property>
-            </activation>
-
-            <properties>
-                <resteasy.version>3.0.14.Final</resteasy.version>
-            </properties>
-
-
-            <dependencyManagement>
-                <dependencies>
-                    <!--
-                        JBoss distributes a complete set of Java EE 7 APIs including a Bill of Materials (BOM).
-                        A BOM specifies the versions of a "stack" (or a collection) of artifacts.
-                        We use this here so that we always get the correct versions of artifacts.
-                        Here we use the jboss-javaee-7.0-with-tools stack (you can read this as the JBoss stack of the
-                        Java EE 7 APIs, with some extras tools for your project, such as Arquillian for testing) and
-                        the jboss-javaee-7.0-with-hibernate stack you can read this as the JBoss stack of the Java EE
-                        7 APIs, with extras from the Hibernate family of projects).
-
-                        Define the version of JBoss' Java EE 7 APIs we want to import.
-                        All dependencies from org.jboss.spec will have their version defined by this BOM.
-                    -->
-                    <dependency>
-                        <groupId>org.wildfly.bom</groupId>
-                        <artifactId>wildfly-javaee7-with-tools</artifactId>
-                        <version>${version.jboss.bom}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jboss.spec</groupId>
-                        <artifactId>jboss-javaee-all-7.0</artifactId>
-                        <version>${version.jboss.spec.javaee.7.0}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                    </dependency>
-
-                    <!--
-                        All imports below are examples which should be used in individual leaf projects.
-                        They all retrieve their exact versions from the jboss-javaee-7.0-with-tools bom above.
-
-                        However, the maven-enforcer-plugin cannot extrapolate their dependencies unless explicitly
-                        provided. This implies that the variables given in the jboss-javaee-7.0-1.0.0.Final.pom et. al.
-                        must be provided explicitly again...
-
-                        // Lennart, 2014-06-14
-                     -->
-                    <!-- Example: CDI API import -->
-                    <!-- dependency>
-                        <groupId>javax.enterprise</groupId>
-                        <artifactId>cdi-api</artifactId>
-                        <scope>provided</scope>
-                    </dependency -->
-
-                    <!-- Example: Common Annotations API (JSR-250) import -->
-                    <!-- dependency>
-                        <groupId>org.jboss.spec.javax.annotation</groupId>
-                        <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                        <scope>provided</scope>
-                    </dependency -->
-
-                    <!-- Example: EJB API import -->
-                    <!-- dependency>
-                        <groupId>org.jboss.spec.javax.ejb</groupId>
-                        <artifactId>jboss-ejb-api_3.2_spec</artifactId>
-                        <scope>provided</scope>
-                    </dependency -->
-
-                    <!-- Example: JPA API import -->
-                    <!-- dependency>
-                        <groupId>org.hibernate.javax.persistence</groupId>
-                        <artifactId>hibernate-jpa-2.1-api</artifactId>
-                        <scope>provided</scope>
-                    </dependency -->
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jaxb-provider</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-jaxrs</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.resteasy</groupId>
-                    <artifactId>resteasy-client</artifactId>
-                    <version>${resteasy.version}</version>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-
-            <build>
-                <pluginManagement>
-                    <plugins>
-
-                        <!--
-                            The wildfly-maven-plugin is used to work with the wildfly application server, to perform
-                            scripted operations such as remote deployment on the
-
-                            Why:  Performs automatic operations on Wildfly AppServers
-                        -->
-                        <plugin>
-                            <groupId>org.wildfly.plugins</groupId>
-                            <artifactId>wildfly-maven-plugin</artifactId>
-                            <version>${version.wildfly.maven.plugin}</version>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

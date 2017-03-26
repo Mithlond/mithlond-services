@@ -11,10 +11,10 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>se.mithlond.services.organisation</groupId>
-    <artifactId>mithlond-services-organisation-reactor</artifactId>
+    <groupId>se.mithlond.services.integration</groupId>
+    <artifactId>mithlond-services-integration-reactor</artifactId>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Organisation Reactor (version ${project.version})</description>
+    <description>Mithlond Service: Integration Reactor (version ${project.version})</description>
     <packaging>pom</packaging>
     <url>${site.top.url}/${path.in.reactor}</url>
 
@@ -22,7 +22,7 @@
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>organisation</path.in.reactor>
+        <path.in.reactor>integration</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
     </properties>
 
@@ -30,10 +30,8 @@
     <!-- | Section 2:  Module definitions                 -->
     <!-- +=============================================== -->
     <modules>
-        <module>organisation-model</module>
-        <module>organisation-api</module>
-        <module>organisation-impl-ejb</module>
-        <module>organisation-impl-google</module>
+        <module>calendar</module>
+        <module>integration-war</module>
     </modules>
 
     <!-- +=============================================== -->

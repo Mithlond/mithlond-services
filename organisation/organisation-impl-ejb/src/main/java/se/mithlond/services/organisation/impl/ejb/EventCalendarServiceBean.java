@@ -35,6 +35,7 @@ import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
 import javax.annotation.Resource;
+import javax.ejb.Asynchronous;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
@@ -72,6 +73,9 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
     @Inject
     private JMSContext jmsContext;
 
+    /**
+     * The JMS Queue used to send EventCalendar requests.
+     */
     @Resource(mappedName = EVENT_CALENDAR_REQUEST_QUEUE)
     Queue queue;
 
@@ -110,6 +114,7 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
      * {@inheritDoc}
      */
     @Override
+    @Asynchronous
     public void pushActivities(final String calendarIdentifier,
             final String owningOrganisationName,
             final LocalDate startTime,
@@ -122,7 +127,10 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
         Validate.notNull(startTime, "startTime");
         Validate.notNull(endTime, "endTime");
         Validate.notNull(activeMembership, "activeMembership");
-        CommonPersistenceTasks.validateInterval(startTime, "startTime", endTime, "endTime");
+        CommonPersistenceTasks.validateInterval(startTime,
+                "startTime",
+                endTime,
+                "endTime");
 
         try {
 

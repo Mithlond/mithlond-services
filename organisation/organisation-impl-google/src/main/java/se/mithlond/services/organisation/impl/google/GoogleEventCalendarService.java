@@ -1,12 +1,38 @@
+/*
+ * #%L
+ * Nazgul Project: mithlond-services-organisation-impl-google
+ * %%
+ * Copyright (C) 2015 - 2017 Mithlond
+ * %%
+ * Licensed under the jGuru Europe AB license (the "License"), based
+ * on Apache License, Version 2.0; you may not use this file except
+ * in compliance with the License.
+ * 
+ * You may obtain a copy of the License at
+ * 
+ *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
 package se.mithlond.services.organisation.impl.google;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.api.EventCalendarService;
+import se.mithlond.services.organisation.impl.google.auth.GoogleAuthenticator;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.EventCalendar;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.Deployment;
@@ -14,8 +40,13 @@ import se.mithlond.services.shared.spi.algorithms.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.EJB;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * EventCalendarService implementation which pushes Activities to Google Calendars
@@ -90,7 +121,6 @@ public class GoogleEventCalendarService extends AbstractJpaService implements Ev
     /**
      * DI-aware constructor, to be used only during testing.
      *
-     * @param entityManager The entityManager to inject.
      * @param authenticator The GoogleAuthenticator to use.
      * @param httpTransport The HttpTransport to use.
      */
@@ -102,7 +132,6 @@ public class GoogleEventCalendarService extends AbstractJpaService implements Ev
         Validate.notNull(httpTransport, "httpTransport");
 
         // Assign internal state
-        this.entityManager = entityManager;
         this.authenticator = authenticator;
         this.httpTransport = httpTransport;
     }
@@ -140,6 +169,13 @@ public class GoogleEventCalendarService extends AbstractJpaService implements Ev
                                final LocalDate startTime,
                                final LocalDate endTime,
                                final Membership activeMembership) {
+
+        // Check sanity
+        Validate.notEmpty(calendarIdentifier, "calendarIdentifier");
+        Validate.notEmpty(owningOrganisationName, "owningOrganisationName");
+        Validate.notNull(startTime, "startTime");
+        Validate.notNull(endTime, "endTime");
+        Validate.isTrue(startTime.isBefore(endTime), "startTime.isBefore(endTime)");
     }
 
     /**

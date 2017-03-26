@@ -112,8 +112,8 @@ public final class CommonPersistenceTasks {
      * @throws IllegalArgumentException if no Membership could be found.
      */
     public static Membership getSingleMembership(final EntityManager entityManager,
-            final String alias,
-            final String organisationName) throws IllegalArgumentException {
+                                                 final String alias,
+                                                 final String organisationName) throws IllegalArgumentException {
 
         // Check sanity
         Validate.notNull(entityManager, "entityManager");
@@ -145,7 +145,8 @@ public final class CommonPersistenceTasks {
      * @param nameOfEndIntervalArgument   The name of the interval end, such as "activityVO.getEnd()".
      * @param <T>                         The type of ChronoLocalDate used.
      */
-    public static <T extends ChronoLocalDate> void validateInterval(final T startInterval,
+    public static <T extends ChronoLocalDate> void validateInterval(
+            final T startInterval,
             final String nameOfStartIntervalArgument,
             final T endInterval,
             final String nameOfEndIntervalArgument) {

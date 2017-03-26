@@ -11,10 +11,10 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>se.mithlond.services.integration</groupId>
-    <artifactId>mithlond-services-integration-reactor</artifactId>
+    <groupId>se.mithlond.services.integration.calendar</groupId>
+    <artifactId>mithlond-services-integration-calendar-reactor</artifactId>
     <name>${project.artifactId}</name>
-    <description>Mithlond Service: Integration Reactor (version ${project.version})</description>
+    <description>Mithlond Service: Calendar Integration Reactor (version ${project.version})</description>
     <packaging>pom</packaging>
     <url>${site.top.url}/${path.in.reactor}</url>
 
@@ -22,7 +22,7 @@
         <!--
             Define the name and type of this reactor
         -->
-        <path.in.reactor>integration</path.in.reactor>
+        <path.in.reactor>integration/calendar</path.in.reactor>
         <reactor.name>mithlond-services</reactor.name>
     </properties>
 
@@ -30,7 +30,7 @@
     <!-- | Section 2:  Module definitions                 -->
     <!-- +=============================================== -->
     <modules>
-        <module>calendar</module>
+        <module>calendar-impl-google</module>
     </modules>
 
     <!-- +=============================================== -->
