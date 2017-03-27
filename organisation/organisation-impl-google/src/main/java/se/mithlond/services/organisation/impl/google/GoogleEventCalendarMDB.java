@@ -46,7 +46,7 @@ public class GoogleEventCalendarMDB implements MessageListener {
     public void onMessage(final Message message) {
 
         // We should only respond to TextMessages.
-        if(message instanceof TextMessage) {
+        if (message instanceof TextMessage) {
             handle((TextMessage) message);
         }
 
@@ -82,5 +82,13 @@ public class GoogleEventCalendarMDB implements MessageListener {
 
     public void handle(final TextMessage msg) {
 
+        // Check sanity
+        Validate.notNull(msg, "msg");
+        msg.setStringProperty("organisation_name", owningOrganisationName);
+        msg.setStringProperty("start_time", TimeFormat.YEAR_MONTH_DATE.print(startTime));
+        msg.setStringProperty("end_time", TimeFormat.YEAR_MONTH_DATE.print(endTime));
+        msg.setLongProperty("active_membership_id", activeMembership.getId());
+        msg.setStringProperty("active_membership_alias", activeMembership.getAlias());
+        msg.setStringProperty("calendar_identifier", calendarIdentifier);
     }
 }
