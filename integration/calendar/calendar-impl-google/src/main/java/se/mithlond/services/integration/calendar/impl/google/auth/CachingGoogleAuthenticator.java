@@ -109,7 +109,7 @@ public class CachingGoogleAuthenticator implements Serializable, GoogleAuthentic
         final String toReturn = Surroundings.getLocalConfigurationTextFileAsString(
                 organisationName,
                 GOOGLE_CALENDAR_SERVICE,
-                GOOGLE_SERVICEACCOUNT_EMAIL_FILE);
+                GOOGLE_SERVICEACCOUNT_EMAIL_FILE).trim();
         this.serviceAccountEmailData.put(cacheKey, toReturn);
 
         // #3) Log somewhat
@@ -206,13 +206,13 @@ public class CachingGoogleAuthenticator implements Serializable, GoogleAuthentic
      */
     public Calendar getCalendarClient(final String organisationName) {
 
+        // First, retrieve the authorized Credentials.
+        final Credential credentials = authorize(organisationName);
+
+        // Build the google application name.
+        final String appName = organisationName + "CalendarApp" + Deployment.getDeploymentType();
+
         try {
-
-            // First, retrieve the authorized Credentials.
-            final Credential credentials = authorize(organisationName);
-
-            // Build the google application name.
-            final String appName = organisationName + "CalendarApp" + Deployment.getDeploymentType();
 
             // All Done.
             return new Calendar.Builder(getTransport(), JSON_FACTORY, credentials)
@@ -236,9 +236,11 @@ public class CachingGoogleAuthenticator implements Serializable, GoogleAuthentic
         StringBuilder builder = new StringBuilder();
         builder.append(organisationName).append("_");
         builder.append(deploymentType).append("_");
-        builder.append(GOOGLE_CALENDAR_SERVICE).append("_");
+        builder.append(GOOGLE_CALENDAR_SERVICE);
 
         if (privilegesRequested != null) {
+
+            builder.append("_");
             for (String current : privilegesRequested) {
                 builder.append(current).append("_");
             }

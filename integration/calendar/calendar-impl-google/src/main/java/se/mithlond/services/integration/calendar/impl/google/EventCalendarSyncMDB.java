@@ -82,7 +82,7 @@ public class EventCalendarSyncMDB implements MessageListener {
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(EventCalendarSyncMDB.class);
 
-    private static final MessageAccessor<String> bodyAccessor = new MessageAccessor<String>("body") {
+    private static final MessageAccessor<String> BODY_ACCESSOR = new MessageAccessor<String>("body") {
         @Override
         String getPropertyFrom(final TextMessage msg) throws JMSException {
             return msg.getText();
@@ -123,7 +123,7 @@ public class EventCalendarSyncMDB implements MessageListener {
                 // Stash this message into the DLQ?
                 // ... and send an annoying email?
                 final JMSProducer producer = jmsContext.createProducer();
-                final String inboundBody = getPropertyFrom(textMessage, bodyAccessor);
+                final String inboundBody = getPropertyFrom(textMessage, BODY_ACCESSOR);
                 final JmsCompliantMap inboundProperties = JmsCompliantMap.getPropertyMap(textMessage);
 
                 // Copy body + JMS properties to the outbound message.
@@ -217,9 +217,9 @@ public class EventCalendarSyncMDB implements MessageListener {
                 .setParameter(OrganisationPatterns.PARAM_EVENT_CALENDAR, calendarIdentifier)
                 .setParameter(OrganisationPatterns.PARAM_ENVIRONMENT_ID, Deployment.getDeploymentType())
                 .getSingleResult();
-        if(activeEventCalendar == null) {
-            throw new IllegalArgumentException("Cannot find EventCalendar for calendarIdentifier [" +
-                    calendarIdentifier + "]");
+        if (activeEventCalendar == null) {
+            throw new IllegalArgumentException("Cannot find EventCalendar for calendarIdentifier ["
+                    + calendarIdentifier + "]");
         }
 
         // #6) Find the google Calendar Client for the supplied EventCalendar and Organisation.
@@ -292,7 +292,12 @@ public class EventCalendarSyncMDB implements MessageListener {
         return toReturn;
     }
 
-    private static abstract class MessageAccessor<T> {
+    /**
+     * Trivial holder for TextMessage data.
+     *
+     * @param <T> The type of property to retrieve from the Message.
+     */
+    private abstract static class MessageAccessor<T> {
 
         // Internal state
         private String propertyName;
