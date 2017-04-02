@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <display-name>services-backend-war</display-name>
+    <module-name>services-backend-war</module-name>
+
+    <!--
+        The KeyCloak server secures all resources within this backend WAR.
+
+        However [ * sigh™ * ] ...
+
+        a) ... the HTTP method "OPTIONS" must be always be peritted due to browsers firing a CORS-standard-mandated
+           "pre-flight" call before sending the actual GET/PUT/POST/DELETE call containing the Authorization header.
+
+        b) The "pre-flight" OPTIONS call must return HTTP status 200, to indicate to the browser that it is OK
+           to send the actual/authenticated call to the JAXRS server.
+
+        c) Since Keycloak implies that the HTTP header "access-control-allow-credentials: true" is sent from the
+           browser to the JAXRS server, the server must respond with a HTTP header "Access-Control-Allow-Origin"
+           which cannot be the wildcard (i.e. '*'), but must instead be the DNS and port of the caller.
+
+        d) To acquire such dynamic HTTP headers, a pre-matching ContainerResponseFilter should be used as a @Provider
+           for OPTION calls (only!). This implies that the HTTP header "Access-Control-Allow-Origin" is dynamic, while
+           other CORS-related HTTP headers are static.
+
+        e) Static HTTP headers should be configured within the application server (or, even HTTP proxy such as
+           Nginx or Apache).
+
+        TODO: We should apply a basic role name per Realm, as this backend WAR is a Multi-Tenant application.
+    -->
+    <!-- security-constraint>
+        <web-resource-collection>
+            <web-resource-name>resources</web-resource-name>
+            <url-pattern>/resource/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>PUT</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>mithlond-user</role-name>
+        </auth-constraint>
+    </security-constraint -->
+
+    <!--
+        Ensure that KeyCloak is actually used.
+    -->
+    <!-- login-config>
+        <auth-method>KEYCLOAK</auth-method>
+    </login-config -->
+
+    <!--
+        Multi-tenancy: One security role per realm?
+     -->
+    <security-role>
+        <role-name>mithlond-user</role-name>
+    </security-role>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>

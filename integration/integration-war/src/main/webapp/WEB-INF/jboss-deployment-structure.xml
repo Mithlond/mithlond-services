@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <exclusions>
+            <module name="org.apache.log4j"/>
+            <module name="org.apache.commons.logging"/>
+            <module name="org.hibernate"/>
+            <module name="org.hibernate.hql"/>
+            <module name="org.hibernate.jpa"/>
+            <!--
+                Don't use these JSON providers for RestEasy. Use MOXy instead.
+             -->
+            <module name="org.jboss.resteasy.resteasy-jackson-provider" />
+            <module name="org.jboss.resteasy.resteasy-jettison-provider" />
+        </exclusions>
+        <dependencies>
+            <module name="org.slf4j"/>
+            <module name="javax.ejb.api"/>
+            <module name="javax.validation.api"/>
+            <module name="org.jboss.ejb3"/>
+            <!--
+                EclipseLink is used both for Persistence and for JAXRS provisioning.
+                Note that this requires modifications to the standard module.xml in
+                EclipseLink to properly operate with RestEasy (i.e. using MOXy).
+             -->
+            <module name="org.eclipse.persistence" services="import"/>
+            <!--
+                Include Keycloak, as we use it for securing the webapp.
+                <module name="org.keycloak.keycloak-core"/>
+            -->
+            <module name="org.keycloak.keycloak-wildfly-adapter"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>
