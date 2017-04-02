@@ -217,6 +217,10 @@ public class EventCalendarSyncMDB implements MessageListener {
                 .setParameter(OrganisationPatterns.PARAM_EVENT_CALENDAR, calendarIdentifier)
                 .setParameter(OrganisationPatterns.PARAM_ENVIRONMENT_ID, Deployment.getDeploymentType())
                 .getSingleResult();
+        if(activeEventCalendar == null) {
+            throw new IllegalArgumentException("Cannot find EventCalendar for calendarIdentifier [" +
+                    calendarIdentifier + "]");
+        }
 
         // #6) Find the google Calendar Client for the supplied EventCalendar and Organisation.
         final Calendar calendarClient = authenticator.getCalendarClient(owningOrganisationName);
