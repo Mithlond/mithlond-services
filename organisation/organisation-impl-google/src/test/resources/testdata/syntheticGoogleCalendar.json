@@ -1,8 +1,0 @@
-{
-  "description": "eventCalendarFullDesc",
-  "kind": "calendar#calendar",
-  "location": "Sverige",
-  "summary": "eventCalendarShortDesc",
-  "timeZone": "Europe/Stockholm",
-  "jpaId": 0
-}
