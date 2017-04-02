@@ -33,7 +33,6 @@
         <module>organisation-model</module>
         <module>organisation-api</module>
         <module>organisation-impl-ejb</module>
-        <module>organisation-impl-google</module>
     </modules>
 
     <!-- +=============================================== -->

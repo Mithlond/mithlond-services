@@ -24,6 +24,7 @@ package se.mithlond.services.shared.spi.algorithms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,7 +64,7 @@ public final class Surroundings {
      * @param propertyName The non-empty property name whose property should be retrieved.
      * @return The name of the property to read.
      */
-    public static String getProperty(final String propertyName) {
+    public static String getProperty(@NotNull final String propertyName) {
 
         // Check sanity
         Validate.notEmpty(propertyName, "propertyName");
@@ -90,6 +91,52 @@ public final class Surroundings {
     }
 
     /**
+     * Retrieves a File wrapping a local configuration file, placed in a standardized file structure under the
+     * {@link Deployment#getStorageRootDirectory()}, namely <code>organisationName + File.separator
+     * + Deployment.getDeploymentType() + serviceNameOrPath.replace("/", File.separator)
+     * + File.separator + fileName</code>.
+     * This is the standard structure for all non-packaged source configuration files used by the services. Examples
+     * of such non-packaged source configuration files are credentials, license keys and similar types of content.
+     *
+     * @param organisationName  The name of the organisation for which a locally stored configuration file should be
+     *                          retrieved.
+     * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
+     *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
+     * @param fileName          The name of the configuration file.
+     * @return A configuration File as specified by the supplied parameters.
+     */
+    public static File getLocalConfigFile(@NotNull final String organisationName,
+                                          @NotNull final String serviceNameOrPath,
+                                          @NotNull final String fileName) {
+
+        // Check sanity
+        Validate.notEmpty(organisationName, "organisationName");
+        Validate.notEmpty(serviceNameOrPath, "serviceNameOrPath");
+        Validate.notEmpty(fileName, "fileName");
+
+        // Synthesize the path to the local configuration file.
+        final File toReturn = new File(Deployment.getStorageRootDirectory(),
+                organisationName
+                        + File.separator
+                        + Deployment.getDeploymentType()
+                        + File.separator
+                        + serviceNameOrPath.replace("/", File.separator)
+                        + File.separator
+                        + fileName);
+
+        // Check sanity
+        final boolean fileExists = toReturn.exists() && toReturn.isFile();
+        if (!fileExists) {
+            throw new IllegalArgumentException("Local configuration file ["
+                    + toReturn.getAbsolutePath()
+                    + "] does not exist.");
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
      * Retrieves the data from a local configuration file, placed in a standardized file structure under the
      * {@link Deployment#getStorageRootDirectory()}, namely <code>organisationName + File.separator
      * + Deployment.getDeploymentType() + serviceNameOrPath.replace("/", File.separator)
@@ -101,35 +148,15 @@ public final class Surroundings {
      *                          retrieved.
      * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
      *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
-     * @param fileName          The name of the configuration file for which to acquire a
+     * @param fileName          The name of the configuration file.
      * @return An InputStream connected to the configuration file as specified by the supplied parameters.
      */
-    public static InputStream getLocalConfigurationFile(final String organisationName,
-                                                        final String serviceNameOrPath,
-                                                        final String fileName) {
+    public static InputStream getLocalConfigurationFile(@NotNull final String organisationName,
+                                                        @NotNull final String serviceNameOrPath,
+                                                        @NotNull final String fileName) {
 
-        // Check sanity
-        Validate.notEmpty(organisationName, "organisationName");
-        Validate.notEmpty(serviceNameOrPath, "serviceNameOrPath");
-        Validate.notEmpty(fileName, "fileName");
-
-        // Synthesize the path to the local configuration file.
-        final File configurationFile = new File(Deployment.getStorageRootDirectory(),
-                organisationName
-                        + File.separator
-                        + Deployment.getDeploymentType()
-                        + File.separator
-                        + serviceNameOrPath.replace("/", File.separator)
-                        + File.separator
-                        + fileName);
-
-        // Check sanity
-        final boolean fileExists = configurationFile.exists() && configurationFile.isFile();
-        if (!fileExists) {
-            throw new IllegalArgumentException("Local configuration file ["
-                    + configurationFile.getAbsolutePath()
-                    + "] does not exist.");
-        }
+        // Delegate
+        final File configurationFile = getLocalConfigFile(organisationName, serviceNameOrPath, fileName);
 
         // Open a stream to the File.
         // Don't use a Reader, as the File may contain binary data.
@@ -154,12 +181,12 @@ public final class Surroundings {
      *                          retrieved.
      * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
      *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
-     * @param fileName          The name of the configuration file for which to acquire a
+     * @param fileName          The name of the configuration file.
      * @return A BufferedReader connected to the configuration file as specified by the supplied parameters.
      */
-    public static BufferedReader getLocalConfigurationTextFile(final String organisationName,
-                                                               final String serviceNameOrPath,
-                                                               final String fileName) {
+    public static BufferedReader getLocalConfigurationTextFile(@NotNull final String organisationName,
+                                                               @NotNull final String serviceNameOrPath,
+                                                               @NotNull final String fileName) {
 
         // Delegate
         final InputStream stream = getLocalConfigurationFile(organisationName, serviceNameOrPath, fileName);
@@ -180,12 +207,12 @@ public final class Surroundings {
      *                          retrieved.
      * @param serviceNameOrPath The name of the service for which configuration should be retrieved, typically
      *                          something like "google_calendar". This can be an arbitrary path as illustrated above.
-     * @param fileName          The name of the configuration file for which to acquire a
+     * @param fileName          The name of the configuration file.
      * @return The content of the configuration file, typed as a String.
      */
-    public static String getLocalConfigurationTextFileAsString(final String organisationName,
-                                                               final String serviceNameOrPath,
-                                                               final String fileName) {
+    public static String getLocalConfigurationTextFileAsString(@NotNull final String organisationName,
+                                                               @NotNull final String serviceNameOrPath,
+                                                               @NotNull final String fileName) {
         // First, delegate
         final BufferedReader in = getLocalConfigurationTextFile(organisationName,
                 serviceNameOrPath,

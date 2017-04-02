@@ -96,7 +96,7 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
 
         // Find the EventCalendars for the supplied environment.
         final List<EventCalendar> toReturn = new ArrayList<>();
-        JpaUtilities.findEntities(
+        toReturn.addAll(JpaUtilities.findEntities(
                 EventCalendar.class,
                 EventCalendar.NAMEDQ_GET_BY_ORGANISATION_AND_RUNTIME,
                 true,
@@ -104,7 +104,7 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
                 aQuery -> {
                     aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName);
                     aQuery.setParameter(OrganisationPatterns.PARAM_ENVIRONMENT_ID, environment);
-                }).forEach(toReturn::add);
+                }));
 
         // All Done.
         return toReturn;

@@ -24,14 +24,13 @@ package se.mithlond.services.shared.spi.algorithms.diff;
 import java.io.Serializable;
 import java.util.Optional;
 
-
 /**
  * Specification for a container holding objects which can be compared to one another.
  * The terminology is <strong>actual</strong> and <strong>comparison</strong> for the two objects.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-interface DiffHolder<A, C, S extends DiffHolder<A, C, S>> extends Comparable<S>, Serializable {
+public interface DiffHolder<A, C, S extends DiffHolder<A, C, S>> extends Comparable<S>, Serializable {
 
     /**
      * Enumeration of relevant types of modification.

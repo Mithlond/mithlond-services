@@ -48,6 +48,12 @@ public interface EventCalendarService extends JpaCudService {
     String EVENT_CALENDAR_REQUEST_QUEUE = "java:global/jms/nazgul/services/eventcalendar/request";
 
     /**
+     * The JNDI name of the EventCalendar error Queue, to which error JMS Messages are sent for
+     * further processing within another thread/transaction.
+     */
+    String EVENT_CALENDAR_ERROR_QUEUE = "java:global/jms/nazgul/services/eventcalendar/error";
+
+    /**
      * Retrieves all EventCalendars owned by the supplied Organisation. Typically, EventCalendars are matched
      * with remove services such as cloud services from Google, Microsoft, Yahoo or the like.
      *

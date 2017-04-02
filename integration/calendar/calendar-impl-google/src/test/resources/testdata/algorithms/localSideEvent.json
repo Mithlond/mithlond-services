@@ -1,0 +1,74 @@
+{
+  "attendees": [
+    {
+      "comment": "Admitted note 29",
+      "displayName": "alias_25",
+      "email": "emailAlias_25@emailSuffix",
+      "organizer": false,
+      "responseStatus": "accepted",
+      "admission_25_admissionTimestamp": "2017-01-04T15:35:00.000+01:00",
+      "admission_25_id": "25"
+    },
+    {
+      "comment": "Admitted note 30",
+      "displayName": "alias_26",
+      "email": "emailAlias_26@emailSuffix",
+      "organizer": false,
+      "responseStatus": "accepted",
+      "admission_26_admissionTimestamp": "2017-01-04T15:35:00.000+01:00",
+      "admission_26_id": "26"
+    },
+    {
+      "comment": "Admitted note 31",
+      "displayName": "alias_27",
+      "email": "emailAlias_27@emailSuffix",
+      "organizer": false,
+      "responseStatus": "accepted",
+      "admission_27_admissionTimestamp": "2017-01-04T15:35:00.000+01:00",
+      "admission_27_id": "27"
+    }
+  ],
+  "description": "fullDesc\n\nPlats: addressShortDesc  (activity_locale --> HomeAddress)\nDresscode: dresscode\nKostnad: 40 kr till 2017-01-05, därefter 50 kr",
+  "end": {
+    "dateTime": "2017-01-12T20:30:00.000+01:00"
+  },
+  "extendedProperties": {
+    "private": {
+      "activityId": "4",
+      "activityVersion": "0",
+      "cost": "40",
+      "currency": "SEK",
+      "lateAdmissionCost": "50"
+    },
+    "shared": {
+      "Dresscode": "dresscode"
+    }
+  },
+  "guestsCanInviteOthers": false,
+  "guestsCanModify": false,
+  "kind": "calendar#event",
+  "location": "Ringvägen 53 B, 164 56 Tokholm, Sverige",
+  "reminders": {
+    "overrides": [
+      {
+        "method": "popup",
+        "minutes": 120
+      },
+      {
+        "method": "email",
+        "minutes": 660
+      },
+      {
+        "method": "email",
+        "minutes": 10740
+      }
+    ],
+    "useDefault": false
+  },
+  "start": {
+    "dateTime": "2017-01-12T18:30:00.000+01:00"
+  },
+  "status": "confirmed",
+  "summary": "shortDesc",
+  "updated": "2017-01-04T15:47:00.000+01:00"
+}
