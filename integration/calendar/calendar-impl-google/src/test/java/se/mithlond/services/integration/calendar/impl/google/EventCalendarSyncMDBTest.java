@@ -21,7 +21,6 @@
  */
 package se.mithlond.services.integration.calendar.impl.google;
 
-import org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory;
 import org.apache.activemq.artemis.junit.EmbeddedJMSResource;
 import org.junit.After;
 import org.junit.Assert;
@@ -32,17 +31,14 @@ import se.mithlond.services.integration.calendar.impl.google.auth.CachingGoogleA
 import se.mithlond.services.organisation.api.EventCalendarService;
 import se.mithlond.services.shared.spi.algorithms.Deployment;
 
-import javax.jms.CompletionListener;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.TreeMap;
@@ -56,7 +52,7 @@ public class EventCalendarSyncMDBTest {
      * The unittest-unique System property "local.config.dir" must be set within the settings.xml
      * and point to the directory holding the serviceAccountEmail.txt and serviceKey.p12 file
      * structure, that is:
-     *
+     * <p>
      * [organisationName]/development/google/calendar/serviceAccountEmail.txt    ... and
      * [organisationName]/development/google/calendar/serviceKey.p12
      */
@@ -86,12 +82,12 @@ public class EventCalendarSyncMDBTest {
 
         // Find the local configuration directory.
         final String localConfigDirPath = System.getProperty(UNITTEST_CONFIG_DIR);
-        if(localConfigDirPath != null && !localConfigDirPath.isEmpty()) {
+        if (localConfigDirPath != null && !localConfigDirPath.isEmpty()) {
 
             localConfigurationRoot = new File(localConfigDirPath);
 
             final boolean isDirectory = localConfigurationRoot.exists() && localConfigurationRoot.isDirectory();
-            if(!isDirectory) {
+            if (!isDirectory) {
                 localConfigurationRoot = null;
             } else {
 
@@ -105,12 +101,12 @@ public class EventCalendarSyncMDBTest {
 
                 // Create the InitialContext for Artemis.
                 final Hashtable env = new Hashtable();
-                env.put("java.naming.factory.initial","org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory");
+                env.put("java.naming.factory.initial", "org.apache.activemq.artemis.jndi.ActiveMQInitialContextFactory");
                 env.put("connectionFactory.invmConnectionFactory", "vm://0");
 
                 try {
 
-                    resource.getDestinationQueue()
+                    // resource.getDestinationQueue()
 
                     initialContext = new InitialContext(env);
 
@@ -161,7 +157,7 @@ public class EventCalendarSyncMDBTest {
     public void validateConnectingToGoogleDevelopmentCalendar() throws Exception {
 
         // Pre-check
-        if(localConfigurationRoot == null) {
+        if (localConfigurationRoot == null) {
             return;
         }
 

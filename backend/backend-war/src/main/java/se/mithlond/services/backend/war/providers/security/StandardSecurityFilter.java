@@ -31,7 +31,7 @@ import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;

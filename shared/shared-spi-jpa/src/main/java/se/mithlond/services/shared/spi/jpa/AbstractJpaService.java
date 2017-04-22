@@ -21,9 +21,9 @@
  */
 package se.mithlond.services.shared.spi.jpa;
 
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 
 import javax.ejb.TransactionAttribute;
@@ -31,7 +31,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import java.util.Collection;
 
 /**
@@ -50,12 +49,37 @@ public abstract class AbstractJpaService implements JpaCudService {
     public static final String SERVICE_PERSISTENCE_UNIT = "services_PU";
 
     // Internal state
-
     /**
      * The per-call standard injected EntityManager.
      */
     @PersistenceContext(name = AbstractJpaService.SERVICE_PERSISTENCE_UNIT)
     protected EntityManager entityManager;
+
+    /**
+     * JPA does not handle null or empty collection parameters gracefully.
+     * Hence the need for this operation, which retrieves the initial (before padding)
+     * size of the supplied aCollection.
+     *
+     * @param aCollection A collection which may need padding.
+     * @param padObject   An object added to aCollection only if {@code aCollection.isEmpty()}.
+     * @param <T>         The type of element retrieved (and also to pad).
+     * @return The size of the supplied aCollection <strong>before</strong> any padding took place.
+     */
+    public static <T> int padAndGetSize(final Collection<T> aCollection, final T padObject) {
+
+        // Check sanity
+        Validate.notNull(aCollection, "aCollection");
+
+        if (aCollection.isEmpty()) {
+
+            // Pad the collection
+            aCollection.add(padObject);
+            return 0;
+        }
+
+        // No need to pad the Collection. Simply return its size.
+        return aCollection.size();
+    }
 
     /**
      * {@inheritDoc}
@@ -132,7 +156,7 @@ public abstract class AbstractJpaService implements JpaCudService {
             throws PersistenceOperationFailedException {
 
         // Check sanity
-        Validate.notNull(entityType, "Cannot handle null entityType argument.");
+        Validate.notNull(entityType, "entityType");
 
         try {
             return entityManager.find(entityType, primaryKey);
@@ -160,32 +184,6 @@ public abstract class AbstractJpaService implements JpaCudService {
     }
 
     /**
-     * JPA does not handle null or empty collection parameters gracefully.
-     * Hence the need for this operation, which retrieves the initial (before padding)
-     * size of the supplied aCollection.
-     *
-     * @param aCollection A collection which may need padding.
-     * @param padObject   An object added to aCollection only if {@code aCollection.isEmpty()}.
-     * @param <T>         The type of element retrieved (and also to pad).
-     * @return The size of the supplied aCollection <strong>before</strong> any padding took place.
-     */
-    public static <T> int padAndGetSize(final Collection<T> aCollection, final T padObject) {
-
-        // Check sanity
-        Validate.notNull(aCollection, "aCollection");
-
-        if (aCollection.isEmpty()) {
-
-            // Pad the collection
-            aCollection.add(padObject);
-            return 0;
-        }
-
-        // No need to pad the Collection. Simply return its size.
-        return aCollection.size();
-    }
-
-    /**
      * Surrounds the originalParameter with '%' characters, implying that the original parameter will be able to be
      * used within a SQL LIKE statement. Null originalParameters yield a "%" response.
      *
@@ -208,8 +206,8 @@ public abstract class AbstractJpaService implements JpaCudService {
     //
 
     private void logAndThrowPersistenceOperationFailedException(final String operation,
-            final Object toCreateOrClass,
-            final Exception e) {
+                                                                final Object toCreateOrClass,
+                                                                final Exception e) {
 
         // Log somewhat
         String toCreateClass = "<null>";

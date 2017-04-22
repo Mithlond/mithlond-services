@@ -32,7 +32,7 @@ import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;

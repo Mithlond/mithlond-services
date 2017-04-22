@@ -27,7 +27,7 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.EntityManager;
 import java.time.chrono.ChronoLocalDate;

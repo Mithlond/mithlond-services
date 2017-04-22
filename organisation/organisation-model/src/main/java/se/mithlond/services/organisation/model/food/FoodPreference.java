@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.food;
 
-import org.apache.commons.lang3.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Category;
@@ -37,6 +37,7 @@ import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -104,11 +105,11 @@ public class FoodPreference implements Serializable, Comparable<FoodPreference>,
      * @param category The non-null Category for which this FoodPreference should be created.
      * @param user     The User having a FoodPreference.
      */
-    public FoodPreference(final Category category, final User user) {
+    public FoodPreference(@NotNull final Category category, @NotNull final User user) {
 
         // Check some sanity
-        Validate.notNull(user, "Cannot handle null 'user' argument.");
-        Validate.notNull(category, "Cannot handle null category argument.");
+        Validate.notNull(user, "user");
+        Validate.notNull(category, "category");
         Validate.isTrue(category.getClassification().equals(FOOD_PREFERENCE_CATEGORY_CLASSIFICATION),
                 "FoodPreference categories must have the classification ["
                         + FOOD_PREFERENCE_CATEGORY_CLASSIFICATION + "]");

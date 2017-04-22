@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.address;
 
-import org.apache.commons.lang3.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -29,6 +29,8 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
@@ -236,10 +238,10 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
      *                    such as "Hemma hos Gil-galad" or "Blue Moon Café".
      *                    Cannot be null or empty.
      */
-    public void setDescription(final String description) {
+    public void setDescription(@NotNull @Size(min = 1) final String description) {
 
         // Check sanity
-        Validate.notEmpty(description, "Cannot handle null or empty description argument.");
+        Validate.notEmpty(description, "description");
 
         // Assign internal state
         this.description = description;

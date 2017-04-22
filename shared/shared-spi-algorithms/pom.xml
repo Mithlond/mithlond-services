@@ -10,7 +10,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-api-parent</artifactId>
-        <version>1.9.0</version>
+        <version>1.9.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 

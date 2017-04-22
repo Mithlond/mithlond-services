@@ -21,9 +21,9 @@
  */
 package se.mithlond.services.content.model.navigation.integration;
 
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
@@ -36,6 +36,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -138,7 +139,8 @@ public class MenuStructure extends NazgulEntity {
      * @param owningOrganisation The non-null Organisation owning this MenuStructure.
      * @param rootMenu           The non-null Root menu of this MenuStructure.
      */
-    public MenuStructure(final StandardMenu rootMenu, final Organisation owningOrganisation) {
+    public MenuStructure(@NotNull final StandardMenu rootMenu,
+                         @NotNull final Organisation owningOrganisation) {
 
         // Delegate
         this();

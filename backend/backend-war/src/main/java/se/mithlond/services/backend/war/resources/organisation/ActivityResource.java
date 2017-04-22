@@ -32,7 +32,7 @@ import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;

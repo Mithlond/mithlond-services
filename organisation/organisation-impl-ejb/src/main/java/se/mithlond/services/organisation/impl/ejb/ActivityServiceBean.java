@@ -39,7 +39,7 @@ import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;

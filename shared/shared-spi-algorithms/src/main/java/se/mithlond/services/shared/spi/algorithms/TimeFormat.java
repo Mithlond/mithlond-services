@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.shared.spi.algorithms;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
+
 import javax.xml.bind.annotation.XmlTransient;
 import java.time.Instant;
 import java.time.LocalDate;

@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.algorithms.diff.DiffHolder;
 
 import javax.validation.constraints.NotNull;

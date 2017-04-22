@@ -27,7 +27,7 @@ import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.user.User;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;

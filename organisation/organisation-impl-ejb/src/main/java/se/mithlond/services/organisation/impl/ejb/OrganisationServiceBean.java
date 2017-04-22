@@ -37,7 +37,7 @@ import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.transport.membership.GroupVO;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;

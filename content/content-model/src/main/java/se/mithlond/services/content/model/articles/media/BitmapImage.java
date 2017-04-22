@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.imageio.ImageIO;
 import javax.persistence.Basic;

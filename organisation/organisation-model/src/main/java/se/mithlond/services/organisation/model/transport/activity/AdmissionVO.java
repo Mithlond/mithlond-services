@@ -21,11 +21,13 @@
  */
 package se.mithlond.services.organisation.model.transport.activity;
 
-import org.apache.commons.lang3.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -99,9 +101,9 @@ public class AdmissionVO extends AbstractSimpleTransportable {
      * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
     public AdmissionVO(final String alias,
-            final String organisation,
-            final String note,
-            final boolean responsible) {
+                       final String organisation,
+                       final String note,
+                       final boolean responsible) {
 
         this(UNINITIALIZED, alias, organisation, note, responsible);
     }
@@ -117,14 +119,14 @@ public class AdmissionVO extends AbstractSimpleTransportable {
      * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
     public AdmissionVO(final Long activityID,
-            final String alias,
-            final String organisation,
-            final String note,
-            final boolean responsible) {
+                       @NotNull @Size(min = 1) final String alias,
+                       @NotNull @Size(min = 1) final String organisation,
+                       final String note,
+                       final boolean responsible) {
 
         // Check sanity
-        Validate.notEmpty(alias, "Cannot handle null or empty alias argument.");
-        Validate.notEmpty(organisation, "Cannot handle null or empty organisation argument.");
+        Validate.notEmpty(alias, "alias");
+        Validate.notEmpty(organisation, "organisation");
 
         // Assign internal state
         this.activityID = activityID;
@@ -139,7 +141,7 @@ public class AdmissionVO extends AbstractSimpleTransportable {
      *
      * @param admission a non-null {@link Admission} entity.
      */
-    public AdmissionVO(final Admission admission) {
+    public AdmissionVO(@NotNull final Admission admission) {
 
         // Check sanity
         Validate.notNull(admission, "admission");

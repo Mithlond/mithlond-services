@@ -23,6 +23,7 @@ package se.mithlond.services.shared.spi.algorithms;
 
 import org.junit.Assert;
 import org.junit.Test;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import java.io.File;
 

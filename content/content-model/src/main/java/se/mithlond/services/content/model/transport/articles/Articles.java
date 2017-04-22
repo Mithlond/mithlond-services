@@ -23,9 +23,11 @@ package se.mithlond.services.content.model.transport.articles;
 
 import se.mithlond.services.content.model.ContentPatterns;
 import se.mithlond.services.content.model.articles.Article;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -88,14 +90,14 @@ public class Articles extends AbstractSimpleTransporter {
      *                      only news articles are retrieved.
      * @param articleList   The List of Articles wrapped in this transport object.
      */
-    public Articles(final String realm,
+    public Articles(@NotNull @Size(min = 1) final String realm,
                     final String selectionPath,
                     final List<Article> articleList) {
 
         this();
 
         // Check sanity and assign internal state
-        this.realm = Validate.notEmpty(realm, "Cannot handle null or empty 'realm' argument.");
+        this.realm = Validate.notEmpty(realm, "realm");
 
         this.selectionPath = selectionPath;
         this.realm = realm;

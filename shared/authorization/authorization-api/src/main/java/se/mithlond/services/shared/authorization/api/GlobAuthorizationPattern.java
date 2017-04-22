@@ -24,7 +24,7 @@ package se.mithlond.services.shared.authorization.api;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.Patterns;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

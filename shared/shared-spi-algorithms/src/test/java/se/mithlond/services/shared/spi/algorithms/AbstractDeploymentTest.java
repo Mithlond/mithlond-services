@@ -23,6 +23,7 @@ package se.mithlond.services.shared.spi.algorithms;
 
 import org.junit.After;
 import org.junit.Before;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import java.io.File;
 import java.lang.reflect.Field;

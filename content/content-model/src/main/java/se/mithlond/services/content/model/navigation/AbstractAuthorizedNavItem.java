@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.content.model.navigation;
 
-import org.apache.commons.lang3.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.content.model.ContentPatterns;
@@ -480,16 +480,5 @@ public abstract class AbstractAuthorizedNavItem extends NazgulEntity implements 
         if (enabled == null) {
             enabled = true;
         }
-
-        /*
-        if (parentObject != null) {
-
-            log.debug("Got parentObject of type [" + parentObject.getClass().getName() + "]");
-
-            if(parentObject instanceof StandardMenu) {
-                this.parent = (StandardMenu) parentObject;
-            }
-        }
-        */
     }
 }

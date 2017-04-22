@@ -21,13 +21,13 @@
  */
 package se.mithlond.services.organisation.model.membership.order;
 
-import org.apache.commons.lang3.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -40,6 +40,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -170,10 +172,10 @@ public class OrderLevel extends NazgulEntity implements SemanticAuthorizationPat
      *
      * @param fullDesc the non-null fullDesc of this Listable.
      */
-    public void setFullDesc(final String fullDesc) {
+    public void setFullDesc(@NotNull @Size(min = 1) final String fullDesc) {
 
         // Check sanity
-        Validate.notEmpty(fullDesc, "Cannot handle null or empty fullDesc argument.");
+        Validate.notEmpty(fullDesc, "fullDesc");
 
         // Assign internal state
         this.fullDesc = fullDesc;
@@ -184,10 +186,10 @@ public class OrderLevel extends NazgulEntity implements SemanticAuthorizationPat
      *
      * @param shortDesc the shortDesc of this Listable.
      */
-    public void setShortDesc(final String shortDesc) {
+    public void setShortDesc(@NotNull @Size(min = 1) final String shortDesc) {
 
         // Check sanity
-        Validate.notEmpty(shortDesc, "Cannot handle null or empty shortDesc argument.");
+        Validate.notEmpty(shortDesc, "shortDesc");
 
         // Assign internal state
         this.shortDesc = shortDesc;
@@ -255,10 +257,10 @@ public class OrderLevel extends NazgulEntity implements SemanticAuthorizationPat
      *
      * @param order the Order of this OrderLevel
      */
-    public void setOrder(final Order order) {
+    public void setOrder(@NotNull final Order order) {
 
         // Check sanity
-        Validate.notNull(order, "Cannot handle null order argument.");
+        Validate.notNull(order, "order");
 
         // Assign internal state
         this.order = order;

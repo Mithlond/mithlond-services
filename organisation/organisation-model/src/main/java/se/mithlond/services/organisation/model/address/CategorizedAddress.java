@@ -27,7 +27,7 @@ import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.shared.spi.algorithms.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;

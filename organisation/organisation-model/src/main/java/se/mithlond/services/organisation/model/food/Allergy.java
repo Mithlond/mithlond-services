@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.model.food;
 
-import org.apache.commons.lang3.Validate;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -40,6 +40,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -140,12 +141,15 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
      * @param severity The severity of this allergy.
      * @param note     An optional note for this Allergy.
      */
-    public Allergy(final Food food, final User user, final AllergySeverity severity, final String note) {
+    public Allergy(@NotNull final Food food,
+                   @NotNull final User user,
+                   @NotNull final AllergySeverity severity,
+                   final String note) {
 
         // Check some sanity
-        Validate.notNull(food, "Cannot handle null food argument.");
-        Validate.notNull(user, "Cannot handle null user argument.");
-        Validate.notNull(severity, "Cannot handle null severity argument.");
+        Validate.notNull(food, "food");
+        Validate.notNull(user, "user");
+        Validate.notNull(severity, "severity");
 
         // Assign internal state
         this.food = food;
