@@ -1,7 +1,16 @@
 # 1. Mithlond: Services
 
-The Mithlond: Services project structure contains Software Components (i.e. collaborating Maven projects) for
-shared backend services in typical restful style.
+The Mithlond: Services project structure contains Software Components (i.e. collaborating Maven projects) 
+for shared backend services in typical restful style. Integrations to backend systems are implemented
+with messages passed to a locally available broker. 
+
+[![Build Status](https://travis-ci.org/Mithlond/mithlond-codestyle.svg?branch=master)](https://travis-ci.org/Mithlond/mithlond-codestyle)
+
+The overall structure for the system is shown in the image below.
+Note that the components of the overall structure built within this reactor are marked with 
+``` << Product from This Reactor >>``` stereotypes.
+
+<img src="overview.png" style="border: 1px solid #999999;" />
 
 ## 1.1. Release Documentation
 

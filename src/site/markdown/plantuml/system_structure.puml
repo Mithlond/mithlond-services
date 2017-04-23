@@ -1,15 +1,22 @@
 @startuml
 
+skinparam component {
+    backgroundColor<<Product from This Reactor>> #efefff
+    borderColor<<Product from This Reactor>> #5555BB
+}
+
 package "Clients" {
-  [NativeApp] as nativeapp
-  [WebApp] as angular
-  [JavaFX] as javafx
-  [Smartphone] as smartapp
+  [<&person> NativeApp] as nativeapp
+  [<&person> WebApp] as angular
+  [<&person> JavaFX] as javafx
+  [<&person> Smartphone] as smartapp
 }
 
 package "Core Servers" {
-        [Restful Services] as restful
+
+        [<&briefcase> Restful Services] as restful <<Product from This Reactor>>
         [Identity Manager] as idm
+        [Integration Broker] as integration
 }
 
 cloud "Identity Managers" {
@@ -18,7 +25,12 @@ cloud "Identity Managers" {
 
 database "Databases" {
   [Identity Management Data] as authdata
-  [Application Data] as appdata
+  [<&box> Application Data] as appdata <<Product from This Reactor>>
+}
+
+cloud "Integration Services" {
+    [Google Calendar] as google_calendar
+    [Facebook Group(s)] as fb_groups
 }
 
 [nativeapp] ..> [idm]
@@ -28,6 +40,10 @@ database "Databases" {
 
 [idm] -down-> [authdata] : 1. Authenticate
 [idm] <..> [fb] : 2. (Optional) Authenticate using external IDMs
+[restful] -down-> [integration] : 4. Send data for update
+
+[integration] <-down-> [google_calendar] : 5a. Synchronization
+[integration] <-down-> [fb_groups] : 5b. Publishing
 
 [nativeapp] -> [restful]
 [angular] -> [restful]
