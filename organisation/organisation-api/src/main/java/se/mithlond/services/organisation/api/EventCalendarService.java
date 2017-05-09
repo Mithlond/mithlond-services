@@ -42,16 +42,16 @@ import java.util.List;
 public interface EventCalendarService extends JpaCudService {
 
     /**
-     * The JNDI name of the EventCalendar request Queue, to which push commands are sent for further processing
+     * The JNDI name of the EventCalendar request Destination, to which push commands are sent for further processing
      * within another thread/transaction.
      */
-    String EVENT_CALENDAR_REQUEST_QUEUE = "java:global/jms/nazgul/services/eventcalendar/request";
+    String CALENDAR_REQUEST = "java:global/jms/nazgul/services/eventcalendar/request";
 
     /**
-     * The JNDI name of the EventCalendar error Queue, to which error JMS Messages are sent for
+     * The JNDI name of the EventCalendar error Destination, to which error JMS Messages are sent for
      * further processing within another thread/transaction.
      */
-    String EVENT_CALENDAR_ERROR_QUEUE = "java:global/jms/nazgul/services/eventcalendar/error";
+    String CALENDAR_ERROR = "java:global/jms/nazgul/services/eventcalendar/error";
 
     /**
      * Retrieves all EventCalendars owned by the supplied Organisation. Typically, EventCalendars are matched

@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.impl.ejb;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.api.EventCalendarService;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.EventCalendar;
@@ -30,7 +31,6 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.Deployment;
 import se.mithlond.services.shared.spi.algorithms.Surroundings;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
@@ -39,8 +39,8 @@ import javax.ejb.Asynchronous;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
-import javax.jms.Queue;
 import javax.jms.TextMessage;
+import javax.jms.Topic;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +62,6 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
     public static final String ENVIRONMENT_OVERRIDE_PROPERTY = "service_environment";
 
     /**
-     * The JNDI name of the EventCalendar request Queue, to which push commands are sent for further processing
-     * within another thread/transaction.
-     */
-    public static final String EVENT_CALENDAR_REQUEST_QUEUE = "java:global/jms/nazgul/services/eventcalendar/request";
-
-    /**
      * The JavaEE-injected JMSContext.
      */
     @Inject
@@ -76,8 +70,8 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
     /**
      * The JMS Queue used to send EventCalendar requests.
      */
-    @Resource(mappedName = EVENT_CALENDAR_REQUEST_QUEUE)
-    Queue queue;
+    @Resource(mappedName = EventCalendarService.CALENDAR_REQUEST)
+    private Topic queue;
 
     /**
      * {@inheritDoc}

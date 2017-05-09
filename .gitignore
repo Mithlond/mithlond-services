@@ -262,3 +262,6 @@ target/
 /mvnw.bat
 /mvnw
 /.mvn/
+
+### Various consiously un-gitted files. ###
+**/keycloak.json
