@@ -23,6 +23,7 @@ package se.mithlond.services.backend.war.providers.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.backend.war.providers.security.access.MembershipAndMethodFinderProducer;
 import se.mithlond.services.backend.war.providers.security.access.MembershipFinder;
 import se.mithlond.services.organisation.api.MembershipService;
@@ -31,7 +32,6 @@ import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
@@ -46,6 +46,7 @@ import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,7 +63,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-// @Provider
+@Provider
 @Priority(Priorities.AUTHENTICATION)
 public class StandardSecurityFilter implements ContainerRequestFilter {
 

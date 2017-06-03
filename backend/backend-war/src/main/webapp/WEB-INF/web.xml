@@ -53,7 +53,7 @@
 
         TODO: We should apply a basic role name per Realm, as this backend WAR is a Multi-Tenant application.
     -->
-    <!-- security-constraint>
+    <security-constraint>
         <web-resource-collection>
             <web-resource-name>resources</web-resource-name>
             <url-pattern>/resource/*</url-pattern>
@@ -65,14 +65,14 @@
         <auth-constraint>
             <role-name>mithlond-user</role-name>
         </auth-constraint>
-    </security-constraint -->
+    </security-constraint>
 
     <!--
         Ensure that KeyCloak is actually used.
     -->
-    <!-- login-config>
+    <login-config>
         <auth-method>KEYCLOAK</auth-method>
-    </login-config -->
+    </login-config>
 
     <!--
         Multi-tenancy: One security role per realm?

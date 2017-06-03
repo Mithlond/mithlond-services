@@ -66,8 +66,9 @@ public class NavigationResource extends AbstractResource {
     private static final Logger log = LoggerFactory.getLogger(NavigationResource.class);
 
     // Internal state
-    @EJB
+    @EJB(lookup = "java:module/NavigationServiceBean")
     private NavigationService navigationService;
+    
     private static final String JSON_CONTENT_TYPE = "application/json";
     private static final String ECLIPSELINK_MEDIA_TYPE = "eclipselink.media-type";
 

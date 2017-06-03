@@ -81,7 +81,7 @@ public class ServiceApplication extends Application {
 
         final SortedMap<String, Object> props = new TreeMap<>(getProperties());
         log.info("Got [" + props.size() + "] properties");
-        props.entrySet().forEach(pr -> log.info("Property [" + pr.getKey() + "]: " + pr.getValue()));
+        props.forEach((key, value) -> log.info("Property [" + key + "]: " + value));
     }
 
     /**
