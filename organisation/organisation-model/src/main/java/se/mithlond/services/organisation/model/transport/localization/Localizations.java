@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
 
 /**
@@ -114,8 +115,8 @@ public class Localizations extends AbstractSimpleTransporter {
     public void addLocalizations(final LocaleDefinition... toAdd) {
 
         if (toAdd != null) {
-            Arrays.asList(toAdd).stream()
-                    .filter(c -> c != null)
+            Arrays.stream(toAdd)
+                    .filter(Objects::nonNull)
                     .filter(c -> !localeDefinitions.contains(c))
                     .forEach(c -> localeDefinitions.add(c));
         }
@@ -129,8 +130,8 @@ public class Localizations extends AbstractSimpleTransporter {
     public void addLocalizedTextVOs(final LocalizedTextVO... toAdd) {
 
         if (toAdd != null) {
-            Arrays.asList(toAdd).stream()
-                    .filter(c -> c != null)
+            Arrays.stream(toAdd)
+                    .filter(Objects::nonNull)
                     .filter(c -> !localizedTextVOs.contains(c))
                     .forEach(c -> localizedTextVOs.add(c));
         }

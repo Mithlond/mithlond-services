@@ -105,16 +105,16 @@ public class DynamicOriginCORSFilter implements ContainerRequestFilter, Containe
             final ContainerResponseContext responseContext)
             throws IOException {
 
-        if(!OPTIONS_METHOD.equalsIgnoreCase(requestContext.getMethod())) {
+        // if(!OPTIONS_METHOD.equalsIgnoreCase(requestContext.getMethod())) {
 
-            final String dynamicOrigin = requestContext.getHeaderString("Origin");
+        final String dynamicOrigin = requestContext.getHeaderString("Origin");
 
-            if(dynamicOrigin != null) {
+        if (dynamicOrigin != null) {
 
-                // Simply add the dynamic origin to the outbound headers.
-                final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
-                responseHeaders.add(ACCESS_CONTROL_ORIGIN_HTTP_HEADER, dynamicOrigin);
-            }
+            // Simply add the dynamic origin to the outbound headers.
+            final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
+            responseHeaders.add(ACCESS_CONTROL_ORIGIN_HTTP_HEADER, dynamicOrigin);
         }
+        //}
     }
 }

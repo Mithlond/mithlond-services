@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@Provider
+// @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class StandardSecurityFilter implements ContainerRequestFilter {
 
