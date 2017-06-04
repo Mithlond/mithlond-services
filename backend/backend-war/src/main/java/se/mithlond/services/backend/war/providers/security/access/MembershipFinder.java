@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.backend.war.providers.security.access;
 
-import se.mithlond.services.backend.war.providers.security.OrganisationAndAlias;
+import se.mithlond.services.backend.war.providers.security.MembershipData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -34,20 +34,24 @@ import javax.ws.rs.container.ContainerRequestContext;
 public interface MembershipFinder {
 
     /**
-     * The OrganisationAndAlias instance retrieved by the
-     * {@link #getOrganisationNameAndAlias(ContainerRequestContext, HttpServletRequest)} method whenever an
+     * The MembershipData instance retrieved by the
+     * {@link #getMembershipData(ContainerRequestContext, HttpServletRequest)} method whenever an
      * organisation and alias could not be established from the inbound request.
      */
-    OrganisationAndAlias UNKNOWN_ORGANISATION_AND_ALIAS = new OrganisationAndAlias("Unknown", "Nobody");
+    MembershipData UNKNOWN_MEMBERSHIP_DATA = new MembershipData(
+            "Unknown",
+            "Noone",
+            "Nobody",
+            null);
 
     /**
-     * Retrieves the OrganisationAndAlias from the data within the supplied ContainerRequestContext.
+     * Retrieves the MembershipData supplied ContainerRequestContext and/or HttpServletRequest.
      *
      * @param ctx     The non-null ContainerRequestContext.
      * @param request The active and non-null HttpServletRequest.
      * @return The populated OrganisationAndAlias instance.
      */
-    OrganisationAndAlias getOrganisationNameAndAlias(
+    MembershipData getMembershipData(
             final ContainerRequestContext ctx,
             final HttpServletRequest request);
 }

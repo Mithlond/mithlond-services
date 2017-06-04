@@ -28,6 +28,7 @@ import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
+import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 
 import javax.ejb.EJB;
 import javax.ws.rs.DefaultValue;

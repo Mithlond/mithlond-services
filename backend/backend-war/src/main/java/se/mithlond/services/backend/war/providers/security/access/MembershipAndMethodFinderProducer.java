@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import se.mithlond.services.shared.spi.algorithms.Deployment;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.ws.rs.Produces;
 import java.lang.reflect.Constructor;
@@ -39,7 +38,6 @@ import java.util.stream.Stream;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@ApplicationScoped
 public class MembershipAndMethodFinderProducer {
 
     // Our log
@@ -122,12 +120,12 @@ public class MembershipAndMethodFinderProducer {
 
                 // Fallback to default creation?
                 if (toReturn == null) {
-                    toReturn = new ResteasyMembershipFinder();
+                    toReturn = new KeycloakMembershipFinder();
                 }
                 break;
 
             default:
-                toReturn = new ResteasyMembershipFinder();
+                toReturn = new KeycloakMembershipFinder();
                 break;
         }
 

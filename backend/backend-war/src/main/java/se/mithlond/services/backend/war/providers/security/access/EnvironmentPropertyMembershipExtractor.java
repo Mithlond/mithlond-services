@@ -23,11 +23,12 @@ package se.mithlond.services.backend.war.providers.security.access;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.mithlond.services.backend.war.providers.security.OrganisationAndAlias;
+import se.mithlond.services.backend.war.providers.security.MembershipData;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
+import java.util.Arrays;
 
 /**
  * Mock-alike MembershipAndMethodFinder which harvests information from the
@@ -40,15 +41,29 @@ public class EnvironmentPropertyMembershipExtractor implements MembershipFinder 
     // Our log
     private static final Logger log = LoggerFactory.getLogger(EnvironmentPropertyMembershipExtractor.class);
 
-    /**
-     * Organisation name property.
-     */
-    public static final String ORGANISATION_KEY = "nazgul_org";
+    enum PropertyName {
 
-    /**
-     * Alias property.
-     */
-    public static final String ALIAS_KEY = "nazgul_alias";
+        ORGANISATION("org"),
+        FIRST_NAME("first_name"),
+        LAST_NAME("last_name"),
+        USER_IDENTIFIER("user_identifier");
+
+        private static final String PREFIX = "nazgul_";
+
+        private String propertySuffix;
+
+        PropertyName(final String propertySuffix) {
+            this.propertySuffix = propertySuffix;
+        }
+
+        public String getPropertyName() {
+            return PREFIX + propertySuffix;
+        }
+
+        public String getPropertyValue(final ServletPropertyAccessor accessor, final HttpServletRequest request) {
+            return accessor.get(request, getPropertyName());
+        }
+    }
 
     // Internal state
     private final ServletPropertyAccessor propertyAccessor;
@@ -67,43 +82,28 @@ public class EnvironmentPropertyMembershipExtractor implements MembershipFinder 
      * {@inheritDoc}
      */
     @Override
-    public OrganisationAndAlias getOrganisationNameAndAlias(
+    public MembershipData getMembershipData(
             final ContainerRequestContext ctx,
             final HttpServletRequest request) {
 
-        // Find the organisation ID.
-        final String organisationProperty = propertyAccessor.get(request, ORGANISATION_KEY);
-        final String aliasProperty = propertyAccessor.get(request, ALIAS_KEY);
+        if(log.isDebugEnabled()) {
 
-        if (log.isDebugEnabled()) {
+            final String propertyNames = Arrays.stream(PropertyName.values())
+                    .map(PropertyName::getPropertyName)
+                    .sorted()
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>");
 
-            final String orgName = organisationProperty != null ? organisationProperty : "<null>";
-            final String alias = aliasProperty != null ? aliasProperty : "<null>";
-
-            log.debug("Found alias " + alias + " from " + orgName);
+            log.debug("Retrieving access data from HttpServletRequest using ["
+                    + propertyAccessor.getClass().getName() + "]. Property names retrieved: "
+                    + propertyNames);
         }
 
-        // Compile the return value
-        if (organisationProperty != null && aliasProperty != null) {
-
-            // All Done.
-            return new OrganisationAndAlias(organisationProperty, aliasProperty);
-        }
-
-        // Nah.
-        return null;
-    }
-
-    //
-    // Private helpers
-    //
-
-    /**
-     * Specification for how to retrieve a String property value given a supplied property name,
-     * given an (optionally used) inbound HttpServletRequest.
-     */
-    @FunctionalInterface
-    interface Accessor {
-        String get(HttpServletRequest request, String propertyName);
+        // All Done.
+        return new MembershipData(
+                PropertyName.ORGANISATION.getPropertyValue(propertyAccessor, request),
+                PropertyName.FIRST_NAME.getPropertyValue(propertyAccessor, request),
+                PropertyName.LAST_NAME.getPropertyValue(propertyAccessor, request),
+                PropertyName.USER_IDENTIFIER.getPropertyValue(propertyAccessor, request));
     }
 }

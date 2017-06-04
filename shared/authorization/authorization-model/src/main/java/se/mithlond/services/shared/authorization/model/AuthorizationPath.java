@@ -21,9 +21,10 @@
  */
 package se.mithlond.services.shared.authorization.model;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
-import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.jguru.nazgul.tools.validation.api.expression.ExpressionBuilder;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -46,7 +47,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
@@ -132,12 +132,13 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
      * @param qualifier The Qualifier of this AuthorizationPath, which could be equal to the name of a Sub-Group.
      */
     public AuthorizationPath(final String realm,
-            final String group,
-            final String qualifier) {
+                             final String group,
+                             final String qualifier) {
 
-        this.realm = validateSegment(realm);
-        this.group = validateSegment(group);
-        this.qualifier = validateSegment(qualifier);
+        // Assign internal state
+        this.realm = realm;
+        this.group = group;
+        this.qualifier = qualifier;
 
         // Prime the XML ID.
         // (Not really necessary here, true, but used in testing).
@@ -275,6 +276,32 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
                 .notNullOrEmpty(group, "group")
                 .notNullOrEmpty(qualifier, "qualifier")
                 .endExpressionAndValidate();
+
+        // Check sanity for the segment content.
+        final ExpressionBuilder segmentExpressionBuilder = InternalStateValidationException.create();
+        final String realmError = validateSegment(this.realm, "realm");
+        final String groupError = validateSegment(group, "group");
+        final String qualifierError = validateSegment(qualifier, "qualifier");
+        final boolean hasSegmentError = realmError != null || groupError != null || qualifierError != null;
+
+        if(hasSegmentError) {
+
+            if(realmError != null) {
+                segmentExpressionBuilder.addDescription(realmError);
+            }
+            if(groupError != null) {
+                segmentExpressionBuilder.addDescription(groupError);
+            }
+            if(qualifierError != null) {
+                segmentExpressionBuilder.addDescription(qualifierError);
+            }
+
+            segmentExpressionBuilder.addDescription("[realm/group/qualifier] = ["
+                    + realm + "/" + group + "/" + qualifier + "]");
+
+            // Validate the expression.
+            segmentExpressionBuilder.endExpressionAndValidate();
+        }
     }
 
     /**
@@ -305,12 +332,11 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
         final String[] segments = effectivePath.split(SemanticAuthorizationPath.SEGMENT_SEPARATOR_STRING, -1);
 
         // Extract and validate the tokens to use.
-        final String realm = validateSegment(segments[0]);
-        final String group = segments.length > 1 ? validateSegment(segments[1]) : SemanticAuthorizationPath.NO_VALUE;
-        final String qualifier = segments.length > 2 ? validateSegment(segments[2]) : SemanticAuthorizationPath.NO_VALUE;
+        final String group = segments.length > 1 ? segments[1] : SemanticAuthorizationPath.NO_VALUE;
+        final String qualifier = segments.length > 2 ? segments[2] : SemanticAuthorizationPath.NO_VALUE;
 
         // All Done.
-        return new AuthorizationPath(realm, group, qualifier);
+        return new AuthorizationPath(segments[0], group, qualifier);
     }
 
     /**
@@ -414,25 +440,20 @@ public class AuthorizationPath extends NazgulEntity implements SemanticAuthoriza
     // Private helpers
     //
 
-    private static String validateSegment(final String candidate) {
+    private static String validateSegment(final String candidate, final String segmentName) {
 
-        if (candidate == null) {
-            throw new IllegalArgumentException("Segments cannot be null.");
-        } else {
-            if (candidate.isEmpty()) {
-                throw new IllegalArgumentException("Segments cannot be empty.");
-            }
-            if (candidate.contains(SEGMENT_SEPARATOR_STRING)) {
-                throw new IllegalArgumentException("Segments cannot contain [" + SEGMENT_SEPARATOR_STRING
-                        + "]. Got: " + candidate);
-            }
-            if (candidate.contains(PATTERN_SEPARATOR_STRING)) {
-                throw new IllegalArgumentException("Segments cannot contain [" + PATTERN_SEPARATOR_STRING
-                        + "]. Got: " + candidate);
-            }
+        String errorMessage = null;
+
+        if (candidate.contains(SEGMENT_SEPARATOR_STRING)) {
+            errorMessage = "Segments cannot contain [" + SEGMENT_SEPARATOR_STRING
+                    + "]. Got: " + candidate + " for [" + segmentName + "]";
+        }
+        if (candidate.contains(PATTERN_SEPARATOR_STRING)) {
+            errorMessage = "Segments cannot contain [" + PATTERN_SEPARATOR_STRING
+                    + "]. Got: " + candidate + " for [" + segmentName + "]";
         }
 
         // All Done.
-        return candidate.trim().isEmpty() ? NO_VALUE : candidate.trim();
+        return errorMessage;
     }
 }

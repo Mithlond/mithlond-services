@@ -37,6 +37,7 @@ import javax.persistence.DiscriminatorType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -291,6 +292,8 @@ public class GuildMembership extends GroupMembership {
      * @param guildMembership The GuildMembership to convert.
      * @return The GuildRole for the supplied guildMembership; {@code null} GuildMembership implies a 'none' GuildRole.
      */
+    @SuppressWarnings("all")
+    @NotNull
     public static GuildRole toGuildRole(final GuildMembership guildMembership) {
 
         if(guildMembership == null) {

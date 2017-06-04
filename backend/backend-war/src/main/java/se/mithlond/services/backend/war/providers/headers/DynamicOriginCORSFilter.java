@@ -21,6 +21,10 @@
  */
 package se.mithlond.services.backend.war.providers.headers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.mithlond.services.backend.war.providers.security.StandardSecurityFilter;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -30,6 +34,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>ContainerResponseFilter which adds the dynamic HTTP header as required for proper CORS
@@ -52,6 +57,9 @@ import java.io.IOException;
 @Provider
 @PreMatching
 public class DynamicOriginCORSFilter implements ContainerRequestFilter, ContainerResponseFilter {
+
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
     /**
      * The prefix for all Access-Control HTTP headers.
@@ -105,16 +113,26 @@ public class DynamicOriginCORSFilter implements ContainerRequestFilter, Containe
             final ContainerResponseContext responseContext)
             throws IOException {
 
-        // if(!OPTIONS_METHOD.equalsIgnoreCase(requestContext.getMethod())) {
+        if (!OPTIONS_METHOD.equalsIgnoreCase(requestContext.getMethod())) {
 
-        final String dynamicOrigin = requestContext.getHeaderString("Origin");
+            final String dynamicOrigin = requestContext.getHeaderString(ORIGIN_KEY);
 
-        if (dynamicOrigin != null) {
+            if (dynamicOrigin != null) {
 
-            // Simply add the dynamic origin to the outbound headers.
-            final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
-            responseHeaders.add(ACCESS_CONTROL_ORIGIN_HTTP_HEADER, dynamicOrigin);
+                // Simply add the dynamic origin to the outbound headers.
+                final MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
+
+                final List<Object> accessControlOriginValues = responseHeaders.get(ACCESS_CONTROL_ORIGIN_HTTP_HEADER);
+                if (accessControlOriginValues == null) {
+                    responseHeaders.add(ACCESS_CONTROL_ORIGIN_HTTP_HEADER, dynamicOrigin);
+                } else {
+                    log.warn("ResponseHeader [" + ACCESS_CONTROL_ORIGIN_HTTP_HEADER + "] already held the value: "
+                            + accessControlOriginValues.stream()
+                            .map(c -> "" + c)
+                            .reduce((l, r) -> l + ", r")
+                            .orElse("<none>") + ". Not adding dynamicOrigin [" + dynamicOrigin + "]");
+                }
+            }
         }
-        //}
     }
 }

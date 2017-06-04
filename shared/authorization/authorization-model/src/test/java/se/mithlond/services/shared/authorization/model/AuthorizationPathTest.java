@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
+import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.shared.authorization.model.helpers.AuthorizationPaths;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
@@ -162,7 +163,7 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         AuthorizationPath.parse("/foo,/bar/baz");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = InternalStateValidationException.class)
     public void validateExceptionOnEmptySegment() {
 
         // Act & Assert
@@ -188,13 +189,12 @@ public class AuthorizationPathTest extends AbstractPlainJaxbTest {
         final Path p1 = path1.toPath();
 
         // Assert
-        expectedMatchMap.entrySet().forEach(entry -> {
+        expectedMatchMap.forEach((key, expected) -> {
 
-            final Boolean expected = entry.getValue();
-            final String pathMatcherPattern = "glob:" + entry.getKey();
-            final Boolean actual = SemanticAuthorizationPath.matchGlobPattern(entry.getKey(), p1);
+            final String pathMatcherPattern = "glob:" + key;
+            final Boolean actual = SemanticAuthorizationPath.matchGlobPattern(key, p1);
 
-            final String failureMessage = "Expected pattern [" + entry.getKey() + "] to match path [" + p1 + "]";
+            final String failureMessage = "Expected pattern [" + key + "] to match path [" + p1 + "]";
             Assert.assertEquals(failureMessage, expected, actual);
         });
     }

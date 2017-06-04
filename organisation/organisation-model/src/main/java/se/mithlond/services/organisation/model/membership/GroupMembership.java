@@ -286,7 +286,7 @@ public class GroupMembership implements Serializable, Comparable<GroupMembership
         toReturn.add(new AuthorizationPath(
                 getGroup().getOrganisation().getOrganisationName(),
                 getGroup().getGroupName(),
-                ""));
+                SemanticAuthorizationPath.NO_VALUE));
         return toReturn;
     }
 

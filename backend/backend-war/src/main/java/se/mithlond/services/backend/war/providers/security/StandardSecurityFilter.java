@@ -32,13 +32,14 @@ import se.mithlond.services.shared.authorization.api.Authorizer;
 import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -52,7 +53,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -63,18 +66,18 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-// @Provider
+@Provider
 @Priority(Priorities.AUTHENTICATION)
 public class StandardSecurityFilter implements ContainerRequestFilter {
+
+    // Our log
+    private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
     /**
      * Default authentication required to invoke any method, unless annotated with
      */
     public static final GlobAuthorizationPattern DEFAULT_AUTH_PATTERN
             = new GlobAuthorizationPattern(GlobAuthorizationPattern.ANY, "member");
-
-    // Our log
-    private static final Logger log = LoggerFactory.getLogger(StandardSecurityFilter.class);
 
     // Internal state
     private MembershipAndMethodFinderProducer membershipFinderProducer;
@@ -88,8 +91,20 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
     @Context
     private ResourceInfo resourceInfo;
 
-    @Inject
-    public StandardSecurityFilter(final MembershipAndMethodFinderProducer membershipFinderProducer) {
+    /**
+     * Default constructor.
+     */
+    public StandardSecurityFilter() {
+        this(new MembershipAndMethodFinderProducer());
+    }
+
+    /**
+     * CDI-injectable constructor.
+     *
+     * @param membershipFinderProducer The {@link MembershipAndMethodFinderProducer} used to retrieve memberships.
+     */
+    @SuppressWarnings("all")
+    public StandardSecurityFilter(@NotNull final MembershipAndMethodFinderProducer membershipFinderProducer) {
 
         // Assign internal state
         this.membershipFinderProducer = Validate.notNull(
@@ -142,14 +157,29 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             Membership activeMembership = null;
             if (finder != null) {
 
-                final OrganisationAndAlias holder = finder.getOrganisationNameAndAlias(ctx, request);
+                final MembershipData holder = finder.getMembershipData(ctx, request);
                 if (log.isDebugEnabled()) {
                     log.debug(holder.toString() + " and requiredAuthPatterns [" + requiredAuthPatterns + "]");
                 }
 
                 try {
-                    activeMembership = membershipService.getMembership(
-                            holder.getOrganisationName(), holder.getAlias());
+
+                    final List<Membership> activeMemberships = membershipService.getActiveMemberships(
+                            holder.getOrganisationName(),
+                            holder.getFirstName(),
+                            holder.getLastName());
+
+                    activeMembership = activeMemberships != null && activeMemberships.size() == 1
+                            ? activeMemberships.get(0)
+                            : activeMemberships.stream()
+                            .filter(a -> a.getUser().getUserIdentifierToken().equalsIgnoreCase(holder.getUserIdentifierToken()))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found active " + activeMembership.toString());
+                    }
+
                 } catch (Exception e) {
                     log.error("Could not acquire activeMembership", e);
                 }
@@ -171,7 +201,30 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             // We have a Membership and information about the required authorization.
             // Find out if we are authorized to invoke the target Method.
             // If the user does not possess the required roles, simply abort.
-            if (getAuthorizer().isAuthorized(requiredAuthPatterns, activeMembership.getPaths())) {
+            final SortedSet<SemanticAuthorizationPath> authorizationPaths = new TreeSet<>();
+            try {
+                activeMembership.getPaths().forEach(authorizationPaths::add);
+            } catch (Exception e) {
+                log.error("Could not get SemanticAuthorizationPath", e);
+            }
+
+            if (log.isDebugEnabled()) {
+
+                final AtomicInteger index = new AtomicInteger();
+
+                log.debug("" + activeMembership.toString() + " has the following authorizationPaths:\n"
+                        + authorizationPaths.stream()
+                        .map(p -> p.toPath(true))
+                        .map(p -> "[" + index.incrementAndGet() + "]: " + p.toString())
+                        .reduce((l, r) -> l + "\n" + r).orElse("<none>"));
+            }
+
+            if (getAuthorizer().isAuthorized(requiredAuthPatterns, authorizationPaths)) {
+
+                if(log.isDebugEnabled()) {
+                    log.debug("" + activeMembership.toString() + ": authorized on [" + targetMethod
+                            + "]. Continuing process.");
+                }
 
                 // Continue processing.
                 ctx.setSecurityContext(new NazgulMembershipSecurityContext(activeMembership));

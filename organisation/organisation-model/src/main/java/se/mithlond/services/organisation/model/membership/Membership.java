@@ -32,6 +32,7 @@ import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.membership.order.OrderLevel;
 import se.mithlond.services.organisation.model.membership.order.OrderLevelGrant;
 import se.mithlond.services.organisation.model.user.User;
+import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.jguru.nazgul.core.algorithms.api.Validate;
@@ -665,7 +666,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
         final String organisationString = getOrganisation() == null
                 ? "<Organisation Not Yet Set>"
                 : getOrganisation().getOrganisationName();
-        return "Membership [" + userIdAndName + " -> " + organisationString + "]";
+        return "Membership [" + this.getAlias() + " -> " + organisationString + " (" + userIdAndName + " ... " + ")]";
     }
 
     /**
@@ -675,6 +676,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
     public SortedSet<SemanticAuthorizationPath> getPaths() {
 
         final SortedSet<SemanticAuthorizationPath> toReturn = new TreeSet<>();
+
+        // #1) Add the membership within this Organisation
+        toReturn.add(new AuthorizationPath(getOrganisation().getOrganisationName(),
+                "member",
+                SemanticAuthorizationPath.NO_VALUE));
+
+        // #2) Add the authorization path 
         if (groupMemberships != null) {
             groupMemberships.forEach(current -> toReturn.addAll(current.getPaths()));
         }
