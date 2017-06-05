@@ -1,8 +1,0 @@
-{
-  "realm": "Mithlond",
-  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApZfijoomP+KiwMxNvBca0kRWFs92+7c/uSy5MwOlJFtqXZ0q0PKteGVABut4zvSISlwxoZOtpSbpKoknmNIrnfj7H9DeUBnzAj3YUkcmy1ITJHp5K6ctAmxMHSx9WTBXwaseN/2mK/qGIoljV7eo3iFWeZRwcnTkw1Agz1c/isSkSelqiaA54QSns04kOTCrZqdcIyvGVKLoJU/y7TzKS6SfNKDqxY4wG8s8/UwujDjGnijVWRDHDAxDbQFpDccaKW5KoyGcJRiRgkcuaT5hQeASf97aKtJAvMahCPkW36y7AqufnUTRBkivq9FcIY43MIrI4VaRcaOPQAumMXoBbQIDAQAB",
-  "auth-server-url": "http://localhost:8090/auth",
-  "ssl-required": "external",
-  "resource": "service-backend-development",
-  "public-client": true
-}

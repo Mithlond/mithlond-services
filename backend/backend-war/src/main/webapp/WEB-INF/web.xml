@@ -26,7 +26,20 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
-    <display-name>services-backend-war</display-name>
+    <display-name>Nazgul_Backend_Services</display-name>
+
+    <!--
+        Keycloak Note!
+
+        "The secure-deployment name attribute identifies the WAR you want to secure.
+        Its value is the module-name defined in web.xml with .war appended."
+
+        This means that the secure-deployment of this WAR must be
+
+        <secure-deployment name="services-backend-war.war">
+                ...
+        </secure-deployment>
+    -->
     <module-name>services-backend-war</module-name>
 
     <!--
@@ -66,13 +79,6 @@
             <role-name>mithlond-user</role-name>
         </auth-constraint>
     </security-constraint>
-
-    <!--
-        Ensure that KeyCloak is actually used.
-    -->
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-    </login-config>
 
     <!--
         Multi-tenancy: One security role per realm?

@@ -177,7 +177,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
                             .orElse(null);
 
                     if (log.isDebugEnabled()) {
-                        log.debug("Found active " + activeMembership.toString());
+                        log.info("Found active " + activeMembership.toString());
                     }
 
                 } catch (Exception e) {
@@ -190,6 +190,10 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
             }
 
             if (activeMembership == null) {
+
+                if(log.isDebugEnabled()) {
+                    log.info("Found no activeMembership. Aborting with unauthorized.");
+                }
 
                 // The user is not logged in. Abort.
                 ctx.abortWith(Response.status(Response.Status.UNAUTHORIZED)
