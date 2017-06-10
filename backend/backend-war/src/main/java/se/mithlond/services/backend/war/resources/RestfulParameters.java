@@ -76,7 +76,7 @@ public final class RestfulParameters {
     /**
      * Parameter name for a date given in yyyyMMdd form.
      */
-    public static final String TO_DATE = "frd";
+    public static final String TO_DATE = "tod";
 
     /*
      * Hide constructor for utility classes.

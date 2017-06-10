@@ -41,6 +41,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -86,22 +87,37 @@ public class ActivityResource extends AbstractResource {
                     + ", fromDate: " + fromDate + ", toDate: " + toDate);
         }
 
-        // Handle default values for from and to dates
-        final LocalDateTime fromDateTime = fromDate == null || fromDate.isEmpty()
-                ? LocalDateTime.now()
-                : TimeFormat.COMPACT_LOCALDATE.parse(fromDate).toLocalDateTime();
-        final LocalDateTime toDateTime = toDate == null || toDate.isEmpty()
-                ? fromDateTime.minusWeeks(1)
-                : TimeFormat.COMPACT_LOCALDATE.parse(toDate).toLocalDateTime();
+        try {
+            // Handle default values for from and to dates
+            final LocalDateTime fromDateTime = fromDate == null || fromDate.isEmpty()
+                    ? LocalDateTime.now()
+                    : ((LocalDate) TimeFormat.COMPACT_LOCALDATE.parse(fromDate)).atStartOfDay();
+            final LocalDateTime toDateTime = toDate == null || toDate.isEmpty()
+                    ? fromDateTime.plusMonths(2)
+                    : ((LocalDate) TimeFormat.COMPACT_LOCALDATE.parse(toDate)).atStartOfDay();
 
-        final ActivitySearchParameters params = ActivitySearchParameters.builder()
-                .withOrganisationIDs(organisationID)
-                .withStartPeriod(fromDateTime)
-                .withEndPeriod(toDateTime)
-                .build();
+            final ActivitySearchParameters params = ActivitySearchParameters.builder()
+                    .withOrganisationIDs(organisationID)
+                    .withStartPeriod(fromDateTime)
+                    .withEndPeriod(toDateTime)
+                    .build();
 
-        // All Done.
-        return activityService.getActivities(params, getActiveMembership());
+            // All Done.
+            final Activities toReturn = activityService.getActivities(params, getActiveMembership());
+
+            if(log.isInfoEnabled()) {
+                log.info("Returning " + toReturn.getActivities());
+            }
+
+            // All Done.
+            return toReturn;
+            
+        } catch (Exception e) {
+            
+            log.error("Could not fetch activities from database: ", e);
+            
+            throw new IllegalArgumentException("");
+        }
     }
 
     /**

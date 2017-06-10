@@ -25,9 +25,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.TimeZone;
@@ -79,7 +79,7 @@ public class ActivitySearchParametersTest extends AbstractSearchParametersTest {
     public void validateParameterBuilding() {
 
         // Assemble
-        final ZonedDateTime endPeriod = TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.parse("2014-02-13 14:23");
+        final LocalDateTime endPeriod = TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.parse("2014-02-13 14:23");
         final ActivitySearchParameters.ActivitySearchParametersBuilder builder =
                 ActivitySearchParameters.builder();
 
@@ -88,7 +88,7 @@ public class ActivitySearchParametersTest extends AbstractSearchParametersTest {
                 .withOrganisationIDs(5L)
                 .withActivityIDs(25L, 65L)
                 .withFreeText("foobar")
-                .withEndPeriod(endPeriod.toLocalDateTime())
+                .withEndPeriod(endPeriod)
                 .build();
 
         // Assert

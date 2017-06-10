@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
@@ -275,7 +276,8 @@ public class ActivitySearchParameters
             // Handle nulls.
             if (startLocalDateTimeString != null && !startLocalDateTimeString.isEmpty()) {
 
-                this.startPeriod = TimeFormat.COMPACT_LOCALDATETIME.parse(startLocalDateTimeString).toLocalDateTime();
+                this.startPeriod = ((ZonedDateTime)TimeFormat.COMPACT_LOCALDATETIME.parse(startLocalDateTimeString))
+                        .toLocalDateTime();
                 syncPeriod();
             }
 

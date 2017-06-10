@@ -26,10 +26,13 @@ import se.jguru.nazgul.core.algorithms.api.Validate;
 import javax.xml.bind.annotation.XmlTransient;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -47,39 +50,39 @@ public enum TimeFormat {
     /**
      * A format similar to "Onsdag 2014-02-13".
      */
-    DAY_OF_WEEK_AND_DATE("EEEE yyyy-MM-dd"),
+    DAY_OF_WEEK_AND_DATE("EEEE yyyy-MM-dd", LocalDate.class),
 
     /**
      * A format yielding "2014-02-13" or equivalent.
      */
-    YEAR_MONTH_DATE("yyyy-MM-dd"),
+    YEAR_MONTH_DATE("yyyy-MM-dd", LocalDate.class),
 
     /**
      * A format yielding "20140213" or equivalent.
      */
-    COMPACT_LOCALDATE("yyyyMMdd"),
+    COMPACT_LOCALDATE("yyyyMMdd", LocalDate.class),
 
     /**
      * A format yielding "2014-02-13 14:23" or equivalent.
      */
-    YEAR_MONTH_DATE_HOURS_MINUTES("yyyy-MM-dd HH:mm"),
+    YEAR_MONTH_DATE_HOURS_MINUTES("yyyy-MM-dd HH:mm", LocalDateTime.class),
 
     /**
      * A format yielding "20140213132500" or equivalent.
      */
-    COMPACT_LOCALDATETIME("yyyyMMddHHmmss"),
+    COMPACT_LOCALDATETIME("yyyyMMddHHmmss", LocalDateTime.class),
 
     /**
      * A format retrieving hours and minutes only ("12:45").
      */
-    HOURS_MINUTES("HH:mm"),
+    HOURS_MINUTES("HH:mm", LocalTime.class),
 
     /**
      * A Standard XML DateTime transport format.
      *
      * @see DateTimeFormatter#ISO_LOCAL_DATE_TIME
      */
-    XML_TRANSPORT("yyyy-MM-dd'T'HH:mm:ssZ");
+    XML_TRANSPORT("yyyy-MM-dd'T'HH:mm:ssZ", ZonedDateTime.class);
 
     /**
      * Swedish TimeZone, used to manage times and dates.
@@ -101,17 +104,20 @@ public enum TimeFormat {
     private Locale defaultLocale;
     private ZoneId defaultZoneId;
     private DateTimeFormatter formatter;
+    private Class<? extends TemporalAccessor> expectedFormat;
 
     /**
      * Creates a new TimeFormat instance with a DateTimeFormatter wrapping the supplied DateFormat pattern.
      *
      * @param pattern The DateTimeFormatter patter to use.
+     * @param clazz   The expected TemporalAccessor type for initial parsing.
      */
-    TimeFormat(final String pattern) {
+    TimeFormat(final String pattern, final Class<? extends TemporalAccessor> clazz) {
 
         // This is required since enums can't access local-type constants within their constructor.
         defaultLocale = new Locale("sv", "SE");
         defaultZoneId = ZoneId.of("Europe/Stockholm");
+        expectedFormat = clazz;
 
         formatter = DateTimeFormatter.ofPattern(pattern).withLocale(defaultLocale).withZone(defaultZoneId);
     }
@@ -128,8 +134,8 @@ public enum TimeFormat {
      * @return A String representation of the supplied aTemporal.
      */
     public String print(final Temporal aTemporal,
-            final Locale optionalLocale,
-            final ZoneId optionalZoneId) {
+                        final Locale optionalLocale,
+                        final ZoneId optionalZoneId) {
 
         // Check sanity
         Validate.notNull(aTemporal, "aTemporal");
@@ -140,6 +146,15 @@ public enum TimeFormat {
 
         // All done.
         return formatter.withLocale(effectiveLocale).withZone(effectiveZoneID).format(aTemporal);
+    }
+
+    /**
+     * Retrieves the expected type yielded from the result of a {@link #parse(String)} operation.
+     *
+     * @return the expected type yielded from the result of a {@link #parse(String)} operation.
+     */
+    public Class<? extends TemporalAccessor> getExpectedParseResultType() {
+        return expectedFormat;
     }
 
     /**
@@ -156,6 +171,7 @@ public enum TimeFormat {
      * Parses the supplied toParse string into a ZonedDateTime, using the provided optionalLocale and optionalZoneId
      * if they are not null and the default versions otherwise.
      *
+     * @param <T>            a concrete TemporalAccessor subtype.
      * @param toParse        The string to parse into a ZonedDateTime.
      * @param optionalLocale An optional Locale, used to parse the supplied String into a ZonedDateTime using the
      *                       internal DateTimeFormatter. If optionalLocale is {@code null},
@@ -165,7 +181,9 @@ public enum TimeFormat {
      *                       {@code SWEDISH_TIMEZONE} is used.
      * @return A ZonedDateTime parsed from the supplied String.
      */
-    public ZonedDateTime parse(final String toParse, final Locale optionalLocale, final ZoneId optionalZoneId) {
+    public <T extends TemporalAccessor> T parse(final String toParse,
+                                                final Locale optionalLocale,
+                                                final ZoneId optionalZoneId) {
 
         // Check sanity
         Validate.notEmpty(toParse, "toParse");
@@ -173,9 +191,22 @@ public enum TimeFormat {
         // Be simplistic ...
         final Locale effectiveLocale = optionalLocale == null ? defaultLocale : optionalLocale;
         final ZoneId effectiveZoneID = optionalZoneId == null ? defaultZoneId : optionalZoneId;
+        final DateTimeFormatter activeFormatter = formatter.withLocale(effectiveLocale).withZone(effectiveZoneID);
 
-        // All done.
-        return ZonedDateTime.parse(toParse, formatter.withLocale(effectiveLocale).withZone(effectiveZoneID));
+        // Switch for tpes.
+        T toReturn = null;
+        if (expectedFormat == LocalTime.class) {
+            toReturn = (T) LocalTime.parse(toParse, activeFormatter);
+        } else if (expectedFormat == LocalDate.class) {
+            toReturn = (T) LocalDate.parse(toParse, activeFormatter);
+        } else if (expectedFormat == LocalDateTime.class) {
+            toReturn = (T) LocalDateTime.parse(toParse, activeFormatter);
+        } else {
+            toReturn = (T) ZonedDateTime.parse(toParse, activeFormatter);
+        }
+
+        // All Done.
+        return toReturn;
     }
 
     /**
@@ -184,18 +215,19 @@ public enum TimeFormat {
      * @param toParse The string to parse into a ZonedDateTime.
      * @return A ZonedDateTime parsed from the supplied String.
      */
-    public ZonedDateTime parse(final String toParse) {
+    public <T extends TemporalAccessor> T parse(final String toParse) {
         return parse(toParse, null, null);
     }
 
     /**
      * Converts a LocalDate to a Calendar
+     *
      * @param aLocalDate
      * @return
      */
     @SuppressWarnings("all")
     public Calendar convert(final LocalDate aLocalDate) {
-        if(aLocalDate == null) {
+        if (aLocalDate == null) {
             return null;
         }
 
