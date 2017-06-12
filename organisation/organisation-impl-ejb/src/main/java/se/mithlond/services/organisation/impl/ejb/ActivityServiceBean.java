@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.impl.ejb;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.api.ActivityService;
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
 import se.mithlond.services.organisation.model.Category;
@@ -39,7 +40,6 @@ import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
@@ -245,8 +245,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public Activity updateActivity(final ActivityVO activityVO,
-            final boolean onlyUpdateNonNullProperties,
-            final Membership activeMembership) {
+                                   final boolean onlyUpdateNonNullProperties,
+                                   final Membership activeMembership) {
 
         // Check sanity
         Validate.notNull(activityVO, "activityVO");
@@ -342,8 +342,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      */
     @Override
     public boolean modifyAdmission(final ChangeType changeType,
-            final Membership actingMembership,
-            final AdmissionVO... admissionDetails) throws IllegalStateException {
+                                   final Membership actingMembership,
+                                   final AdmissionVO... admissionDetails) throws IllegalStateException {
 
         // Check sanity
         Validate.notNull(changeType, "changeType");
@@ -572,12 +572,18 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 + " where a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
                 + " order by a.categoryID", Category.class)
                 .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION, CategorizedAddress.ACTIVITY_CLASSIFICATION);
+
         final List<String> categoryIDs = new ArrayList<>();
         query.getResultList().stream()
-                .filter(cat -> cat != null)
+                .filter(Objects::nonNull)
                 .map(Category::getCategoryID)
                 .filter(catID -> catID != null && !catID.isEmpty())
                 .forEach(categoryIDs::add);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Found [" + categoryIDs.size() + "] categoryIDs: "
+                    + categoryIDs.stream().reduce((l, r) -> l + ", " + r).orElse("<none>"));
+        }
 
         // Pad the ID Lists.
         final int categoryIDsSize = AbstractJpaService.padAndGetSize(categoryIDs, "none");
@@ -602,6 +608,10 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
         categorizedAddresses.forEach(toReturn::addCategorizedAddress);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Found [" + categorizedAddresses.size() + "] categorizedAddresses.");
+        }
 
         // All Done.
         return toReturn;
@@ -639,7 +649,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     }
 
     private static Optional<Group> validateActivityHasResponsibleAndRetrieveGroup(final EntityManager entityManager,
-            final ActivityVO activityVO) {
+                                                                                  final ActivityVO activityVO) {
 
         final Optional<AdmissionVO> firstResponsibleAdmission = activityVO.getAdmissions()
                 .stream()
@@ -696,8 +706,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     }
 
     private static String createAdmissionNote(final Membership admittedBy,
-            final AdmissionVO admissionVO,
-            final Membership admitted) {
+                                              final AdmissionVO admissionVO,
+                                              final Membership admitted) {
         // Compile the admission note
         final String admittedBySomeoneElse = " Anmäld av " + admittedBy.getAlias()
                 + " (" + admittedBy.getOrganisation().getOrganisationName() + ")";

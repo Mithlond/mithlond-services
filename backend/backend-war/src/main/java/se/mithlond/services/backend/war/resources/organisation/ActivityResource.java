@@ -31,6 +31,7 @@ import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
+import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 
@@ -118,6 +119,26 @@ public class ActivityResource extends AbstractResource {
             
             throw new IllegalArgumentException("");
         }
+    }
+
+    /**
+     * Retrieves CategoriesAndAddresses for the supplied organisation.
+     *
+     * @param organisationID The ID of the Organisation owning the activities extracted.
+     * @return The fully populated CategoriesAndAddresses object for the supplied organisation.
+     */
+    @GET
+    @Path("/addresses")
+    public CategoriesAndAddresses getActivityLocationAddresses(
+            @PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long organisationID) {
+
+        // Debug some.
+        if (log.isInfoEnabled()) {
+            log.info("Fetching CategoriesAndAddresses for OrgID: " + organisationID);
+        }
+
+        // All Done.
+        return activityService.getActivityLocationAddresses(organisationID);
     }
 
     /**

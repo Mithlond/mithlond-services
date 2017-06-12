@@ -54,6 +54,11 @@ public final class RestfulParameters {
     public static final String ORGANISATION_JPA_ID = "orgid";
 
     /**
+     * Parameter name for a JPA ID of an Address Category.
+     */
+    public static final String CATEGORY_JPA_ID = "catid";
+
+    /**
      * Parameter name for a boolean indicating if "no-login" Memberships/Members should be included.
      */
     public static final String INCLUDE_LOGIN_NOT_PERMITTED = "nli";
