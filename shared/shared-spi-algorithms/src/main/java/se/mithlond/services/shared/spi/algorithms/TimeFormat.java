@@ -90,15 +90,36 @@ public enum TimeFormat {
     public static final ZoneId SWEDISH_TIMEZONE = java.time.ZoneId.of("Europe/Stockholm");
 
     /**
-     * The language code for Swedish.
-     */
-    public static final String SWEDISH_LANGUAGE_CODE = "sv";
-
-    /**
      * Swedish Locale, used for representing times and dates. This is the default Locale used
      * by internal DateTimeFormatter instances.
      */
-    public static final Locale SWEDISH_LOCALE = new Locale(SWEDISH_LANGUAGE_CODE, "SE");
+    public static final Locale SWEDISH_LOCALE = Locale.forLanguageTag("sv-SE");
+
+    /**
+     * Danish Locale, used for representing times and dates.
+     */
+    public static final Locale DANISH_LOCALE = Locale.forLanguageTag("da-DK");
+
+    /**
+     * Norwegisn Locale, used for representing times and dates.
+     */
+    public static final Locale NORWEGIAN_LOCALE = Locale.forLanguageTag("no-NO");
+
+    /**
+     * The language code for Swedish.
+     */
+    public static final String SWEDISH_LANGUAGE_CODE = SWEDISH_LOCALE.getLanguage();
+
+    /**
+     * The language code for Danish.
+     */
+    public static final String DANISH_LANGUAGE_CODE = DANISH_LOCALE.getLanguage();
+
+    /**
+     * The language code for Norwegian.
+     */
+    public static final String NORWEGIAN_LANGUAGE_CODE = NORWEGIAN_LOCALE.getLanguage();
+
 
     // Internal state
     private Locale defaultLocale;

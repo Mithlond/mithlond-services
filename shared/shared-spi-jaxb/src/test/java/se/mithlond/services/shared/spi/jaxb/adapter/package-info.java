@@ -20,7 +20,7 @@
  * #L%
  */
 /**
- * Package holding entity classes defining Organisations in the context of the mithlond reactor.
+ * Package holding test classes for JAXB adapters.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
@@ -38,7 +38,8 @@
         @XmlJavaTypeAdapter(type = LocalTime.class, value = LocalTimeAdapter.class),
         @XmlJavaTypeAdapter(type = LocalDateTime.class, value = LocalDateTimeAdapter.class),
         @XmlJavaTypeAdapter(type = ZonedDateTime.class, value = ZonedDateTimeAdapter.class),
-        @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
+        @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class),
+        @XmlJavaTypeAdapter(type = Locale.class, value = LocaleAdapter.class)
 })
 package se.mithlond.services.shared.spi.jaxb.adapter;
 
@@ -54,4 +55,5 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.TimeZone;

@@ -24,15 +24,18 @@ package se.mithlond.services.shared.spi.jaxb.adapter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 public class LocaleAdapterTest {
 
-    private String[] transportForms = {null, "se", "se||", "se|SE", "se|SE|", "se|SE|FI"};
-    private String[] expectedTransportForms = {null, "se", "se", "se|SE", "se|SE", "se|SE|FI"};
+    private String[] transportForms = {null, "se", "se", "se-SE", "se-SE", "se-SE-x-lvariant-FI"};
+    private String[] expectedTransportForms = {null, "se", "se", "se-SE", "se-SE", "se-SE-x-lvariant-FI"};
     private Locale[] objectForms = {
             null,
             new Locale("se"),
@@ -51,12 +54,12 @@ public class LocaleAdapterTest {
         final String[] results = new String[transportForms.length];
 
         // Act
-        for(int i = 0; i < objectForms.length; i++) {
+        for (int i = 0; i < objectForms.length; i++) {
             results[i] = unitUnderTest.marshal(objectForms[i]);
         }
 
         // Assert
-        for(int i = 0; i < results.length; i++) {
+        for (int i = 0; i < results.length; i++) {
             Assert.assertEquals(expectedTransportForms[i], results[i]);
         }
     }
@@ -68,13 +71,48 @@ public class LocaleAdapterTest {
         final Locale[] results = new Locale[transportForms.length];
 
         // Act
-        for(int i = 0; i < transportForms.length; i++) {
+        for (int i = 0; i < transportForms.length; i++) {
             results[i] = unitUnderTest.unmarshal(transportForms[i]);
         }
 
         // Assert
-        for(int i = 0; i < results.length; i++) {
+        for (int i = 0; i < results.length; i++) {
             Assert.assertEquals(objectForms[i], results[i]);
         }
+    }
+
+    @Test
+    public void validateConvertingUsingLanguageTag() {
+
+        // Assemble
+        final String theOddNonMatchingLanguageTag = "nn-NO";
+        final SortedMap<String, Locale> languageTag2Locale = new TreeMap<>();
+        Arrays.stream(Locale.getAvailableLocales())
+                .filter(c -> {
+
+                    final String languageTag = c.toLanguageTag();
+                    return !languageTag2Locale.keySet().contains(languageTag)
+                            && !theOddNonMatchingLanguageTag.equalsIgnoreCase(languageTag);
+                })
+                .forEach(c -> languageTag2Locale.put(c.toLanguageTag(), c));
+
+        // Act
+        // languageTag2Locale.forEach((key1, value1) -> System.out.println("[" + key1 + "]: " + value1));
+        final SortedMap<String, Locale> parsed = new TreeMap<>();
+        languageTag2Locale.keySet().forEach(k -> parsed.put(k, Locale.forLanguageTag(k)));
+
+        // Assert
+        Assert.assertEquals(languageTag2Locale.size(), parsed.size());
+        languageTag2Locale.forEach((key, value) -> {
+
+            final Locale reparsedValue = parsed.get(key);
+
+            if (!value.equals(reparsedValue)) {
+                System.out.println("[" + key + "]: " + value + " (" + reparsedValue + ")");
+            }
+
+            // Check sanity
+            Assert.assertEquals(value, reparsedValue);
+        });
     }
 }

@@ -24,7 +24,6 @@ package se.mithlond.services.shared.spi.jaxb.adapter;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 /**
  * XML Adapter class to handle {@link Locale} objects.
@@ -33,17 +32,6 @@ import java.util.StringTokenizer;
  */
 @XmlTransient
 public class LocaleAdapter extends XmlAdapter<String, Locale> {
-
-    /**
-     * A separator string dividing the different parts of the transportForm.
-     */
-    public static final String SEPARATOR = "|";
-
-    /**
-     * A human-readable description of the expected transport form.
-     */
-    public static final String HUMAN_READABLE_TRANSPORT_FORM =
-            "language[" + SEPARATOR + "country[" + SEPARATOR + "variant]]";
 
     /**
      * {@inheritDoc}
@@ -56,19 +44,8 @@ public class LocaleAdapter extends XmlAdapter<String, Locale> {
             return null;
         }
 
-        final StringTokenizer tok = new StringTokenizer(transportForm, SEPARATOR, false);
-        final int numTokens = tok.countTokens();
-        if (numTokens > 3) {
-            throw new IllegalArgumentException("Expected transportForm on the format "
-                    + HUMAN_READABLE_TRANSPORT_FORM + ", but got " + transportForm);
-        }
-
-        final String language = tok.nextToken();
-        final String country = tok.hasMoreTokens() ? tok.nextToken() : "";
-        final String variant = tok.hasMoreTokens() ? tok.nextToken() : "";
-
         // All Done.
-        return new Locale(language, country, variant);
+        return Locale.forLanguageTag(transportForm);
     }
 
     /**
@@ -82,19 +59,7 @@ public class LocaleAdapter extends XmlAdapter<String, Locale> {
             return null;
         }
 
-        String toReturn = objectForm.getLanguage();
-
-        final String country = objectForm.getCountry();
-        if(country != null && !country.isEmpty()) {
-            toReturn += SEPARATOR + country;
-        }
-
-        final String variant = objectForm.getVariant();
-        if(variant != null && !variant.isEmpty()) {
-            toReturn += SEPARATOR + variant;
-        }
-
         // All Done.
-        return toReturn;
+        return objectForm.toLanguageTag();
     }
 }
