@@ -104,12 +104,12 @@ public abstract class AbstractSearchParameters<E extends AbstractParameterBuilde
      * <pre>
      *     <code>
      *         // Assume the following internal state - minus annotations
-     *         private List<Long> groupIDs;
-     *         private List<Long> organisationIDs;
-     *         private List<Long> classifierIDs;
+     *         private List&lt;Long&gt; groupIDs;
+     *         private List&lt;Long&gt; organisationIDs;
+     *         private List&lt;Long&gt; classifierIDs;
      *
      *         // Populate with the supplied internal state
-     *         protected void populateInternalStateMap(final SortedMap<String, String> toPopulate) {
+     *         protected void populateInternalStateMap(final SortedMap&lt;String, String&gt; toPopulate) {
      *         		toPopulate.put("groupIDs", groupIDs.toString());
      *         		toPopulate.put("organisationIDs", organisationIDs.toString());
      *         		toPopulate.put("classifierIDs", classifierIDs.toString());

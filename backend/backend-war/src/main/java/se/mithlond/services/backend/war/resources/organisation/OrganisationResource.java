@@ -24,11 +24,18 @@ package se.mithlond.services.backend.war.resources.organisation;
 import io.swagger.annotations.Api;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
+import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.OrganisationService;
+import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
+import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.Organisations;
+import se.mithlond.services.organisation.model.transport.food.Allergies;
+import se.mithlond.services.organisation.model.transport.localization.Localizations;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
-import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 
 import javax.ejb.EJB;
 import javax.ws.rs.DefaultValue;
@@ -36,6 +43,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import java.util.Locale;
+import java.util.SortedMap;
+import java.util.SortedSet;
 
 /**
  * Organisation-related resources, to retrieve Information about Organisations, Groups and Guilds.
@@ -49,6 +59,9 @@ public class OrganisationResource extends AbstractResource {
     // Internal state
     @EJB
     private OrganisationService organisationService;
+
+    @EJB
+    private FoodAndAllergyService foodAndAllergyService;
 
     /**
      * Retrieves an {@link Organisations} instance containing data for all known Organisations.
@@ -107,5 +120,34 @@ public class OrganisationResource extends AbstractResource {
 
         // All Done.
         return organisationService.getGroups(params);
+    }
+
+    /**
+     * Retrieves a listing of all Allergies for all (active) Memberships within the organisation
+     * with the supplied jpa ID.
+     *
+     * @param jpaID The JPA ID of the Organisation.
+     * @return An Allergies instance containing all Allergy objects for the supplied Organisation.
+     */
+    @GET
+    @Path("/{" + RestfulParameters.JPA_ID + "}/allergies")
+    public Allergies getAllergies(
+            @PathParam(RestfulParameters.JPA_ID) final Long jpaID) {
+
+        // Compile the search parameters
+        final FoodAndAllergySearchParameters searchParameters = FoodAndAllergySearchParameters.builder()
+                .withOrganisationIDs(jpaID)
+                .build();
+
+        // Find the LocaleDefinition to use.
+        final Organisations organisations = organisationService.getOrganisation(jpaID, true);
+        final Locale locale = organisations.getOrganisations().first().getLocale();
+        final LocaleDefinition localeDefinition = new LocaleDefinition(locale);
+
+        final SortedMap<Membership, SortedSet<Allergy>> membershipsAllergies =
+                foodAndAllergyService.getAllergiesFor(searchParameters);
+
+        final Allergies toReturn = new Allergies(localeDefinition);
+        membershipsAllergies.values().forEach(c -> toReturn.add());
     }
 }

@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -142,7 +143,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
      * {@inheritDoc}
      */
     @Override
-    public String getText(final LocaleDefinition localeDefinition, final String classifier) {
+    public String getText(final Locale locale, final String classifier) {
 
         // Get the relevant LocalizedText child.
         final LocalizedText localizedText = getOrNull(localeDefinition, classifier);
@@ -333,7 +334,7 @@ public class LocalizedTexts extends NazgulEntity implements Localizable {
     // Private helpers
     //
 
-    private LocalizedText getOrNull(final LocaleDefinition localeDefinition, final String classifier) {
+    private LocalizedText getOrNull(final Locale locale, final String classifier) {
 
         // Ensure we always have sane arguments.
         final LocaleDefinition effectiveLocale = localeDefinition == null ? defaultLocale : localeDefinition;

@@ -54,6 +54,11 @@ public final class RestfulParameters {
     public static final String ORGANISATION_JPA_ID = "orgid";
 
     /**
+     * Parameter name for a JPA ID of a Membership.
+     */
+    public static final String MEMBERSHIP_JPA_ID = "memid";
+
+    /**
      * Parameter name for a JPA ID of an Address Category.
      */
     public static final String CATEGORY_JPA_ID = "catid";

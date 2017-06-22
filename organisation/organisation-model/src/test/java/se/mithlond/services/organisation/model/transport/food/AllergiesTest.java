@@ -33,6 +33,8 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
+import se.mithlond.services.organisation.model.transport.membership.MembershipVO;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -49,6 +51,7 @@ public class AllergiesTest extends AbstractEntityTest {
     // Shared state
     private FoodsAndCategories foodsAndCategories;
     private List<UserVO> users;
+    private List<MembershipVO> memberships;
     private List<AllergyVO> allergyList;
     private Allergies allergies;
 
@@ -88,14 +91,29 @@ public class AllergiesTest extends AbstractEntityTest {
                 TimeFormat.SWEDISH_LOCALE,
                 WellKnownCurrency.SEK);
         AbstractEntityTest.setJpaIDFor(mifflond, 1L);
+        final OrganisationVO mifflondVO = new OrganisationVO(mifflond);
 
         users = new ArrayList<>();
+        memberships = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
 
             final LocalDate birthDay = LocalDate.of(1971 + i, Month.FEBRUARY, 1 + i);
-            users.add(new UserVO((long) i + 1, "firstName_" + i, "lastName_" + i, birthDay));
+            users.add(new UserVO(
+                    (long) i + 1,
+                    "firstName_" + i,
+                    "lastName_" + i,
+                    birthDay));
+
+            memberships.add(new MembershipVO(
+                    (long) i + 100,
+                    "alias_" + i,
+                    (i % 2 == 0 ? "subAlias_" + i : (String) null),
+                    "emailAlias_" + i,
+                    true,
+                    mifflondVO));
         }
+
 
         allergyList = new ArrayList<>();
         for (int i = 2; i < 7; i++) {
@@ -107,7 +125,7 @@ public class AllergiesTest extends AbstractEntityTest {
                     (long) i));
         }
 
-        allergies = new Allergies(defaultLocale, users, allergyList);
+        allergies = new Allergies(defaultLocale, users, memberships, allergyList);
     }
 
     @Test
@@ -146,7 +164,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Act
         final Allergies resurrected = unmarshalFromXML(Allergies.class, data);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + resurrected);
 
         // Assert
         Assert.assertNotNull(resurrected);

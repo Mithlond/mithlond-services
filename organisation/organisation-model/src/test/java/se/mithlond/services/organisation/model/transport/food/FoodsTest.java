@@ -73,13 +73,8 @@ public class FoodsTest extends AbstractEntityTest {
         Arrays.stream(DateFormat.getAvailableLocales())
                 .forEach(current -> stringForm2LocaleMap.put(current.toString(), current));
 
-        stringForm2LocaleMap.entrySet().forEach(current -> {
-
-            Locale locale = current.getValue();
-
-            System.out.println("Language [" + locale.getLanguage() + "], Country [" + locale.getCountry() + "], " +
-                    " DisplayCountry [" + locale.getDisplayCountry() + "]");
-        });
+        stringForm2LocaleMap.forEach((key, locale) -> System.out.println("Language [" + locale.getLanguage() + "], Country [" + locale.getCountry() + "], " +
+                " DisplayCountry [" + locale.getDisplayCountry() + "]"));
     }
 
     @Test

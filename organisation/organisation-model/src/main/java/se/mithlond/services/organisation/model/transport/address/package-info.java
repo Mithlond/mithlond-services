@@ -43,7 +43,8 @@
         @XmlJavaTypeAdapter(type = LocalTime.class, value = LocalTimeAdapter.class),
         @XmlJavaTypeAdapter(type = LocalDateTime.class, value = LocalDateTimeAdapter.class),
         @XmlJavaTypeAdapter(type = ZonedDateTime.class, value = ZonedDateTimeAdapter.class),
-        @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class)
+        @XmlJavaTypeAdapter(type = TimeZone.class, value = TimeZoneAdapter.class),
+        @XmlJavaTypeAdapter(type = Locale.class, value = LocaleAdapter.class)
 })
 @XmlAccessorType(XmlAccessType.FIELD)
 package se.mithlond.services.organisation.model.transport.address;
@@ -53,6 +54,7 @@ import se.mithlond.services.shared.spi.jaxb.SharedJaxbPatterns;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateTimeAdapter;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalTimeAdapter;
+import se.mithlond.services.shared.spi.jaxb.adapter.LocaleAdapter;
 import se.mithlond.services.shared.spi.jaxb.adapter.TimeZoneAdapter;
 import se.mithlond.services.shared.spi.jaxb.adapter.ZonedDateTimeAdapter;
 
@@ -66,4 +68,5 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.util.Locale;
 import java.util.TimeZone;

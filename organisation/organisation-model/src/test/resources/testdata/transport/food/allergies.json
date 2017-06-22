@@ -33,6 +33,46 @@
       "birthday": "1975-02-05"
     }
   ],
+  "memberships": [
+    {
+      "jpaId": 100,
+      "loginPermitted": true,
+      "alias": "alias_0",
+      "organisation": "mifflond",
+      "subAlias": "subAlias_0",
+      "emailAlias": "emailAlias_0"
+    },
+    {
+      "jpaId": 101,
+      "loginPermitted": true,
+      "alias": "alias_1",
+      "organisation": "mifflond",
+      "emailAlias": "emailAlias_1"
+    },
+    {
+      "jpaId": 102,
+      "loginPermitted": true,
+      "alias": "alias_2",
+      "organisation": "mifflond",
+      "subAlias": "subAlias_2",
+      "emailAlias": "emailAlias_2"
+    },
+    {
+      "jpaId": 103,
+      "loginPermitted": true,
+      "alias": "alias_3",
+      "organisation": "mifflond",
+      "emailAlias": "emailAlias_3"
+    },
+    {
+      "jpaId": 104,
+      "loginPermitted": true,
+      "alias": "alias_4",
+      "organisation": "mifflond",
+      "subAlias": "subAlias_4",
+      "emailAlias": "emailAlias_4"
+    }
+  ],
   "allergyList": [
     {
       "jpaId": 2,

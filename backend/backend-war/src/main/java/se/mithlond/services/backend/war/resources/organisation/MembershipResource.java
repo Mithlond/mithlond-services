@@ -30,6 +30,7 @@ import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
 
@@ -119,5 +120,19 @@ public class MembershipResource extends AbstractResource {
 
         // All Done
         return toReturn;
+    }
+
+    /**
+     * Retrieves the Allergies for the Membership within the supplied organisation.
+     *
+     * @param orgJpaID The organisation JPA ID.
+     * @param membershipJpaID The membership JPA ID.
+     * @return
+     */
+    @Path("{" + RestfulParameters.MEMBERSHIP_JPA_ID + "}/allergies")
+    @GET
+    public Allergies getAllergiesFor(@PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long orgJpaID,
+                                     @PathParam(RestfulParameters.MEMBERSHIP_JPA_ID) final Long membershipJpaID) {
+
     }
 }

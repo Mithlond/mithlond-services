@@ -25,6 +25,7 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
+import se.mithlond.services.organisation.model.transport.membership.MembershipVO;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
 import se.mithlond.services.organisation.model.user.User;
 
@@ -46,7 +47,7 @@ import java.util.stream.Stream;
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
-        propOrder = {"users", "allergyList"})
+        propOrder = {"users", "memberships", "allergyList"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Allergies extends AbstractLocalizedSimpleTransporter {
 
@@ -56,6 +57,14 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     @XmlElementWrapper
     @XmlElement(name = "user")
     private List<UserVO> users;
+
+    /**
+     * An optional List of all MembershipVOs for UserVOs with supplied AllergyVOs
+     * within the allergyList.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "membership")
+    private List<MembershipVO> memberships;
 
     /**
      * The List of AllergyVOs describing the allergies for the supplied Users.
@@ -69,6 +78,7 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
      */
     public Allergies() {
         this.users = new ArrayList<>();
+        this.memberships = new ArrayList<>();
         this.allergyList = new ArrayList<>();
     }
 
@@ -80,8 +90,9 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
      * @param allergyList      The List of AllergyVOs to wrap within this Allergies transporter.
      */
     public Allergies(final LocaleDefinition localeDefinition,
-            final List<UserVO> users,
-            final List<AllergyVO> allergyList) {
+                     final List<UserVO> users,
+                     final List<MembershipVO> memberships,
+                     final List<AllergyVO> allergyList) {
 
         // Delegate
         this();
@@ -90,6 +101,9 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
         // Assign internal state
         if (users != null) {
             add(users.toArray(new UserVO[users.size()]));
+        }
+        if (memberships != null) {
+            add(memberships.toArray(new MembershipVO[memberships.size()]));
         }
         if (allergyList != null) {
             add(allergyList.toArray(new AllergyVO[allergyList.size()]));
@@ -110,6 +124,26 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
         // Assign internal state
         initialize(localeDefinition);
         add(allergies);
+    }
+
+    /**
+     * Adds the supplied MembershipVO to this Allergies transport, provided they are not null or already added.
+     *
+     * @param memberships The MembershipVOs to add.
+     */
+    public void add(final MembershipVO... memberships) {
+
+        if (memberships != null) {
+            Stream.of(memberships)
+                    .filter(Objects::nonNull)
+                    .forEach(m -> {
+
+                        // Add the MembershipVO, if missing from the current internal state
+                        if (!this.memberships.contains(m)) {
+                            this.memberships.add(m);
+                        }
+                    });
+        }
     }
 
     /**
@@ -195,12 +229,20 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     }
 
     /**
+     * @return The List of shallow MembershipVOs transported.
+     */
+    public List<MembershipVO> getMemberships() {
+        return memberships;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
         return super.toString() + " with "
-                + users.size() + " users and "
+                + users.size() + " users, "
+                + memberships.size() + " memberships and "
                 + allergyList.size() + " allergies.";
     }
 }

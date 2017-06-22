@@ -42,6 +42,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * <p>Entity storage for localized text snippets, relating the text to three things:</p>
@@ -76,7 +77,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
     @JoinColumn(nullable = false)
     @MapsId("localeId")
     @XmlElement(required = true)
-    private LocaleDefinition textLocale;
+    private Locale textLocale;
 
     /**
      * The non-null suite of LocalizedText objects wherein this LocalizedText instance is part.
