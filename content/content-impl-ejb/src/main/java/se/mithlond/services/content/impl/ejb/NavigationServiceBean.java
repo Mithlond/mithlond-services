@@ -23,7 +23,7 @@ package se.mithlond.services.content.impl.ejb;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.jguru.nazgul.core.persistence.model.NazgulEntity;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.content.api.NavigationService;
 import se.mithlond.services.content.api.UnknownOrganisationException;
 import se.mithlond.services.content.model.navigation.AbstractAuthorizedNavItem;
@@ -42,7 +42,7 @@ import se.mithlond.services.shared.authorization.api.SimpleAuthorizer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
-import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
@@ -51,7 +51,9 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceUtil;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -236,9 +238,9 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
     // Private helpers
     //
 
-    private <T> void findAll(final List<T> resultHolder,
-            final StandardMenu currentMenu,
-            final Function<AbstractAuthorizedNavItem, T> visitorFunction) {
+    private void findLanguageTags(final SortedSet<String> resultHolder,
+                                  final StandardMenu currentMenu,
+                                  final Function<AbstractAuthorizedNavItem, SortedSet<String>> visitorFunction) {
 
         // Check sanity
         Validate.notNull(resultHolder, "Cannot handle null 'resultHolder' argument.");
@@ -246,23 +248,23 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         Validate.notNull(visitorFunction, "Cannot handle null 'visitorFunction' argument.");
 
         // Extract data from the currentMenu
-        final T immediateResult = visitorFunction.apply(currentMenu);
+        final SortedSet<String> immediateResult = visitorFunction.apply(currentMenu);
         if (immediateResult != null) {
-            resultHolder.add(immediateResult);
+            resultHolder.addAll(immediateResult);
         }
 
         // Loop through all children of the supplied ResultHolder
         for (AbstractAuthorizedNavItem currentChild : currentMenu.getChildren()) {
 
             // Recurse depth first.
-            final T currentChildResult = visitorFunction.apply(currentChild);
+            final SortedSet<String> currentChildResult = visitorFunction.apply(currentChild);
             if (currentChild instanceof StandardMenu) {
-                findAll(resultHolder, (StandardMenu) currentChild, visitorFunction);
+                findLanguageTags(resultHolder, (StandardMenu) currentChild, visitorFunction);
             }
 
             // Add the result if it was non-null.
             if (currentChildResult != null) {
-                resultHolder.add(currentChildResult);
+                resultHolder.addAll(currentChildResult);
             }
         }
     }
@@ -270,18 +272,24 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
     private SortedSet<LocaleDefinition> getLocalizations(final MenuStructure menuStructure) {
 
         final StandardMenu rootMenu = menuStructure.getRootMenu();
-        final List<List<LocaleDefinition>> intermediary = new ArrayList<>();
+        final SortedSet<String> locales = new TreeSet<>();
 
-        findAll(intermediary, rootMenu, anItem -> {
+        findLanguageTags(locales, rootMenu, anItem -> {
 
             if (anItem instanceof AbstractLinkedNavItem) {
 
                 // In this case, we should be able to find a Localization.
-                final List<LocaleDefinition> toReturn = new ArrayList<>();
+                final SortedSet<String> toReturn = new TreeSet<>();
 
                 // Populate and return
                 final AbstractLinkedNavItem alni = (AbstractLinkedNavItem) anItem;
-                toReturn.addAll(alni.getLocalizedTexts().getContainedLocalizations());
+                alni.getLocalizedTexts()
+                        .getContainedLocalizations()
+                        .stream()
+                        .map(LocaleDefinition::getLocale)
+                        .map(Locale::toLanguageTag)
+                        .filter(l -> !toReturn.contains(l))
+                        .forEach(toReturn::add);
                 return toReturn;
             }
 
@@ -289,39 +297,44 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
             return null;
         });
 
-        // Collect all found localizations.
-        final SortedSet<LocaleDefinition> allLocaleDefinitions = new TreeSet<>();
-        intermediary.forEach(allLocaleDefinitions::addAll);
+        // Pad the collections to cope with JPA's inability to deal with empty collections.
+        final int numLocales = padAndGetSize(locales, TimeFormat.SWEDISH_LOCALE.toLanguageTag());
 
-        final List<LocaleDefinition> alreadyPersisted = allLocaleDefinitions
-                .stream()
-                .filter(current -> current.getId() != 0L)
-                .collect(Collectors.toList());
-        final List<LocaleDefinition> needsPersisting = allLocaleDefinitions
-                .stream()
-                .filter(current -> current.getId() == 0L)
-                .filter(current -> !alreadyPersisted.contains(current))
-                .collect(Collectors.toList());
+        final List<LocaleDefinition> managedLocales = entityManager.createNamedQuery(
+                LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_TAGS, LocaleDefinition.class)
+                .setParameter(OrganisationPatterns.PARAM_NUM_LANGUAGE_TAGS, numLocales)
+                .setParameter(OrganisationPatterns.PARAM_LANGUAGE_TAGS, locales)
+                .getResultList();
+
+        final Set<LocaleDefinition> nonFoundLocalizations = managedLocales.stream()
+                .filter(ld -> !locales.contains(ld.getLocale().toLanguageTag()))
+                .collect(Collectors.toSet());
 
         if (log.isDebugEnabled()) {
+
+            final String alreadyPersisted = managedLocales
+                    .stream()
+                    .map(ld -> ld.getLocale().toLanguageTag())
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<None>");
+
+            final String needsPersisting = nonFoundLocalizations
+                    .stream()
+                    .map(ld -> ld.getLocale().toLanguageTag())
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<None>");
+
             log.debug("Found Localizations.... "
                     + "\n  Already persisted: " + alreadyPersisted
-                    + "\n  Needs persisting : " + needsPersisting);
+                    + "\n  Unknown/Needs persisting : " + needsPersisting);
         }
 
-        final List<Long> alreadyPersistedIDs = alreadyPersisted.size() > 0
-                ? alreadyPersisted.stream().distinct().map(NazgulEntity::getId).collect(Collectors.toList())
-                : new ArrayList<>();
+        if (nonFoundLocalizations.size() > 0) {
 
-        final List<LocaleDefinition> managedLocales = alreadyPersisted.size() > 0
-                ? entityManager.createNamedQuery(LocaleDefinition.NAMEDQ_GET_BY_PRIMARY_KEYS, LocaleDefinition.class)
-                .setParameter(OrganisationPatterns.PARAM_IDS, alreadyPersistedIDs)
-                .getResultList()
-                : new ArrayList<>();
+            nonFoundLocalizations
+                    .forEach(ld -> log.warn("LocaleDefinition " + ld + " not persisted."));
 
-        if (needsPersisting.size() > 0) {
-
-            needsPersisting.stream()
+                    /*
                     .filter(current -> current.getLocale().getCountry() != null
                             && current.getLocale().getLanguage() != null)
                     .map(current -> {
@@ -356,6 +369,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         // Add the (now) managed Localization to the holder List.
                         managedLocales.add((LocaleDefinition) current);
                     });
+                    */
         }
 
         // Sort and return

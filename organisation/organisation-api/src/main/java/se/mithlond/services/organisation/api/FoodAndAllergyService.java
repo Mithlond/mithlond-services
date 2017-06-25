@@ -38,6 +38,14 @@ public interface FoodAndAllergyService extends JpaCudService {
             @NotNull final FoodAndAllergySearchParameters searchParameters);
 
     /**
+     * Retrieves the Set of Allergies for the supplied Membership.
+     *
+     * @param membership The Membership for which allergies should be retrieved.
+     * @return A SortedSet containing the known Allergy objects for the supplied Membership.
+     */
+    SortedSet<Allergy> getAllergiesFor(@NotNull final Membership membership);
+
+    /**
      * Retrieves a SortedMap relating Memberships to their corresponding allergies,
      * for all Memberships admitted to a particular Activity.
      *

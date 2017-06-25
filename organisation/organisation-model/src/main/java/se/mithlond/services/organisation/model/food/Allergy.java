@@ -57,9 +57,10 @@ import java.io.Serializable;
  */
 @NamedQueries({
         @NamedQuery(name = Allergy.NAMEDQ_GET_BY_USERID,
-                query = "select a from Allergy a where a.user.id = ?1 order by a.severity"),
+                query = "select a from Allergy a where a.user.id = :" + OrganisationPatterns.PARAM_USER_ID
+                        + " order by a.severity"),
         @NamedQuery(name = Allergy.NAMEDQ_GET_ALL,
-                query = "select a from Allergy a order by a.severity"),
+                query = "select a from Allergy a order by a.severity, a.user.firstName"),
         @NamedQuery(name = Allergy.NAMEDQ_GET_BY_FOOD_ID,
                 query = "select a from Allergy a where a.food.id = :foodID order by a.severity")
 })

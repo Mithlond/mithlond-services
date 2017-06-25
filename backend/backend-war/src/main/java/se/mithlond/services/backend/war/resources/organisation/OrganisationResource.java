@@ -28,13 +28,10 @@ import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
-import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.food.Allergy;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
-import se.mithlond.services.organisation.model.transport.localization.Localizations;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
 
 import javax.ejb.EJB;
@@ -142,12 +139,14 @@ public class OrganisationResource extends AbstractResource {
         // Find the LocaleDefinition to use.
         final Organisations organisations = organisationService.getOrganisation(jpaID, true);
         final Locale locale = organisations.getOrganisations().first().getLocale();
-        final LocaleDefinition localeDefinition = new LocaleDefinition(locale);
 
         final SortedMap<Membership, SortedSet<Allergy>> membershipsAllergies =
                 foodAndAllergyService.getAllergiesFor(searchParameters);
 
-        final Allergies toReturn = new Allergies(localeDefinition);
-        membershipsAllergies.values().forEach(c -> toReturn.add());
+        final Allergies toReturn = new Allergies(locale);
+        membershipsAllergies.values().forEach(c -> c.forEach(toReturn::add));
+
+        // All Done.
+        return toReturn;
     }
 }

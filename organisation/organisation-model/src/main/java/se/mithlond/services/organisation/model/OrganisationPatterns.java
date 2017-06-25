@@ -202,6 +202,16 @@ public final class OrganisationPatterns {
     public static final String PARAM_LANGUAGE = "language";
 
     /**
+     * NamedQuery parameter name for the number of language tags.
+     */
+    public static final String PARAM_NUM_LANGUAGE_TAGS = "numLanguageTags";
+
+    /**
+     * NamedQuery parameter name for language tags.
+     */
+    public static final String PARAM_LANGUAGE_TAGS = "languageTags";
+
+    /**
      * NamedQuery parameter name for a pattern matching the country in an Address or Localization.
      */
     public static final String PARAM_COUNTRY = "country";
@@ -250,6 +260,11 @@ public final class OrganisationPatterns {
      * NamedQuery parameter name for primary keys ("IDs").
      */
     public static final String PARAM_IDS = "ids";
+
+    /**
+     * NamedQuery parameter name for a USER (JPA) ID.
+     */
+    public static final String PARAM_USER_ID = "userid";
 
     /**
      * NamedQuery parameter name for foodName.

@@ -31,6 +31,7 @@
         <class>se.mithlond.services.shared.spi.jpa.converter.LocalDateAttributeConverter</class>
         <class>se.mithlond.services.shared.spi.jpa.converter.LocalDateTimeAttributeConverter</class>
         <class>se.mithlond.services.shared.spi.jpa.converter.LocalTimeAttributeConverter</class>
+        <class>se.mithlond.services.shared.spi.jpa.converter.LocaleConverter</class>
 
         <!-- ===============================================
           |  Nazgul Core Entities

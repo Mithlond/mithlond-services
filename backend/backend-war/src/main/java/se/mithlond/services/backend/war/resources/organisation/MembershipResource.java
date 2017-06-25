@@ -26,9 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
+import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
+import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
@@ -41,6 +43,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.util.List;
+import java.util.SortedSet;
 
 /**
  * Resource facade to Memberships and Membership management.
@@ -60,6 +63,9 @@ public class MembershipResource extends AbstractResource {
 
     @EJB
     private OrganisationService organisationService;
+
+    @EJB
+    private FoodAndAllergyService foodAndAllergyService;
 
     /**
      * Retrieves a {@link Memberships} wrapper containing all Membership (or MembershipVO), including the
@@ -125,14 +131,24 @@ public class MembershipResource extends AbstractResource {
     /**
      * Retrieves the Allergies for the Membership within the supplied organisation.
      *
-     * @param orgJpaID The organisation JPA ID.
      * @param membershipJpaID The membership JPA ID.
-     * @return
+     * @return A populated Allergies VO carrying all allergies for the supplied Membership.
      */
     @Path("{" + RestfulParameters.MEMBERSHIP_JPA_ID + "}/allergies")
     @GET
-    public Allergies getAllergiesFor(@PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long orgJpaID,
-                                     @PathParam(RestfulParameters.MEMBERSHIP_JPA_ID) final Long membershipJpaID) {
+    public Allergies getAllergiesFor(@PathParam(RestfulParameters.MEMBERSHIP_JPA_ID) final Long membershipJpaID) {
 
+        // Create the return value
+        final Allergies toReturn = new Allergies();
+
+        // Find the allergies for the supplied Membership
+        final Membership theMembership = membershipService.findByPrimaryKey(Membership.class, membershipJpaID);
+        final SortedSet<Allergy> foundAllergies = foodAndAllergyService.getAllergiesFor(theMembership);
+
+        // Repack into the Allergies return object.
+        foundAllergies.forEach(toReturn::add);
+
+        // All Done.
+        return toReturn;
     }
 }

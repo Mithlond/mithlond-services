@@ -59,7 +59,11 @@ import java.util.stream.Stream;
 @NamedQueries({
         @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LOCALE,
                 query = "select l from LocaleDefinition l "
-                        + " where l.locale like :" + OrganisationPatterns.PARAM_LANGUAGE)
+                        + " where l.locale like :" + OrganisationPatterns.PARAM_LANGUAGE),
+        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_TAGS,
+                query = "select l from LocaleDefinition l "
+                        + " where ( 0 = :" + OrganisationPatterns.PARAM_NUM_LANGUAGE_TAGS
+                        + " or l.locale in :" + OrganisationPatterns.PARAM_LANGUAGE_TAGS + " ) ")
 })
 @Entity
 @Table(name = "locale_definitions")
@@ -71,6 +75,11 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      * NamedQuery for getting Localizations having a given language.
      */
     public static final String NAMEDQ_GET_BY_LOCALE = "LocaleDefinition.getByLocale";
+
+    /**
+     * NamedQuery for getting Localizations having one of the supplied LanguageTags.
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE_TAGS = "LocaleDefinition.getByLanguageTags";
 
     /**
      * <p>Unmodifiable Set containing un-managed version of the LocaleDefinition constants found within this class.</p>
