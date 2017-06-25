@@ -21,24 +21,24 @@
  */
 package se.mithlond.services.organisation.model.localization;
 
-import se.jguru.nazgul.core.persistence.model.NazgulEntity;
+import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
@@ -47,23 +47,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Definition for a persisted Locale; required since {@link Locale} is not JAXB- or JPA-annotated.
- * The LocaleDefinitions hence has the appearance of an Enum, persisted within the Database.
+ * Definition for a persisted Locale which uses {@link se.mithlond.services.shared.spi.jaxb.adapter.LocaleAdapter} to
+ * convert to a JAXB representation and {@link se.mithlond.services.shared.spi.jpa.converter.LocaleConverter} to
+ * convert to a JPA representation. This is required since the native {@link Locale} class has no JAXB- or
+ * JPA-annotations. The LocaleDefinitions hence has the appearance of an Enum, persisted within the Database.
+ * However, the value persisted and transmitted correspond to the {@link Locale#toLanguageTag()} and
+ * {@link Locale#forLanguageTag(String)} values respectively.
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
         @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LOCALE,
                 query = "select l from LocaleDefinition l "
-                        + " where l.locale like :" + OrganisationPatterns.PARAM_LANGUAGE + "%")
+                        + " where l.locale like :" + OrganisationPatterns.PARAM_LANGUAGE)
 })
 @Entity
-@Table(name = "locale_definitions",
-        uniqueConstraints = {@UniqueConstraint(name = "enum_constraint_for_locales",
-                columnNames = {"language", "country", "variant"})})
+@Table(name = "locale_definitions")
 @XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"locale"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleDefinition> {
+public class LocaleDefinition implements Serializable, Validatable, Comparable<LocaleDefinition> {
 
     /**
      * NamedQuery for getting Localizations having a given language.
@@ -80,7 +82,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
                     .collect(Collectors.toSet()));
 
 
-    @Basic(optional = false)
+    @Id
     @Column(nullable = false, length = 32)
     @XmlAttribute(required = true)
     private Locale locale;
@@ -131,7 +133,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
      */
     @Override
     public String toString() {
-        return "LocaleDefinition [" + getId() + "]: " + this.locale.toLanguageTag();
+        return "LocaleDefinition: " + this.locale.toLanguageTag();
     }
 
     /**
@@ -145,11 +147,6 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        // Delegate
-        if (!super.equals(o)) {
             return false;
         }
 
@@ -187,7 +184,7 @@ public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleD
      * {@inheritDoc}
      */
     @Override
-    protected void validateEntityState() throws InternalStateValidationException {
+    public void validateInternalState() throws InternalStateValidationException {
 
         // Check sanity
         InternalStateValidationException.create()

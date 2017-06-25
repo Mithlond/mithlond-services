@@ -21,11 +21,10 @@
  */
 package se.mithlond.services.organisation.model.transport.food;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,6 +32,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -104,22 +104,22 @@ public class AllergyVO extends AbstractSimpleTransportable {
      * Compound constructor converting the supplied Allergy and the optional LocaleDefinition to
      * a shallow-detail AllergyVO instance.
      *
-     * @param allergy          The Allergy to convert.
-     * @param localeDefinition The LocaleDefinition to use for describing the allergy severity.
+     * @param allergy The Allergy to convert.
+     * @param locale  The Locale describing the language/localization of the allergy severity.
      */
-    public AllergyVO(final Allergy allergy, final LocaleDefinition localeDefinition) {
+    public AllergyVO(final Allergy allergy, final Locale locale) {
 
         // Delegate
         super(allergy.getUser().getId());
-        Validate.notNull(localeDefinition, "localeDefinition");
+        Validate.notNull(locale, "locale");
 
         // Assign internal state
         final String classifier = Localizable.DEFAULT_CLASSIFIER;
-        this.description = allergy.getFood().getLocalizedFoodName().getText(localeDefinition, classifier)
+        this.description = allergy.getFood().getLocalizedFoodName().getText(locale, classifier)
                 + " : "
-                + allergy.getSeverity().getFullDescription().getText(localeDefinition, classifier);
-        this.severity = allergy.getSeverity().getShortDescription().getText(localeDefinition, classifier);
-        this.foodName = allergy.getFood().getLocalizedFoodName().getText(localeDefinition, classifier);
+                + allergy.getSeverity().getFullDescription().getText(locale, classifier);
+        this.severity = allergy.getSeverity().getShortDescription().getText(locale, classifier);
+        this.foodName = allergy.getFood().getLocalizedFoodName().getText(locale, classifier);
         this.foodJpaID = allergy.getFood().getId();
     }
 

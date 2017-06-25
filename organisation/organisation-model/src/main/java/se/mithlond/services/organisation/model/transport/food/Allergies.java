@@ -23,7 +23,6 @@ package se.mithlond.services.organisation.model.transport.food;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
 import se.mithlond.services.organisation.model.transport.membership.MembershipVO;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
@@ -37,6 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -85,18 +85,18 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     /**
      * Compound constructor creating an Allergies transport wrapping the supplied data.
      *
-     * @param localeDefinition A non-null LocaleDefinition used throughout this Allergies transporter.
-     * @param users            The List of UserVOs to wrap within this Allergies transporter.
-     * @param allergyList      The List of AllergyVOs to wrap within this Allergies transporter.
+     * @param locale      A non-null Locale used throughout this Allergies transporter.
+     * @param users       The List of UserVOs to wrap within this Allergies transporter.
+     * @param allergyList The List of AllergyVOs to wrap within this Allergies transporter.
      */
-    public Allergies(final LocaleDefinition localeDefinition,
+    public Allergies(final Locale locale,
                      final List<UserVO> users,
                      final List<MembershipVO> memberships,
                      final List<AllergyVO> allergyList) {
 
         // Delegate
         this();
-        initialize(localeDefinition);
+        initialize(locale);
 
         // Assign internal state
         if (users != null) {
@@ -113,16 +113,16 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     /**
      * Creates an allergies transport wrapper containing the supplied Allergies.
      *
-     * @param localeDefinition A non-null LocaleDefinition used throughout this Allergies transporter.
-     * @param allergies        The Allergy Entities to add to this Allergies transporter.
+     * @param locale    A non-null Locale used throughout this Allergies transporter.
+     * @param allergies The Allergy Entities to add to this Allergies transporter.
      */
-    public Allergies(final LocaleDefinition localeDefinition, final Allergy... allergies) {
+    public Allergies(final Locale locale, final Allergy... allergies) {
 
         // Delegate
         this();
 
         // Assign internal state
-        initialize(localeDefinition);
+        initialize(locale);
         add(allergies);
     }
 
@@ -203,7 +203,7 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
                         // Extract the shallow-state Allergy data
                         final User user = allergy.getUser();
                         final UserVO userVO = new UserVO(user);
-                        final AllergyVO allergyVO = new AllergyVO(allergy, getLocaleDefinition());
+                        final AllergyVO allergyVO = new AllergyVO(allergy, getLocale());
 
                         // Add the UserVOs, if missing from the current internal state
                         add(userVO);

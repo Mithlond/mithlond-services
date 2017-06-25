@@ -21,10 +21,10 @@
  */
 package se.mithlond.services.organisation.model.localization;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -42,7 +42,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.util.Locale;
 
 /**
  * <p>Entity storage for localized text snippets, relating the text to three things:</p>
@@ -77,7 +76,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
     @JoinColumn(nullable = false)
     @MapsId("localeId")
     @XmlElement(required = true)
-    private Locale textLocale;
+    private LocaleDefinition textLocale;
 
     /**
      * The non-null suite of LocalizedText objects wherein this LocalizedText instance is part.
@@ -126,7 +125,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
     /**
      * Compound constructor creating a LocalizedText wrapping the supplied data.
      *
-     * @param textLocale The non-null LocaleDefinition for this LocaleText. The LocaleDefinition is the sole
+     * @param textLocale The non-null Locale for this LocaleText, which is the sole
      *                   identifier of the language/locale of the supplied text.
      * @param suite      The parent/suite of LocalizedText wherein this LocalizedText is a detail/part.
      * @param classifier The non-empty classifier of this LocalizedText instance.

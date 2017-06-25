@@ -1,24 +1,16 @@
 {
   "localeDefinitions": [
     {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "en..none..none"
+      "locale": "en"
     },
     {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "en..US..none"
+      "locale": "en-US"
     },
     {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "no..none..none"
+      "locale": "no-NO"
     },
     {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "sv..none..none"
+      "locale": "sv"
     }
   ],
   "localizedTextsList": [
@@ -27,25 +19,23 @@
       "version": 0,
       "suiteIdentifier": "Hello",
       "defaultLocale": {
-        "jpaId": 0,
-        "version": 0,
-        "compactStringForm": "sv..none..none"
+        "locale": "sv"
       },
       "textVOs": [
         {
-          "locale": "sv..none..none",
+          "locale": "sv",
           "value": "Hejsan"
         },
         {
-          "locale": "no..none..none",
+          "locale": "no-NO",
           "value": "Morrn Da"
         },
         {
-          "locale": "en..none..none",
+          "locale": "en",
           "value": "Hello"
         },
         {
-          "locale": "en..US..none",
+          "locale": "en-US",
           "value": "Hi"
         }
       ]

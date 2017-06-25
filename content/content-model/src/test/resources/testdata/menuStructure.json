@@ -4,9 +4,7 @@
   "version": 0,
   "localeDefinitions": [
     {
-      "jpaId": 0,
-      "version": 0,
-      "compactStringForm": "sv..SE..none"
+      "locale": "sv-SE"
     }
   ],
   "organisationName": "name",
@@ -19,13 +17,11 @@
       "version": 0,
       "suiteIdentifier": "rootMenuTexts",
       "defaultLocale": {
-        "jpaId": 0,
-        "version": 0,
-        "compactStringForm": "sv..SE..none"
+        "locale": "sv-SE"
       },
       "textVOs": [
         {
-          "locale": "sv..SE..none",
+          "locale": "sv-SE",
           "value": "Roooot"
         }
       ]
@@ -47,13 +43,11 @@
             "version": 0,
             "suiteIdentifier": "firstMenuTexts",
             "defaultLocale": {
-              "jpaId": 0,
-              "version": 0,
-              "compactStringForm": "sv..SE..none"
+              "locale": "sv-SE"
             },
             "textVOs": [
               {
-                "locale": "sv..SE..none",
+                "locale": "sv-SE",
                 "value": "Första Menyn"
               }
             ]
@@ -77,13 +71,11 @@
                   "version": 0,
                   "suiteIdentifier": "membersPageTexts",
                   "defaultLocale": {
-                    "jpaId": 0,
-                    "version": 0,
-                    "compactStringForm": "sv..SE..none"
+                    "locale": "sv-SE"
                   },
                   "textVOs": [
                     {
-                      "locale": "sv..SE..none",
+                      "locale": "sv-SE",
                       "value": "Medlemssida"
                     }
                   ]
@@ -103,13 +95,11 @@
                   "version": 0,
                   "suiteIdentifier": "membersIdeaPageTexts",
                   "defaultLocale": {
-                    "jpaId": 0,
-                    "version": 0,
-                    "compactStringForm": "sv..SE..none"
+                    "locale": "sv-SE"
                   },
                   "textVOs": [
                     {
-                      "locale": "sv..SE..none",
+                      "locale": "sv-SE",
                       "value": "Idésida"
                     }
                   ]
@@ -140,13 +130,11 @@
             "version": 0,
             "suiteIdentifier": "calendarPageTexts",
             "defaultLocale": {
-              "jpaId": 0,
-              "version": 0,
-              "compactStringForm": "sv..SE..none"
+              "locale": "sv-SE"
             },
             "textVOs": [
               {
-                "locale": "sv..SE..none",
+                "locale": "sv-SE",
                 "value": "Aktivitetskalender"
               }
             ]

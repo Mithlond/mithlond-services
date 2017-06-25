@@ -24,7 +24,6 @@ package se.mithlond.services.organisation.model.transport.food;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
 
@@ -36,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
@@ -89,11 +89,11 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
      * Compound constructor creating a Foods instance wrapping the supplied (full-detail) Food objects.
      *
      * @param foods                 The Food objects to transport.
-     * @param localeDefinition      The non-null LocaleDefinition used within this Foods transport wrapper.
+     * @param localeDefinition      The Locale used to indicate standard language within this Foods transport wrapper.
      * @param shallowRepresentation if {@code true}, convert all supplied Food objects to FoodVOs before transport
      *                              (i.e. use the shallow-detail representation for transport form).
      */
-    public Foods(final boolean shallowRepresentation, final LocaleDefinition localeDefinition, final Food... foods) {
+    public Foods(final boolean shallowRepresentation, final Locale localeDefinition, final Food... foods) {
 
         // Delegate
         this();
@@ -132,7 +132,7 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
 
                 if (shallowRepresentation) {
 
-                    final FoodVO toAdd = new FoodVO(food, this.getLocaleDefinition());
+                    final FoodVO toAdd = new FoodVO(food, this.getLocale());
                     if (!this.foods.contains(toAdd)) {
                         this.foods.add(toAdd);
                     }
@@ -141,7 +141,7 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
 
                     // Use the DEFAULT_CLASSIFIER for the food name localization.
                     final String localizedFoodName = food.getLocalizedFoodName().getText(
-                            this.getLocaleDefinition(),
+                            this.getLocale(),
                             Localizable.DEFAULT_CLASSIFIER);
 
                     Food existingFood = null;
@@ -151,7 +151,7 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
                                 .filter(current ->
                                         current
                                                 .getLocalizedFoodName()
-                                                .getText(this.getLocaleDefinition(), Localizable.DEFAULT_CLASSIFIER)
+                                                .getText(this.getLocale(), Localizable.DEFAULT_CLASSIFIER)
                                                 .equalsIgnoreCase(localizedFoodName))
                                 .findFirst()
                                 .orElse(null);

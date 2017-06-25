@@ -30,8 +30,7 @@ import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
-import se.mithlond.services.organisation.model.localization.Localizable;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -83,7 +82,7 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/shallowFoods.xml");
         final Foods unitUnderTest = new Foods(true,
-                Localizable.DEFAULT_LOCALE,
+                TimeFormat.SWEDISH_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
@@ -102,7 +101,7 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/shallowFoods.json");
         final Foods unitUnderTest = new Foods(true,
-                Localizable.DEFAULT_LOCALE,
+                TimeFormat.SWEDISH_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
@@ -121,7 +120,7 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedFoods.xml");
         final Foods unitUnderTest = new Foods(false,
-                Localizable.DEFAULT_LOCALE,
+                TimeFormat.SWEDISH_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
@@ -140,7 +139,7 @@ public class FoodsTest extends AbstractEntityTest {
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedFoods.json");
         final Foods unitUnderTest = new Foods(false,
-                Localizable.DEFAULT_LOCALE,
+                TimeFormat.SWEDISH_LOCALE,
                 foodsAndCategories.cauliflower,
                 foodsAndCategories.carrot,
                 foodsAndCategories.beetroot);
@@ -261,8 +260,8 @@ public class FoodsTest extends AbstractEntityTest {
         Assert.assertNotNull(foods);
 
         // #0) Check the locale definition
-        final LocaleDefinition localeDefinition = foods.getLocaleDefinition();
-        Assert.assertEquals(Localizable.DEFAULT_LOCALE, localeDefinition);
+        final Locale theLocale = foods.getLocale();
+        Assert.assertEquals(TimeFormat.SWEDISH_LOCALE, theLocale);
 
         // #1) Check the categories
         final SortedSet<Category> categories = foods.getCategories();
@@ -280,7 +279,7 @@ public class FoodsTest extends AbstractEntityTest {
             Assert.assertTrue(foods.getDetailedFoods().isEmpty());
 
             final List<FoodVO> shallowFoods = foods.getFoods();
-            foodStream.map(food -> new FoodVO(food, localeDefinition))
+            foodStream.map(food -> new FoodVO(food, theLocale))
                     .forEach(shallowFood -> Assert.assertTrue(shallowFoods.contains(shallowFood)));
 
         } else {

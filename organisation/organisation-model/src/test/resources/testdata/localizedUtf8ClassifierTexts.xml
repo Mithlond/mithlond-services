@@ -20,26 +20,25 @@
   limitations under the License.
   #L%
   -->
-
 <organisation:localizedTextsHolder xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <localeDefinitions>
-        <localization jpaId="0" version="0" compactStringForm="en..none..none"/>
-        <localization jpaId="0" version="0" compactStringForm="en..US..none"/>
-        <localization jpaId="0" version="0" compactStringForm="no..none..none"/>
-        <localization jpaId="0" version="0" compactStringForm="sv..none..none"/>
+        <localization locale="en"/>
+        <localization locale="en-US"/>
+        <localization locale="no-NO"/>
+        <localization locale="sv"/>
     </localeDefinitions>
     <localizedTextsList>
         <localization jpaId="0" version="0">
             <suiteIdentifier>Hello</suiteIdentifier>
-            <defaultLocale jpaId="0" version="0" compactStringForm="sv..none..none"/>
+            <defaultLocale locale="sv"/>
             <textVOs>
-                <text locale="sv..none..none">Hejsan</text>
-                <text locale="no..none..none">Morrn Da</text>
-                <text locale="en..none..none">Hello</text>
-                <text locale="en..US..none">Hi</text>
-                <text locale="no..none..none" classifier="shåårtDesc">Mårning Dø</text>
-                <text locale="en..none..none" classifier="shåårtDesc">Hëllööö?</text>
-                <text locale="sv..none..none" classifier="shåårtDesc">É du gô eller?</text>
+                <text locale="sv">Hejsan</text>
+                <text locale="no-NO">Morrn Da</text>
+                <text locale="en">Hello</text>
+                <text locale="en-US">Hi</text>
+                <text locale="no-NO" classifier="shåårtDesc">Mårning Dø</text>
+                <text locale="en" classifier="shåårtDesc">Hëllööö?</text>
+                <text locale="sv-SE" classifier="shåårtDesc">É du gô eller?</text>
             </textVOs>
         </localization>
     </localizedTextsList>

@@ -27,9 +27,11 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.localization.helpers.LocalizedTextsHolder;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,9 +50,9 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
 
         final String classifier = Localizable.DEFAULT_CLASSIFIER;
         unitUnderTest = new LocalizedTexts("Hello", new LocaleDefinition("sv"), classifier, "Hejsan");
-        unitUnderTest.setText(new LocaleDefinition("no"), classifier, "Morrn Da");
-        unitUnderTest.setText(new LocaleDefinition("en"), classifier, "Hello");
-        unitUnderTest.setText(new LocaleDefinition("en", "US", null), classifier, "Hi");
+        unitUnderTest.setText(TimeFormat.NORWEGIAN_LOCALE, classifier, "Morrn Da");
+        unitUnderTest.setText(Locale.ENGLISH, classifier, "Hello");
+        unitUnderTest.setText(Locale.US, classifier, "Hi");
 
         holder = new LocalizedTextsHolder();
         holder.addAll(unitUnderTest);
@@ -77,9 +79,9 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
 
         // Assemble
         final String shortUtf8Classifier = "shåårtDesc";
-        unitUnderTest.setText(new LocaleDefinition("no"), shortUtf8Classifier, "Mårning Dø");
-        unitUnderTest.setText(new LocaleDefinition("en"), shortUtf8Classifier, "Hëllööö?");
-        unitUnderTest.setText(new LocaleDefinition("sv"), shortUtf8Classifier, "É du gô eller?");
+        unitUnderTest.setText(TimeFormat.NORWEGIAN_LOCALE, shortUtf8Classifier, "Mårning Dø");
+        unitUnderTest.setText(Locale.ENGLISH, shortUtf8Classifier, "Hëllööö?");
+        unitUnderTest.setText(TimeFormat.SWEDISH_LOCALE, shortUtf8Classifier, "É du gô eller?");
 
         final String expected = XmlTestUtils.readFully("testdata/localizedUtf8ClassifierTexts.xml");
 
@@ -96,9 +98,9 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
 
         // Assemble
         final String shortUtf8Classifier = "shåårtDesc";
-        unitUnderTest.setText(new LocaleDefinition("no"), shortUtf8Classifier, "Mårning Dø");
-        unitUnderTest.setText(new LocaleDefinition("en"), shortUtf8Classifier, "Hëllööö?");
-        unitUnderTest.setText(new LocaleDefinition("sv"), shortUtf8Classifier, "É du gô eller?");
+        unitUnderTest.setText(TimeFormat.NORWEGIAN_LOCALE, shortUtf8Classifier, "Mårning Dø");
+        unitUnderTest.setText(Locale.ENGLISH, shortUtf8Classifier, "Hëllööö?");
+        unitUnderTest.setText(TimeFormat.SWEDISH_LOCALE, shortUtf8Classifier, "É du gô eller?");
 
         final String expected = XmlTestUtils.readFully("testdata/localizedUtf8ClassifierTexts.json");
 

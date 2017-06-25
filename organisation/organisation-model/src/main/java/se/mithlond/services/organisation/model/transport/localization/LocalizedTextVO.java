@@ -21,22 +21,19 @@
  */
 package se.mithlond.services.organisation.model.transport.localization;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.localization.LocalizedText;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -52,7 +49,7 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
      * The compact transport form for a Localization.
      */
     @XmlAttribute(required = true)
-    private String locale;
+    private Locale locale;
 
     /**
      * The classifier of this LocalizedTextVO.
@@ -75,31 +72,31 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
     /**
      * Compound constructor, creating a LocalizedText wrapping the supplied values.
      *
-     * @param localeDefinition a non-null Localization.
-     * @param classifier       a non-empty classifier.
-     * @param text             a non-empty text.
+     * @param locale     a non-null Localization.
+     * @param classifier a non-empty classifier.
+     * @param text       a non-empty text.
      */
-    public LocalizedTextVO(final LocaleDefinition localeDefinition, final String classifier, final String text) {
+    public LocalizedTextVO(final Locale locale, final String classifier, final String text) {
 
         // Check sanity
-        Validate.notNull(localeDefinition, "localeDefinition");
+        Validate.notNull(locale, "locale");
         Validate.notEmpty(text, "text");
         Validate.notEmpty(classifier, "classifier");
 
         // Assign internal state
         this.text = text;
         this.classifier = classifier;
-        this.locale = localeDefinition.toString();
+        this.locale = locale;
     }
 
     /**
      * Convenience constructor creating a LocalizedTextVO using {@link Localizable#DEFAULT_CLASSIFIER} for classifier.
      *
-     * @param localeDefinition a non-null Localization.
-     * @param text             a non-null text.
+     * @param locale a non-null Locale.
+     * @param text   a non-null text.
      */
-    public LocalizedTextVO(final LocaleDefinition localeDefinition, final String text) {
-        this(localeDefinition, Localizable.DEFAULT_CLASSIFIER, text);
+    public LocalizedTextVO(final Locale locale, final String text) {
+        this(locale, Localizable.DEFAULT_CLASSIFIER, text);
     }
 
     /**
@@ -108,14 +105,14 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
      * @param localizedText a non-null LocalizedText instance.
      */
     public LocalizedTextVO(final LocalizedText localizedText) {
-        this(localizedText.getTextLocale(), localizedText.getClassifier(), localizedText.getText());
+        this(localizedText.getTextLocale().getLocale(), localizedText.getClassifier(), localizedText.getText());
     }
 
     /**
      * @return The wrapped Localization.
      */
-    public LocaleDefinition getLocalization() {
-        return LocaleDefinition.parse(locale);
+    public Locale getLocale() {
+        return locale;
     }
 
     /**
@@ -146,7 +143,7 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
         }
 
         // Delegate to internals.
-        int toReturn = locale.compareTo(that.locale);
+        int toReturn = locale.toLanguageTag().compareTo(that.locale.toLanguageTag());
         if (toReturn == 0) {
             toReturn = text.compareTo(that.text);
         }
@@ -187,7 +184,7 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
     private void beforeMarshal(final Marshaller marshaller) {
 
         // Don't transport the "Default" classifier.
-        if(Localizable.DEFAULT_CLASSIFIER.equals(classifier)) {
+        if (Localizable.DEFAULT_CLASSIFIER.equals(classifier)) {
             this.classifier = null;
         }
     }
@@ -200,7 +197,7 @@ public class LocalizedTextVO implements Comparable<LocalizedTextVO> {
     private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
 
         // Resurrect the "Default" if we received a 'null' classifier
-        if(this.classifier == null) {
+        if (this.classifier == null) {
             this.classifier = Localizable.DEFAULT_CLASSIFIER;
         }
     }

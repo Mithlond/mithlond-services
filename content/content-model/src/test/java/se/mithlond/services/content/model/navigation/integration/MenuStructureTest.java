@@ -31,7 +31,6 @@ import se.mithlond.services.content.model.navigation.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -66,14 +65,14 @@ public class MenuStructureTest extends AbstractEntityTest {
 
         rootMenu = StandardMenu.getBuilder()
                 .withDomId("rootMenu")
-                .withLocalizedText("rootMenuTexts", LocaleDefinition.SWEDISH_LOCALE, "Roooot")
+                .withLocalizedText("rootMenuTexts", TimeFormat.SWEDISH_LOCALE, "Roooot")
                 .build();
 
         menuStructure = new MenuStructure(rootMenu, organisation);
 
         firstMenu = StandardMenu.getBuilder()
                 .withDomId("firstMenu")
-                .withLocalizedText("firstMenuTexts", LocaleDefinition.SWEDISH_LOCALE, "Första Menyn")
+                .withLocalizedText("firstMenuTexts", TimeFormat.SWEDISH_LOCALE, "Första Menyn")
                 .withHref("/firstMenu")
                 .withIconIdentifier("cog")
                 .withTabIndex(1)
@@ -85,7 +84,7 @@ public class MenuStructureTest extends AbstractEntityTest {
                 .withDomId("membersPage")
                 .withHref("/members/list")
                 .withIconIdentifier("man")
-                .withLocalizedText("membersPageTexts", LocaleDefinition.SWEDISH_LOCALE, "Medlemssida")
+                .withLocalizedText("membersPageTexts", TimeFormat.SWEDISH_LOCALE, "Medlemssida")
                 .build());
 
         firstMenu.addChild(new SeparatorMenuItem());
@@ -93,14 +92,14 @@ public class MenuStructureTest extends AbstractEntityTest {
         firstMenu.addChild(StandardMenuItem.getBuilder()
                 .withDomId("membersIdeaPage")
                 .withHref("/mithlond/members/ideas")
-                .withLocalizedText("membersIdeaPageTexts", LocaleDefinition.SWEDISH_LOCALE, "Idésida")
+                .withLocalizedText("membersIdeaPageTexts", TimeFormat.SWEDISH_LOCALE, "Idésida")
                 .withIconIdentifier("lightbulb")
                 .build());
 
 
         rootMenu.addChild(StandardMenuItem.getBuilder()
                 .withAuthorizationPatterns("/mithlond/members,/forodrim/members")
-                .withLocalizedText("calendarPageTexts", LocaleDefinition.SWEDISH_LOCALE, "Aktivitetskalender")
+                .withLocalizedText("calendarPageTexts", TimeFormat.SWEDISH_LOCALE, "Aktivitetskalender")
                 .withEnabledStatus(true)
                 .withHref("/calendar")
                 .withDomId("plainItemPage3")

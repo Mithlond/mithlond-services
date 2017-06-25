@@ -29,6 +29,7 @@ import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -45,6 +46,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
 
+import java.util.Locale;
+
 import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_CATEGORY_ID;
 import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_FOODNAME;
 import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_LANGUAGE;
@@ -60,22 +63,22 @@ import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM
 @NamedQueries({
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_AND_FOODNAME,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.locale like :" + PARAM_LANGUAGE
                         + " and localized_texts.text = :" + PARAM_FOODNAME
                         + " order by localized_texts.text"),
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.locale = :" + PARAM_LANGUAGE
                         + " order by localized_texts.text"),
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_AND_CATEGORY_ID,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.locale = :" + PARAM_LANGUAGE
                         + " and a.category.categoryID like :" + PARAM_CATEGORY_ID
                         + " and a.category.classification = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' "
                         + " order by localized_texts.text"),
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_CATEGORY_AND_SUBCATEGORY,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.language = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.locale = :" + PARAM_LANGUAGE
                         + " and a.category.categoryID like :" + PARAM_CATEGORY_ID
                         + " and a.category.classification = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' "
                         + " and a.subCategory.categoryID like :" + PARAM_SUBCATEGORY_ID
@@ -317,12 +320,12 @@ public class Food extends NazgulEntity implements Comparable<Food> {
         final String key = swedishFoodName.trim().replaceAll(" ", "_");
         // TODO: Switch back to englishFoodName after translations
         final LocalizedTexts toReturn = new LocalizedTexts(FOOD_LOCALIZATION_SUITE_PREFIX + key,
-                LocaleDefinition.SWEDISH_LOCALE,
+                new LocaleDefinition(TimeFormat.SWEDISH_LOCALE),
                 Localizable.DEFAULT_CLASSIFIER,
                 swedishFoodName);
 
         // Add the english translation as well
-        toReturn.setText(LocaleDefinition.ENGLISH_UK_LOCALE,
+        toReturn.setText(Locale.ENGLISH,
                 Localizable.DEFAULT_CLASSIFIER,
                 englishFoodName);
 

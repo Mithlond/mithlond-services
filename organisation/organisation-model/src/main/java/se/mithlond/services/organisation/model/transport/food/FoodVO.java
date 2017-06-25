@@ -21,17 +21,17 @@
  */
 package se.mithlond.services.organisation.model.transport.food;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Locale;
 
 /**
  * The SimpleTransportable version of a Food entity.
@@ -88,19 +88,19 @@ public class FoodVO extends AbstractSimpleTransportable {
     /**
      * Creates a FoodVO wrapping the data of the supplied objects.
      *
-     * @param food             The Food entity to convert to a lightweight FoodVO object.
-     * @param localeDefinition The LocaleDefinition used to extract the foodName for this FoodVO.
+     * @param food   The Food entity to convert to a lightweight FoodVO object.
+     * @param locale The Locale used to extract the foodName for this FoodVO.
      */
-    public FoodVO(final Food food, final LocaleDefinition localeDefinition) {
+    public FoodVO(final Food food, final Locale locale) {
 
         // Delegate
         super(food.getId());
 
         // Check sanity
-        Validate.notNull(localeDefinition, "localeDefinition");
+        Validate.notNull(locale, "locale");
 
         // Assign internal state
-        this.foodName = food.getLocalizedFoodName().getText(localeDefinition, Localizable.DEFAULT_CLASSIFIER);
+        this.foodName = food.getLocalizedFoodName().getText(locale, Localizable.DEFAULT_CLASSIFIER);
         this.categoryID = food.getCategory().getId();
         this.subCategoryID = food.getSubCategory().getId();
     }

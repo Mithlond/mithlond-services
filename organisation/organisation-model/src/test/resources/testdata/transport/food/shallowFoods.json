@@ -1,6 +1,6 @@
 {
   "xsi.type": "organisation.foods",
-  "localeDefinition": "sv..SE..none",
+  "locale": "sv-SE",
   "categories": [
     {
       "jpaId": 20,

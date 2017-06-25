@@ -1,6 +1,6 @@
 {
   "xsi.type": "organisation.foods",
-  "localeDefinition": "sv..SE..none",
+  "locale": "sv-SE",
   "categories": [
     {
       "jpaId": 20,
@@ -37,17 +37,15 @@
         "version": 0,
         "suiteIdentifier": "Food_Blomkål",
         "defaultLocale": {
-          "jpaId": 0,
-          "version": 0,
-          "compactStringForm": "sv..SE..none"
+          "locale": "sv-SE"
         },
         "textVOs": [
           {
-            "locale": "sv..SE..none",
+            "locale": "sv-SE",
             "value": "Blomkål"
           },
           {
-            "locale": "en..GB..none",
+            "locale": "en",
             "value": "Cauliflower"
           }
         ]
@@ -63,17 +61,15 @@
         "version": 0,
         "suiteIdentifier": "Food_Morot",
         "defaultLocale": {
-          "jpaId": 0,
-          "version": 0,
-          "compactStringForm": "sv..SE..none"
+          "locale": "sv-SE"
         },
         "textVOs": [
           {
-            "locale": "sv..SE..none",
+            "locale": "sv-SE",
             "value": "Morot"
           },
           {
-            "locale": "en..GB..none",
+            "locale": "en",
             "value": "Carrot"
           }
         ]
@@ -89,17 +85,15 @@
         "version": 0,
         "suiteIdentifier": "Food_Rödbeta",
         "defaultLocale": {
-          "jpaId": 0,
-          "version": 0,
-          "compactStringForm": "sv..SE..none"
+          "locale": "sv-SE"
         },
         "textVOs": [
           {
-            "locale": "sv..SE..none",
+            "locale": "sv-SE",
             "value": "Rödbeta"
           },
           {
-            "locale": "en..GB..none",
+            "locale": "en",
             "value": "Beetroot"
           }
         ]

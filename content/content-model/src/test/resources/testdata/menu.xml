@@ -26,9 +26,9 @@
             <menu jpaId="0" version="0" domId="firstMenu">
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>firstMenuTexts</suiteIdentifier>
-                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                    <defaultLocale locale="sv-SE"/>
                     <textVOs>
-                        <text locale="sv..SE..none">Medlemsmeny</text>
+                        <text locale="sv-SE">Medlemsmeny</text>
                     </textVOs>
                 </localizedTexts>
                 <children>
@@ -43,9 +43,9 @@
                         <href>plainItemPage</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>plainItemPageTexts</suiteIdentifier>
-                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                            <defaultLocale locale="sv-SE"/>
                             <textVOs>
-                                <text locale="sv..SE..none">Sök medlemmar</text>
+                                <text locale="sv-SE">Sök medlemmar</text>
                             </textVOs>
                         </localizedTexts>
                     </menuItem>
@@ -61,9 +61,9 @@
                         <href>plainItemPage2</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>StandardMenuItem_-2029894920</suiteIdentifier>
-                            <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                            <defaultLocale locale="sv-SE"/>
                             <textVOs>
-                                <text locale="sv..SE..none">Redigera medlemmar</text>
+                                <text locale="sv-SE">Redigera medlemmar</text>
                             </textVOs>
                         </localizedTexts>
                     </menuItem>
@@ -81,9 +81,9 @@
                 <href>plainItemPage3</href>
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>calendarPageTexts</suiteIdentifier>
-                    <defaultLocale jpaId="0" version="0" compactStringForm="sv..SE..none"/>
+                    <defaultLocale locale="sv-SE"/>
                     <textVOs>
-                        <text locale="sv..SE..none">Kalenderuppgifter</text>
+                        <text locale="sv-SE">Kalenderuppgifter</text>
                     </textVOs>
                 </localizedTexts>
             </menuItem>

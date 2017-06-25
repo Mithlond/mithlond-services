@@ -31,6 +31,7 @@ import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -60,10 +61,10 @@ public class LocaleDefinitionTest extends AbstractPlainJaxbTest {
         */
 
         localeDefinitions = new ArrayList<>();
-        localeDefinitions.add(new LocaleDefinition("sv"));
-        localeDefinitions.add(new LocaleDefinition("sv", "SE", null));
-        localeDefinitions.add(new LocaleDefinition("en"));
-        localeDefinitions.add(new LocaleDefinition("en", "GB", null));
+        localeDefinitions.add(new LocaleDefinition(new Locale("sv")));
+        localeDefinitions.add(new LocaleDefinition(new Locale("sv", "SE")));
+        localeDefinitions.add(new LocaleDefinition(Locale.ENGLISH));
+        localeDefinitions.add(new LocaleDefinition(Locale.UK));
         Collections.sort(localeDefinitions);
 
         /*

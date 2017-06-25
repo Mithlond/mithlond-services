@@ -31,8 +31,6 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
-import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.organisation.model.transport.membership.MembershipVO;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
@@ -65,8 +63,7 @@ public class AllergiesTest extends AbstractEntityTest {
         this.foodsAndCategories = new FoodsAndCategories();
         jaxb.add(Foods.class, Allergies.class);
         jaxb.mapXmlNamespacePrefix(OrganisationPatterns.NAMESPACE, "organisation");
-        
-        final LocaleDefinition defaultLocale = Localizable.DEFAULT_LOCALE;
+
 
         // #1) Create the organisation
         //
@@ -125,7 +122,7 @@ public class AllergiesTest extends AbstractEntityTest {
                     (long) i));
         }
 
-        allergies = new Allergies(defaultLocale, users, memberships, allergyList);
+        allergies = new Allergies(TimeFormat.SWEDISH_LOCALE, users, memberships, allergyList);
     }
 
     @Test
@@ -164,7 +161,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Act
         final Allergies resurrected = unmarshalFromXML(Allergies.class, data);
-        System.out.println("Got: " + resurrected);
+        // System.out.println("Got: " + resurrected);
 
         // Assert
         Assert.assertNotNull(resurrected);
@@ -180,7 +177,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Act
         final Allergies resurrected = unmarshalFromJSON(Allergies.class, data);
-        // System.out.println("Got: " + result);
+        // System.out.println("Got: " + resurrected);
 
         // Assert
         Assert.assertNotNull(resurrected);

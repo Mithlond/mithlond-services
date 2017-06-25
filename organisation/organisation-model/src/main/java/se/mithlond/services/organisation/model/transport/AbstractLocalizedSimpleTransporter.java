@@ -21,9 +21,8 @@
  */
 package se.mithlond.services.organisation.model.transport;
 
-import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +30,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.Locale;
 
 /**
  * AbstractSimpleTransporter implementation which also sports a LocaleDefinition.
@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.XmlType;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"localeDefinition"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"locale"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleTransporter {
 
@@ -48,7 +48,7 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
      * The LocaleDefinition used for all AllergyVOs transported within this Allergies wrapper.
      */
     @XmlElement(required = true)
-    private String localeDefinition;
+    private Locale locale;
 
     /**
      * JAXB-friendly constructor.
@@ -57,43 +57,43 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
     }
 
     /**
-     * Compound constructor creating a new AbstractLocalizedSimpleTransporter wrapping the supplied localeDefinition.
+     * Compound constructor creating a new AbstractLocalizedSimpleTransporter wrapping the supplied locale.
      *
-     * @param localeDefinition A non-null LocaleDefinition used throughout this AbstractLocalizedSimpleTransporter.
+     * @param locale A non-null LocaleDefinition used throughout this AbstractLocalizedSimpleTransporter.
      */
-    protected AbstractLocalizedSimpleTransporter(final LocaleDefinition localeDefinition) {
+    protected AbstractLocalizedSimpleTransporter(final Locale locale) {
 
         // Check sanity
-        Validate.notNull(localeDefinition, "localeDefinition");
+        Validate.notNull(locale, "locale");
 
         // Assign internal state
-        this.localeDefinition = localeDefinition.toString();
+        this.locale = locale;
     }
 
     /**
      * Lazy initialization method for this AbstractLocalizedSimpleTransporter, which will initialize this
-     * AbstractLocalizedSimpleTransporter to use the supplied localeDefinition only if the current member
+     * AbstractLocalizedSimpleTransporter to use the supplied locale only if the current member
      * LocaleDefinition is null.
      *
-     * @param localeDefinition The non-null LocaleDefinition to initialize this AbstractLocalizedSimpleTransporter from.
-     * @throws RuntimeException if the supplied LocaleDefinition is null, empty or not equal to the existing one.
+     * @param locale The non-null Locale to initialize this AbstractLocalizedSimpleTransporter from.
+     * @throws RuntimeException if the supplied Locale is null, empty or not equal to the existing one.
      */
-    protected void initialize(final LocaleDefinition localeDefinition) throws RuntimeException {
+    protected void initialize(final Locale locale) throws RuntimeException {
 
         // Check sanity
-        final LocaleDefinition effectiveLocale = Validate.notNull(localeDefinition, "localeDefinition");
+        Validate.notNull(locale, "locale");
 
         // Assign only if the local definition is null.
         // Complain if the local definition differs from the supplied one.
 
-        if (this.localeDefinition == null) {
-            this.localeDefinition = effectiveLocale.toString();
+        if (this.locale == null) {
+            this.locale = locale;
 
-        } else if (!this.localeDefinition.equals(localeDefinition.toString())) {
+        } else if (!this.locale.toLanguageTag().equals(locale.toLanguageTag())) {
 
             // Refuse to overwrite existing LocaleDefinition
-            throw new IllegalArgumentException("Cannot re-initialize LocaleDefinition from ("
-                    + this.localeDefinition + ") to (" + effectiveLocale.toString() + ")");
+            throw new IllegalArgumentException("Cannot re-initialize Locale from ("
+                    + this.locale.toLanguageTag() + ") to (" + locale.toLanguageTag() + ")");
         }
     }
 
@@ -102,8 +102,8 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
      *
      * @return The non-null LocaleDefinition used within this Foods transport wrapper.
      */
-    public LocaleDefinition getLocaleDefinition() {
-        return LocaleDefinition.parse(this.localeDefinition);
+    public Locale getLocale() {
+        return this.locale;
     }
 
     /**
@@ -111,6 +111,6 @@ public abstract class AbstractLocalizedSimpleTransporter extends AbstractSimpleT
      */
     @Override
     public String toString() {
-        return super.toString() + ", LocaleDefinition: " + localeDefinition;
+        return super.toString() + ", Locale: " + locale.toLanguageTag();
     }
 }
