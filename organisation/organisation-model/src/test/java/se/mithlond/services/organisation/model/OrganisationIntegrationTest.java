@@ -110,7 +110,7 @@ public class OrganisationIntegrationTest extends AbstractIntegrationTest {
         commitAndStartNewTransaction();
 
         // Dig out the current database state
-        // printCurrentDatabaseState();
+        printCurrentDatabaseState();
         Assertion.assertEquals(expected, iDatabaseConnection.createDataSet());
     }
 

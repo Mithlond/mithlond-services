@@ -21,8 +21,8 @@
  */
 package se.mithlond.services.organisation.model.localization;
 
-import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.mithlond.services.organisation.model.OrganisationPatterns;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * Parent-child relation between {@link LocalizedText} - {@link LocaleDefinition} - {@link LocalizedTexts}
@@ -51,8 +52,8 @@ public class LocalizedTextId implements Serializable {
     @Column(name = "suite_id")
     public long localizedTextsSuiteId;
 
-    @Column(name = "locale_definition_id")
-    public long localeId;
+    @Column(name = "locale")
+    public String languageTag;
 
     @Column
     public String classifier;
@@ -67,15 +68,14 @@ public class LocalizedTextId implements Serializable {
      * Compound constructor creating a LocalizedTextId object wrapping the supplied data/keys.
      *
      * @param localizedTextsSuiteId The JPA ID of the {@link LocalizedTexts} parent object.
-     * @param localeId         The JPA ID of the {@link LocaleDefinition} for which this {@link LocalizedTextId}
-     *                         pertains.
-     * @param classifier       The non-empty classifier of this {@link LocalizedTextId}.
+     * @param locale                The {@link LocaleDefinition} for which this {@link LocalizedTextId} pertains.
+     * @param classifier            The non-empty classifier of this {@link LocalizedTextId}.
      */
-    public LocalizedTextId(final long localizedTextsSuiteId, final long localeId, final String classifier) {
+    public LocalizedTextId(final long localizedTextsSuiteId, final Locale locale, final String classifier) {
 
         // Simply assign it already.
         this.localizedTextsSuiteId = localizedTextsSuiteId;
-        this.localeId = localeId;
+        this.languageTag = locale.toLanguageTag();
         this.classifier = Validate.notEmpty(classifier, "classifier");
     }
 
@@ -92,7 +92,7 @@ public class LocalizedTextId implements Serializable {
             final String thisClassifier = this.classifier == null ? "" : this.classifier;
             final String thatClassifier = that.classifier == null ? "" : that.classifier;
 
-            return this.localeId == that.localeId
+            return this.languageTag.equals(that.languageTag)
                     && this.localizedTextsSuiteId == that.localizedTextsSuiteId
                     && thisClassifier.equals(thatClassifier);
         }
@@ -106,7 +106,8 @@ public class LocalizedTextId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return (int) (this.localeId + this.localizedTextsSuiteId + this.classifier.hashCode()) % Integer.MAX_VALUE;
+        return (int) (this.languageTag.hashCode() + this.localizedTextsSuiteId + this.classifier.hashCode())
+                % Integer.MAX_VALUE;
     }
 
     /**
@@ -114,7 +115,7 @@ public class LocalizedTextId implements Serializable {
      */
     @Override
     public String toString() {
-        return "LocalizedTextId [LocaleID: " + localeId
+        return "LocalizedTextId [LanguageTag: " + languageTag
                 + ", LocalizedTextsID: " + localizedTextsSuiteId
                 + ", Classifier: " + classifier + "]";
     }

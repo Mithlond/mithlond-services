@@ -57,24 +57,16 @@ import java.util.stream.Stream;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LOCALE,
-                query = "select l from LocaleDefinition l "
-                        + " where l.locale like :" + OrganisationPatterns.PARAM_LANGUAGE),
         @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_TAGS,
                 query = "select l from LocaleDefinition l "
                         + " where ( 0 = :" + OrganisationPatterns.PARAM_NUM_LANGUAGE_TAGS
-                        + " or l.locale in :" + OrganisationPatterns.PARAM_LANGUAGE_TAGS + " ) ")
+                        + " or l.languageTag in :" + OrganisationPatterns.PARAM_LANGUAGE_TAGS + " ) ")
 })
 @Entity
-@Table(name = "locale_definitions")
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"locale"})
+@Table(name = "locale_enum_defs")
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"languageTag"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocaleDefinition implements Serializable, Validatable, Comparable<LocaleDefinition> {
-
-    /**
-     * NamedQuery for getting Localizations having a given language.
-     */
-    public static final String NAMEDQ_GET_BY_LOCALE = "LocaleDefinition.getByLocale";
 
     /**
      * NamedQuery for getting Localizations having one of the supplied LanguageTags.
@@ -90,11 +82,13 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
                     .map(LocaleDefinition::new)
                     .collect(Collectors.toSet()));
 
-
+    /**
+     * The language tag of a Locale, which is identical to its primary key.
+     */
     @Id
-    @Column(nullable = false, length = 32)
-    @XmlAttribute(required = true)
-    private Locale locale;
+    @Column(nullable = false, length = 64)
+    @XmlAttribute(required = true, name = "locale")
+    private String languageTag;
 
     /**
      * JAXB/JPA-friendly constructor.
@@ -124,7 +118,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
         super();
 
         // Assign internal state
-        this.locale = locale;
+        this.languageTag = locale.toLanguageTag();
     }
 
     /**
@@ -134,7 +128,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      * @see Locale
      */
     public Locale getLocale() {
-        return this.locale;
+        return Locale.forLanguageTag(languageTag);
     }
 
     /**
@@ -142,7 +136,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      */
     @Override
     public String toString() {
-        return "LocaleDefinition: " + this.locale.toLanguageTag();
+        return "LocaleDefinition [languageTag: " + this.languageTag + "]";
     }
 
     /**
@@ -161,7 +155,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
 
         // Check own state
         final LocaleDefinition that = (LocaleDefinition) o;
-        return Objects.equals(this.getLocale().toLanguageTag(), that.getLocale().toLanguageTag());
+        return Objects.equals(this.languageTag, that.languageTag);
     }
 
     /**
@@ -169,7 +163,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      */
     @Override
     public int hashCode() {
-        return Objects.hash(locale);
+        return Objects.hash(languageTag);
     }
 
     /**
@@ -186,7 +180,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
         }
 
         // Delegate to internal state
-        return this.getLocale().toLanguageTag().compareTo(that.getLocale().toLanguageTag());
+        return this.languageTag.compareTo(that.languageTag);
     }
 
     /**
@@ -197,7 +191,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
 
         // Check sanity
         InternalStateValidationException.create()
-                .notNullOrEmpty(locale, "locale")
+                .notNullOrEmpty(languageTag, "languageTag")
                 .endExpressionAndValidate();
     }
 }

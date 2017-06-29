@@ -32,6 +32,7 @@ import org.eclipse.persistence.sessions.DatabaseLogin;
 import org.eclipse.persistence.sessions.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -81,16 +82,20 @@ public class EclipseLinkCustomizer implements SessionCustomizer {
     public void customize(final Session session) throws Exception {
 
         final DatabaseLogin login = session.getLogin();
+        logDatabaseLoginInformation(login);
+
         final Platform datasourcePlatform = session.getDatasourcePlatform();
+        // logDataSourcePlatformInformation(datasourcePlatform);
 
         log.info("Before augmenting RelationalDescriptors: \n");
-        logRelationalDescriptorInformation(GroupMembership.class, session);
+        logRelationalDescriptorInformation(LocaleDefinition.class, session);
         logRelationalDescriptorInformation(Group.class, session);
         logRelationalDescriptorInformation(Guild.class, session);
 
         // Amend the GroupMembership RelationalDescriptor to
         // cope with the values within the DiscriminatorColumn, as found
         // within Group and Guild.
+        /*
         final RelationalDescriptor groupMembershipDescriptor =
                 (RelationalDescriptor) session.getClassDescriptor(GroupMembership.class);
 
@@ -110,13 +115,12 @@ public class EclipseLinkCustomizer implements SessionCustomizer {
         if (groupMapping.isManyToOneMapping()) {
 
             final ManyToOneMapping m21Mapping = (ManyToOneMapping) groupMapping;
-
         }
 
         final Map groupMembershipIndicatorMapping = groupMembershipDescriptor
                 .getInheritancePolicy()
                 .getClassIndicatorMapping();
-
+         */
 
         // It would appear one needs to put both
         // forward mapping: [string] --> [class], and

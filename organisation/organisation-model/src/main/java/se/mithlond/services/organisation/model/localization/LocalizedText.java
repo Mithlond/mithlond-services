@@ -33,6 +33,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -63,7 +64,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
     private LocalizedTextId compoundJpaID;
 
     /**
-     * The JPA Version of this Allergy.
+     * The JPA Version of this LocalizedText.
      */
     @Version
     @XmlAttribute
@@ -74,7 +75,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
      */
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    @MapsId("localeId")
+    @MapsId("languageTag")
     @XmlElement(required = true)
     private LocaleDefinition textLocale;
 
@@ -216,6 +217,21 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
     @Override
     public int compareTo(final LocalizedText o) {
         return 0;
+    }
+
+    /**
+     * Updates the compound JPA key before persisting this {@link LocalizedText} if required.
+     */
+    @PrePersist
+    public void fixCompoundKey() {
+
+        // Do we need to update the key?
+        if (this.compoundJpaID == null
+                && textLocale != null
+                && classifier != null) {
+
+            this.compoundJpaID = new LocalizedTextId(getSuite().getId(), textLocale.getLocale(), classifier);
+        }
     }
 
     /**
