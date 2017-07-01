@@ -31,9 +31,14 @@ import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -179,17 +184,42 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
     }
 
     @Test
-    public void printLanguageTags() {
+    public void generateInsertSQL() {
 
         // Assemble
-        Arrays.stream(Locale.getAvailableLocales())
-                .filter(c -> c.getLanguage() != null && !"".equalsIgnoreCase(c.getLanguage()))
-                .filter(c -> "".equals(c.getVariant()))
-                .map(c -> "[" + c.toLanguageTag() + "]: "
-                        + c.getCountry() + " [" + c.getLanguage() + "]"
-                        + (c.getVariant() != null && !"".equals(c.getVariant()) ? " " + c.getVariant() : ""))
-                .sorted()
+        final Function<LocaleDefinition, String> INSERT_VALUES = ld -> "'" + ld.getLocale().getCountry()
+                + "', '" + ld.getLocale().getLanguage()
+                + "', '" + ld.getLocale().getVariant() + "'";
+
+        final SortedSet<String> existingLocaleTags = new TreeSet<>();
+
+        final AtomicInteger index = new AtomicInteger();
+        LocaleDefinition.COMMON_LOCALES.stream()
+                .map(c -> "insert into locale_definitions values (" + index.incrementAndGet() + ", "
+                        + INSERT_VALUES.apply(c) + "); ")
                 .forEach(System.out::println);
+
+        LocaleDefinition.COMMON_LOCALES.stream()
+                .map(c -> c.getLocale().toLanguageTag())
+                .forEach
+                (existingLocaleTags::add);
+        
+        Arrays.stream(Locale.getAvailableLocales())
+                .filter(c -> !"".equals(c.getLanguage()))
+                .sorted(Comparator.comparing(Locale::getLanguage))
+                .map(LocaleDefinition::new)
+                .filter(c -> !LocaleDefinition.COMMON_LOCALES.contains(c))
+                .forEach(c -> {
+
+                    final String languageTag = c.getLocale().toLanguageTag();
+                    if(!existingLocaleTags.contains(languageTag)) {
+
+                        existingLocaleTags.add(languageTag);
+                        final String insertSQL = "insert into locale_definitions values ("
+                                + index.incrementAndGet() + ", " + INSERT_VALUES.apply(c) + "); ";
+                        System.out.println(insertSQL);
+                    }
+                });
 
         // Act
 
