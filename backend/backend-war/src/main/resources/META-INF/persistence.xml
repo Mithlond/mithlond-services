@@ -140,12 +140,13 @@
             <!--
                EclipseLink custom properties.
             -->
+            <property name="eclipselink.application-location" value="/"/>
             <property name="eclipselink.orm.throw.exceptions" value="true"/>
             <property name="eclipselink.id-validation" value="NULL"/>
             <property name="eclipselink.logging.logger" value="ServerLogger"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
-            <property name="eclipselink.logging.level.sql" value="FINEST"/>
+            <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.ddl-generation.output-mode" value="both"/>
             <property name="eclipselink.parse-ddl-jdbc-file-name" value="create_mithlond_database.sql"/>
             <property name="eclipselink.drop-ddl-jdbc-file-name" value="drop_mithlond_database.sql"/>

@@ -33,7 +33,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.util.Locale;
 
 /**
  * Parent-child relation between {@link LocalizedText} - {@link LocaleDefinition} - {@link LocalizedTexts}
@@ -52,8 +51,8 @@ public class LocalizedTextId implements Serializable {
     @Column(name = "suite_id")
     public long localizedTextsSuiteId;
 
-    @Column(name = "locale")
-    public String languageTag;
+    @Column(name = "locale_definition_id")
+    public long localeId;
 
     @Column
     public String classifier;
@@ -68,14 +67,15 @@ public class LocalizedTextId implements Serializable {
      * Compound constructor creating a LocalizedTextId object wrapping the supplied data/keys.
      *
      * @param localizedTextsSuiteId The JPA ID of the {@link LocalizedTexts} parent object.
-     * @param locale                The {@link LocaleDefinition} for which this {@link LocalizedTextId} pertains.
-     * @param classifier            The non-empty classifier of this {@link LocalizedTextId}.
+     * @param localeId         The JPA ID of the {@link LocaleDefinition} for which this {@link LocalizedTextId}
+     *                         pertains.
+     * @param classifier       The non-empty classifier of this {@link LocalizedTextId}.
      */
-    public LocalizedTextId(final long localizedTextsSuiteId, final Locale locale, final String classifier) {
+    public LocalizedTextId(final long localizedTextsSuiteId, final long localeId, final String classifier) {
 
         // Simply assign it already.
         this.localizedTextsSuiteId = localizedTextsSuiteId;
-        this.languageTag = locale.toLanguageTag();
+        this.localeId = localeId;
         this.classifier = Validate.notEmpty(classifier, "classifier");
     }
 
@@ -92,7 +92,7 @@ public class LocalizedTextId implements Serializable {
             final String thisClassifier = this.classifier == null ? "" : this.classifier;
             final String thatClassifier = that.classifier == null ? "" : that.classifier;
 
-            return this.languageTag.equals(that.languageTag)
+            return this.localeId == that.localeId
                     && this.localizedTextsSuiteId == that.localizedTextsSuiteId
                     && thisClassifier.equals(thatClassifier);
         }
@@ -106,8 +106,7 @@ public class LocalizedTextId implements Serializable {
      */
     @Override
     public int hashCode() {
-        return (int) (this.languageTag.hashCode() + this.localizedTextsSuiteId + this.classifier.hashCode())
-                % Integer.MAX_VALUE;
+        return (int) (this.localeId + this.localizedTextsSuiteId + this.classifier.hashCode()) % Integer.MAX_VALUE;
     }
 
     /**
@@ -115,7 +114,7 @@ public class LocalizedTextId implements Serializable {
      */
     @Override
     public String toString() {
-        return "LocalizedTextId [LanguageTag: " + languageTag
+        return "LocalizedTextId [LocaleID: " + localeId
                 + ", LocalizedTextsID: " + localizedTextsSuiteId
                 + ", Classifier: " + classifier + "]";
     }

@@ -22,15 +22,15 @@
   -->
 <organisation:localizedTextsHolder xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <localeDefinitions>
-        <localization locale="en"/>
-        <localization locale="en-US"/>
-        <localization locale="no-NO"/>
-        <localization locale="sv"/>
+        <localization jpaId="0" version="0" locale="en"/>
+        <localization jpaId="0" version="0" locale="en-US"/>
+        <localization jpaId="0" version="0" locale="no-NO"/>
+        <localization jpaId="0" version="0" locale="sv"/>
     </localeDefinitions>
     <localizedTextsList>
         <localization jpaId="0" version="0">
             <suiteIdentifier>Hello</suiteIdentifier>
-            <defaultLocale locale="sv"/>
+            <defaultLocale jpaId="0" version="0" locale="sv"/>
             <textVOs>
                 <text locale="sv">Hejsan</text>
                 <text locale="no-NO">Morrn Da</text>
@@ -40,3 +40,4 @@
         </localization>
     </localizedTextsList>
 </organisation:localizedTextsHolder>
+

@@ -26,7 +26,7 @@
             <menu jpaId="0" version="0" domId="firstMenu">
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>firstMenuTexts</suiteIdentifier>
-                    <defaultLocale locale="sv-SE"/>
+                    <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                     <textVOs>
                         <text locale="sv-SE">Medlemsmeny</text>
                     </textVOs>
@@ -43,7 +43,7 @@
                         <href>plainItemPage</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>plainItemPageTexts</suiteIdentifier>
-                            <defaultLocale locale="sv-SE"/>
+                            <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                             <textVOs>
                                 <text locale="sv-SE">Sök medlemmar</text>
                             </textVOs>
@@ -61,7 +61,7 @@
                         <href>plainItemPage2</href>
                         <localizedTexts jpaId="0" version="0">
                             <suiteIdentifier>StandardMenuItem_-2029894920</suiteIdentifier>
-                            <defaultLocale locale="sv-SE"/>
+                            <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                             <textVOs>
                                 <text locale="sv-SE">Redigera medlemmar</text>
                             </textVOs>
@@ -81,7 +81,7 @@
                 <href>plainItemPage3</href>
                 <localizedTexts jpaId="0" version="0">
                     <suiteIdentifier>calendarPageTexts</suiteIdentifier>
-                    <defaultLocale locale="sv-SE"/>
+                    <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                     <textVOs>
                         <text locale="sv-SE">Kalenderuppgifter</text>
                     </textVOs>

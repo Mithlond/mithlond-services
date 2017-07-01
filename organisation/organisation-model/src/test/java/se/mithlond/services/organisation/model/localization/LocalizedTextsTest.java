@@ -30,6 +30,7 @@ import se.mithlond.services.organisation.model.localization.helpers.LocalizedTex
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -175,6 +176,24 @@ public class LocalizedTextsTest extends AbstractPlainJaxbTest {
 
         // Assert
         validateUnmarshalledUtf8Texts(unmarshalled);
+    }
+
+    @Test
+    public void printLanguageTags() {
+
+        // Assemble
+        Arrays.stream(Locale.getAvailableLocales())
+                .filter(c -> c.getLanguage() != null && !"".equalsIgnoreCase(c.getLanguage()))
+                .filter(c -> "".equals(c.getVariant()))
+                .map(c -> "[" + c.toLanguageTag() + "]: "
+                        + c.getCountry() + " [" + c.getLanguage() + "]"
+                        + (c.getVariant() != null && !"".equals(c.getVariant()) ? " " + c.getVariant() : ""))
+                .sorted()
+                .forEach(System.out::println);
+
+        // Act
+
+        // Assert
     }
 
     //

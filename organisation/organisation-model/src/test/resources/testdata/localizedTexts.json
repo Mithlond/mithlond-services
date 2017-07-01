@@ -1,15 +1,23 @@
 {
   "localeDefinitions": [
     {
+      "jpaId": 0,
+      "version": 0,
       "locale": "en"
     },
     {
+      "jpaId": 0,
+      "version": 0,
       "locale": "en-US"
     },
     {
+      "jpaId": 0,
+      "version": 0,
       "locale": "no-NO"
     },
     {
+      "jpaId": 0,
+      "version": 0,
       "locale": "sv"
     }
   ],
@@ -19,6 +27,8 @@
       "version": 0,
       "suiteIdentifier": "Hello",
       "defaultLocale": {
+        "jpaId": 0,
+        "version": 0,
         "locale": "sv"
       },
       "textVOs": [

@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.model.food;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Category;
@@ -28,7 +29,6 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.persistence.Access;
@@ -45,7 +45,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlType;
-
 import java.util.Locale;
 
 import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM_CATEGORY_ID;
@@ -63,22 +62,22 @@ import static se.mithlond.services.organisation.model.OrganisationPatterns.PARAM
 @NamedQueries({
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_AND_FOODNAME,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.locale like :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.language like :" + PARAM_LANGUAGE
                         + " and localized_texts.text = :" + PARAM_FOODNAME
                         + " order by localized_texts.text"),
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.locale = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.language like :" + PARAM_LANGUAGE
                         + " order by localized_texts.text"),
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_AND_CATEGORY_ID,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.locale = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.language like :" + PARAM_LANGUAGE
                         + " and a.category.categoryID like :" + PARAM_CATEGORY_ID
                         + " and a.category.classification = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' "
                         + " order by localized_texts.text"),
         @NamedQuery(name = Food.NAMEDQ_GET_BY_LANGUAGE_CATEGORY_AND_SUBCATEGORY,
                 query = "select a from Food a join a.localizedFoodName.texts localized_texts"
-                        + " where localized_texts.textLocale.locale = :" + PARAM_LANGUAGE
+                        + " where localized_texts.textLocale.language like :" + PARAM_LANGUAGE
                         + " and a.category.categoryID like :" + PARAM_CATEGORY_ID
                         + " and a.category.classification = '" + Food.FOOD_CATEGORY_CLASSIFICATION + "' "
                         + " and a.subCategory.categoryID like :" + PARAM_SUBCATEGORY_ID
@@ -343,8 +342,8 @@ public class Food extends NazgulEntity implements Comparable<Food> {
      * @return The resulting (and non-managed/persisted) Category with the supplied category and description.
      */
     public static Category getFoodTypeCategory(final String category,
-            final String description,
-            final boolean topLevelCategory) {
+                                               final String description,
+                                               final boolean topLevelCategory) {
 
         // Check sanity
         Validate.notEmpty(category, "category");

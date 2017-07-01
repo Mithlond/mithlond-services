@@ -44,7 +44,7 @@
         <detailedFood jpaId="24" version="0">
             <localizedFoodName jpaId="302" version="0">
                 <suiteIdentifier>Food_Blomkål</suiteIdentifier>
-                <defaultLocale locale="sv-SE"/>
+                <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                 <textVOs>
                     <text locale="sv-SE">Blomkål</text>
                     <text locale="en">Cauliflower</text>
@@ -56,7 +56,7 @@
         <detailedFood jpaId="36" version="0">
             <localizedFoodName jpaId="301" version="0">
                 <suiteIdentifier>Food_Morot</suiteIdentifier>
-                <defaultLocale locale="sv-SE"/>
+                <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                 <textVOs>
                     <text locale="sv-SE">Morot</text>
                     <text locale="en">Carrot</text>
@@ -68,7 +68,7 @@
         <detailedFood jpaId="215" version="0">
             <localizedFoodName jpaId="300" version="0">
                 <suiteIdentifier>Food_Rödbeta</suiteIdentifier>
-                <defaultLocale locale="sv-SE"/>
+                <defaultLocale jpaId="0" version="0" locale="sv-SE"/>
                 <textVOs>
                     <text locale="sv-SE">Rödbeta</text>
                     <text locale="en">Beetroot</text>
@@ -79,3 +79,4 @@
         </detailedFood>
     </detailedFoods>
 </organisation_transport:foods>
+

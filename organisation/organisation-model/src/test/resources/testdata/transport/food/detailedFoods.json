@@ -37,6 +37,8 @@
         "version": 0,
         "suiteIdentifier": "Food_Blomkål",
         "defaultLocale": {
+          "jpaId": 0,
+          "version": 0,
           "locale": "sv-SE"
         },
         "textVOs": [
@@ -61,6 +63,8 @@
         "version": 0,
         "suiteIdentifier": "Food_Morot",
         "defaultLocale": {
+          "jpaId": 0,
+          "version": 0,
           "locale": "sv-SE"
         },
         "textVOs": [
@@ -85,6 +89,8 @@
         "version": 0,
         "suiteIdentifier": "Food_Rödbeta",
         "defaultLocale": {
+          "jpaId": 0,
+          "version": 0,
           "locale": "sv-SE"
         },
         "textVOs": [

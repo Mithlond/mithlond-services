@@ -4,6 +4,8 @@
   "version": 0,
   "localeDefinitions": [
     {
+      "jpaId": 0,
+      "version": 0,
       "locale": "sv-SE"
     }
   ],
@@ -17,6 +19,8 @@
       "version": 0,
       "suiteIdentifier": "rootMenuTexts",
       "defaultLocale": {
+        "jpaId": 0,
+        "version": 0,
         "locale": "sv-SE"
       },
       "textVOs": [
@@ -43,6 +47,8 @@
             "version": 0,
             "suiteIdentifier": "firstMenuTexts",
             "defaultLocale": {
+              "jpaId": 0,
+              "version": 0,
               "locale": "sv-SE"
             },
             "textVOs": [
@@ -71,6 +77,8 @@
                   "version": 0,
                   "suiteIdentifier": "membersPageTexts",
                   "defaultLocale": {
+                    "jpaId": 0,
+                    "version": 0,
                     "locale": "sv-SE"
                   },
                   "textVOs": [
@@ -95,6 +103,8 @@
                   "version": 0,
                   "suiteIdentifier": "membersIdeaPageTexts",
                   "defaultLocale": {
+                    "jpaId": 0,
+                    "version": 0,
                     "locale": "sv-SE"
                   },
                   "textVOs": [
@@ -130,6 +140,8 @@
             "version": 0,
             "suiteIdentifier": "calendarPageTexts",
             "defaultLocale": {
+              "jpaId": 0,
+              "version": 0,
               "locale": "sv-SE"
             },
             "textVOs": [

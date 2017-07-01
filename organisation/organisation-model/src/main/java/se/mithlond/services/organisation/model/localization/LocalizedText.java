@@ -75,7 +75,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
      */
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    @MapsId("languageTag")
+    @MapsId("localeId")
     @XmlElement(required = true)
     private LocaleDefinition textLocale;
 
@@ -230,7 +230,7 @@ public class LocalizedText implements Serializable, Validatable, Comparable<Loca
                 && textLocale != null
                 && classifier != null) {
 
-            this.compoundJpaID = new LocalizedTextId(getSuite().getId(), textLocale.getLocale(), classifier);
+            this.compoundJpaID = new LocalizedTextId(getSuite().getId(), textLocale.getId(), classifier);
         }
     }
 

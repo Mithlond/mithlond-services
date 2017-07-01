@@ -21,25 +21,29 @@
  */
 package se.mithlond.services.organisation.model.localization;
 
-import se.jguru.nazgul.tools.validation.api.Validatable;
+import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -47,31 +51,71 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Definition for a persisted Locale which uses {@link se.mithlond.services.shared.spi.jaxb.adapter.LocaleAdapter} to
- * convert to a JAXB representation and {@link se.mithlond.services.shared.spi.jpa.converter.LocaleConverter} to
- * convert to a JPA representation. This is required since the native {@link Locale} class has no JAXB- or
- * JPA-annotations. The LocaleDefinitions hence has the appearance of an Enum, persisted within the Database.
- * However, the value persisted and transmitted correspond to the {@link Locale#toLanguageTag()} and
- * {@link Locale#forLanguageTag(String)} values respectively.
+ * Definition for persisted Locales. The JPA representation of Locales spread
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_TAGS,
+        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_ONLY,
                 query = "select l from LocaleDefinition l "
-                        + " where ( 0 = :" + OrganisationPatterns.PARAM_NUM_LANGUAGE_TAGS
-                        + " or l.languageTag in :" + OrganisationPatterns.PARAM_LANGUAGE_TAGS + " ) ")
+                        + " where l.language = :" + OrganisationPatterns.PARAM_LANGUAGE + " and l.country = ''"),
+        @NamedQuery(name = LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY,
+                query = "select l from LocaleDefinition l "
+                        + " where l.language = :" + OrganisationPatterns.PARAM_LANGUAGE + " and l.country = :"
+                        + OrganisationPatterns.PARAM_COUNTRY)
 })
 @Entity
-@Table(name = "locale_enum_defs")
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"languageTag"})
+@Table(name = "locale_definitions", uniqueConstraints = {
+        @UniqueConstraint(name = "unq_locale_parts", columnNames = {"language", "country", "variant"})})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"locale"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LocaleDefinition implements Serializable, Validatable, Comparable<LocaleDefinition> {
+public class LocaleDefinition extends NazgulEntity implements Comparable<LocaleDefinition> {
 
     /**
-     * NamedQuery for getting Localizations having one of the supplied LanguageTags.
+     * NamedQuery for getting Localizations by only language (and also returning the locale with only language
+     * matching the supplied value).
      */
-    public static final String NAMEDQ_GET_BY_LANGUAGE_TAGS = "LocaleDefinition.getByLanguageTags";
+    public static final String NAMEDQ_GET_BY_LANGUAGE_ONLY = "LocaleDefinition.getByLanguageOnly";
+
+    /**
+     * NamedQuery for getting Localizations by language and country.
+     */
+    public static final String NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY = "LocaleDefinition.getByLanguageAndCountry";
+
+    /**
+     * Comparator for LocaleDefinitions which only considers the language part of the LocaleDefinition.
+     */
+    @XmlTransient
+    public static final Comparator<LocaleDefinition> LANGUAGE_COMPARATOR = (l, r) -> {
+
+        // Fail fast
+        if (l == null) {
+            return -1;
+        } else if (r == null) {
+            return 1;
+        }
+
+        // All Done.
+        return l.getLocale().getLanguage().compareTo(r.getLocale().getLanguage());
+    };
+
+    /**
+     * Comparator for LocaleDefinitions which compares the full languageTag of each locale.
+     */
+    @XmlTransient
+    public static final Comparator<LocaleDefinition> LOCALE_COMPARATOR = (l, r) -> {
+
+        // Fail fast
+        if (l == null) {
+            return -1;
+        } else if (r == null) {
+            return 1;
+        }
+
+        // All Done.
+        return l.getLocale().toLanguageTag().compareTo(r.getLocale().toLanguageTag());
+    };
+
 
     /**
      * <p>Unmodifiable Set containing un-managed version of the LocaleDefinition constants found within this class.</p>
@@ -83,12 +127,26 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
                     .collect(Collectors.toSet()));
 
     /**
-     * The language tag of a Locale, which is identical to its primary key.
+     * The language tag of this LocaleDefinition.
      */
-    @Id
-    @Column(nullable = false, length = 64)
-    @XmlAttribute(required = true, name = "locale")
-    private String languageTag;
+    @Transient
+    @XmlAttribute(required = true)
+    private String locale;
+
+    @XmlTransient
+    @Basic(optional = false)
+    @Column(nullable = false, length = 6)
+    private String language;
+
+    @XmlTransient
+    @Basic(optional = false)
+    @Column(nullable = false, length = 6)
+    private String country;
+
+    @XmlTransient
+    @Basic(optional = false)
+    @Column(nullable = false, length = 16)
+    private String variant;
 
     /**
      * JAXB/JPA-friendly constructor.
@@ -118,7 +176,11 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
         super();
 
         // Assign internal state
-        this.languageTag = locale.toLanguageTag();
+        this.locale = locale.toLanguageTag();
+
+        this.language = locale.getLanguage();
+        this.country = locale.getCountry();
+        this.variant = locale.getVariant();
     }
 
     /**
@@ -128,7 +190,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      * @see Locale
      */
     public Locale getLocale() {
-        return Locale.forLanguageTag(languageTag);
+        return new Locale(language, country, variant);
     }
 
     /**
@@ -136,7 +198,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      */
     @Override
     public String toString() {
-        return "LocaleDefinition [languageTag: " + this.languageTag + "]";
+        return "LocaleDefinition: " + getLocale().toLanguageTag();
     }
 
     /**
@@ -155,7 +217,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
 
         // Check own state
         final LocaleDefinition that = (LocaleDefinition) o;
-        return Objects.equals(this.languageTag, that.languageTag);
+        return Objects.equals(this.getLocale().toLanguageTag(), that.getLocale().toLanguageTag());
     }
 
     /**
@@ -163,7 +225,7 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      */
     @Override
     public int hashCode() {
-        return Objects.hash(languageTag);
+        return Objects.hash(getLocale().toLanguageTag());
     }
 
     /**
@@ -171,27 +233,46 @@ public class LocaleDefinition implements Serializable, Validatable, Comparable<L
      */
     @Override
     public int compareTo(final LocaleDefinition that) {
-
-        // Fail fast
-        if (that == null) {
-            return -1;
-        } else if (that == this) {
-            return 0;
-        }
-
-        // Delegate to internal state
-        return this.languageTag.compareTo(that.languageTag);
+        return LOCALE_COMPARATOR.compare(this, that);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void validateInternalState() throws InternalStateValidationException {
+    public void validateEntityState() throws InternalStateValidationException {
 
         // Check sanity
         InternalStateValidationException.create()
-                .notNullOrEmpty(languageTag, "languageTag")
+                .notNull(language, "language")
+                .notNull(country, "country")
+                .notNull(variant, "variant")
                 .endExpressionAndValidate();
+    }
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * immediately before this object is Marshalled.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("all")
+    private void beforeMarshal(final Marshaller marshaller) {
+        this.locale = getLocale().toLanguageTag();
+    }
+
+    /**
+     * This method is called after all the properties (except IDREF) are unmarshalled for this object,
+     * but before this object is set to the parent object.
+     */
+    @SuppressWarnings("PMD")
+    private void afterUnmarshal(final Unmarshaller unmarshaller, final Object parent) {
+
+        // Resurrect the JPA state
+        final Locale tmp = Locale.forLanguageTag(this.locale);
+
+        this.language = tmp.getLanguage();
+        this.country = tmp.getCountry();
+        this.variant = tmp.getVariant();
     }
 }

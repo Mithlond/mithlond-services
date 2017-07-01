@@ -301,7 +301,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
         final int numLocales = padAndGetSize(locales, TimeFormat.SWEDISH_LOCALE.toLanguageTag());
 
         final List<LocaleDefinition> managedLocales = entityManager.createNamedQuery(
-                LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_TAGS, LocaleDefinition.class)
+                LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_ONLY, LocaleDefinition.class)
                 .setParameter(OrganisationPatterns.PARAM_NUM_LANGUAGE_TAGS, numLocales)
                 .setParameter(OrganisationPatterns.PARAM_LANGUAGE_TAGS, locales)
                 .getResultList();
@@ -347,7 +347,7 @@ public class NavigationServiceBean extends AbstractJpaService implements Navigat
                         final List<LocaleDefinition> resultList = entityManager.createNamedQuery(
                                 LocaleDefinition.NAMEDQ_GET_BY_LANGUAGE_AND_COUNTRY, LocaleDefinition.class)
                                 .setParameter(OrganisationPatterns.PARAM_COUNTRY, country)
-                                .setParameter(OrganisationPatterns.PARAM_LANGUAGE, language)
+                                .setParameter(OrganisationPatterns.PARAM_LANGUAGE_TAG, language)
                                 .getResultList();
 
                         // All Done.

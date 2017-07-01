@@ -145,8 +145,8 @@ public class Localizations extends AbstractSimpleTransporter {
     public void addLocalizedTexts(final LocalizedTexts... toAdd) {
 
         if (toAdd != null) {
-            Arrays.asList(toAdd).stream()
-                    .filter(c -> c != null)
+            Arrays.stream(toAdd)
+                    .filter(Objects::nonNull)
                     .filter(c -> !localizedTexts.contains(c))
                     .forEach(c -> {
 
