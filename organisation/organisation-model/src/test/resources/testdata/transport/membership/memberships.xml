@@ -141,7 +141,6 @@
     </groups>
     <users>
         <user jpaId="50" version="0" xmlID="user_50_firstName_0_lastName_0_1975_05_01" personalNumberLast4Digits="101">
-            <userIdentifierToken>userIdentifierToken_0</userIdentifierToken>
             <firstName>firstName_0</firstName>
             <lastName>lastName_0</lastName>
             <birthday>1975-05-01</birthday>
@@ -162,7 +161,6 @@
             </contactDetails>
         </user>
         <user jpaId="52" version="0" xmlID="user_52_firstName_2_lastName_2_1977_07_03" personalNumberLast4Digits="103">
-            <userIdentifierToken>userIdentifierToken_2</userIdentifierToken>
             <firstName>firstName_2</firstName>
             <lastName>lastName_2</lastName>
             <birthday>1977-07-03</birthday>
@@ -183,7 +181,6 @@
             </contactDetails>
         </user>
         <user jpaId="53" version="0" xmlID="user_53_firstName_3_lastName_3_1978_08_04" personalNumberLast4Digits="104">
-            <userIdentifierToken>userIdentifierToken_3</userIdentifierToken>
             <firstName>firstName_3</firstName>
             <lastName>lastName_3</lastName>
             <birthday>1978-08-04</birthday>
@@ -204,7 +201,6 @@
             </contactDetails>
         </user>
         <user jpaId="51" version="0" xmlID="user_51_firstName_1_lastName_1_1976_06_02" personalNumberLast4Digits="102">
-            <userIdentifierToken>userIdentifierToken_1</userIdentifierToken>
             <firstName>firstName_1</firstName>
             <lastName>lastName_1</lastName>
             <birthday>1976-06-02</birthday>
@@ -225,7 +221,6 @@
             </contactDetails>
         </user>
         <user jpaId="54" version="0" xmlID="user_54_firstName_4_lastName_4_1979_09_05" personalNumberLast4Digits="105">
-            <userIdentifierToken>userIdentifierToken_4</userIdentifierToken>
             <firstName>firstName_4</firstName>
             <lastName>lastName_4</lastName>
             <birthday>1979-09-05</birthday>

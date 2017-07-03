@@ -50,7 +50,6 @@
       "xmlID": "user_0_FirstName_LastName_1968_09_17",
       "personalNumberLast4Digits": 1234,
       "xsi.type": "ns1.user",
-      "userIdentifierToken": "someToken",
       "firstName": "FirstName",
       "lastName": "LastName",
       "birthday": "1968-09-17",

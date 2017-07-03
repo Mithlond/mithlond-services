@@ -59,7 +59,6 @@
             </visitingAddress>
         </item>
         <item jpaId="0" version="0" xmlID="user_0_FirstName_LastName_1968_09_17" personalNumberLast4Digits="1234" xmlns:ns1="http://xmlns.mithlond.se/xml/ns/organisation" xsi:type="ns1:user">
-            <userIdentifierToken>someToken</userIdentifierToken>
             <firstName>FirstName</firstName>
             <lastName>LastName</lastName>
             <birthday>1968-09-17</birthday>

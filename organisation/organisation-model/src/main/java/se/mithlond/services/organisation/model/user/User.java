@@ -70,7 +70,7 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", "userIdentifierToken",
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", 
         "firstName", "lastName", "birthday", "personalNumberLast4Digits",
         "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -91,7 +91,7 @@ public class User extends NazgulEntity {
      */
     @Basic(optional = false)
     @Column(nullable = false)
-    @XmlElement(required = true)
+    @XmlTransient
     private String userIdentifierToken;
 
     /**
