@@ -74,6 +74,11 @@ public final class RestfulParameters {
     public static final String MENUSTRUCTURE_DATA = "menustructure";
 
     /**
+     * Parameter name for the login of a user.
+     */
+    public static final String LOGIN_ID = "loginID";
+
+    /**
      * Parameter name for deciding if inbound data is in XML or JSON form.
      */
     public static final String ISXML = "isxml";

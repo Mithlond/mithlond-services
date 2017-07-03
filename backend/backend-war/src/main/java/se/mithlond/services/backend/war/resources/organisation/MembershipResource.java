@@ -43,7 +43,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Resource facade to Memberships and Membership management.
@@ -126,6 +128,24 @@ public class MembershipResource extends AbstractResource {
 
         // All Done
         return toReturn;
+    }
+
+    /**
+     * Retrieves a {@link Memberships} wrapper containing the full-detail membership with the supplied LOGIN.
+     *
+     * @param orgJpaID The JPA ID of the Organisation for which Memberships should be retrieved.
+     * @return A {@link Memberships} wrapper containing all Membership (or MembershipVO)
+     */
+    @Path("/active")
+    @GET
+    public Memberships getActiveMembership(@PathParam(RestfulParameters.ORGANISATION_JPA_ID) final Long orgJpaID) {
+
+        // First, find the given Membership
+        final Set<Membership> membershipSet = new TreeSet<>();
+        membershipSet.add(getActiveMembership());
+
+        // All Done.
+        return new Memberships(membershipSet);
     }
 
     /**
