@@ -114,10 +114,13 @@ public class AllergiesTest extends AbstractEntityTest {
 
         allergyList = new ArrayList<>();
         for (int i = 2; i < 7; i++) {
+
+            final String note = (i == 4 ? "note_" + i : null);
             allergyList.add(new AllergyVO(
                     "allergy_description_" + i,
                     "severity_" + i,
                     "foodName_" + i,
+                    note,
                     (long) (i - 2),
                     (long) i));
         }

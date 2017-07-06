@@ -41,7 +41,7 @@ import java.util.Objects;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
-        propOrder = {"description", "foodName", "severity", "foodJpaID"})
+        propOrder = {"description", "foodName", "severity", "foodJpaID", "note"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AllergyVO extends AbstractSimpleTransportable {
 
@@ -64,6 +64,12 @@ public class AllergyVO extends AbstractSimpleTransportable {
     private String foodName;
 
     /**
+     * An optional note for this AllergyVO
+     */
+    @XmlElement
+    private String note;
+
+    /**
      * The JPA ID of the Food referred to by this AllergyVO.
      */
     @XmlAttribute(required = true)
@@ -81,12 +87,15 @@ public class AllergyVO extends AbstractSimpleTransportable {
      * @param description The (localized) Allergy description of this AllergyVO.
      * @param severity    The AllergySeverity description of this AllergyVO.
      * @param foodName    The Food name of this AllergyVO.
+     * @param note        An optional note of this AllergyVO.
      * @param userJpaID   The JPA ID of the User(VO) having this Allergy.
+     * @param foodJpaID   The JPA ID of the food.
      */
     public AllergyVO(
             final String description,
             final String severity,
             final String foodName,
+            final String note,
             final Long foodJpaID,
             final Long userJpaID) {
 
@@ -97,6 +106,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
         this.description = description;
         this.severity = severity;
         this.foodName = foodName;
+        this.note = note;
         this.foodJpaID = foodJpaID;
     }
 
@@ -120,6 +130,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
                 + allergy.getSeverity().getFullDescription().getText(locale, classifier);
         this.severity = allergy.getSeverity().getShortDescription().getText(locale, classifier);
         this.foodName = allergy.getFood().getLocalizedFoodName().getText(locale, classifier);
+        this.note = allergy.getNote();
         this.foodJpaID = allergy.getFood().getId();
     }
 
@@ -152,6 +163,13 @@ public class AllergyVO extends AbstractSimpleTransportable {
     }
 
     /**
+     * @return An optional/nullable note of this AllergyVO - written by the user, typically.
+     */
+    public String getNote() {
+        return note;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -170,6 +188,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
                 && Objects.equals(getSeverity(), allergyVO.getSeverity())
                 && Objects.equals(getFoodName(), allergyVO.getFoodName())
                 && Objects.equals(getFoodJpaID(), allergyVO.getFoodJpaID())
+                && Objects.equals(getNote(), allergyVO.getNote())
                 && Objects.equals(getJpaID(), allergyVO.getJpaID());
     }
 
@@ -178,7 +197,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getDescription(), getSeverity(), getFoodName(), getJpaID());
+        return Objects.hash(super.hashCode(), getDescription(), getNote(), getSeverity(), getFoodName(), getJpaID());
     }
 
     /**
@@ -228,6 +247,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
         return "AllergyVO{"
                 + "description='" + description + '\''
                 + ", severity='" + severity + '\''
+                + ", note='" + note + '\''
                 + ", foodName='" + foodName + '\''
                 + ", foodJpaID='" + foodJpaID + '\''
                 + ", userJpaID=" + getJpaID()

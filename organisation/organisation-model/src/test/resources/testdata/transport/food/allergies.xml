@@ -94,6 +94,7 @@
             <description>allergy_description_4</description>
             <foodName>foodName_4</foodName>
             <severity>severity_4</severity>
+            <note>note_4</note>
         </allergy>
         <allergy jpaId="5" foodJpaID="3">
             <description>allergy_description_5</description>

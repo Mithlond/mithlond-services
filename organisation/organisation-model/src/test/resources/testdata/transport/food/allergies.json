@@ -93,7 +93,8 @@
       "foodJpaID": 2,
       "description": "allergy_description_4",
       "foodName": "foodName_4",
-      "severity": "severity_4"
+      "severity": "severity_4",
+      "note": "note_4"
     },
     {
       "jpaId": 5,
