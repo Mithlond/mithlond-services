@@ -24,7 +24,6 @@ package se.mithlond.services.backend.war.resources.user;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.mithlond.services.backend.war.ServiceApplication;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.OrganisationService;
@@ -33,7 +32,6 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
-import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
@@ -89,6 +87,7 @@ public class ActiveUserResource extends AbstractResource {
                 .withOrganisationIDs(activeOrganisation.getId())
                 .withDetailedResponsePreferred(true)
                 .build();
+        
         organisationService.getGroups(groupSearchParams)
                 .getGroups()
                 .forEach(toReturn::addGroups);

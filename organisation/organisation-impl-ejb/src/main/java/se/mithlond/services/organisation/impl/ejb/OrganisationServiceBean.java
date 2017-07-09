@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.impl.ejb;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.CategorizedAddressSearchParameters;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
@@ -37,7 +38,6 @@ import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.transport.membership.GroupVO;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
@@ -148,18 +148,29 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .getResultList();
 
         final Groups toReturn = new Groups();
-        if (searchParameters.isDetailedResponsePreferred()) {
 
-            // Simply add all retrieved groups.
-            toReturn.getGroups().addAll(groups);
+        if (groups != null) {
 
-        } else {
+            // Log the parent groups.
+            groups.stream().filter(gr -> gr.getParent() != null).forEach(gr -> {
+                if (log.isDebugEnabled()) {
+                    log.debug("Group [" + gr.getGroupName() + "] has Parent [" + gr.getParent().getGroupName() + "]");
+                }
+            });
 
-            // Convert to GroupVOs and add.
-            toReturn.getGroupVOs().addAll(groups
-                    .stream()
-                    .map(GroupVO::new)
-                    .collect(Collectors.toList()));
+            if (searchParameters.isDetailedResponsePreferred()) {
+
+                // Simply add all retrieved groups.
+                toReturn.getGroups().addAll(groups);
+
+            } else {
+
+                // Convert to GroupVOs and add.
+                toReturn.getGroupVOs().addAll(groups
+                        .stream()
+                        .map(GroupVO::new)
+                        .collect(Collectors.toList()));
+            }
         }
 
         // All Done.
@@ -279,10 +290,10 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
      */
     @Override
     public CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-            final String fullDesc,
-            final Address address,
-            final Long categoryID,
-            final Long organisationID) {
+                                                               final String fullDesc,
+                                                               final Address address,
+                                                               final Long categoryID,
+                                                               final Long organisationID) {
 
         // Check sanity
         Validate.notEmpty(shortDesc, "shortDesc");
