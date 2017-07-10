@@ -33,8 +33,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -48,6 +50,23 @@ import java.util.TreeSet;
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"organisationsVOs", "groups", "groupVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Groups extends AbstractSimpleTransporter {
+
+    @XmlTransient
+    private static final Comparator<Group> parentsFirstComparator = (l, r) -> {
+
+        // Do we have a parent?
+        final boolean leftHasParent = l.getParent() != null;
+        final boolean rightHasParent = r.getParent() != null;
+
+        if(leftHasParent && !rightHasParent) {
+            return 1;
+        } else if(!leftHasParent && rightHasParent) {
+            return -1;
+        }
+
+        // Fallback to normal sorting.
+        return l.compareTo(r);
+    };
 
     /**
      * A Set of full/detailed {@link Group} objects.
@@ -78,7 +97,7 @@ public class Groups extends AbstractSimpleTransporter {
      */
     public Groups() {
         this.organisationsVOs = new TreeSet<>();
-        this.groups = new TreeSet<>();
+        this.groups = new TreeSet<>(parentsFirstComparator);
         this.groupVOs = new TreeSet<>();
     }
 
@@ -113,7 +132,7 @@ public class Groups extends AbstractSimpleTransporter {
      *
      * @param groups An array of GroupVOs.
      */
-    public void addGroupVOs(final GroupVO ... groups) {
+    public void addGroupVOs(final GroupVO... groups) {
 
         if (groups != null && groups.length > 0) {
 

@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"parentGroupName", "description"})
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
+        propOrder = {"parentGroupName", "description", "isGuild"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GroupVO extends AbstractOrganisationalVO {
 
@@ -78,11 +79,11 @@ public class GroupVO extends AbstractOrganisationalVO {
      * @param description     An optional short description of this Group.
      */
     public GroupVO(final Long jpaID,
-            final OrganisationVO organisation,
-            final String name,
-            final String parentGroupName,
-            final String description,
-            final boolean isGuild) {
+                   final OrganisationVO organisation,
+                   final String name,
+                   final String parentGroupName,
+                   final String description,
+                   final boolean isGuild) {
 
         super(jpaID, organisation, name);
 

@@ -87,10 +87,13 @@ public class ActiveUserResource extends AbstractResource {
                 .withOrganisationIDs(activeOrganisation.getId())
                 .withDetailedResponsePreferred(true)
                 .build();
-        
+
         organisationService.getGroups(groupSearchParams)
                 .getGroups()
                 .forEach(toReturn::addGroups);
+        toReturn.getGroups().stream()
+                .filter(gr -> gr.getParent() != null)
+                .forEach(gr -> log.debug("Group [" + gr.getGroupName() + "] has a parent [" + gr.getParent().getGroupName() + "]"));
 
         // All Done.
         return toReturn;

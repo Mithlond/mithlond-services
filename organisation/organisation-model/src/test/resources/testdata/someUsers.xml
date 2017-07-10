@@ -88,17 +88,17 @@
             <description>groupDescription_1</description>
             <emailList>emailList_1</emailList>
         </group>
-        <group jpaId="0" version="0" organisationReference="organisation_name_2" parent="group_name_1_groupName_1" xmlID="group_name_2_groupName_2">
+        <group jpaId="0" version="0" organisationReference="organisation_name_2" parentXmlID="group_name_1_groupName_1" xmlID="group_name_2_groupName_2">
             <groupName>groupName_2</groupName>
             <description>groupDescription_2</description>
             <emailList>emailList_2</emailList>
         </group>
-        <group jpaId="0" version="0" organisationReference="organisation_name_0" parent="group_name_2_groupName_2" xmlID="group_name_0_groupName_3">
+        <group jpaId="0" version="0" organisationReference="organisation_name_0" parentXmlID="group_name_2_groupName_2" xmlID="group_name_0_groupName_3">
             <groupName>groupName_3</groupName>
             <description>groupDescription_3</description>
             <emailList>emailList_3</emailList>
         </group>
-        <group jpaId="0" version="0" organisationReference="organisation_name_1" parent="group_name_0_groupName_3" xmlID="group_name_1_groupName_4">
+        <group jpaId="0" version="0" organisationReference="organisation_name_1" parentXmlID="group_name_0_groupName_3" xmlID="group_name_1_groupName_4">
             <groupName>groupName_4</groupName>
             <description>groupDescription_4</description>
             <emailList>emailList_4</emailList>

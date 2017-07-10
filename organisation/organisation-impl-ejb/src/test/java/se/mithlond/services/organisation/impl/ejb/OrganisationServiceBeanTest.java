@@ -164,6 +164,20 @@ public class OrganisationServiceBeanTest extends AbstractOrganisationIntegration
                         + voNames.stream().reduce((l, r) -> l + ", " + r).orElse("<Nopes>"),
                 voNames.contains(voName)));
 
+        final Group mifflondMembers = pureGroups
+                .stream()
+                .filter(g -> g.getDescription().equalsIgnoreCase("Mifflonds inbyggare"))
+                .findFirst()
+                .orElse(null);
+        final Group mifflondCouncil = pureGroups
+                .stream()
+                .filter(g -> g.getDescription().equalsIgnoreCase("Mifflonds Grå Råd"))
+                .findFirst()
+                .orElse(null);
+        Assert.assertNotNull(mifflondMembers);
+        Assert.assertNotNull(mifflondCouncil);
+
+        Assert.assertEquals(mifflondMembers, mifflondCouncil.getParent());
     }
 
     @Test

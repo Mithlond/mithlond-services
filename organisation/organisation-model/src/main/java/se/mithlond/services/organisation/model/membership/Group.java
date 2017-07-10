@@ -53,6 +53,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.Objects;
 import java.util.SortedSet;
@@ -104,7 +105,7 @@ import java.util.TreeSet;
                         + " order by g.groupName")
 })
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
-        propOrder = {"groupName", "description", "organisation", "parent", "emailList"})
+        propOrder = {"groupName", "description", "organisation", "emailList", "parentXmlID"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Group extends NazgulEntity implements Comparable<Group>, SemanticAuthorizationPathProducer {
 
@@ -181,14 +182,19 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
     private Organisation organisation;
 
     /**
-     * XML ID reference to the parent of this Group.
      * Groups are structured in a Tree, which means that each Group may have (a single) parent Group.
      * Effective settings for a Group is the aggregation of all settings inherited from all its parent Groups.
      */
     @ManyToOne
-    @XmlIDREF
-    @XmlAttribute
+    @XmlTransient
     private Group parent;
+
+    /**
+     * The xmlID of the parent for this Group.
+     */
+    @XmlAttribute
+    @Transient
+    private String parentXmlID;
 
     /**
      * JAXB/JPA-friendly constructor.
@@ -264,6 +270,15 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      */
     public Group getParent() {
         return parent;
+    }
+
+    /**
+     * Retrieves the XML ID of the parent for this Group, or {@code null} if this Group has no parent group.
+     *
+     * @return the optional (i.e. nullable) XML ID of the parent for this Group.
+     */
+    public String getParentXmlID() {
+        return parentXmlID;
     }
 
     /**
@@ -403,5 +418,14 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
         this.xmlID = "group_"
                 + organisation.getOrganisationName().replaceAll("\\s+", "_")
                 + "_" + groupName.trim().replaceAll("\\s+", "_");
+
+        if(getParent() != null) {
+
+            // Ensure that the parent's XML ID is set.
+            getParent().setXmlID();
+
+            // ... and fetch the Parent's XML ID.
+            this.parentXmlID = getParent().xmlID;
+        }
     }
 }
