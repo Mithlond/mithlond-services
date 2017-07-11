@@ -349,6 +349,7 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("all")
     @Override
     public int compareTo(final Group that) {
 
@@ -357,6 +358,16 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
             return -1;
         } else if (this == that) {
             return 0;
+        }
+
+        // Do we have a parent?
+        final boolean thisHasParent = this.getParent() != null;
+        final boolean thatHasParent = that.getParent() != null;
+
+        if(thisHasParent && !thatHasParent) {
+            return 1;
+        } else if(!thisHasParent && thatHasParent) {
+            return -1;
         }
 
         // Delegate
