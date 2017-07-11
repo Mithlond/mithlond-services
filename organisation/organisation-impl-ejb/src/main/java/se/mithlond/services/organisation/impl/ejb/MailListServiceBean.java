@@ -31,6 +31,7 @@ import se.mithlond.services.shared.spi.algorithms.messages.JmsCompliantMap;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.annotation.Resource;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
@@ -41,6 +42,7 @@ import javax.jms.TextMessage;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@Stateless
 public class MailListServiceBean extends AbstractJpaService implements MailListService {
 
     // Our Logger
