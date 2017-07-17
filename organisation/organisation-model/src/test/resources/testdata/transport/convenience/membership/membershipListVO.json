@@ -1,0 +1,109 @@
+{
+  "xsi.type": "organisation.membershipListVO",
+  "organisationJpaID": 1,
+  "organisationName": "mifflond",
+  "memberInformation": [
+    {
+      "jpaId": 101,
+      "fullAlias": "Bilbo",
+      "emailAlias": "bilbo",
+      "firstName": "Mr",
+      "lastName": "Anderson",
+      "birthday": "1975-06-22",
+      "loginPermitted": true,
+      "homeAddress": {
+        "careOfLine": "careOfLine_3",
+        "departmentName": "departmentName_3",
+        "street": "street_3",
+        "number": "number_3",
+        "city": "city_3",
+        "zipCode": "zipCode_3",
+        "country": "country_3",
+        "description": "description_3"
+      },
+      "contactInfo": [
+        {
+          "medium": "EMAIL",
+          "addressOrNumber": "mr.anderson@matrix.org"
+        },
+        {
+          "medium": "HOME_PHONE",
+          "addressOrNumber": "+46 284 192 203"
+        },
+        {
+          "medium": "SKYPE",
+          "addressOrNumber": "whatisthematrix"
+        }
+      ],
+      "groups": [
+        {
+          "jpaId": 201,
+          "xmlId": "group_mifflond_Inbyggare"
+        }
+      ],
+      "guilds": [
+        {
+          "jpaId": 301,
+          "xmlId": "group_mifflond_Alvgillet",
+          "memberType": "member"
+        }
+      ]
+    },
+    {
+      "jpaId": 103,
+      "fullAlias": "Cimnolwe, Morgoths Svarta Massssk",
+      "emailAlias": "cimnolwe",
+      "firstName": "Mrs",
+      "lastName": "Arrrrveteg",
+      "birthday": "1976-10-01",
+      "loginPermitted": true,
+      "homeAddress": {
+        "careOfLine": "careOfLine_4",
+        "departmentName": "departmentName_4",
+        "street": "street_4",
+        "number": "number_4",
+        "city": "city_4",
+        "zipCode": "zipCode_4",
+        "country": "country_4",
+        "description": "description_4"
+      },
+      "contactInfo": [
+        {
+          "medium": "EMAIL",
+          "addressOrNumber": "skittrevlig@yahoo.com"
+        },
+        {
+          "medium": "GITHUB",
+          "addressOrNumber": "clueless"
+        },
+        {
+          "medium": "HOME_PHONE",
+          "addressOrNumber": "+46 345 678 901"
+        }
+      ],
+      "groups": [
+        {
+          "jpaId": 201,
+          "xmlId": "group_mifflond_Inbyggare"
+        },
+        {
+          "jpaId": 202,
+          "xmlId": "group_mifflond_Administratörer",
+          "parentXmlId": "group_mifflond_Inbyggare"
+        }
+      ],
+      "guilds": [
+        {
+          "jpaId": 301,
+          "xmlId": "group_mifflond_Alvgillet",
+          "memberType": "guildMaster"
+        },
+        {
+          "jpaId": 302,
+          "xmlId": "group_mifflond_Muzikgillet",
+          "memberType": "member"
+        }
+      ]
+    }
+  ]
+}

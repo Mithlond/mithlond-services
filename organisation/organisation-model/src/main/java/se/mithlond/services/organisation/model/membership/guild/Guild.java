@@ -163,4 +163,13 @@ public class Guild extends Group {
                 + getOrganisation().getOrganisationName().replaceAll("\\s+", "_")
                 + "_" + getGroupName().trim().replaceAll("\\s+", "_");
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getXmlID() {
+        setXmlID();
+        return super.getXmlID();
+    }
 }

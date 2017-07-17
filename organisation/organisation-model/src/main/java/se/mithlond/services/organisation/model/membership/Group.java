@@ -439,4 +439,14 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
             this.parentXmlID = getParent().xmlID;
         }
     }
+
+    /**
+     * Retrieves the XML ID of this Group.
+     *
+     * @return the XML ID of this Group.
+     */
+    public String getXmlID() {
+        setXmlID();
+        return this.xmlID;
+    }
 }

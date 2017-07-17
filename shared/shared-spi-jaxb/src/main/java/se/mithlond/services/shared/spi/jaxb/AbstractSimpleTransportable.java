@@ -40,7 +40,7 @@ import java.util.Objects;
  * @see se.mithlond.services.shared.spi.jaxb.adapter.LocalDateTimeAdapter
  * @see se.mithlond.services.shared.spi.jaxb.adapter.ZonedDateTimeAdapter
  */
-@XmlType(namespace = SharedJaxbPatterns.NAMESPACE, propOrder = {"jpaId"})
+@XmlType(namespace = SharedJaxbPatterns.NAMESPACE, propOrder = {"jpaId", "xmlId"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class AbstractSimpleTransportable implements Serializable, Comparable<AbstractSimpleTransportable> {
 
@@ -53,20 +53,42 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
     private Long jpaId;
 
     /**
+     * An optional XML ID for this AbstractSimpleTransportable.
+     */
+    @XmlAttribute
+    protected String xmlId;
+
+    /**
      * JAXB-friendly constructor.
      */
     public AbstractSimpleTransportable() {
     }
 
     /**
-     * Compound constructor creating an {@link AbstractSimpleTransportable} wrapping the supplied JPA ID.
+     * Convenience constructor creating an {@link AbstractSimpleTransportable} wrapping the supplied JPA ID.
      *
      * @param jpaId The JPA ID for the entity corresponding to this {@link AbstractSimpleTransportable}.
      *              Use {@code null} to indicate that this {@link AbstractSimpleTransportable} does not correspond to
      *              a (known) Entity within the database.
      */
     public AbstractSimpleTransportable(final Long jpaId) {
+        this(jpaId, null);
+    }
+
+    /**
+     * Compound constructor creating an {@link AbstractSimpleTransportable} wrapping the supplied data.
+     *
+     * @param jpaId The JPA ID for the entity corresponding to this {@link AbstractSimpleTransportable}.
+     *              Use {@code null} to indicate that this {@link AbstractSimpleTransportable} does not correspond to
+     *              a (known) Entity within the database.
+     * @param xmlId The XML ID for this entity, or null if unknown.
+     */
+    public AbstractSimpleTransportable(final Long jpaId,
+                                       final String xmlId) {
+
+        // Assign internal state
         this.jpaId = jpaId;
+        this.xmlId = xmlId;
     }
 
     /**
@@ -77,6 +99,15 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
      */
     public Long getJpaID() {
         return jpaId;
+    }
+
+    /**
+     * Retrieves the optional (i.e. nullable) XML ID of this AbstractSimpleTransportable.
+     *
+     * @return the optional (i.e. nullable) XML ID of this AbstractSimpleTransportable.
+     */
+    public String getXmlId() {
+        return xmlId;
     }
 
     /**
@@ -122,7 +153,8 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
     public int hashCode() {
 
         final Long effectiveJpaID = jpaId == null ? 0L : jpaId;
-        return Objects.hash(getClass().getName(), effectiveJpaID);
+        final String effectiveXmlID = xmlId == null ? "" : xmlId;
+        return Objects.hash(getClass().getName(), effectiveJpaID, effectiveXmlID);
     }
 
     /**
@@ -159,6 +191,14 @@ public abstract class AbstractSimpleTransportable implements Serializable, Compa
             final Long thatJpaID = that.jpaId == null ? 0L : that.jpaId;
 
             toReturn = thisJpaID.compareTo(thatJpaID);
+        }
+
+        // #3) Compare the XML IDs.
+        if (toReturn == 0) {
+            final String thisXmlID = xmlId == null ? "" : xmlId;
+            final String thatXmlID = that.xmlId == null ? "" : that.xmlId;
+
+            toReturn = thisXmlID.compareTo(thatXmlID);
         }
 
         // All Done.

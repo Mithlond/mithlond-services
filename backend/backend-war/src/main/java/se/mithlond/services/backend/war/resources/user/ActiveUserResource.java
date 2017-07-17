@@ -25,17 +25,22 @@ import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
+import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
+import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.transport.convenience.membership.MembershipListVO;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -64,6 +69,9 @@ public class ActiveUserResource extends AbstractResource {
 
     @EJB
     private FoodAndAllergyService foodAndAllergyService;
+
+    @EJB
+    private MembershipService membershipService;
 
     /**
      * Retrieves a {@link Memberships} wrapper containing the full-detail membership information of
@@ -116,6 +124,36 @@ public class ActiveUserResource extends AbstractResource {
 
         // Populate with known, AllergyVOs.
         foodAndAllergyService.getAllergiesFor(getActiveMembership()).forEach(toReturn::add);
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * Retrieves a MembershipListVO containing all Memberships within the organisation of the active membership.
+     *
+     * @param includeLoginNotPermitted If true, the result will contain all Memberships - even those without the
+     *                                 privilege to login (i.e. former memberships).
+     * @return A MembershipListVO with the Memberships within the active organisation.
+     */
+    @Path("/memberships/in/own/organisation")
+    @GET
+    public MembershipListVO getMembershipsInOwnOrganisation(
+            @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED)
+            final Boolean includeLoginNotPermitted) {
+
+        final boolean effectiveInclude = includeLoginNotPermitted == null ? false : includeLoginNotPermitted;
+        final Membership activeMembership = getActiveMembership();
+        final Organisation activeOrganisation = activeMembership.getOrganisation();
+
+        // Find the Memberships.
+        final List<Membership> membershipsInOwnOrganisation = membershipService.getMembershipsIn(
+                activeOrganisation.getId(),
+                effectiveInclude);
+
+        // Package the retrieved memberships into the MembershipListVO.
+        final MembershipListVO toReturn = new MembershipListVO(activeOrganisation);
+        membershipsInOwnOrganisation.forEach(toReturn::add);
 
         // All Done.
         return toReturn;
