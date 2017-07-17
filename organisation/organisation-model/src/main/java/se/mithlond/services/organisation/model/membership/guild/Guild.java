@@ -169,7 +169,7 @@ public class Guild extends Group {
      */
     @Override
     public String getXmlID() {
-        setXmlID();
-        return super.getXmlID();
+        this.setXmlID();
+        return this.xmlID;
     }
 }

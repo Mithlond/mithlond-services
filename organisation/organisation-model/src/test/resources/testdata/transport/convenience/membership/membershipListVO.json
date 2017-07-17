@@ -44,7 +44,7 @@
       "guilds": [
         {
           "jpaId": 301,
-          "xmlId": "group_mifflond_Alvgillet",
+          "xmlId": "guild_mifflond_Alvgillet",
           "memberType": "member"
         }
       ]
@@ -95,12 +95,12 @@
       "guilds": [
         {
           "jpaId": 301,
-          "xmlId": "group_mifflond_Alvgillet",
+          "xmlId": "guild_mifflond_Alvgillet",
           "memberType": "guildMaster"
         },
         {
           "jpaId": 302,
-          "xmlId": "group_mifflond_Muzikgillet",
+          "xmlId": "guild_mifflond_Muzikgillet",
           "memberType": "member"
         }
       ]
