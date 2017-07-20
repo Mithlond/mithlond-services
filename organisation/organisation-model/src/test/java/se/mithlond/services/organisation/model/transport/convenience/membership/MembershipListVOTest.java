@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -264,6 +266,15 @@ public class MembershipListVOTest extends AbstractEntityTest {
             Assert.assertNotNull(current.getMedium());
             Assert.assertNotNull(current.getAddressOrNumber());
         }
+
+        final List<SlimGroupMembershipVO> groups = sMember.getGroups();
+        Assert.assertNotNull(groups);
+        Assert.assertEquals(2, groups.size());
+        groups.forEach(gr -> System.out.println("Got SlimGroupMembershipVO: " + gr));
+
+        // final SortedMap<String, SlimGroupMembershipVO> xmlId2GroupMap = new TreeMap<>();
+        // groups.forEach(gr -> xmlId2GroupMap.put(gr.getXmlId(), gr));
+        // System.out.println("Got: " + xmlId2GroupMap);
     }
 
     @Test
@@ -278,6 +289,7 @@ public class MembershipListVOTest extends AbstractEntityTest {
         unitUnderTest.add(bilboMifflond, dildoFjodjim, cimnolweMifflond, cimnolweFjodjim);
         final String result = marshalToJSon(unitUnderTest);
         // System.out.println("Got: " + result);
+        // System.out.println("Got XML: " + marshalToXML(unitUnderTest));
 
         // Assert
         final List<SlimMemberVO> memberInfoVOs = unitUnderTest.getMemberInformation();

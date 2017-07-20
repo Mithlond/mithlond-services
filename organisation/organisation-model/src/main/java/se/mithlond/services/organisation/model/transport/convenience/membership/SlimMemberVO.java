@@ -34,7 +34,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
         propOrder = {"fullAlias", "emailAlias", "firstName", "lastName", "birthday",
                 "homeAddress", "contactInfo", "groups", "guilds"})
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({SlimContactInfoVO.class, SlimGroupMembershipVO.class, SlimGuildMembershipVO.class})
+// @XmlSeeAlso({SlimContactInfoVO.class, SlimGroupMembershipVO.class, SlimGuildMembershipVO.class})
 public class SlimMemberVO extends AbstractSimpleTransportable {
 
     /**
@@ -261,7 +260,7 @@ public class SlimMemberVO extends AbstractSimpleTransportable {
 
         final String theGroups = getGroups().stream()
                 .sorted()
-                .map(AbstractSimpleTransportable::getXmlId)
+                .map(SlimGroupMembershipVO::toString)
                 .reduce((l, r) -> l + ", " + r)
                 .orElse("<None>");
 

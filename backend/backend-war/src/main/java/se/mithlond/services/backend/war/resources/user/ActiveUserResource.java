@@ -35,6 +35,7 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.convenience.membership.MembershipListVO;
 import se.mithlond.services.organisation.model.transport.convenience.membership.SlimContactInfoVO;
+import se.mithlond.services.organisation.model.transport.convenience.membership.SlimGuildMembershipVO;
 import se.mithlond.services.organisation.model.transport.convenience.membership.SlimMemberVO;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
@@ -169,6 +170,40 @@ public class ActiveUserResource extends AbstractResource {
     }
 
     /**
+     * Updates the GuildMemberships of the active user.
+     * TODO: Move the algorithm into the membershipServiceImpl instead of stashing it here (better re-usability).
+     *
+     * @return The unmarshalled MembershipListVO submitted from the client.
+     */
+    @Path("/guildMemberships/update")
+    @POST
+    public Response updateGuildMemberships(MembershipListVO submittedBodyData) {
+
+        // Check sanity
+        if (log.isInfoEnabled()) {
+            log.info("Got submitted MembershipListVO: " + submittedBodyData);
+        }
+
+        // Dig out the commonly used data.
+        final Membership activeMembership = getActiveMembership();
+        boolean isUpdated = false;
+
+        // Check inbound data sanity
+        final List<SlimMemberVO> memberInformation = submittedBodyData.getMemberInformation();
+        if (memberInformation != null && memberInformation.size() == 1) {
+
+            final SlimMemberVO receivedData = memberInformation.get(0);
+
+            // TODO: Complete this.
+            final List<SlimGuildMembershipVO> guilds = receivedData.getGuilds();
+
+        }
+
+        // TODO: Fix this.
+        return Response.accepted().build();
+    }
+
+    /**
      * Updates the Personal settings of the active user.
      * TODO: Move the algorithm into the membershipServiceImpl instead of stashing it here (better re-usability).
      *
@@ -290,6 +325,8 @@ public class ActiveUserResource extends AbstractResource {
             }
         }
 
+        final MembershipListVO toReturn = new MembershipListVO(activeMembership.getOrganisation());
+
         if(isUpdated) {
 
             // Update the User data.
@@ -299,15 +336,15 @@ public class ActiveUserResource extends AbstractResource {
             if (log.isInfoEnabled()) {
                 log.info("Updated User to " + updatedUser);
             }
+
+            // All Done.
+            toReturn.add(activeMembership);
+            return Response.accepted().entity(toReturn).build();
         }
 
-        final MembershipListVO toReturn = new MembershipListVO(activeMembership.getOrganisation());
-        toReturn.add(activeMembership);
-
         // All Done.
-        return Response.accepted()
-                .entity(toReturn)
-                .build();
+        toReturn.add(activeMembership);
+        return Response.notModified().entity(toReturn).build();
     }
 
     //

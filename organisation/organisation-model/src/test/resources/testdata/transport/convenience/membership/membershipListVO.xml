@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organisation_transport:membershipListVO xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" organisationJpaID="1">
+    <organisationName>mifflond</organisationName>
+    <memberInformation>
+        <memberData jpaId="101" fullAlias="Bilbo" emailAlias="bilbo" firstName="Mr" lastName="Anderson" birthday="1975-06-22" loginPermitted="true">
+            <homeAddress>
+                <careOfLine>careOfLine_3</careOfLine>
+                <departmentName>departmentName_3</departmentName>
+                <street>street_3</street>
+                <number>number_3</number>
+                <city>city_3</city>
+                <zipCode>zipCode_3</zipCode>
+                <country>country_3</country>
+                <description>description_3</description>
+            </homeAddress>
+            <contactInfo>
+                <info medium="EMAIL" addressOrNumber="mr.anderson@matrix.org"/>
+                <info medium="HOME_PHONE" addressOrNumber="+46 284 192 203"/>
+                <info medium="SKYPE" addressOrNumber="whatisthematrix"/>
+            </contactInfo>
+            <groups>
+                <group jpaId="201" xmlId="group_mifflond_Inbyggare"/>
+            </groups>
+            <guilds>
+                <guild jpaId="301" xmlId="guild_mifflond_Alvgillet" memberType="member"/>
+            </guilds>
+        </memberData>
+        <memberData jpaId="103" fullAlias="Cimnolwe, Morgoths Svarta Massssk" emailAlias="cimnolwe" firstName="Mrs" lastName="Arrrrveteg" birthday="1976-10-01" loginPermitted="true">
+            <homeAddress>
+                <careOfLine>careOfLine_4</careOfLine>
+                <departmentName>departmentName_4</departmentName>
+                <street>street_4</street>
+                <number>number_4</number>
+                <city>city_4</city>
+                <zipCode>zipCode_4</zipCode>
+                <country>country_4</country>
+                <description>description_4</description>
+            </homeAddress>
+            <contactInfo>
+                <info medium="EMAIL" addressOrNumber="skittrevlig@yahoo.com"/>
+                <info medium="GITHUB" addressOrNumber="clueless"/>
+                <info medium="HOME_PHONE" addressOrNumber="+46 345 678 901"/>
+            </contactInfo>
+            <groups>
+                <group jpaId="201" xmlId="group_mifflond_Inbyggare"/>
+                <group jpaId="202" xmlId="group_mifflond_Administratörer" parentXmlId="group_mifflond_Inbyggare"/>
+            </groups>
+            <guilds>
+                <guild jpaId="301" xmlId="guild_mifflond_Alvgillet" memberType="guildMaster"/>
+                <guild jpaId="302" xmlId="guild_mifflond_Muzikgillet" memberType="member"/>
+            </guilds>
+        </memberData>
+    </memberInformation>
+</organisation_transport:membershipListVO>
