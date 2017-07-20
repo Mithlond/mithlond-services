@@ -7,39 +7,39 @@
       "jpaId": 44,
       "fullAlias": "Häxmästaren",
       "emailAlias": "haxx",
-      "firstName": "Lennart",
-      "lastName": "Jörelid",
+      "firstName": "Mr",
+      "lastName": "Häxx",
       "birthday": "1968-09-17",
       "loginPermitted": true,
       "homeAddress": {
         "careOfLine": "",
         "street": "Stenåsvägen",
         "number": "3",
-        "city": "Mölnlycket",
-        "zipCode": "435 41",
+        "city": "Somewhere",
+        "zipCode": "123 44",
         "country": "Sverige",
         "description": "Hemma hos Lennart Jörelid"
       },
       "contactInfo": [
         {
           "medium": "HOME_PHONE",
-          "addressOrNumber": "031-882 999"
+          "addressOrNumber": "031-123456"
         },
         {
           "medium": "CELL_PHONE",
-          "addressOrNumber": "0708-507 603"
+          "addressOrNumber": "0708-123456"
         },
         {
           "medium": "EMAIL",
-          "addressOrNumber": "lj@jguru.se"
+          "addressOrNumber": "lj@foobar.com"
         },
         {
           "medium": "SKYPE",
-          "addressOrNumber": "jgurueurope"
+          "addressOrNumber": "somewhatCool"
         },
         {
           "medium": "WHATSAPP",
-          "addressOrNumber": "0708-507 603"
+          "addressOrNumber": "0708-123456"
         }
       ],
       "groups": [

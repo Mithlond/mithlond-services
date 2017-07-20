@@ -249,7 +249,21 @@ public class MembershipListVOTest extends AbstractEntityTest {
 
         // Assert
         Assert.assertNotNull(membershipListVO);
-        Assert.assertEquals("haxx", membershipListVO.getMemberInformation().get(0).getEmailAlias());
+
+        final List<SlimMemberVO> memberInformationList = membershipListVO.getMemberInformation();
+        Assert.assertEquals(1, memberInformationList.size());
+
+        final SlimMemberVO sMember = memberInformationList.get(0);
+        Assert.assertNotNull(sMember);
+
+        Assert.assertEquals("haxx", sMember.getEmailAlias());
+        Assert.assertNotNull(sMember.getContactInfo());
+        Assert.assertEquals(5, sMember.getContactInfo().size());
+
+        for(SlimContactInfoVO current : sMember.getContactInfo()) {
+            Assert.assertNotNull(current.getMedium());
+            Assert.assertNotNull(current.getAddressOrNumber());
+        }
     }
 
     @Test

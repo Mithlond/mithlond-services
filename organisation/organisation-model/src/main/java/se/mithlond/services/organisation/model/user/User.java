@@ -280,17 +280,32 @@ public class User extends NazgulEntity {
     /**
      * The last name of this AbstractUser.
      *
-     * @return The firstName of this AbstractUser entity
+     * @return The firstName of this User entity
      */
     public String getLastName() {
         return lastName;
     }
 
     /**
-     * @return The birthday of this AbstractUser.
+     * @return The birthday of this User.
      */
     public LocalDate getBirthday() {
         return birthday;
+    }
+
+    /**
+     * Assigns a new Birthday to this User.
+     *
+     * @param birthday a new Birthday to this User.
+     */
+    public void setBirthday(final LocalDate birthday) {
+
+        final LocalDate nonNull = Validate.notNull(birthday, "birthday");
+        Validate.isTrue(LocalDate.now().isAfter(nonNull), "Birthday must be in the past. [Got: "
+                + TimeFormat.YEAR_MONTH_DATE.print(nonNull) + "]");
+
+        // Finally, assign internal state
+        this.birthday = nonNull;
     }
 
     /**

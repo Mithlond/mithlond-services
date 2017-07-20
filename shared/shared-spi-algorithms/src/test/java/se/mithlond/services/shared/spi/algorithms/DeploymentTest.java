@@ -21,12 +21,9 @@
  */
 package se.mithlond.services.shared.spi.algorithms;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -79,7 +76,7 @@ public class DeploymentTest extends AbstractDeploymentTest {
         }
 
         // Assert
-        for(Map.Entry<String, Boolean> current : actual.entrySet()) {
+        for (Map.Entry<String, Boolean> current : actual.entrySet()) {
             final String msg = " [" + current.getKey() + "]: " + current.getValue()
                     + "  --  expected [" + expected.get(current.getKey()) + "]";
             final String currentKey = current.getKey();
