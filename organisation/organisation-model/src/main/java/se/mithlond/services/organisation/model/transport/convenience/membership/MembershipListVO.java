@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.convenience.membership
 
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
@@ -33,6 +34,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +50,7 @@ import java.util.Objects;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"organisationName", "organisationJpaID", "memberInformation"})
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({SlimMemberVO.class, Address.class})
 public class MembershipListVO extends AbstractSimpleTransporter {
 
     /**

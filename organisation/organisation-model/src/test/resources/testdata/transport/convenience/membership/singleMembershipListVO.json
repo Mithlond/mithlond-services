@@ -1,0 +1,77 @@
+{
+  "type": "membershipListVO",
+  "organisationJpaID": 1,
+  "organisationName": "Mithlond",
+  "memberInformation": [
+    {
+      "jpaId": 44,
+      "fullAlias": "Häxmästaren",
+      "emailAlias": "haxx",
+      "firstName": "Lennart",
+      "lastName": "Jörelid",
+      "birthday": "1968-09-17",
+      "loginPermitted": true,
+      "homeAddress": {
+        "careOfLine": "",
+        "street": "Stenåsvägen",
+        "number": "3",
+        "city": "Mölnlycket",
+        "zipCode": "435 41",
+        "country": "Sverige",
+        "description": "Hemma hos Lennart Jörelid"
+      },
+      "contactInfo": [
+        {
+          "medium": "HOME_PHONE",
+          "addressOrNumber": "031-882 999"
+        },
+        {
+          "medium": "CELL_PHONE",
+          "addressOrNumber": "0708-507 603"
+        },
+        {
+          "medium": "EMAIL",
+          "addressOrNumber": "lj@jguru.se"
+        },
+        {
+          "medium": "SKYPE",
+          "addressOrNumber": "jgurueurope"
+        },
+        {
+          "medium": "WHATSAPP",
+          "addressOrNumber": "0708-507 603"
+        }
+      ],
+      "groups": [
+        "group_Mithlond_Inbyggare",
+        "group_Mithlond_Utvecklare"
+      ],
+      "guilds": [
+        {
+          "guildMaster": false,
+          "deputyGuildMaster": false,
+          "auditor": false,
+          "group": "guild_Mithlond_Dryckesgillet"
+        },
+        {
+          "guildMaster": false,
+          "deputyGuildMaster": false,
+          "auditor": false,
+          "group": "guild_Mithlond_De_Ännu_Friare_Folkens_Gille"
+        },
+        {
+          "guildMaster": false,
+          "deputyGuildMaster": false,
+          "auditor": false,
+          "group": "guild_Mithlond_Musikgillet"
+        },
+        {
+          "guildMaster": false,
+          "deputyGuildMaster": false,
+          "auditor": false,
+          "group": "guild_Mithlond_Dansgillet"
+        }
+      ]
+    }
+  ]
+}

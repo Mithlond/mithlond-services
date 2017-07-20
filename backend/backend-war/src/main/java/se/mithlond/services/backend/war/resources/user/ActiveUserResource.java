@@ -38,8 +38,15 @@ import se.mithlond.services.organisation.model.transport.membership.Memberships;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
+import java.io.StringReader;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -139,8 +146,7 @@ public class ActiveUserResource extends AbstractResource {
     @Path("/memberships/in/own/organisation")
     @GET
     public MembershipListVO getMembershipsInOwnOrganisation(
-            @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED)
-            final Boolean includeLoginNotPermitted) {
+            @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED) final Boolean includeLoginNotPermitted) {
 
         final boolean effectiveInclude = includeLoginNotPermitted == null ? false : includeLoginNotPermitted;
         final Membership activeMembership = getActiveMembership();
@@ -157,6 +163,30 @@ public class ActiveUserResource extends AbstractResource {
 
         // All Done.
         return toReturn;
+    }
+
+    /**
+     * Updates the Personal settings of the active user.
+     *
+     * @return The newly persisted MembershipListVO.
+     */
+    @Path("/personalSettings/update")
+    @POST
+    public Response updateMembership(MembershipListVO submittedBodyData) {
+
+        // Check sanity
+        if(log.isDebugEnabled()) {
+            log.info("Got submitted MembershipListVO: " + submittedBodyData);
+        }
+
+        final Membership activeMembership = getActiveMembership();
+        final MembershipListVO toReturn = new MembershipListVO(activeMembership.getOrganisation());
+        toReturn.add(activeMembership);
+
+        // All Done.
+        return Response.accepted()
+                .entity(toReturn)
+                .build();
     }
 
     //

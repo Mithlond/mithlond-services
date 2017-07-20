@@ -34,12 +34,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A skinny information type holding data required for listing, searching and filtering Members.
@@ -50,6 +52,7 @@ import java.util.Objects;
         propOrder = {"fullAlias", "emailAlias", "firstName", "lastName", "birthday",
                 "homeAddress", "contactInfo", "groups", "guilds"})
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({SlimContactInfoVO.class, SlimGroupMembershipVO.class, SlimGuildMembershipVO.class})
 public class SlimMemberVO extends AbstractSimpleTransportable {
 
     /**
@@ -268,17 +271,24 @@ public class SlimMemberVO extends AbstractSimpleTransportable {
                 .reduce((l, r) -> l + ", " + r)
                 .orElse("<None>");
 
-        return "SlimMemberVO{" +
-                "fullAlias='" + fullAlias + '\'' +
-                ", emailAlias='" + emailAlias + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", loginPermitted='" + getLoginPermitted() + '\'' +
-                ", birthday=" + birthday +
-                ", homeAddress=" + homeAddress +
-                ", contactInfo=" + contactInfo +
-                ", groups=" + theGroups +
-                ", guilds=" + theGuilds +
-                '}';
+        final AtomicInteger index = new AtomicInteger();
+        final String theContactInfo = getContactInfo().stream()
+                .sorted()
+                .map(c -> index.incrementAndGet() + ") " + c.toString())
+                .reduce((l,r) -> " " + l + "\n " + r)
+                .orElse("<None>");
+
+        return "SlimMemberVO [ ..... "
+                + "\n jpaID         : " + getJpaID()
+                + "\n fullAlias     : " + fullAlias
+                + "\n emailAlias    : " + emailAlias
+                + "\n name          : " + firstName + " " + lastName
+                + "\n loginPermitted: " + getLoginPermitted()
+                + "\n birthday      : " + birthday
+                + "\n homeAddress   : " + homeAddress
+                + "\n contactInfo ...\n" + theContactInfo
+                + "\n groups        : " + theGroups
+                + "\n guilds        : " + theGuilds
+                + "\n ..... ]";
     }
 }

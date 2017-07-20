@@ -88,6 +88,14 @@ public class SlimContactInfoVO implements Serializable, Validatable, Comparable<
      * {@inheritDoc}
      */
     @Override
+    public String toString() {
+        return "[" + getMedium() + "]: " + getAddressOrNumber();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean equals(final Object o) {
 
         // Fail fast

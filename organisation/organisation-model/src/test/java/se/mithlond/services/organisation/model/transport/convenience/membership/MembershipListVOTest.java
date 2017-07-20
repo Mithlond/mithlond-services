@@ -237,6 +237,22 @@ public class MembershipListVOTest extends AbstractEntityTest {
     }
 
     @Test
+    public void validateUnmarshallingData() throws Exception {
+
+        // Assemble
+        final String p1 = "testdata/transport/convenience/membership/membershipListVO.json";
+        final String p2 = "testdata/transport/convenience/membership/singleMembershipListVO.json";
+        final String data = XmlTestUtils.readFully(p2);
+
+        // Act
+        final MembershipListVO membershipListVO = unmarshalFromJSON(MembershipListVO.class, data);
+
+        // Assert
+        Assert.assertNotNull(membershipListVO);
+        Assert.assertEquals("haxx", membershipListVO.getMemberInformation().get(0).getEmailAlias());
+    }
+
+    @Test
     public void validateAddingOnlyMembershipsWithinGivenOrganisation() throws Exception {
 
         // Assemble
