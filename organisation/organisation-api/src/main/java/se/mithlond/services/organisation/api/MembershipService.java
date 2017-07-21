@@ -22,6 +22,7 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.transport.convenience.membership.MembershipListVO;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
@@ -70,4 +71,22 @@ public interface MembershipService extends JpaCudService {
      * @return The Memberships corresponding to the supplied data, or an empty List if none was found.
      */
     List<Membership> getActiveMemberships(final String organisationName, final String firstName, final String lastName);
+
+    /**
+     * Updates the personal settings as supplied within the MembershipListVO.
+     *
+     * @param toUpdate     The membership to update.
+     * @param desiredState The data holder for the desired personal settings state.
+     * @return the updated membership.
+     */
+    Membership updatePersonalSettings(final Membership toUpdate, final MembershipListVO desiredState);
+
+    /**
+     * Updates the guild settings as supplied within the MembershipListVO.
+     *
+     * @param toUpdate     The membership to update.
+     * @param desiredState The data holder for the desired guild membership state.
+     * @return the updated membership.
+     */
+    Membership updateGuildMemberships(final Membership toUpdate, final MembershipListVO desiredState);
 }
