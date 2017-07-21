@@ -304,8 +304,8 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                         AbstractSimpleTransportable::getJpaID,
                         slimVO -> MembershipServiceBean.getRoleFrom(slimVO.getMemberType())));
 
-        if (log.isInfoEnabled()) {
-            log.info("Found desired id2RoleMap: " + desiredID2RoleMap.entrySet()
+        if (log.isDebugEnabled()) {
+            log.debug("Found desired id2RoleMap: " + desiredID2RoleMap.entrySet()
                     .stream()
                     .map(e -> "[JpaID: " + e.getKey() + ", Role: " + e.getValue() + "]")
                     .reduce((l, r) -> l + ", " + r)
@@ -348,24 +348,35 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         if (log.isInfoEnabled()) {
 
-            log.info("toAdd: " + toAddGuildIDs
+
+            final StringBuilder builder = new StringBuilder(" === Updating GuildMemberships for ["
+                    + activeMembership.getAlias() + " in "
+                    + activeMembership.getOrganisation().getOrganisationName() + "]");
+
+            final String addedGuildMemberships = "\nAdding GuildMem to: " + toAddGuildIDs
                     .stream()
                     .sorted()
                     .map(c -> "" + c)
                     .reduce((l, r) -> l + ", " + r)
-                    .orElse("<none>"));
-            log.info("toRemove: " + toRemoveGuildIDs
+                    .orElse("<none>");
+            builder.append(addedGuildMemberships);
+            
+            final String removedGuildMemberships = "\nRemoving GuildMem from: " + toRemoveGuildIDs
                     .stream()
                     .sorted()
                     .map(c -> "" + c)
                     .reduce((l, r) -> l + ", " + r)
-                    .orElse("<none>"));
-            log.info("activeMembership: " + toUpdateIDs
+                    .orElse("<none>");
+            builder.append(removedGuildMemberships);
+
+            final String updateCandidates = "\nPossibly updating GuildMem type: " + toUpdateIDs
                     .stream()
                     .sorted()
                     .map(c -> "" + c)
                     .reduce((l, r) -> l + ", " + r)
-                    .orElse("<none>"));
+                    .orElse("<none>");
+            builder.append(updateCandidates);
+            log.info(builder.toString());
         }
 
         // #5) Remove any undesired guild memberships.
