@@ -32,6 +32,8 @@ import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.membership.guild.Guild;
+import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.transport.convenience.membership.MembershipListVO;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
@@ -44,6 +46,7 @@ import javax.ws.rs.QueryParam;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -178,13 +181,32 @@ public class ActiveUserResource extends AbstractResource {
                 getActiveMembership(),
                 submittedBodyData);
 
+        if (log.isInfoEnabled()) {
+            log.info("Updated GuildMemberships. Got " + updatedMembership.getGroupMemberships()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .filter(gr -> gr instanceof GuildMembership)
+                    .map(gr -> (GuildMembership) gr)
+                    .map(gu -> {
+
+                        final Guild theGuild = gu.getGuild();
+
+                        return "[" + theGuild.getId() + " (" + theGuild.getGroupName() + "): "
+                                + GuildMembership.toGuildRole(gu) + "]";
+                    })
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>"));
+        }
+
         // All Done.
-        return new MembershipListVO(updatedMembership.getOrganisation());
+        final MembershipListVO toReturn = new MembershipListVO(updatedMembership.getOrganisation());
+        toReturn.add(updatedMembership);
+        return toReturn;
     }
 
     /**
      * Updates the Personal settings of the active user.
-     * 
+     *
      * @return The MembershipListVO containing the updated Membership.
      */
     @Path("/personalSettings/update")

@@ -26,11 +26,10 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.mithlond.services.organisation.api.MembershipService;
+import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
-import se.mithlond.services.organisation.model.membership.Group;
-import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
@@ -46,11 +45,13 @@ import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
@@ -69,7 +70,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
     private static final Logger log = LoggerFactory.getLogger(MembershipServiceBean.class);
 
     @EJB
-    private OrganisationServiceBean organisationServiceBean;
+    private OrganisationService organisationServiceBean;
 
     /**
      * {@inheritDoc}
@@ -155,7 +156,7 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         // Check sanity
         final Optional<SlimMemberVO> slimMemberVO = this.validateAndGet(desiredState);
-        if(!slimMemberVO.isPresent()) {
+        if (!slimMemberVO.isPresent()) {
             return toUpdate;
         }
 
@@ -274,45 +275,45 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
      * {@inheritDoc}
      */
     @Override
-    public Membership updateGuildMemberships(final Membership toUpdate, final MembershipListVO desiredState) {
+    public Membership updateGuildMemberships(final Membership activeMembership, final MembershipListVO desiredState) {
 
         // Check sanity
         final Optional<SlimMemberVO> slimMemberVO = this.validateAndGet(desiredState);
-        if(!slimMemberVO.isPresent()) {
-            return toUpdate;
+        if (!slimMemberVO.isPresent()) {
+            return activeMembership;
         }
 
-        Validate.notNull(toUpdate, "toUpdate");
+        Validate.notNull(activeMembership, "activeMembership");
 
         // #1) Dig out the commonly used data.
-        boolean isUpdated = false;
         final SlimMemberVO receivedData = slimMemberVO.get();
 
-        // #2) Find the Groups for which we should have Memberships.
+        if (log.isDebugEnabled()) {
+            log.debug("Starting processing; received: " + receivedData);
+        }
+
+        final Membership[] toReturn = new Membership[]{activeMembership};
+
+        // #2) Find the Groups for which we should have Memberships,
+        //     as suggested by the inbound state.
         final List<SlimGuildMembershipVO> desiredGuildVOs = receivedData.getGuilds();
 
         final Map<Long, GuildMembership.GuildRole> desiredID2RoleMap = desiredGuildVOs.stream()
                 .filter(slimVO -> slimVO.getJpaID() != null && slimVO.getMemberType() != null)
                 .collect(Collectors.toMap(
                         AbstractSimpleTransportable::getJpaID,
+                        slimVO -> MembershipServiceBean.getRoleFrom(slimVO.getMemberType())));
 
-                        // TODO: These may be swedish terms.
-                        slimVO -> Arrays.stream(GuildMembership.GuildRole.values())
-                                .filter(role -> slimVO.getMemberType().equalsIgnoreCase(role.name()))
-                                .findFirst()
-                                .orElse(GuildMembership.GuildRole.none)));
+        if (log.isInfoEnabled()) {
+            log.info("Found desired id2RoleMap: " + desiredID2RoleMap.entrySet()
+                    .stream()
+                    .map(e -> "[JpaID: " + e.getKey() + ", Role: " + e.getValue() + "]")
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>"));
+        }
 
-        /*
-        final List<Long> jpaIDs = desiredGuildVOs.stream()
-                .map(AbstractSimpleTransportable::getJpaID)
-                .sorted()
-                .collect(Collectors.toList());
-
-
-        */
-
-        // #3) Find the inbound state.
-        final List<GuildMembership> existingGuildMemberships = toUpdate.getGroupMemberships()
+        // #3) Find the existing state.
+        final List<GuildMembership> existingGuildMemberships = activeMembership.getGroupMemberships()
                 .stream()
                 .filter(gr -> gr instanceof GuildMembership)
                 .map(gr -> (GuildMembership) gr)
@@ -321,6 +322,14 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                 .stream()
                 .sorted()
                 .collect(Collectors.toMap(gms -> gms.getGuild().getId(), GuildMembership::toGuildRole));
+
+        if (log.isInfoEnabled()) {
+            log.info("Found existing GuildMemberships: " + existingGuildMemberships
+                    .stream()
+                    .map(GuildMembership::toString)
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>"));
+        }
 
         // #4) Synthesize sets of JpaIDs to remove, add and update.
         final Set<Long> toRemoveGuildIDs = existingGuildMembershipMap.keySet()
@@ -337,20 +346,67 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                 .filter(desiredID -> !toAddGuildIDs.contains(desiredID))
                 .collect(Collectors.toSet());
 
+        if (log.isInfoEnabled()) {
+
+            log.info("toAdd: " + toAddGuildIDs
+                    .stream()
+                    .sorted()
+                    .map(c -> "" + c)
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>"));
+            log.info("toRemove: " + toRemoveGuildIDs
+                    .stream()
+                    .sorted()
+                    .map(c -> "" + c)
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>"));
+            log.info("activeMembership: " + toUpdateIDs
+                    .stream()
+                    .sorted()
+                    .map(c -> "" + c)
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("<none>"));
+        }
+
         // #5) Remove any undesired guild memberships.
-        final Set<GroupMembership> toBeRemoved = toUpdate.getGroupMemberships()
+        final Set<GuildMembership> toBeRemoved = activeMembership.getGroupMemberships()
                 .stream()
+                .filter(gr -> gr instanceof GuildMembership)
+                .map(gr -> (GuildMembership) gr)
                 .filter(grm -> toRemoveGuildIDs.contains(grm.getGroup().getId()))
                 .collect(Collectors.toSet());
-        toUpdate.getGroupMemberships().removeAll(toBeRemoved);
+
+        toBeRemoved.forEach(gm -> {
+
+            GuildMembership merged = null;
+
+            // First, delete
+            try {
+                if(entityManager.contains(gm)) {
+                    entityManager.remove(gm);
+                } else {
+                    merged = entityManager.merge(gm);
+                    entityManager.remove(merged);
+                }
+            } catch (Exception e) {
+                log.error("Could not remove " + gm.toString(), e);
+            }
+
+            // Second, remove
+            activeMembership.getGroupMemberships().remove(gm);
+
+            // Third, update
+            toReturn[0] = update(toReturn[0]);
+        });
+        activeMembership.getGroupMemberships().removeAll(toBeRemoved);
 
         // #6) Add any new GuildMemberships as requested.
-        if(toAddGuildIDs != null && !toAddGuildIDs.isEmpty()) {
+        if (toAddGuildIDs != null && !toAddGuildIDs.isEmpty()) {
 
             final GroupIdSearchParameters searchParameters = GroupIdSearchParameters
                     .builder()
                     .withDetailedResponsePreferred(true)
-                    .withOrganisationIDs(toUpdate.getOrganisation().getId())
+                    .withOrganisationIDs(activeMembership.getOrganisation().getId())
                     .withGroupIDs(toAddGuildIDs.toArray(new Long[toAddGuildIDs.size()]))
                     .build();
 
@@ -360,9 +416,13 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                     .filter(g -> g instanceof Guild)
                     .map(g -> (Guild) g)
                     .collect(Collectors.toMap(
-                            g -> g.getId(),
+                            NazgulEntity::getId,
                             g -> {
 
+                                // 
+                                // Map the Guild JPA ID and desired GuildRole
+                                // to a (newly constructed) GuildMembership.
+                                //
                                 final GuildMembership.GuildRole desiredGuildRole = desiredID2RoleMap.get(g.getId());
 
                                 final boolean isGuildMaster = GuildMembership.GuildRole.guildMaster
@@ -378,24 +438,127 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
                                         .equalsIgnoreCase(desiredGuildRole.name());
 
                                 return new GuildMembership(g,
-                                        toUpdate,
+                                        activeMembership,
                                         isGuildMaster,
                                         isDeputy,
                                         isAuditor);
                             }));
 
-            toUpdate.getGroupMemberships().addAll(toAdd.values());
+            //
+            // Since the groupMemberships Set has CascadeType.ALL set, we should
+            // not need to explicitly persist each new GuildMembership ...
+            //
+            // ... but doing it explicitly has no improper effects, and also prevents this
+            // method from breaking should the annotation be changed in the entity.
+            //
+            toAdd.values().forEach(obj -> {
+
+                // First, persist
+                create(obj);
+
+                // Second, add
+                activeMembership.getGroupMemberships().add(obj);
+
+                // Now update to persist.
+                toReturn[0] = update(toReturn[0]);
+            });
         }
 
-        // TODO: Update the others (member --> GM etc.)
+        // Update the others GuildMemberships (possibly WRT membership type)
+        toUpdateIDs.stream()
+                .map(anID -> activeMembership.getGroupMemberships()
+                        .stream()
+                        .filter(gr -> gr instanceof GuildMembership)
+                        .map(gr -> (GuildMembership) gr)
+                        .filter(gu -> gu.getGuild().getId() == anID).findFirst().orElse(null))
+                .filter(Objects::nonNull)
+                .forEach(gu -> {
+
+                    // Find the desired membership type for this Guild.
+                    final GuildMembership.GuildRole guildRole = desiredID2RoleMap.get(gu.getGuild().getId());
+                    if (guildRole != null) {
+
+                        boolean isGuildMaster = false;
+                        boolean isDeputy = false;
+                        boolean isAuditor = false;
+
+                        switch (guildRole) {
+                            case guildMaster:
+                                isGuildMaster = true;
+                                break;
+
+                            case deputyGuildMaster:
+                                isDeputy = true;
+                                break;
+
+                            case auditor:
+                                isAuditor = true;
+                                break;
+
+                            case member:
+                                // Simply use default values
+                                break;
+
+                            case none:
+                                log.warn("No desired GuildRole 'none' for " + gu.toString()
+                                        + ". This implies that the GuildMembership should be removed.");
+                                break;
+                        }
+
+                        // Update the state of this GuildMembership
+                        gu.setGuildMaster(isGuildMaster);
+                        gu.setDeputyGuildMaster(isDeputy);
+                        gu.setAuditor(isAuditor);
+
+                        // Then, merge it into the
+                        entityManager.merge(gu);
+
+                        // Now update to persist.
+                        toReturn[0] = update(toReturn[0]);
+
+                    } else {
+                        log.warn("No desired GuildRole given for " + gu.toString()
+                                + ". Not modifying that GuildMembership.");
+                    }
+                });
 
         // All Done.
-        return toUpdate;
+        return toReturn[0];
     }
 
     //
     // Private helpers
     //
+
+    private static GuildMembership.GuildRole getRoleFrom(@NotNull final String memberType) {
+
+        // #0) Check sanity
+        final String effValue = Validate.notEmpty(memberType, "memberType");
+
+        // #1) The value could be the exact constant of the GuildRole's name().
+        GuildMembership.GuildRole toReturn = GuildMembership.GuildRole.none;
+
+        final Optional<GuildMembership.GuildRole> exactMatch = Arrays.stream(GuildMembership.GuildRole.values())
+                .filter(gr -> effValue.equalsIgnoreCase(gr.name()))
+                .findFirst();
+        if (exactMatch.isPresent()) {
+            toReturn = exactMatch.get();
+        } else {
+
+            final SortedMap<String, GuildMembership.GuildRole> swedishRoleNames = new TreeMap<>();
+            swedishRoleNames.put("Medlem", GuildMembership.GuildRole.member);
+            swedishRoleNames.put("Gillesmästare", GuildMembership.GuildRole.guildMaster);
+            swedishRoleNames.put("Vice Gillesmästare", GuildMembership.GuildRole.deputyGuildMaster);
+
+            final GuildMembership.GuildRole guildRoleOrNull = swedishRoleNames.get(effValue);
+            if (guildRoleOrNull != null) {
+                toReturn = guildRoleOrNull;
+            }
+        }
+
+        // All Done.
+        return toReturn;
+    }
 
     private Optional<SlimMemberVO> validateAndGet(final MembershipListVO desiredState) {
 
