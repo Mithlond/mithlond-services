@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.food;
 
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
@@ -40,7 +41,7 @@ import java.util.Locale;
  */
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"foodName", "categoryID", "subCategoryID"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FoodVO extends AbstractSimpleTransportable {
+public class FoodVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
     /**
      * The food name (within one explicit LocaleDefinition).

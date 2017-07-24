@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.activity;
 
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
@@ -44,7 +45,7 @@ import java.util.Optional;
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
         propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AdmissionVO extends AbstractSimpleTransportable {
+public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
     /**
      * Default ActivityID value, indicating that this {@link AdmissionVO} instance is not yet

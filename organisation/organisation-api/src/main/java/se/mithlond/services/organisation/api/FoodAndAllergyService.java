@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
 import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
@@ -75,4 +76,11 @@ public interface FoodAndAllergyService extends JpaCudService {
      * @see se.mithlond.services.organisation.model.activity.Activity
      */
     SortedMap<Membership, SortedSet<Allergy>> getAllergiesForActivity(final long activityJpaID);
+
+    /**
+     * Retrieves all known Food objects.
+     *
+     * @return all known Food objects.
+     */
+    SortedSet<Food> getAllFoods();
 }

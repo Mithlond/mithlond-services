@@ -4,92 +4,60 @@
   "users": [
     {
       "jpaId": 1,
+      "xmlId": "user_1",
       "firstName": "firstName_0",
       "lastName": "lastName_0",
       "birthday": "1971-02-01"
     },
     {
       "jpaId": 2,
+      "xmlId": "user_2",
       "firstName": "firstName_1",
       "lastName": "lastName_1",
       "birthday": "1972-02-02"
     },
     {
       "jpaId": 3,
+      "xmlId": "user_3",
       "firstName": "firstName_2",
       "lastName": "lastName_2",
       "birthday": "1973-02-03"
     },
     {
       "jpaId": 4,
+      "xmlId": "user_4",
       "firstName": "firstName_3",
       "lastName": "lastName_3",
       "birthday": "1974-02-04"
     },
     {
       "jpaId": 5,
+      "xmlId": "user_5",
       "firstName": "firstName_4",
       "lastName": "lastName_4",
       "birthday": "1975-02-05"
     }
   ],
-  "memberships": [
-    {
-      "jpaId": 100,
-      "loginPermitted": true,
-      "alias": "alias_0",
-      "organisation": "mifflond",
-      "subAlias": "subAlias_0",
-      "emailAlias": "emailAlias_0"
-    },
-    {
-      "jpaId": 101,
-      "loginPermitted": true,
-      "alias": "alias_1",
-      "organisation": "mifflond",
-      "emailAlias": "emailAlias_1"
-    },
-    {
-      "jpaId": 102,
-      "loginPermitted": true,
-      "alias": "alias_2",
-      "organisation": "mifflond",
-      "subAlias": "subAlias_2",
-      "emailAlias": "emailAlias_2"
-    },
-    {
-      "jpaId": 103,
-      "loginPermitted": true,
-      "alias": "alias_3",
-      "organisation": "mifflond",
-      "emailAlias": "emailAlias_3"
-    },
-    {
-      "jpaId": 104,
-      "loginPermitted": true,
-      "alias": "alias_4",
-      "organisation": "mifflond",
-      "subAlias": "subAlias_4",
-      "emailAlias": "emailAlias_4"
-    }
-  ],
   "allergyList": [
     {
-      "jpaId": 2,
+      "jpaId": 3,
+      "xmlId": "user_3",
       "foodJpaID": 0,
       "description": "allergy_description_2",
       "foodName": "foodName_2",
       "severity": "severity_2"
     },
     {
-      "jpaId": 3,
+      "jpaId": 4,
+      "xmlId": "user_4",
       "foodJpaID": 1,
       "description": "allergy_description_3",
       "foodName": "foodName_3",
       "severity": "severity_3"
     },
     {
-      "jpaId": 4,
+      "jpaId": 5,
+      "xmlId": "user_5",
       "foodJpaID": 2,
       "description": "allergy_description_4",
       "foodName": "foodName_4",
@@ -97,14 +65,16 @@
       "note": "note_4"
     },
     {
-      "jpaId": 5,
+      "jpaId": 1,
+      "xmlId": "user_1",
       "foodJpaID": 3,
       "description": "allergy_description_5",
       "foodName": "foodName_5",
       "severity": "severity_5"
     },
     {
-      "jpaId": 6,
+      "jpaId": 2,
+      "xmlId": "user_2",
       "foodJpaID": 4,
       "description": "allergy_description_6",
       "foodName": "foodName_6",

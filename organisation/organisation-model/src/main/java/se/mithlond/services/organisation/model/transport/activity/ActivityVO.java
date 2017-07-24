@@ -21,12 +21,13 @@
  */
 package se.mithlond.services.organisation.model.transport.activity;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.validation.constraints.Min;
@@ -37,7 +38,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
                 "cancelled", "cost", "lateAdmissionCost", "lateAdmissionDate", "lastAdmissionDate",
                 "dressCode", "responsibleGroupName", "admissions"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ActivityVO extends AbstractSimpleTransportable {
+public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
     /**
      * The Organisation owning this Activity. (Create: Mandatory).

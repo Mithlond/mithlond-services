@@ -25,6 +25,7 @@ import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.user.User;
 
 import javax.persistence.Access;
@@ -39,6 +40,7 @@ import javax.persistence.MapsId;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -66,9 +68,10 @@ import java.io.Serializable;
 })
 @Entity
 @Access(value = AccessType.FIELD)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"food", "severity", "note", "user", "version"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"food", "severity", "note", "user", "version", "xmlId"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
+public class Allergy implements Serializable, Comparable<Allergy>, Validatable, XmlIdHolder {
 
     /**
      * {@link NamedQuery} which retrieves all Allergies for a specific {@link User} (identified by the UserID).
@@ -129,6 +132,13 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
     private String note;
 
     /**
+     * The XML ID of this Allergy.
+     */
+    @Transient
+    @XmlAttribute(required = true)
+    private String xmlId;
+
+    /**
      * JAXB/JPA-friendly constructor.
      */
     public Allergy() {
@@ -159,6 +169,7 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
         this.note = note;
 
         this.allergyId = new AllergyId(food.getId(), user.getId());
+        this.getXmlId();
     }
 
     /**
@@ -310,5 +321,19 @@ public class Allergy implements Serializable, Comparable<Allergy>, Validatable {
                 .notNull(user, "user")
                 .notNull(severity, "severity")
                 .endExpressionAndValidate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getXmlId() {
+
+        if (this.xmlId == null) {
+            this.xmlId = "foodID_" + getAllergyId().foodId + "_userID_" + getAllergyId().userId;
+        }
+
+        // All Done.
+        return this.xmlId;
     }
 }

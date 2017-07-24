@@ -62,7 +62,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"xmlID", "classification", "categoryID", "description"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer {
+public class Category extends NazgulEntity implements Comparable<Category>, CategoryProducer, XmlIdHolder {
 
     // Constants
     private static final long serialVersionUID = 8829990031L;
@@ -257,6 +257,16 @@ public class Category extends NazgulEntity implements Comparable<Category>, Cate
                 .notNullOrEmpty(classification, "classification")
                 .notNullOrEmpty(description, "description")
                 .endExpressionAndValidate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getXmlId() {
+
+        setXmlID();
+        return this.xmlID;
     }
 
     //

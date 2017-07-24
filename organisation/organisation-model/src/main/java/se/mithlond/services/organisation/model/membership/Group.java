@@ -25,6 +25,7 @@ import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.shared.authorization.model.AuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPath;
 import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
@@ -107,7 +108,7 @@ import java.util.TreeSet;
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
         propOrder = {"groupName", "description", "organisation", "emailList", "parentXmlID"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Group extends NazgulEntity implements Comparable<Group>, SemanticAuthorizationPathProducer {
+public class Group extends NazgulEntity implements Comparable<Group>, SemanticAuthorizationPathProducer, XmlIdHolder {
 
     /**
      * NamedQuery for getting Group by its Parent Group's groupName and organisation name.
@@ -445,7 +446,8 @@ public class Group extends NazgulEntity implements Comparable<Group>, SemanticAu
      *
      * @return the XML ID of this Group.
      */
-    public String getXmlID() {
+    @Override
+    public String getXmlId() {
         setXmlID();
         return this.xmlID;
     }

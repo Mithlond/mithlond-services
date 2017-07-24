@@ -62,7 +62,7 @@ public class SlimGroupMembershipVO extends AbstractSimpleTransportable implement
     public SlimGroupMembershipVO(@NotNull final GroupMembership aGroupMembership) {
 
         // Delegate
-        super(aGroupMembership.getGroup().getId(), aGroupMembership.getGroup().getXmlID());
+        super(aGroupMembership.getGroup().getId(), aGroupMembership.getGroup().getXmlId());
 
         // Assign internal state
         final String parentXmlID = aGroupMembership.getGroup().getParentXmlID();

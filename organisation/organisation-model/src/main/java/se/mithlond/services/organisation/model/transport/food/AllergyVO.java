@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.food;
 
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.localization.Localizable;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
@@ -43,7 +44,7 @@ import java.util.Objects;
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
         propOrder = {"description", "foodName", "severity", "foodJpaID", "note"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AllergyVO extends AbstractSimpleTransportable {
+public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
     /**
      * The (localized) Allergy description of this AllergyVO.
@@ -58,16 +59,16 @@ public class AllergyVO extends AbstractSimpleTransportable {
     private String severity;
 
     /**
-     * The Food name of this AllergyVO.
-     */
-    @XmlElement(required = true)
-    private String foodName;
-
-    /**
      * An optional note for this AllergyVO
      */
     @XmlElement
     private String note;
+
+    /**
+     * The Food name of this AllergyVO.
+     */
+    @XmlElement(required = true)
+    private String foodName;
 
     /**
      * The JPA ID of the Food referred to by this AllergyVO.
@@ -88,8 +89,9 @@ public class AllergyVO extends AbstractSimpleTransportable {
      * @param severity    The AllergySeverity description of this AllergyVO.
      * @param foodName    The Food name of this AllergyVO.
      * @param note        An optional note of this AllergyVO.
-     * @param userJpaID   The JPA ID of the User(VO) having this Allergy.
      * @param foodJpaID   The JPA ID of the food.
+     * @param userJpaID   The JPA ID of the User(VO) having this Allergy.
+     * @param userXmlId   The XML ID of the User having this Allergy.
      */
     public AllergyVO(
             final String description,
@@ -97,10 +99,11 @@ public class AllergyVO extends AbstractSimpleTransportable {
             final String foodName,
             final String note,
             final Long foodJpaID,
-            final Long userJpaID) {
+            final Long userJpaID,
+            final String userXmlId) {
 
         // Delegate
-        super(userJpaID);
+        super(userJpaID, userXmlId);
 
         // Assign internal state
         this.description = description;
@@ -120,7 +123,7 @@ public class AllergyVO extends AbstractSimpleTransportable {
     public AllergyVO(final Allergy allergy, final Locale locale) {
 
         // Delegate
-        super(allergy.getUser().getId());
+        super(allergy.getUser().getId(), allergy.getUser().getXmlId());
         Validate.notNull(locale, "locale");
 
         // Assign internal state

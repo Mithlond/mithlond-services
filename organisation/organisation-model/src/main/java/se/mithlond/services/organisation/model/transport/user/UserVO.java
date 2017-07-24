@@ -21,6 +21,8 @@
  */
 package se.mithlond.services.organisation.model.transport.user;
 
+import se.jguru.nazgul.tools.validation.api.Validatable;
+import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.user.User;
 import se.jguru.nazgul.core.algorithms.api.Validate;
@@ -39,7 +41,7 @@ import java.time.LocalDate;
  */
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"firstName", "lastName", "birthday"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UserVO extends AbstractSimpleTransportable {
+public class UserVO extends AbstractSimpleTransportable implements Validatable {
 
     /**
      * The first name of this User.
@@ -76,7 +78,7 @@ public class UserVO extends AbstractSimpleTransportable {
      * @param birthday  The birthday of this User.
      */
     public UserVO(final Long jpaID, final String firstName, final String lastName, final LocalDate birthday) {
-        super(jpaID);
+        super(jpaID, "user_" + jpaID);
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
@@ -88,14 +90,7 @@ public class UserVO extends AbstractSimpleTransportable {
      * @param user A non-null {@link User}.
      */
     public UserVO(final User user) {
-
-        // Check sanity
-        Validate.notNull(user, "user");
-
-        // Assign internal state
-        this.firstName = Validate.notEmpty(user.getFirstName(), "firstName");
-        this.lastName = Validate.notEmpty(user.getLastName(), "lastName");
-        this.birthday = Validate.notNull(user.getBirthday(), "birthday");
+        this(user.getId(), user.getFirstName(), user.getLastName(), user.getBirthday());
     }
 
     /**
@@ -117,5 +112,18 @@ public class UserVO extends AbstractSimpleTransportable {
      */
     public LocalDate getBirthday() {
         return birthday;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void validateInternalState() throws InternalStateValidationException {
+
+        InternalStateValidationException.create()
+                .notNullOrEmpty(firstName, "firstName")
+                .notNullOrEmpty(lastName, "lastName")
+                .notNull(birthday, "birthday")
+                .endExpressionAndValidate();
     }
 }

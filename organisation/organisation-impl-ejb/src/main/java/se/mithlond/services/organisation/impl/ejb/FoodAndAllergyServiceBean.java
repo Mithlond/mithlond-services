@@ -30,10 +30,12 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.Stateless;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -156,6 +158,24 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 }
             });
         }
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SortedSet<Food> getAllFoods() {
+
+        // Create the return wrapper
+        final SortedSet<Food> toReturn = new TreeSet<>();
+
+        // Find all Foods.
+        final TypedQuery<Food> query = entityManager.createQuery("select f From Food f "
+                + "order by f.category.categoryID, f.subCategory.categoryID", Food.class);
+        toReturn.addAll(query.getResultList());
 
         // All Done.
         return toReturn;

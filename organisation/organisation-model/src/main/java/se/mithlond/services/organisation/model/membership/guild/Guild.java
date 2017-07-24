@@ -168,7 +168,7 @@ public class Guild extends Group {
      * {@inheritDoc}
      */
     @Override
-    public String getXmlID() {
+    public String getXmlId() {
         this.setXmlID();
         return this.xmlID;
     }

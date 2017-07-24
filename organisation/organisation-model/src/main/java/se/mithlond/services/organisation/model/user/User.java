@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
+import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -77,7 +78,7 @@ import java.util.TreeMap;
 @Table(name = "InternalUsers", uniqueConstraints = {
         @UniqueConstraint(name = "userIdentifierTokenIsUnique", columnNames = "userIdentifierToken")
 })
-public class User extends NazgulEntity {
+public class User extends NazgulEntity implements XmlIdHolder {
 
     // Our Logger
     @XmlTransient
@@ -468,6 +469,19 @@ public class User extends NazgulEntity {
                 .notNull(contactDetails, "contactDetails")
                 .notNullOrEmpty(userIdentifierToken, "userIdentifierToken")
                 .endExpressionAndValidate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getXmlId() {
+
+        // Ensure that the xmlID is set
+        setXmlID();
+
+        // All Done.
+        return this.xmlID;
     }
 
     //

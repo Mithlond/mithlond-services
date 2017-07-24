@@ -50,7 +50,7 @@ public class AllergiesTest extends AbstractEntityTest {
     private FoodsAndCategories foodsAndCategories;
     private List<UserVO> users;
     private List<MembershipVO> memberships;
-    private List<AllergyVO> allergyList;
+    private List<AllergyVO> allergyVoList;
     private Allergies allergies;
 
     private Organisation mifflond;
@@ -111,21 +111,23 @@ public class AllergiesTest extends AbstractEntityTest {
                     mifflondVO));
         }
 
-
-        allergyList = new ArrayList<>();
+        allergyVoList = new ArrayList<>();
         for (int i = 2; i < 7; i++) {
 
+            final UserVO currentUserVO = users.get(i % users.size());
+
             final String note = (i == 4 ? "note_" + i : null);
-            allergyList.add(new AllergyVO(
+            allergyVoList.add(new AllergyVO(
                     "allergy_description_" + i,
                     "severity_" + i,
                     "foodName_" + i,
                     note,
                     (long) (i - 2),
-                    (long) i));
+                    currentUserVO.getJpaID(),
+                    currentUserVO.getXmlId()));
         }
 
-        allergies = new Allergies(TimeFormat.SWEDISH_LOCALE, users, memberships, allergyList);
+        allergies = new Allergies(TimeFormat.SWEDISH_LOCALE, users, allergyVoList);
     }
 
     @Test
