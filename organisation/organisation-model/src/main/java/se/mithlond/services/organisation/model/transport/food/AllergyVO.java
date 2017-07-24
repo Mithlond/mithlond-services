@@ -128,9 +128,7 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
 
         // Assign internal state
         final String classifier = Localizable.DEFAULT_CLASSIFIER;
-        this.description = allergy.getFood().getLocalizedFoodName().getText(locale, classifier)
-                + " : "
-                + allergy.getSeverity().getFullDescription().getText(locale, classifier);
+        this.description = allergy.getSeverity().getFullDescription().getText(locale, classifier);
         this.severity = allergy.getSeverity().getShortDescription().getText(locale, classifier);
         this.foodName = allergy.getFood().getLocalizedFoodName().getText(locale, classifier);
         this.note = allergy.getNote();

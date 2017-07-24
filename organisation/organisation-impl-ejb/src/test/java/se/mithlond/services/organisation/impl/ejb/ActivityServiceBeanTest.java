@@ -140,8 +140,8 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
         final CategorizedAddress mifflondActivityAddress = mifflondActivityAddresses.getCategorizedAddresses().get(0);
         final CategorizedAddress fjodjimActivityAddress = fjodjimActivityAddresses.getCategorizedAddresses().get(0);
 
-        Assert.assertEquals(1, fjodjimActivityAddresses.getCategories().size());
-        Assert.assertEquals(1, mifflondActivityAddresses.getCategories().size());
+        Assert.assertEquals(2, fjodjimActivityAddresses.getCategories().size());
+        Assert.assertEquals(2, mifflondActivityAddresses.getCategories().size());
 
         final ActivityVO mifflondActivityVO = new ActivityVO(0L,
                 mifflondVO,

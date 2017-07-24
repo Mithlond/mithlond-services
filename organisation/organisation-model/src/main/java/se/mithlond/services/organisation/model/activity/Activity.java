@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.model.activity;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.jguru.nazgul.tools.validation.api.expression.ExpressionBuilder;
 import se.mithlond.services.organisation.model.Category;
@@ -32,7 +33,6 @@ import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -265,21 +265,21 @@ public class Activity extends Listable {
      *                                public, and not only open to Admissions from known Memberships.
      */
     public Activity(final String shortDesc,
-            final String fullDesc,
-            final LocalDateTime startTime,
-            final LocalDateTime endTime,
-            final Amount cost,
-            final Amount lateAdmissionCost,
-            final LocalDate lateAdmissionDate,
-            final LocalDate lastAdmissionDate,
-            final boolean cancelled,
-            final String dressCode,
-            final Category addressCategory,
-            final Address location,
-            final String addressShortDescription,
-            final Organisation organisation,
-            final Group responsible,
-            final boolean isOpenToGeneralPublic) {
+                    final String fullDesc,
+                    final LocalDateTime startTime,
+                    final LocalDateTime endTime,
+                    final Amount cost,
+                    final Amount lateAdmissionCost,
+                    final LocalDate lateAdmissionDate,
+                    final LocalDate lastAdmissionDate,
+                    final boolean cancelled,
+                    final String dressCode,
+                    final Category addressCategory,
+                    final Address location,
+                    final String addressShortDescription,
+                    final Organisation organisation,
+                    final Group responsible,
+                    final boolean isOpenToGeneralPublic) {
 
         // Delegate
         super(shortDesc, fullDesc, organisation);
@@ -291,7 +291,7 @@ public class Activity extends Listable {
         this.cost = cost != null ? cost.getValue() : BigDecimal.ZERO;
         this.currency = cost != null ? cost.getCurrency().toString() : organisation.getStandardCurrency().toString();
 
-        if(lateAdmissionCost == null) {
+        if (lateAdmissionCost == null) {
             this.lateAdmissionCost = this.cost;
         } else {
 

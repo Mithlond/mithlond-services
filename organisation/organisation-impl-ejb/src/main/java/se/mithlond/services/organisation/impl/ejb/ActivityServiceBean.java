@@ -50,7 +50,6 @@ import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +71,11 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(ActivityServiceBean.class);
+
+    /**
+     * The category name of Home addresses.
+     */
+    public static final String HOMEADRESS_CATEGORY = "Hemadress";
 
     /**
      * {@inheritDoc}
@@ -567,50 +571,64 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     @Override
     public CategoriesAndAddresses getActivityLocationAddresses(final Long organisationID) {
 
-        // Find the CategoryIDs of all relevant categories
+        final CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
+
+        // #1) Find the CategoryIDs of all relevant categories
         final TypedQuery<Category> query = entityManager.createQuery("select a from Category a"
                 + " where a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
                 + " order by a.categoryID", Category.class)
                 .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION, CategorizedAddress.ACTIVITY_CLASSIFICATION);
 
-        final List<String> categoryIDs = new ArrayList<>();
+        final Map<String, Category> id2CategoryMap = new TreeMap<>();
         query.getResultList().stream()
                 .filter(Objects::nonNull)
-                .map(Category::getCategoryID)
-                .filter(catID -> catID != null && !catID.isEmpty())
-                .forEach(categoryIDs::add);
+                .filter(c -> c.getCategoryID() != null && !c.getCategoryID().isEmpty())
+                .forEach(c -> id2CategoryMap.put(c.getCategoryID(), c));
 
         if (log.isDebugEnabled()) {
-            log.debug("Found [" + categoryIDs.size() + "] categoryIDs: "
-                    + categoryIDs.stream().reduce((l, r) -> l + ", " + r).orElse("<none>"));
+            log.debug("Found [" + id2CategoryMap.size() + "] categoryIDs: "
+                    + id2CategoryMap.keySet().stream().reduce((l, r) -> l + ", " + r).orElse("<none>"));
+        }
+        final Category homeAddressCategory = id2CategoryMap.get(HOMEADRESS_CATEGORY);
+
+        // #2) Find the home addresses of all active Memberships within the organisation.
+        final List<Membership> activeMemberships = entityManager.createNamedQuery(
+                Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED, Membership.class)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, organisationID)
+                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
+                .getResultList();
+
+        if (activeMemberships != null && !activeMemberships.isEmpty()) {
+
+            final Organisation activeOrganisation = activeMemberships.get(0).getOrganisation();
+
+            activeMemberships.stream()
+                    .map(a -> a.getUser().getHomeAddress())
+                    .filter(Objects::nonNull)
+                    .map(homeAddress -> new CategorizedAddress(
+                            homeAddress.getDescription(),
+                            homeAddress.getDescription(),
+                            homeAddressCategory,
+                            activeOrganisation,
+                            homeAddress))
+                    .forEach(toReturn::addCategorizedAddress);
         }
 
-        // Pad the ID Lists.
-        final int categoryIDsSize = AbstractJpaService.padAndGetSize(categoryIDs, "none");
+        // #3) Find all non-HomeAddress CategorizedAddresses.
+        final List<String> allCategoryIDsExceptHomeAddresses = id2CategoryMap.keySet().stream()
+                .filter(cat -> !cat.equalsIgnoreCase(HOMEADRESS_CATEGORY))
+                .sorted()
+                .collect(Collectors.toList());
 
-        // Extract all activity location CategorizedAddresses known to the Organisation.
-        final List<CategorizedAddress> categorizedAddresses = JpaUtilities.findEntities(CategorizedAddress.class,
-                CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CATEGORY_IDS,
-                true,
-                entityManager,
-                aQuery -> {
-                    /*
-                    query = "select a from CategorizedAddress a "
-                        + "where a.owningOrganisation.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
-                        + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_CATEGORYIDS
-                        + " or a.category.categoryID in :" + OrganisationPatterns.PARAM_CATEGORY_IDS + " ) "
-                        + " order by a.shortDesc"),
-                     */
-                    aQuery.setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, organisationID);
-                    aQuery.setParameter(OrganisationPatterns.PARAM_NUM_CATEGORYIDS, categoryIDsSize);
-                    aQuery.setParameter(OrganisationPatterns.PARAM_CATEGORY_IDS, categoryIDs);
-                });
-
-        CategoriesAndAddresses toReturn = new CategoriesAndAddresses();
-        categorizedAddresses.forEach(toReturn::addCategorizedAddress);
-
-        if (log.isDebugEnabled()) {
-            log.debug("Found [" + categorizedAddresses.size() + "] categorizedAddresses.");
+        final int numCategories = padAndGetSize(allCategoryIDsExceptHomeAddresses, "0");
+        final List<CategorizedAddress> allOtherCAddresses = entityManager.createNamedQuery(
+                CategorizedAddress.NAMEDQ_GET_BY_ORGANISATION_ID_AND_CATEGORY_IDS, CategorizedAddress.class)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, organisationID)
+                .setParameter(OrganisationPatterns.PARAM_CATEGORY_IDS, allCategoryIDsExceptHomeAddresses)
+                .setParameter(OrganisationPatterns.PARAM_NUM_CATEGORYIDS, numCategories)
+                .getResultList();
+        if (allOtherCAddresses != null && !allOtherCAddresses.isEmpty()) {
+            allOtherCAddresses.forEach(toReturn::addCategorizedAddress);
         }
 
         // All Done.

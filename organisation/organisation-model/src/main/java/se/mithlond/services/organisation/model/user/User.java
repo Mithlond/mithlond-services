@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.core.persistence.model.NazgulEntity;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -30,7 +31,6 @@ import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -71,7 +71,7 @@ import java.util.TreeMap;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Entity
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID", 
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"xmlID",
         "firstName", "lastName", "birthday", "personalNumberLast4Digits",
         "homeAddress", "memberships", "contactDetails"})
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -173,7 +173,7 @@ public class User extends NazgulEntity implements XmlIdHolder {
     //
     @CollectionTable(name = "user_contactdetails", uniqueConstraints = {
             @UniqueConstraint(name = "unq_user_contact_type",
-            columnNames = {"user_id", "contact_type"})
+                    columnNames = {"user_id", "contact_type"})
     })
     @Column(name = "address_or_number")
     @MapKeyColumn(name = "contact_type")
@@ -215,13 +215,13 @@ public class User extends NazgulEntity implements XmlIdHolder {
      *                                  this User to the Authentication system managing User logins.
      */
     public User(final String firstName,
-            final String lastName,
-            final LocalDate birthday,
-            final short personalNumberLast4Digits,
-            final Address homeAddress,
-            final List<Membership> memberships,
-            final Map<String, String> contactDetails,
-            final String userIdentifierToken) {
+                final String lastName,
+                final LocalDate birthday,
+                final short personalNumberLast4Digits,
+                final Address homeAddress,
+                final List<Membership> memberships,
+                final Map<String, String> contactDetails,
+                final String userIdentifierToken) {
 
         // Delegate
         this();
@@ -236,10 +236,10 @@ public class User extends NazgulEntity implements XmlIdHolder {
         this.userIdentifierToken = userIdentifierToken;
         this.birthday = birthday;
 
-        if(memberships != null) {
+        if (memberships != null) {
             this.memberships.addAll(memberships);
         }
-        if(contactDetails != null) {
+        if (contactDetails != null) {
             this.contactDetails.putAll(contactDetails);
         }
         setXmlID();

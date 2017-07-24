@@ -258,6 +258,10 @@ public final class PersistenceHelper {
                 "Affär",
                 CategorizedAddress.ACTIVITY_CLASSIFICATION,
                 "Affär eller Bazaar"));
+        final Category homeAddress = persist(new Category(
+                ActivityServiceBean.HOMEADRESS_CATEGORY,
+                CategorizedAddress.ACTIVITY_CLASSIFICATION,
+                "Hemadress"));
 
         final CategorizedAddress helloMonkeyAddress = persist(new CategorizedAddress("Hello Monkey",
                 "Restaurang Hello Monkey",

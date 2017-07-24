@@ -31,10 +31,17 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
+import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.AllergySeverity;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.organisation.model.transport.membership.MembershipVO;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
+import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.test.entity.JpaIdMutator;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -48,10 +55,16 @@ public class AllergiesTest extends AbstractEntityTest {
 
     // Shared state
     private FoodsAndCategories foodsAndCategories;
-    private List<UserVO> users;
-    private List<MembershipVO> memberships;
+    private List<UserVO> userVOs;
+    private List<User> users;
+    private List<Membership> memberships;
+    private List<MembershipVO> membershipVOs;
     private List<AllergyVO> allergyVoList;
-    private Allergies allergies;
+    private List<Allergy> allergyList;
+    private Allergies shallowTransportWrapper;
+    private Allergies detailedTransportWrapper;
+    private AllergySeverity minorSeverity, majorSeverity;
+    private LocalizedTexts minorSeverityShortDesc, minorSeverityFullDesc, majorSeverityShortDesc, majorSeverityFullDesc;
 
     private Organisation mifflond;
 
@@ -90,44 +103,112 @@ public class AllergiesTest extends AbstractEntityTest {
         AbstractEntityTest.setJpaIDFor(mifflond, 1L);
         final OrganisationVO mifflondVO = new OrganisationVO(mifflond);
 
+        userVOs = new ArrayList<>();
         users = new ArrayList<>();
+
+        // Create some users
+        final User haxx = new User(
+                "Mr",
+                "Häxxmästaren",
+                LocalDate.of(1968, Month.SEPTEMBER, 17),
+                (short) 1235,
+                new Address(null,
+                        null,
+                        "Testgatan",
+                        "45 E",
+                        "Grååååbo",
+                        "234 54",
+                        "Sverige",
+                        "Hemma hos Mr Häxx"),
+                null,
+                null,
+                "dasToken");
+        JpaIdMutator.setId(haxx, 42);
+
+        final User erion = new User(
+                "Das",
+                "Erion",
+                LocalDate.of(1922, Month.FEBRUARY, 5),
+                (short) 2345,
+                new Address(null,
+                        null,
+                        "Yttertestgatan",
+                        "25",
+                        "Göteborg",
+                        "411 11",
+                        "Sverige",
+                        "Hemma hos Das Erion"),
+                null,
+                null,
+                "dasErionToken");
+        JpaIdMutator.setId(erion, 43);
+
+        users.add(haxx);
+        users.add(erion);
+
+        users.forEach(u -> userVOs.add(new UserVO(u)));
+
+        // Add some memberships to the users
         memberships = new ArrayList<>();
+        membershipVOs = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
+        final Membership haxxMembership = new Membership("häxx", "Das Filur", "haxxx", true, haxx, mifflond);
+        final Membership erionMembership = new Membership("erion", "Le Erion", "erionnn", true, erion, mifflond);
 
-            final LocalDate birthDay = LocalDate.of(1971 + i, Month.FEBRUARY, 1 + i);
-            users.add(new UserVO(
-                    (long) i + 1,
-                    "firstName_" + i,
-                    "lastName_" + i,
-                    birthDay));
+        memberships.add(haxxMembership);
+        memberships.add(erionMembership);
+        membershipVOs.add(new MembershipVO(haxxMembership));
+        membershipVOs.add(new MembershipVO(erionMembership));
 
-            memberships.add(new MembershipVO(
-                    (long) i + 100,
-                    "alias_" + i,
-                    (i % 2 == 0 ? "subAlias_" + i : (String) null),
-                    "emailAlias_" + i,
-                    true,
-                    mifflondVO));
-        }
+        // Create AllergySeverity descriptions.
+        // Use a Swedish locale only.
+        final LocaleDefinition swLocale = new LocaleDefinition(TimeFormat.SWEDISH_LOCALE);
 
+        this.minorSeverityShortDesc = new LocalizedTexts("minorAllergyShortDesc",
+                swLocale, "Default", "Obehag eller Preferens");
+
+        this.minorSeverityFullDesc = new LocalizedTexts("minorAllergyFullDesc",
+                swLocale, "Default", "Födoämnet kan förekomma i mat och du kan själv unvika att äta det. "
+                + "Exempel: Morötter på din tallrik.");
+
+        this.majorSeverityShortDesc = new LocalizedTexts("majorAllergyShortDesc",
+                swLocale, "Default", "Får inte inmundigas");
+
+        this.majorSeverityFullDesc = new LocalizedTexts("majorAllergyFullDesc",
+                swLocale, "Default", "Födoämnet får inte "
+                + "förekomma i din mat. Du kan behöva medicinering för att hantera effekterna av substansen.");
+
+        // Create the corresponding AllergySeverities.
+        minorSeverity = new AllergySeverity(2, minorSeverityShortDesc, minorSeverityFullDesc);
+        majorSeverity = new AllergySeverity(3, majorSeverityShortDesc, majorSeverityFullDesc);
+
+        // Add some Allergies and AllergyVOs
         allergyVoList = new ArrayList<>();
-        for (int i = 2; i < 7; i++) {
+        allergyList = new ArrayList<>();
 
-            final UserVO currentUserVO = users.get(i % users.size());
+        allergyList.add(new Allergy(foodsAndCategories.beetroot, haxx, minorSeverity, "Minor Note"));
+        allergyList.add(new Allergy(foodsAndCategories.carrot, haxx, majorSeverity, null));
+        allergyList.add(new Allergy(foodsAndCategories.cauliflower, erion, minorSeverity, null));
 
-            final String note = (i == 4 ? "note_" + i : null);
-            allergyVoList.add(new AllergyVO(
-                    "allergy_description_" + i,
-                    "severity_" + i,
-                    "foodName_" + i,
-                    note,
-                    (long) (i - 2),
-                    currentUserVO.getJpaID(),
-                    currentUserVO.getXmlId()));
-        }
+        allergyList.forEach(al -> allergyVoList.add(new AllergyVO(al, TimeFormat.SWEDISH_LOCALE)));
 
-        allergies = new Allergies(TimeFormat.SWEDISH_LOCALE, users, allergyVoList);
+        shallowTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE, userVOs, allergyVoList);
+        detailedTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE,
+                allergyList.toArray(new Allergy[allergyList.size()]));
+    }
+
+    @Test
+    public void validateMarshallingDetailedWrapperToXML() {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedAllergies.xml");
+
+        // Act
+        final String result = marshalToXML(detailedTransportWrapper);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        validateIdenticalContent(expected, result);
     }
 
     @Test
@@ -137,11 +218,25 @@ public class AllergiesTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/food/allergies.xml");
 
         // Act
-        final String result = marshalToXML(allergies);
+        final String result = marshalToXML(shallowTransportWrapper);
         // System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);
+    }
+
+    @Test
+    public void validateMarshallingToDetailedJSON() throws Exception {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/transport/food/detailedAllergies.json");
+
+        // Act
+        final String result = marshalToJSon(detailedTransportWrapper);
+        // System.out.println("Got: " + result);
+
+        // Assert
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test
@@ -151,7 +246,7 @@ public class AllergiesTest extends AbstractEntityTest {
         final String expected = XmlTestUtils.readFully("testdata/transport/food/allergies.json");
 
         // Act
-        final String result = marshalToJSon(allergies);
+        final String result = marshalToJSon(shallowTransportWrapper);
         // System.out.println("Got: " + result);
 
         // Assert
@@ -170,8 +265,8 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Assert
         Assert.assertNotNull(resurrected);
-        Assert.assertEquals(allergies.getUsers().size(), resurrected.getUsers().size());
-        Assert.assertEquals(allergies.getAllergyList().size(), resurrected.getAllergyList().size());
+        Assert.assertEquals(shallowTransportWrapper.getUsers().size(), resurrected.getUsers().size());
+        Assert.assertEquals(shallowTransportWrapper.getAllergyList().size(), resurrected.getAllergyList().size());
     }
 
     @Test
@@ -186,7 +281,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Assert
         Assert.assertNotNull(resurrected);
-        Assert.assertEquals(this.allergies.getUsers().size(), resurrected.getUsers().size());
-        Assert.assertEquals(this.allergies.getAllergyList().size(), resurrected.getAllergyList().size());
+        Assert.assertEquals(this.shallowTransportWrapper.getUsers().size(), resurrected.getUsers().size());
+        Assert.assertEquals(this.shallowTransportWrapper.getAllergyList().size(), resurrected.getAllergyList().size());
     }
 }

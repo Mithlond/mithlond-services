@@ -70,7 +70,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         final SortedSet<Allergy> toReturn = new TreeSet<>();
         toReturn.addAll(resultList);
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Found [" + toReturn.size() + "] known allergies.");
         }
 
@@ -92,7 +92,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         final SortedMap<Membership, SortedSet<Allergy>> toReturn = new TreeMap<>();
 
         // TODO: IMPLEMENT THIS!
-        if(log.isWarnEnabled()) {
+        if (log.isWarnEnabled()) {
             log.warn("'getAllergiesFor' is not yet implemented");
         }
 
@@ -132,7 +132,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         final SortedMap<Membership, SortedSet<Allergy>> toReturn = new TreeMap<>();
 
         final Activity activity = entityManager.find(Activity.class, activityJpaID);
-        if(activity != null) {
+        if (activity != null) {
 
             final Set<Membership> admittedMemberships = activity.getAdmissions()
                     .stream()
@@ -147,7 +147,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                         .getResultList();
 
 
-                if(currentAllergies == null || currentAllergies.isEmpty()) {
+                if (currentAllergies == null || currentAllergies.isEmpty()) {
                     toReturn.put(m, new TreeSet<>());
                 } else {
 

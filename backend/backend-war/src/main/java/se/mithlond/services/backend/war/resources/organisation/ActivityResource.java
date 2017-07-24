@@ -24,6 +24,7 @@ package se.mithlond.services.backend.war.resources.organisation;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.organisation.api.ActivityService;
@@ -33,7 +34,6 @@ import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
@@ -106,17 +106,17 @@ public class ActivityResource extends AbstractResource {
             // All Done.
             final Activities toReturn = activityService.getActivities(params, getActiveMembership());
 
-            if(log.isInfoEnabled()) {
+            if (log.isInfoEnabled()) {
                 log.info("Returning " + toReturn.getActivities());
             }
 
             // All Done.
             return toReturn;
-            
+
         } catch (Exception e) {
-            
+
             log.error("Could not fetch activities from database: ", e);
-            
+
             throw new IllegalArgumentException("");
         }
     }
