@@ -23,22 +23,24 @@
 <organisation_transport:foods xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation">
     <locale>sv-SE</locale>
     <categories>
-        <category jpaId="20" version="0" xmlID="category_food_subcategory_Diverse">
-            <classification>food_subcategory</classification>
-            <categoryID>Diverse</categoryID>
-            <description>Diverse / övrigt</description>
-        </category>
         <category jpaId="12" version="0" xmlID="category_food_category_Grönsaker">
             <classification>food_category</classification>
             <categoryID>Grönsaker</categoryID>
             <description>Grönsaker och Rotfrukter</description>
+        </category>
+    </categories>
+    <subCategories>
+        <category jpaId="20" version="0" xmlID="category_food_subcategory_Diverse">
+            <classification>food_subcategory</classification>
+            <categoryID>Diverse</categoryID>
+            <description>Diverse / övrigt</description>
         </category>
         <category jpaId="25" version="0" xmlID="category_food_subcategory_Rotfrukter_och_Betor">
             <classification>food_subcategory</classification>
             <categoryID>Rotfrukter och Betor</categoryID>
             <description>Rotfrukter; växer under jord</description>
         </category>
-    </categories>
+    </subCategories>
     <foods>
         <food jpaId="24" foodName="Blomkål" categoryID="12" subCategoryID="20"/>
         <food jpaId="36" foodName="Morot" categoryID="12" subCategoryID="25"/>

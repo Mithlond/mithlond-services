@@ -32,8 +32,6 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -127,7 +125,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToXML(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         validateIdenticalContent(expected, result);
@@ -146,7 +144,7 @@ public class FoodsTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToJSon(unitUnderTest);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);
@@ -204,49 +202,6 @@ public class FoodsTest extends AbstractEntityTest {
         validateFoods(resurrected, false);
     }
 
-
-    public void importFoodTranslations() throws Exception {
-
-        // Assemble
-        final String data = XmlTestUtils.readFully("testdata/transport/food/translatedFood.csv");
-        final BufferedReader reader = new BufferedReader(new StringReader(data));
-        final String preamble = "insert into localized_text (classifier, text, version, textlocale_id, suite_id)"
-                + " VALUES (";
-        final String insertSQL = "insert into localized_text (classifier, text, version, textlocale_id, suite_id)\n" +
-                "VALUES ('Default', 'dkFoodName', 1, 4, (select suite.id from localized_text ltext, " +
-                "localized_text_suites suite\n" +
-                "where ltext.suite_id = suite.id\n" +
-                "      and ltext.classifier = 'Default'\n" +
-                "      and ltext.textlocale_id = 1\n" +
-                "      and ltext.text = 'swFoodName'));";
-
-        // Act
-        String aLine = null;
-        while((aLine = reader.readLine()) != null) {
-
-            final String[] spliced = aLine.split(",", -1);
-
-            final String category = getArrayIndex(spliced, 0);
-            final String subCategory = getArrayIndex(spliced, 1);
-            final String swFoodName = getArrayIndex(spliced, 2);
-            final String enFoodName = getArrayIndex(spliced, 3);
-            final String dkFoodName = getArrayIndex(spliced, 4);
-
-            /*
-            if(!swFoodName.isEmpty() && !dkFoodName.isEmpty()) {
-                System.out.println(insertSQL.replace("dkFoodName", dkFoodName).replace("swFoodName", swFoodName));
-            }
-            */
-
-            if(!swFoodName.isEmpty() && !enFoodName.isEmpty()) {
-                System.out.println(insertSQL.replace("dkFoodName", enFoodName).replace("swFoodName", swFoodName));
-            }
-
-        }
-
-        // Assert
-    }
-
     //
     // Private helpers
     //
@@ -264,10 +219,21 @@ public class FoodsTest extends AbstractEntityTest {
         Assert.assertEquals(TimeFormat.SWEDISH_LOCALE, theLocale);
 
         // #1) Check the categories
+        //
+        //          Cat: food_category --> Grönsaker
+        //          SubCat: food_subcategory --> Diverse
+        //          SubCat: food_subcategory --> Rotfrukter och Betor
+        //
         final SortedSet<Category> categories = foods.getCategories();
-        Stream.of(foodsAndCategories.vegetables, foodsAndCategories.rootsAndBeets, foodsAndCategories.diverse)
-                .forEach(cat -> Assert.assertTrue("Category [" + cat + "] not found.",
-                        categories.contains(cat)));
+        final SortedSet<Category> subCategories = foods.getSubCategories();
+
+        Assert.assertEquals(1, categories.size());
+        Assert.assertEquals(2, subCategories.size());
+
+        Assert.assertEquals(foodsAndCategories.vegetables, categories.first());
+        Stream.of(foodsAndCategories.rootsAndBeets, foodsAndCategories.diverse)
+                .forEach(cat -> Assert.assertTrue("SubCategory [" + cat + "] not found.",
+                        subCategories.contains(cat)));
 
         // #2) Check the foods
         final Stream<Food> foodStream = Stream.of(foodsAndCategories.cauliflower,

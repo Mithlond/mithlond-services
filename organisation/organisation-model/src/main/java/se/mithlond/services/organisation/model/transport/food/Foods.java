@@ -46,16 +46,24 @@ import java.util.stream.Stream;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"categories", "foods", "detailedFoods"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE,
+        propOrder = {"categories", "subCategories", "foods", "detailedFoods"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Foods extends AbstractLocalizedSimpleTransporter {
 
     /**
-     * The Categories and SubCategories within which the FoodVOs are grouped.
+     * The sorted Categories within which the FoodVOs are grouped.
      */
     @XmlElementWrapper
     @XmlElement(name = "category")
     private SortedSet<Category> categories;
+
+    /**
+     * The sorted SubCategories within which the FoodVOs are grouped.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "category")
+    private SortedSet<Category> subCategories;
 
     /**
      * The List of (shallow-detail) FoodVOs transported within this Foods wrapper.
@@ -83,6 +91,7 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
         this.foods = new ArrayList<>();
         this.detailedFoods = new ArrayList<>();
         this.categories = new TreeSet<>();
+        this.subCategories = new TreeSet<>();
     }
 
     /**
@@ -126,8 +135,8 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
                 if (!categories.contains(category)) {
                     categories.add(category);
                 }
-                if (!categories.contains(subCategory)) {
-                    categories.add(subCategory);
+                if (!subCategories.contains(subCategory)) {
+                    subCategories.add(subCategory);
                 }
 
                 if (shallowRepresentation) {
@@ -175,6 +184,15 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
     }
 
     /**
+     * Retrieves the Set of (Sub-)Category objects used by Food objects within this Foods transport.
+     *
+     * @return the Set of (Sub-)Category objects used by Food objects within this Foods transport.
+     */
+    public SortedSet<Category> getSubCategories() {
+        return subCategories;
+    }
+
+    /**
      * Retrieves all shallow-detail FoodVOs transported within this Foods.
      *
      * @return The shallow-detail FoodVOs transported within this Foods.
@@ -197,8 +215,8 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
      */
     @Override
     public String toString() {
-        return super.toString() + " containing " + categories.size() + " categories. Also containing "
-                + detailedFoods.size() + " detailed, and " + foods.size()
-                + " shallow representations.";
+        return super.toString() + " containing " + categories.size() + " categories and "
+                + subCategories.size() + "sub-categories. Also containing " + detailedFoods.size()
+                + " detailed, and " + foods.size() + " shallow Food representations.";
     }
 }

@@ -3,20 +3,22 @@
   "locale": "sv-SE",
   "categories": [
     {
-      "jpaId": 20,
-      "version": 0,
-      "xmlID": "category_food_subcategory_Diverse",
-      "classification": "food_subcategory",
-      "categoryID": "Diverse",
-      "description": "Diverse / övrigt"
-    },
-    {
       "jpaId": 12,
       "version": 0,
       "xmlID": "category_food_category_Grönsaker",
       "classification": "food_category",
       "categoryID": "Grönsaker",
       "description": "Grönsaker och Rotfrukter"
+    }
+  ],
+  "subCategories": [
+    {
+      "jpaId": 20,
+      "version": 0,
+      "xmlID": "category_food_subcategory_Diverse",
+      "classification": "food_subcategory",
+      "categoryID": "Diverse",
+      "description": "Diverse / övrigt"
     },
     {
       "jpaId": 25,

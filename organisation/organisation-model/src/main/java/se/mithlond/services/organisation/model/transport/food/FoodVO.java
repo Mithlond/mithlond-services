@@ -39,7 +39,8 @@ import java.util.Locale;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"foodName", "categoryID", "subCategoryID"})
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
+        propOrder = {"foodName", "categoryID", "subCategoryID"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FoodVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
