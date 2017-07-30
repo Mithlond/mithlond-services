@@ -169,7 +169,7 @@ public class ActiveUserResource extends AbstractResource {
      */
     @Path("/guildMemberships/update")
     @POST
-    public MembershipListVO updateGuildMemberships(MembershipListVO submittedBodyData) {
+    public MembershipListVO updateGuildMemberships(final MembershipListVO submittedBodyData) {
 
         // Check sanity
         if (log.isDebugEnabled()) {
@@ -211,7 +211,7 @@ public class ActiveUserResource extends AbstractResource {
      */
     @Path("/personalSettings/update")
     @POST
-    public MembershipListVO updateMembership(MembershipListVO submittedBodyData) {
+    public MembershipListVO updateMembership(final MembershipListVO submittedBodyData) {
 
         // Check sanity
         if (log.isDebugEnabled()) {
