@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -105,8 +106,8 @@ public class CategoriesAndAddresses extends AbstractSimpleTransporter {
         this();
 
         if (addresses != null) {
-            Arrays.asList(addresses).stream()
-                    .filter(c -> c != null)
+            Arrays.stream(addresses)
+                    .filter(Objects::nonNull)
                     .forEach(this::addCategorizedAddress);
         }
     }

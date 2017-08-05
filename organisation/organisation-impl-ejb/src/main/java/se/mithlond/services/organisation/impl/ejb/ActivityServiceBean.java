@@ -39,6 +39,7 @@ import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
+import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
@@ -603,14 +604,29 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
             final Organisation activeOrganisation = activeMemberships.get(0).getOrganisation();
 
             activeMemberships.stream()
-                    .map(a -> a.getUser().getHomeAddress())
                     .filter(Objects::nonNull)
-                    .map(homeAddress -> new CategorizedAddress(
-                            homeAddress.getDescription(),
-                            homeAddress.getDescription(),
-                            homeAddressCategory,
-                            activeOrganisation,
-                            homeAddress))
+                    .map(mShip -> {
+
+                        final User user = mShip.getUser();
+                        final Address homeAddress = user.getHomeAddress();
+
+                        //
+                        // Synthesize a better short and long desc; the CategorizedAddress
+                        // synthesized for HomeAddresses does not have a corresponding DB entity.
+                        //
+                        final String shortDesc = "Hemma hos " + mShip.getAlias();
+                        final String longDesc = shortDesc
+                                + " (" + user.getFirstName()
+                                + " " + user.getLastName() + ")";
+
+                        // All Done.
+                        return new CategorizedAddress(
+                                shortDesc,
+                                longDesc,
+                                homeAddressCategory,
+                                activeOrganisation,
+                                homeAddress);
+                    })
                     .forEach(toReturn::addCategorizedAddress);
         }
 
