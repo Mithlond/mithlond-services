@@ -26,11 +26,13 @@ import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
+import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.food.Food;
+import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
@@ -95,6 +97,29 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         if (log.isWarnEnabled()) {
             log.warn("'getAllergiesFor' is not yet implemented");
         }
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SortedSet<FoodPreference> getPreferencesFor(final Membership membership) {
+
+        // Check sanity
+        Validate.notNull(membership, "membership");
+
+        // Find the Food preferences
+        final List<FoodPreference> prefs = entityManager.createNamedQuery(
+                FoodPreference.NAMEDQ_GET_BY_USERID, FoodPreference.class)
+                .setParameter(OrganisationPatterns.PARAM_USER_ID, membership.getUser().getId())
+                .getResultList();
+
+        // Re-pack into a SortedSet.
+        final SortedSet<FoodPreference> toReturn = new TreeSet<>();
+        toReturn.addAll(prefs);
 
         // All Done.
         return toReturn;
@@ -175,6 +200,23 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         // Find all Foods.
         final TypedQuery<Food> query = entityManager.createQuery("select f From Food f "
                 + "order by f.category.categoryID, f.subCategory.categoryID", Food.class);
+        toReturn.addAll(query.getResultList());
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SortedSet<Category> getAllFoodPreferences() {
+
+        // Create the return wrapper
+        final SortedSet<Category> toReturn = new TreeSet<>();
+
+        // Find all Foods.
+        final TypedQuery<Category> query = entityManager.createQuery(FoodPreference.NAMEDQ_GET_ALL, Category.class);
         toReturn.addAll(query.getResultList());
 
         // All Done.

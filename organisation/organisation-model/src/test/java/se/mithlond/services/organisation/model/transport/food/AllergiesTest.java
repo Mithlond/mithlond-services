@@ -192,7 +192,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         allergyList.forEach(al -> allergyVoList.add(new AllergyVO(al, TimeFormat.SWEDISH_LOCALE)));
 
-        shallowTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE, userVOs, allergyVoList);
+        shallowTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE, userVOs, allergyVoList, null);
         detailedTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE,
                 allergyList.toArray(new Allergy[allergyList.size()]));
     }

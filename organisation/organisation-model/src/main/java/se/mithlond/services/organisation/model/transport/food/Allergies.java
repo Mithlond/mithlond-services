@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.food;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.transport.AbstractLocalizedSimpleTransporter;
 import se.mithlond.services.organisation.model.transport.user.UserVO;
 import se.mithlond.services.organisation.model.user.User;
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 /**
@@ -46,7 +49,7 @@ import java.util.stream.Stream;
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
-        propOrder = {"users", "allergyList"})
+        propOrder = {"users", "allergyList", "foodPreferences" })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Allergies extends AbstractLocalizedSimpleTransporter {
 
@@ -65,11 +68,17 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     private List<AllergyVO> allergyList;
 
     /**
+     * The sorted set of FoodPreferenceVOs transported.
+     */
+    private SortedSet<FoodPreferenceVO> foodPreferences;
+
+    /**
      * JAXB-friendly constructor.
      */
     public Allergies() {
         this.users = new ArrayList<>();
         this.allergyList = new ArrayList<>();
+        this.foodPreferences = new TreeSet<>();
     }
 
     /**
@@ -81,7 +90,8 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
      */
     public Allergies(final Locale locale,
                      final List<UserVO> users,
-                     final List<AllergyVO> allergyList) {
+                     final List<AllergyVO> allergyList,
+                     final SortedSet<FoodPreferenceVO> foodPreferences) {
 
         // Delegate
         this();
@@ -93,6 +103,11 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
         }
         if (allergyList != null) {
             add(allergyList.toArray(new AllergyVO[allergyList.size()]));
+        }
+        if (foodPreferences != null) {
+            foodPreferences.stream()
+                    .filter(f -> !this.foodPreferences.contains(f))
+                    .forEach(f -> this.foodPreferences.add(f));
         }
     }
 
@@ -111,7 +126,7 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
         initialize(locale);
         add(allergies);
     }
-    
+
     /**
      * Adds the supplied UserVOs to this Allergies transport, provided they are not null or already added.
      *
@@ -181,6 +196,22 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     }
 
     /**
+     * Adds the supplied FoodPreferences to this Allergies transporter.
+     *
+     * @param prefs The FoodPreferences to add.
+     */
+    public void add(final FoodPreference... prefs) {
+
+        if (prefs != null) {
+            Stream.of(prefs)
+                    .filter(Objects::nonNull)
+                    .map(FoodPreferenceVO::new)
+                    .filter(f -> !this.foodPreferences.contains(f))
+                    .forEach(f -> this.foodPreferences.add(f));
+        }
+    }
+
+    /**
      * @return The List of UserVOs for which the transported AllergyVOs are valid.
      */
     public List<UserVO> getUsers() {
@@ -195,12 +226,20 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     }
 
     /**
+     * @return The sorted set of FoodPreferenceVOs transported.
+     */
+    public SortedSet<FoodPreferenceVO> getFoodPreferences() {
+        return foodPreferences;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
         return super.toString() + " with "
                 + users.size() + " users, "
-                + allergyList.size() + " allergies.";
+                + allergyList.size() + " allergies and "
+                + foodPreferences.size() + " food preferences.";
     }
 }

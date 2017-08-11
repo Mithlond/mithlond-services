@@ -47,7 +47,7 @@ import java.util.stream.Stream;
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
 @XmlType(namespace = OrganisationPatterns.NAMESPACE,
-        propOrder = {"categories", "subCategories", "foods", "detailedFoods"})
+        propOrder = {"categories", "subCategories", "foods", "detailedFoods", "foodPreferences" })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Foods extends AbstractLocalizedSimpleTransporter {
 
@@ -80,6 +80,13 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
     private List<Food> detailedFoods;
 
     /**
+     * The sorted known FoodPreference Categories.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "preference")
+    private SortedSet<Category> foodPreferences;
+
+    /**
      * JAXB-friendly constructor.
      */
     public Foods() {
@@ -92,6 +99,7 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
         this.detailedFoods = new ArrayList<>();
         this.categories = new TreeSet<>();
         this.subCategories = new TreeSet<>();
+        this.foodPreferences = new TreeSet<>();
     }
 
     /**
@@ -211,12 +219,22 @@ public class Foods extends AbstractLocalizedSimpleTransporter {
     }
 
     /**
+     * @return The sorted known FoodPreference Categories.
+     */
+    public SortedSet<Category> getFoodPreferences() {
+        return foodPreferences;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
-        return super.toString() + " containing " + categories.size() + " categories and "
-                + subCategories.size() + "sub-categories. Also containing " + detailedFoods.size()
-                + " detailed, and " + foods.size() + " shallow Food representations.";
+        return super.toString() + " containing "
+                + categories.size() + " categories, "
+                + subCategories.size() + "sub-categories and "
+                + foodPreferences.size() + "food preference categories. Also containing "
+                + detailedFoods.size() + " detailed, and "
+                + foods.size() + " shallow Food representations.";
     }
 }

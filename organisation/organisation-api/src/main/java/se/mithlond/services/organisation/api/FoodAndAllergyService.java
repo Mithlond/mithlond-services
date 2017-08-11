@@ -22,9 +22,12 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
+import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.food.Food;
+import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
@@ -68,6 +71,14 @@ public interface FoodAndAllergyService extends JpaCudService {
     SortedSet<Allergy> getAllergiesFor(@NotNull final Membership membership);
 
     /**
+     * Retrieves the Set of FoodPreferences for the supplied Membership.
+     *
+     * @param membership The Membership for which food preferences should be retrieved.
+     * @return A SortedSet containing the known food preferences objects for the supplied Membership.
+     */
+    SortedSet<FoodPreference> getPreferencesFor(@NotNull final Membership membership);
+
+    /**
      * Retrieves a SortedMap relating Memberships to their corresponding allergies,
      * for all Memberships admitted to a particular Activity.
      *
@@ -83,4 +94,11 @@ public interface FoodAndAllergyService extends JpaCudService {
      * @return all known Food objects.
      */
     SortedSet<Food> getAllFoods();
+
+    /**
+     * Retrieves all known FoodPreference Categories.
+     *
+     * @return all known Food objects.
+     */
+    SortedSet<Category> getAllFoodPreferences();
 }

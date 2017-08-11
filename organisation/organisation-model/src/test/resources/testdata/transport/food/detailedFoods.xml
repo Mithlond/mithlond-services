@@ -80,6 +80,7 @@
             <subCategory>category_food_subcategory_Rotfrukter_och_Betor</subCategory>
         </detailedFood>
     </detailedFoods>
+    <foodPreferences/>
 </organisation_transport:foods>
 
 

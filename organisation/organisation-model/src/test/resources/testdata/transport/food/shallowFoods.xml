@@ -47,4 +47,5 @@
         <food jpaId="215" foodName="Rödbeta" categoryID="12" subCategoryID="25"/>
     </foods>
     <detailedFoods/>
+    <foodPreferences/>
 </organisation_transport:foods>

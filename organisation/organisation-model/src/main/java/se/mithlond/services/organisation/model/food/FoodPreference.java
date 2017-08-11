@@ -55,11 +55,12 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @NamedQueries({
-        @NamedQuery(name = "FoodPreference.getAllFoodPreferences",
+        @NamedQuery(name = FoodPreference.NAMEDQ_GET_ALL,
                 query = "select a from Category a where a.classification = '"
                         + FoodPreference.FOOD_PREFERENCE_CATEGORY_CLASSIFICATION + "' order by a.categoryID"),
-        @NamedQuery(name = "FoodPreference.getFoodPreferencesByMemberLogin",
-                query = "select a from FoodPreference a where a.user.id = ?1 order by a.category.categoryID")
+        @NamedQuery(name = FoodPreference.NAMEDQ_GET_BY_USERID,
+                query = "select a from FoodPreference a where a.user.id = :" + OrganisationPatterns.PARAM_USER_ID
+                        + " order by a.category.categoryID")
 })
 @Entity
 @Access(value = AccessType.FIELD)
@@ -71,6 +72,16 @@ public class FoodPreference implements Serializable, Comparable<FoodPreference>,
      * The Category classification of a FoodPreference.
      */
     public static final String FOOD_PREFERENCE_CATEGORY_CLASSIFICATION = "food_preference";
+
+    /**
+     * NamedQuery which retrieves all FoodPreferences (in the form of Categories).
+     */
+    public static final String NAMEDQ_GET_ALL = "FoodPreference.getAll";
+
+    /**
+     * NamedQuery which retrieves all FoodPreferences Categories.
+     */
+    public static final String NAMEDQ_GET_BY_USERID = "FoodPreference.getByUserID";
 
     // Internal state
     @Version

@@ -49,5 +49,6 @@
       "subCategoryID": 25
     }
   ],
-  "detailedFoods": []
+  "detailedFoods": [],
+  "foodPreferences": []
 }

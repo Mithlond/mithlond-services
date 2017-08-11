@@ -43,5 +43,6 @@
       "foodName": "Blomkål",
       "severity": "Obehag eller Preferens"
     }
-  ]
+  ],
+  "foodPreferences": []
 }

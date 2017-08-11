@@ -62,6 +62,9 @@ public class FoodResource extends AbstractResource {
         // Find and add all Foods.
         foodAndAllergyService.getAllFoods().forEach(f -> toReturn.add(!getAllDetails, f));
 
+        // Find and add all FoodPreference Categories.
+        toReturn.getFoodPreferences().addAll(foodAndAllergyService.getAllFoodPreferences());
+
         // All Done.
         return toReturn;
     }
