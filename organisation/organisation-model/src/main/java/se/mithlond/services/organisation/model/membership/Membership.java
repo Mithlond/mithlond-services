@@ -100,7 +100,12 @@ import java.util.TreeSet;
                 query = "select a from Membership a"
                         + " where a.organisation.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
                         + " and a.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
-                        + " order by a.alias")
+                        + " order by a.alias"),
+        @NamedQuery(name = Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED_AND_USERID,
+                query = "select a from Membership a"
+                        + " where a.organisation.id = :" + OrganisationPatterns.PARAM_ORGANISATION_ID
+                        + " and a.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
+                        + " and a.user.id = :" + OrganisationPatterns.PARAM_USER_ID),
 })
 @Entity
 @Table(uniqueConstraints = {
@@ -167,6 +172,13 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
      */
     public static final String NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED =
             "Membership.getByOrganisationAndLoginPermitted";
+
+    /**
+     * NamedQuery for getting a single Membership by organisationID, loginPermitted and UserID.
+     */
+    public static final String NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED_AND_USERID =
+            "Membership.getByOrganisationIdLoginPermittedAndUserId";
+
 
     /**
      * The alias of this Membership. Never null/empty, and unique within the Organisation.

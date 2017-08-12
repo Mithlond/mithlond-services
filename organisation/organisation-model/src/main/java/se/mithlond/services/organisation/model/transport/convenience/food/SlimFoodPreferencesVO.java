@@ -6,6 +6,7 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.transport.food.FoodPreferenceVO;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -73,6 +74,7 @@ public class SlimFoodPreferencesVO extends AbstractSimpleTransporter implements 
     /**
      * @return The wrapped FoodPreferenceVOs.
      */
+    @NotNull
     public SortedSet<FoodPreferenceVO> getFoodPreferences() {
         return foodPreferences;
     }

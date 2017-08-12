@@ -111,6 +111,6 @@ public interface FoodAndAllergyService extends JpaCudService {
      * @param receivedData     The Food preferences to update.
      * @return The resulting Food preferences.
      */
-    SlimFoodPreferencesVO updateFoodPreferences(final Membership activeMembership,,
+    SlimFoodPreferencesVO updateFoodPreferences(final Membership activeMembership,
                                                 final SlimFoodPreferencesVO receivedData);
 }

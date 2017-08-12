@@ -28,22 +28,25 @@ import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
 import se.mithlond.services.organisation.model.Category;
+import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.food.FoodPreference;
-import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.transport.convenience.food.SlimFoodPreferencesVO;
+import se.mithlond.services.organisation.model.transport.food.FoodPreferenceVO;
+import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -243,12 +246,125 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         // Create the return wrapper
         final SlimFoodPreferencesVO toReturn = new SlimFoodPreferencesVO();
 
-        // Only Administrators can update food preferences for people other than themselves.
-        activeMembership.getGroupMemberships().stream()
-                .filter(gr -> !(gr instanceof GuildMembership))
-                .filter(gr -> gr.getGroup().getGroupName().equalsIgnoreCase(""))
+        // Fail fast
+        if (receivedData != null || receivedData.getFoodPreferences().isEmpty()) {
+            return toReturn;
+        }
+
+        // Business rules:
+        //
+        // 1. Non-administrators can update their own food preferences only.
+        // 2. Administrators can update food preferences for people within their own Organisation.
+        //
+        final Organisation activeOrganisation = activeMembership.getOrganisation();
+        final SortedSet<FoodPreferenceVO> foodPreferences = new TreeSet<>();
+        final boolean isAdmin = organisationServiceBean.isAdministratorFor(activeMembership, activeOrganisation);
+        final long ownUserID = activeMembership.getId();
+
+
+        if (!isAdmin) {
+
+            // Only affect self's Food preferences
+            final Set<FoodPreferenceVO> targetState = receivedData.getFoodPreferences()
+                    .stream()
+                    .filter(fp -> fp.getUserID() == ownUserID)
+                    .collect(Collectors.toSet());
+
+            // Persist received state into database
+            this.persistFoodPreferencesFor(activeMembership.getUser(), targetState);
+
+            // Populate the return value
+            toReturn.getFoodPreferences().addAll(targetState);
+
+        } else {
+
+            // Affect Food preferences for users within own Organisation
+            final SortedMap<User, Set<FoodPreferenceVO>> user2targetStateMap = new TreeMap<>(
+                    (l, r) -> (int) (l.getId() - r.getId()));
+            final SortedMap<User, Membership> tmpCache = new TreeMap<>((l, r) -> (int) (l.getId() - r.getId()));
+
+            for (FoodPreferenceVO current : foodPreferences) {
+
+                final User currentUser = user2targetStateMap.keySet().stream()
+                        .filter(u -> u.getId() == current.getUserID())
+                        .findFirst()
+                        .orElseGet(() -> entityManager.find(User.class, current.getUserID()));
+
+                if (currentUser != null) {
+
+                    // Find the single Membership of the currentUser within the active organisation.
+                    final Membership validMembership = tmpCache.getOrDefault(currentUser,
+                            entityManager.createNamedQuery(
+                                    Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED_AND_USERID,
+                                    Membership.class)
+                                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, activeOrganisation.getId())
+                                    .setParameter(OrganisationPatterns.PARAM_USER_ID, current.getUserID())
+                                    .getSingleResult());
+
+                    if (validMembership != null) {
+
+                        // Inscribe into the tmp cache.
+                        if (!tmpCache.containsKey(currentUser)) {
+                            tmpCache.put(currentUser, validMembership);
+                        }
+
+                        // Add the current food preference to the target state
+                        final Set<FoodPreferenceVO> targetState = user2targetStateMap
+                                .computeIfAbsent(currentUser, k -> new TreeSet<>());
+                        targetState.add(current);
+                    }
+                }
+            }
+
+            // Update the state for each user within the database.
+            user2targetStateMap.forEach(this::persistFoodPreferencesFor);
+
+            // Populate the return value
+            user2targetStateMap.forEach((user, targetState) -> toReturn.getFoodPreferences().addAll(targetState));
+        }
 
         // All Done.
         return toReturn;
+    }
+
+    //
+    // Private helpers
+    //
+
+    private void persistFoodPreferencesFor(final User user, final Set<FoodPreferenceVO> targetState) {
+
+        final Set<FoodPreference> toRemove = new TreeSet<>();
+        final Set<FoodPreferenceVO> toAdd = new TreeSet<>();
+
+        final List<FoodPreference> existingFoodPrefs = entityManager.createNamedQuery(
+                FoodPreference.NAMEDQ_GET_BY_USERID, FoodPreference.class)
+                .setParameter(OrganisationPatterns.PARAM_USER_ID, user.getId())
+                .getResultList();
+        final Map<String, FoodPreference> catId2FoodPrefMap = existingFoodPrefs
+                .stream()
+                .collect(Collectors.toMap(fp -> fp.getCategory().getCategoryID(), fp -> fp));
+
+        // Note all new FoodPreferenceVOs
+        targetState.stream().filter(fp -> !catId2FoodPrefMap.containsKey(fp.getPreference())).forEach(toAdd::add);
+
+        // Find all non-present (i.e. removed) FoodPreferences
+        existingFoodPrefs.stream()
+                .filter(pref -> isAbsentFromTargetState(pref, targetState))
+                .forEach(toRemove::add);
+
+        // Remove what should be removed from the database
+        toRemove.forEach(pref -> entityManager.remove(pref));
+        toAdd.stream()
+                .map(fp -> new FoodPreference(theCategory, user))
+                .forEach(pref -> entityManager.persist(pref));
+    }
+
+    private boolean isAbsentFromTargetState(final FoodPreference aPref, final Set<FoodPreferenceVO> targetState) {
+
+        final Optional<FoodPreferenceVO> foundMatch = targetState.stream()
+                .filter(fp -> aPref.getCategory().getCategoryID().equalsIgnoreCase(fp.getPreference()))
+                .findFirst();
+
+        return !foundMatch.isPresent();
     }
 }
