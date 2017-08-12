@@ -35,10 +35,10 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Slimmed down version of the GroupMembership Entity.
- * 
+ *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"parentXmlId"})
+@XmlType(namespace = OrganisationPatterns.NAMESPACE, propOrder = {"parentXmlId" })
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SlimGroupMembershipVO extends AbstractSimpleTransportable implements Validatable {
 
@@ -66,7 +66,7 @@ public class SlimGroupMembershipVO extends AbstractSimpleTransportable implement
 
         // Assign internal state
         final String parentXmlID = aGroupMembership.getGroup().getParentXmlID();
-        if(parentXmlID != null && !parentXmlID.isEmpty()) {
+        if (parentXmlID != null && !parentXmlID.isEmpty()) {
             this.parentXmlId = parentXmlID;
         }
     }

@@ -24,6 +24,7 @@ package se.mithlond.services.organisation.model.transport.food;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.food.Food;
+import se.mithlond.services.organisation.model.food.FoodPreference;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -32,6 +33,7 @@ public class FoodsAndCategories {
 
     public Category vegetables, rootsAndBeets, diverse;
     public Food cauliflower, carrot, beetroot;
+    public Category milkCategory, meatsCategory;
 
     public FoodsAndCategories() {
 
@@ -65,5 +67,17 @@ public class FoodsAndCategories {
         cauliflower = new Food("Blomkål", "Cauliflower", vegetables, diverse);
         AbstractEntityTest.setJpaIDFor(cauliflower, 24);
         AbstractEntityTest.setJpaIDFor(cauliflower.getLocalizedFoodName(), 302);
+
+        // #3) Create some Categories for FoodPreferences.
+        //
+        milkCategory = new Category("Mjölk",
+                FoodPreference.FOOD_PREFERENCE_CATEGORY_CLASSIFICATION,
+                "Äter inte mjölkprodukter");
+        AbstractEntityTest.setJpaIDFor(milkCategory, 43);
+
+        meatsCategory = new Category("Kött",
+                FoodPreference.FOOD_PREFERENCE_CATEGORY_CLASSIFICATION,
+                "Äter inte något kött");
+        AbstractEntityTest.setJpaIDFor(meatsCategory, 39);
     }
 }

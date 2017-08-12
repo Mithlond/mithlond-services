@@ -33,6 +33,9 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
+import se.mithlond.services.organisation.model.membership.GroupMembership;
+import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
@@ -45,6 +48,7 @@ import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
@@ -58,6 +62,8 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(OrganisationServiceBean.class);
+
+    private static final String[] STD_ADMINISTRATOR_GROUPNAMES = {"Administratörer", "Administrators" };
 
     /**
      * {@inheritDoc}
@@ -329,5 +335,43 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         // All done.
         return toPersist;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAdministratorFor(final Membership adminCandidate, final Organisation organisation) {
+
+        // Check sanity
+        if (adminCandidate == null || organisation == null) {
+            return false;
+        } else if (!adminCandidate.getOrganisation().getOrganisationName().equalsIgnoreCase(organisation.getOrganisationName())) {
+            return false;
+        }
+
+        // Make this an efficient / CPU-quick test for admin-ness.
+        final Optional<Group> firstAdminGroup = adminCandidate.getGroupMemberships()
+                .stream()
+                .filter(gr -> !(gr instanceof GuildMembership))
+                .filter(gr -> gr.getGroup().getOrganisation().getId() == organisation.getId())
+                .map(GroupMembership::getGroup)
+                .filter(gr -> {
+
+                    for (final String current : STD_ADMINISTRATOR_GROUPNAMES) {
+                        if (current.equalsIgnoreCase(gr.getGroupName())) {
+
+                            // Found a match
+                            return true;
+                        }
+                    }
+
+                    // Nah.
+                    return false;
+
+                }).findFirst();
+
+        // All Done.
+        return firstAdminGroup.isPresent();
     }
 }

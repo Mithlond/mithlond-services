@@ -34,6 +34,7 @@ import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
 import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
+import se.mithlond.services.organisation.model.transport.convenience.food.SlimFoodPreferencesVO;
 import se.mithlond.services.organisation.model.transport.convenience.membership.MembershipListVO;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
@@ -160,6 +161,25 @@ public class ActiveUserResource extends AbstractResource {
 
         // All Done.
         return toReturn;
+    }
+
+    /**
+     * Updates the Food preferences of the active user.
+     *
+     * @param submittedBodyData The SlimFoodPreferencesVO containing the updated FoodPreferences.
+     * @return The SlimFoodPreferencesVO containing the resulting FoodPreferences.
+     */
+    @Path("/foodPreferences/update")
+    @POST
+    public SlimFoodPreferencesVO updateFoodPreferences(final SlimFoodPreferencesVO submittedBodyData) {
+
+        // Check sanity
+        if (log.isDebugEnabled()) {
+            log.debug("Got submitted SlimFoodPreferencesVO: " + submittedBodyData);
+        }
+
+        // All Done.
+        return foodAndAllergyService.updateFoodPreferences(submittedBodyData);
     }
 
     /**

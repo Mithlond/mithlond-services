@@ -53,4 +53,8 @@
             <severity>Obehag eller Preferens</severity>
         </allergy>
     </allergyList>
+    <foodPreferences>
+        <preference preference="Kött" description="Äter inte något kött" userID="43"/>
+        <preference preference="Mjölk" description="Äter inte mjölkprodukter" userID="43"/>
+    </foodPreferences>
 </organisation_transport:allergies>

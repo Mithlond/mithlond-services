@@ -70,6 +70,8 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
     /**
      * The sorted set of FoodPreferenceVOs transported.
      */
+    @XmlElementWrapper
+    @XmlElement(name = "preference")
     private SortedSet<FoodPreferenceVO> foodPreferences;
 
     /**

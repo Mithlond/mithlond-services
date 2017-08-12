@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
+import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
@@ -33,9 +34,13 @@ import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.food.FoodPreference;
+import se.mithlond.services.organisation.model.membership.GroupMembership;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
+import se.mithlond.services.organisation.model.transport.convenience.food.SlimFoodPreferencesVO;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -56,6 +61,9 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(FoodAndAllergyServiceBean.class);
+
+    @EJB
+    private OrganisationService organisationServiceBean;
 
     /**
      * {@inheritDoc}
@@ -220,6 +228,25 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 FoodPreference.NAMEDQ_GET_ALL,
                 Category.class);
         toReturn.addAll(query.getResultList());
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SlimFoodPreferencesVO updateFoodPreferences(final Membership activeMembership,
+                                                       final SlimFoodPreferencesVO receivedData) {
+
+        // Create the return wrapper
+        final SlimFoodPreferencesVO toReturn = new SlimFoodPreferencesVO();
+
+        // Only Administrators can update food preferences for people other than themselves.
+        activeMembership.getGroupMemberships().stream()
+                .filter(gr -> !(gr instanceof GuildMembership))
+                .filter(gr -> gr.getGroup().getGroupName().equalsIgnoreCase(""))
 
         // All Done.
         return toReturn;

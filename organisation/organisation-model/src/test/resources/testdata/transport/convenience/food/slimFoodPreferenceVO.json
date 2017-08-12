@@ -1,0 +1,14 @@
+{
+  "xsi.type": "organisation.slimFoodPreferencesVO",
+  "foodPreferences": [
+    {
+      "preference": "Barn",
+      "description": "Äter inte Barn",
+      "userID": 42
+    },
+    {
+      "preference": "Vegetariska Räkor",
+      "userID": 42
+    }
+  ]
+}

@@ -44,5 +44,16 @@
       "severity": "Obehag eller Preferens"
     }
   ],
-  "foodPreferences": []
+  "foodPreferences": [
+    {
+      "preference": "Kött",
+      "description": "Äter inte något kött",
+      "userID": 43
+    },
+    {
+      "preference": "Mjölk",
+      "description": "Äter inte mjölkprodukter",
+      "userID": 43
+    }
+  ]
 }

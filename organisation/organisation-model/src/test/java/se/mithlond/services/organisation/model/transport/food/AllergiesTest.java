@@ -33,6 +33,7 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.food.AllergySeverity;
+import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.localization.LocaleDefinition;
 import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.organisation.model.membership.Membership;
@@ -47,6 +48,9 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Stream;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -61,6 +65,7 @@ public class AllergiesTest extends AbstractEntityTest {
     private List<MembershipVO> membershipVOs;
     private List<AllergyVO> allergyVoList;
     private List<Allergy> allergyList;
+    private SortedSet<FoodPreferenceVO> foodPrefsVOs;
     private Allergies shallowTransportWrapper;
     private Allergies detailedTransportWrapper;
     private AllergySeverity minorSeverity, majorSeverity;
@@ -192,7 +197,15 @@ public class AllergiesTest extends AbstractEntityTest {
 
         allergyList.forEach(al -> allergyVoList.add(new AllergyVO(al, TimeFormat.SWEDISH_LOCALE)));
 
-        shallowTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE, userVOs, allergyVoList, null);
+        // Add some FoodPreferences
+        foodPrefsVOs = new TreeSet<>();
+
+        Stream.of(foodsAndCategories.meatsCategory, foodsAndCategories.milkCategory)
+                .map(c -> new FoodPreference(c, erion))
+                .map(FoodPreferenceVO::new)
+                .forEach(c -> foodPrefsVOs.add(c));
+
+        shallowTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE, userVOs, allergyVoList, foodPrefsVOs);
         detailedTransportWrapper = new Allergies(TimeFormat.SWEDISH_LOCALE,
                 allergyList.toArray(new Allergy[allergyList.size()]));
     }
@@ -233,7 +246,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToJSon(detailedTransportWrapper);
-        // System.out.println("Got: " + result);
+        System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);

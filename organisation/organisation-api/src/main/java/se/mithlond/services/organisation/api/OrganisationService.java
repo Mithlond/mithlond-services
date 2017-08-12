@@ -26,6 +26,7 @@ import se.mithlond.services.organisation.api.parameters.GroupIdSearchParameters;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
+import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.Organisations;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.transport.membership.Groups;
@@ -119,8 +120,18 @@ public interface OrganisationService extends JpaCudService {
      * @return The created CategorizedAddress instance.
      */
     CategorizedAddress createCategorizedActivityAddress(final String shortDesc,
-            final String fullDesc,
-            final Address address,
-            final Long categoryID,
-            final Long organisationID);
+                                                        final String fullDesc,
+                                                        final Address address,
+                                                        final Long categoryID,
+                                                        final Long organisationID);
+
+    /**
+     * Finds out if the given Membership is an Administrator (i.e. can write or update information for other
+     * Memberships) within the supplied Organisation.
+     *
+     * @param adminCandidate The Membership to check for Administrator-ship within the given Organisation.
+     * @param organisation   The organisation within which the Membership should be checked for Admin-ship.
+     * @return {@code true} if the supplied Membership is an Administrator within the supplied Organisation.
+     */
+    boolean isAdministratorFor(final Membership adminCandidate, final Organisation organisation);
 }

@@ -53,4 +53,5 @@
             <severity>Obehag eller Preferens</severity>
         </allergy>
     </allergyList>
+    <foodPreferences/>
 </organisation_transport:allergies>
