@@ -216,7 +216,9 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         final SortedSet<Category> toReturn = new TreeSet<>();
 
         // Find all Foods.
-        final TypedQuery<Category> query = entityManager.createQuery(FoodPreference.NAMEDQ_GET_ALL, Category.class);
+        final TypedQuery<Category> query = entityManager.createNamedQuery(
+                FoodPreference.NAMEDQ_GET_ALL,
+                Category.class);
         toReturn.addAll(query.getResultList());
 
         // All Done.
