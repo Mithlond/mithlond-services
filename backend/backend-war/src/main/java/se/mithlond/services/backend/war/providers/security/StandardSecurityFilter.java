@@ -176,8 +176,8 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
                             .findFirst()
                             .orElse(null);
 
-                    if (log.isInfoEnabled()) {
-                        log.info("Found active " + activeMembership.toString());
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found active " + activeMembership.toString());
                     }
 
                 } catch (Exception e) {

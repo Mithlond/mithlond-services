@@ -37,6 +37,7 @@ import se.mithlond.services.organisation.model.membership.guild.GuildMembership;
 import se.mithlond.services.organisation.model.transport.convenience.food.SlimFoodPreferencesVO;
 import se.mithlond.services.organisation.model.transport.convenience.membership.MembershipListVO;
 import se.mithlond.services.organisation.model.transport.food.Allergies;
+import se.mithlond.services.organisation.model.transport.food.FoodPreferenceVO;
 import se.mithlond.services.organisation.model.transport.membership.Memberships;
 
 import javax.ejb.EJB;
@@ -114,7 +115,7 @@ public class ActiveUserResource extends AbstractResource {
 
     /**
      * Retrieves an {@link Allergies} wrapper containing the full-detail allery information of
-     * the currently logged in user.
+     * the currently logged in user, including known Food Preferences.
      *
      * @return An {@link Allergies} wrapper containing the Membership, User, Organisation
      * and Groups of the active Membership.
@@ -122,13 +123,17 @@ public class ActiveUserResource extends AbstractResource {
      */
     @Path("/allergies")
     @GET
-    public Allergies getActiveMembershipAllergies() {
+    public Allergies getActiveMembershipAllergiesAndFoodPrefs() {
 
         // Find the preferred locale and create the Allergies.
         final Allergies toReturn = new Allergies(getPreferredLocaleForActiveUser());
 
-        // Populate with known, AllergyVOs.
+        // Populate with known AllergyVOs and FoodPreferences.
         foodAndAllergyService.getAllergiesFor(getActiveMembership()).forEach(toReturn::add);
+        foodAndAllergyService.getPreferencesFor(getActiveMembership()).forEach(toReturn::add);
+
+        // Log somewhat.
+        log.info("Returning: " + toReturn.toString());
 
         // All Done.
         return toReturn;
@@ -175,11 +180,18 @@ public class ActiveUserResource extends AbstractResource {
 
         // Check sanity
         if (log.isDebugEnabled()) {
-            log.debug("Got submitted SlimFoodPreferencesVO: " + submittedBodyData);
+
+            final String prefsMsg = submittedBodyData != null && submittedBodyData.getFoodPreferences() != null
+                    ? "["  + submittedBodyData.getFoodPreferences().size() + "] preferences: "
+                    + submittedBodyData.getFoodPreferences().stream().map(FoodPreferenceVO::getPreference)
+                    .reduce((l, r) -> l + ", " + r).orElse("<none>")
+                    : "<none found; null encountered>";
+            
+            log.debug("Got submitted SlimFoodPreferencesVO: " + prefsMsg);
         }
 
         // All Done.
-        return foodAndAllergyService.updateFoodPreferences(submittedBodyData);
+        return foodAndAllergyService.updateFoodPreferences(getActiveMembership(), submittedBodyData);
     }
 
     /**

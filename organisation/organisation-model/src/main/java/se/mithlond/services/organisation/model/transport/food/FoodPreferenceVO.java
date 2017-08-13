@@ -170,6 +170,16 @@ public class FoodPreferenceVO implements Serializable, Validatable, Comparable<F
      * {@inheritDoc}
      */
     @Override
+    public String toString() {
+        return "FoodPreferenceVO [" + preference
+                + "\', description='" + description + '\''
+                + ", userID=" + userID + ']';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void validateInternalState() throws InternalStateValidationException {
 
         InternalStateValidationException.create()

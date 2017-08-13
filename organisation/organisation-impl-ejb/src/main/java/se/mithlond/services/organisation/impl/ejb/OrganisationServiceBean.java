@@ -345,8 +345,16 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
 
         // Check sanity
         if (adminCandidate == null || organisation == null) {
+
+            log.warn("Found null adminCandidate or Organisation. Not Administrator.");
+
             return false;
+
         } else if (!adminCandidate.getOrganisation().getOrganisationName().equalsIgnoreCase(organisation.getOrganisationName())) {
+
+            log.warn("Found adminCandidate's Organisation [" + adminCandidate.getOrganisation().getOrganisationName()
+                    + "] but candidate Organisation [" + organisation.getOrganisationName() + "]. Not Administrator.");
+
             return false;
         }
 
@@ -358,11 +366,16 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
                 .map(GroupMembership::getGroup)
                 .filter(gr -> {
 
-                    for (final String current : STD_ADMINISTRATOR_GROUPNAMES) {
-                        if (current.equalsIgnoreCase(gr.getGroupName())) {
+                    // Loop 'upwards' through all implied Parent Groups.
+                    for (Group currentGroup = gr; currentGroup != null; currentGroup = currentGroup.getParent()) {
 
-                            // Found a match
-                            return true;
+                        final String currentGroupName = currentGroup.getGroupName();
+                        for (final String currentAdminGroupName : STD_ADMINISTRATOR_GROUPNAMES) {
+
+                            // Is the currentGroupName listed as an Admin group name.
+                            if (currentAdminGroupName.equalsIgnoreCase(currentGroupName)) {
+                                return true;
+                            }
                         }
                     }
 

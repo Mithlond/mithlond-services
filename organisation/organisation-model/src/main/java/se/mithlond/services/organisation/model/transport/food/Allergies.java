@@ -209,7 +209,7 @@ public class Allergies extends AbstractLocalizedSimpleTransporter {
                     .filter(Objects::nonNull)
                     .map(FoodPreferenceVO::new)
                     .filter(f -> !this.foodPreferences.contains(f))
-                    .forEach(f -> this.foodPreferences.add(f));
+                    .forEach(this.foodPreferences::add);
         }
     }
 
