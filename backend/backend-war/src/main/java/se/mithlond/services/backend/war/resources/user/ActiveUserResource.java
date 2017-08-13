@@ -259,6 +259,11 @@ public class ActiveUserResource extends AbstractResource {
         return new MembershipListVO(updatedMembership.getOrganisation());
     }
 
+    @Path("/ideaOrBug/submit")
+    @POST
+    public MembershipListVO sumbitIdeaOrBug(final MembershipListVO submittedBodyData) {
+    }
+
     //
     // Private helpers
     //
