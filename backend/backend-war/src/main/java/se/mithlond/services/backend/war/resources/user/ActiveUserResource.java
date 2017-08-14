@@ -7,11 +7,11 @@
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
  * in compliance with the License.
- *
+ * 
  * You may obtain a copy of the License at
- *
+ * 
  *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
+import se.mithlond.services.content.api.UserFeedbackService;
+import se.mithlond.services.content.model.transport.feedback.CharacterizedDescription;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.MembershipService;
 import se.mithlond.services.organisation.api.OrganisationService;
@@ -78,6 +80,9 @@ public class ActiveUserResource extends AbstractResource {
 
     @EJB
     private MembershipService membershipService;
+
+    @EJB
+    private UserFeedbackService userFeedbackService;
 
     /**
      * Retrieves a {@link Memberships} wrapper containing the full-detail membership information of
@@ -259,9 +264,24 @@ public class ActiveUserResource extends AbstractResource {
         return new MembershipListVO(updatedMembership.getOrganisation());
     }
 
+    /**
+     * Accepts the supplied CharacterizedDescription and processes it according to business rules.
+     *
+     *
+     * @param submittedBodyData The non-null CharacterizedDescription received.
+     * @return A response describing how the server handled the feedback from the user.
+     */
     @Path("/ideaOrBug/submit")
     @POST
-    public MembershipListVO sumbitIdeaOrBug(final MembershipListVO submittedBodyData) {
+    public CharacterizedDescription submitIdeaOrBug(final CharacterizedDescription submittedBodyData) {
+
+        // Check sanity
+        if(log.isDebugEnabled()) {
+            log.debug("Got submitted CharacterizedDescription: " + submittedBodyData);
+        }
+
+        // All Done.
+        return userFeedbackService.submitUserFeedback(submittedBodyData);
     }
 
     //

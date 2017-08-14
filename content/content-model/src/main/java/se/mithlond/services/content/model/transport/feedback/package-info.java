@@ -26,15 +26,15 @@
  */
 @XmlSchema(
         xmlns = {
+                @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
+                @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
+                @XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning"),
                 @XmlNs(prefix = "core", namespaceURI = "http://www.jguru.se/nazgul/core"),
-                @XmlNs(prefix = "content", namespaceURI = ContentPatterns.NAMESPACE),
-                @XmlNs(prefix = "content_transport", namespaceURI = ContentPatterns.TRANSPORT_NAMESPACE),
                 @XmlNs(prefix = "shared", namespaceURI = SharedJaxbPatterns.NAMESPACE),
                 @XmlNs(prefix = "organisation", namespaceURI = OrganisationPatterns.NAMESPACE),
                 @XmlNs(prefix = "organisation_transport", namespaceURI = OrganisationPatterns.TRANSPORT_NAMESPACE),
-                @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
-                @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
-                @XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning")
+                @XmlNs(prefix = "content", namespaceURI = ContentPatterns.NAMESPACE),
+                @XmlNs(prefix = "content_transport", namespaceURI = ContentPatterns.TRANSPORT_NAMESPACE)
         }
 )
 @XmlJavaTypeAdapters({
