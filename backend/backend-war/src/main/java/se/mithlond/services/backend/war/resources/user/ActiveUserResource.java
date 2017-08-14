@@ -187,11 +187,11 @@ public class ActiveUserResource extends AbstractResource {
         if (log.isDebugEnabled()) {
 
             final String prefsMsg = submittedBodyData != null && submittedBodyData.getFoodPreferences() != null
-                    ? "["  + submittedBodyData.getFoodPreferences().size() + "] preferences: "
+                    ? "[" + submittedBodyData.getFoodPreferences().size() + "] preferences: "
                     + submittedBodyData.getFoodPreferences().stream().map(FoodPreferenceVO::getPreference)
                     .reduce((l, r) -> l + ", " + r).orElse("<none>")
                     : "<none found; null encountered>";
-            
+
             log.debug("Got submitted SlimFoodPreferencesVO: " + prefsMsg);
         }
 
@@ -267,7 +267,6 @@ public class ActiveUserResource extends AbstractResource {
     /**
      * Accepts the supplied CharacterizedDescription and processes it according to business rules.
      *
-     *
      * @param submittedBodyData The non-null CharacterizedDescription received.
      * @return A response describing how the server handled the feedback from the user.
      */
@@ -276,12 +275,12 @@ public class ActiveUserResource extends AbstractResource {
     public CharacterizedDescription submitIdeaOrBug(final CharacterizedDescription submittedBodyData) {
 
         // Check sanity
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Got submitted CharacterizedDescription: " + submittedBodyData);
         }
 
         // All Done.
-        return userFeedbackService.submitUserFeedback(submittedBodyData);
+        return userFeedbackService.submitUserFeedback(getActiveMembership(), submittedBodyData);
     }
 
     //

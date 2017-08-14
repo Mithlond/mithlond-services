@@ -25,6 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.BufferedReader;
@@ -232,5 +235,41 @@ public final class Surroundings {
 
         // All Done.
         return builder.toString();
+    }
+
+    /**
+     * Trivial helper to wrap a JNDI lookup within some helpful, sanity-checking code.
+     *
+     * @param context          A Naming Context, or {@code null} to use {@code new InitialContext()}.
+     * @param jndiLookupString The non-null and non-empty JNDI lookup string.
+     * @param <T>              The type of object retrieved.
+     * @return The object bound within the supplied Context, or {@code null} if none could be found.
+     */
+    public static <T> T lookupInJndi(final Context context,
+                                     @NotNull final String jndiLookupString) {
+
+        // Check sanity
+        final String lookup = Validate.notEmpty(jndiLookupString, "jndiLookupString");
+
+        // #1) Acquire the effective Naming Context.
+        final Context effectiveContext;
+        try {
+            effectiveContext = context == null ? new InitialContext() : context;
+        } catch (NamingException e) {
+
+            log.error("Could not retrieve effective JNDI Context. Aborting lookup.", e);
+            return null;
+        }
+
+        try {
+
+            // All Done.
+            return (T) effectiveContext.lookup(lookup);
+
+        } catch (NamingException e) {
+
+            log.error("Found no JNDI-bound object for lookup [" + lookup + "]", e);
+            return null;
+        }
     }
 }

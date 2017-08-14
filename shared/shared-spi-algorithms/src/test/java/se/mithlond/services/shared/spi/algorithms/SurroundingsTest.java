@@ -21,10 +21,12 @@
  */
 package se.mithlond.services.shared.spi.algorithms;
 
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 
+import javax.naming.Context;
 import java.io.File;
 
 /**
@@ -89,6 +91,36 @@ public class SurroundingsTest extends AbstractDeploymentTest {
 
         // Assert
         Assert.assertEquals("Production configuration text.", productionConfig.trim());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validateExceptionOnEmptyLookup() {
+
+        // Assemble
+        final Context ctx = EasyMock.createMock(Context.class);
+        EasyMock.replay(ctx);
+
+        // Act & Assert
+        Surroundings.lookupInJndi(ctx, "");
+    }
+
+    @Test
+    public void validateMockedLookupInJndi() throws Exception {
+
+        // Assemble
+        final String lookupString = "java:global/mail/Mithlond";
+        final String mockedReturnObject = "someMockedObject";
+        final Context ctx = EasyMock.createMock(Context.class);
+
+        EasyMock.expect(ctx.lookup(lookupString)).andReturn(mockedReturnObject);
+        EasyMock.replay(ctx);
+
+        // Act
+        final String result = Surroundings.lookupInJndi(ctx, lookupString);
+
+        // Assert
+        Assert.assertNotNull(mockedReturnObject);
+        Assert.assertEquals(mockedReturnObject, result);
     }
 
     //
