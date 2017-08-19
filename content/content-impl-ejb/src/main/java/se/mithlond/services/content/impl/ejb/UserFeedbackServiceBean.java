@@ -132,26 +132,46 @@ public class UserFeedbackServiceBean extends AbstractJpaService implements UserF
         theDevelopers.forEach(m -> recipients.add(m.getEmailAlias() + emailSuffix));
 
         // Send the email message.
-        sendPlaintextEmail(
-                organisationName,
-                submitter.getOrganisation().getEmailSuffix(),
-                recipients,
-                "User Feedback",
-                body);
+        boolean success = false;
+        try {
+            success = sendPlaintextEmail(
+                    organisationName,
+                    submitter.getOrganisation().getEmailSuffix(),
+                    recipients,
+                    "User Feedback",
+                    body);
+        } catch (Exception e) {
+            return new CharacterizedDescription("Unsuccessful", "Could not send notification mail.");
+        }
 
         // All Done.
-        return new CharacterizedDescription("Success",
-                "UserFeedback message successfully sent to [" + recipients + "] recipients.");
+        final String category = success ? "Success" : "Unsuccessful";
+        final String description = success
+                ? "UserFeedback message successfully sent to [" + recipients + "] recipients."
+                : "Could not send notification mail.";
+
+        return new CharacterizedDescription(category, description);
     }
 
-    public void sendPlaintextEmail(final String orgName,
-                                   final String orgEmailSuffix,
-                                   final List<String> recipients,
-                                   final String subject,
-                                   final String body) {
+    /**
+     * Sends a plaintext Mail message.
+     *
+     * @param orgName        The name of the organisation to and from which the mail should be sent.
+     * @param orgEmailSuffix The email suffix of the organisation.
+     * @param recipients     The mail recipients.
+     * @param subject        The Email subject.
+     * @param body           The body of the email.
+     * @return {@code true} if the mail was successfully sent.
+     */
+    public boolean sendPlaintextEmail(final String orgName,
+                                      final String orgEmailSuffix,
+                                      final List<String> recipients,
+                                      final String subject,
+                                      final String body) {
 
         // Get the session
         final Session mailSession = getMailSessionForOrganisation(orgName);
+        boolean success = false;
 
         if (mailSession != null) {
 
@@ -178,43 +198,62 @@ public class UserFeedbackServiceBean extends AbstractJpaService implements UserF
                     foundProblems[0] = true;
                 });
 
-
                 // #3) Add the payload / message body
                 final MimeBodyPart bodyPart = new MimeBodyPart();
                 bodyPart.setDescription("Nazgûl Mail");
-                bodyPart.setContent(body, "UTF-8");
+                bodyPart.setContent(body, "text/plain");
 
                 final Multipart multipart = new MimeMultipart();
                 multipart.addBodyPart(bodyPart);
                 message.setContent(multipart);
 
                 // Send the message
-                sendMessage(mailSession, message);
+                success = sendMessage(mailSession, message);
             } catch (Exception e) {
                 throw new IllegalArgumentException("Could not send email message", e);
             }
         }
+
+        // All Done.
+        return success;
     }
 
     //
     // Private helpers
     //
 
-    private void sendMessage(final Session mailSession,
-                             final MimeMessage msg) throws MessagingException {
+    private boolean sendMessage(final Session mailSession,
+                                final MimeMessage msg) throws MessagingException {
 
         // Save any changes to the message.
-        // Then connect via SMTP and send the Message.
-        msg.saveChanges();
-        final Transport trans = mailSession.getTransport("smtp");
+        // Then connect via SMTP and send the Message.msg.saveChanges();
+        Transport trans = null;
+        boolean success = false;
 
-        // Add a transport listener to acquire state change log messages.
-        trans.addTransportListener(getTransportListener());
+        try {
+            trans = mailSession.getTransport("smtp");
 
-        // Connect and send the message.
-        trans.connect();
-        trans.sendMessage(msg, msg.getAllRecipients());
-        trans.close();
+            // Add a transport listener to acquire state change log messages.
+            trans.addTransportListener(getTransportListener());
+
+            // Connect and send the message.
+            trans.connect();
+            trans.sendMessage(msg, msg.getAllRecipients());
+
+            // All Done.
+            success = true;
+
+        } catch (MessagingException e) {
+            log.error("Mail transport failed to send the message.", e);
+        } finally {
+
+            // Close the Mail transport.
+            if (trans != null) {
+                trans.close();
+            }
+        }
+
+        return success;
     }
 
     private synchronized Session getMailSessionForOrganisation(final String organisationName) {
@@ -278,8 +317,8 @@ public class UserFeedbackServiceBean extends AbstractJpaService implements UserF
                             .reduce((l, r) -> l + ", " + r).orElse("<none>")
                             + "), Failure: "
                             + Arrays.stream(transportEvent.getValidUnsentAddresses())
-                                    .map(Address::toString)
-                                    .reduce((l, r) -> l + ", " + r).orElse("<none>")
+                            .map(Address::toString)
+                            .reduce((l, r) -> l + ", " + r).orElse("<none>")
                             + ")");
                 }
             }

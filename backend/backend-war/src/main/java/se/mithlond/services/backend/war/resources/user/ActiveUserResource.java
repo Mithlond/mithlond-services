@@ -279,9 +279,28 @@ public class ActiveUserResource extends AbstractResource {
             log.debug("Got submitted CharacterizedDescription: " + submittedBodyData);
         }
 
-        // All Done.
-        return userFeedbackService.submitUserFeedback(getActiveMembership(), submittedBodyData);
+        //
+        // Handle any internal errors and ensure that we always respond with
+        // a properly formed CharacterizedDescription.
+        //
+        final CharacterizedDescription toReturn;
+        
+        try {
+            toReturn = userFeedbackService.submitUserFeedback(
+                    getActiveMembership(),
+                    submittedBodyData);
+        } catch (Exception e) {
+            log.error("Could not deliver feedback", e);
+            return new CharacterizedDescription("Unsuccessful", "Failed handling user notification.");
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Returning: " + toReturn);
+        }
+        return toReturn;
     }
+
+
 
     //
     // Private helpers
