@@ -21,16 +21,22 @@
  */
 package se.mithlond.services.backend.war.resources.food;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
+import se.mithlond.services.content.api.report.ExcelReportService;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.model.transport.food.Foods;
+import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.ejb.EJB;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 /**
@@ -43,6 +49,9 @@ public class FoodResource extends AbstractResource {
 
     @EJB
     private FoodAndAllergyService foodAndAllergyService;
+
+    @EJB
+    private ExcelReportService excelReportService;
 
     /**
      * Retrieves a Foods container holding all known Food substances, including all Categorization.
@@ -67,5 +76,26 @@ public class FoodResource extends AbstractResource {
 
         // All Done.
         return toReturn;
+    }
+
+    /**
+     * @return The Allergies and Preferences food report.
+     */
+    @GET
+    @Path("/get")
+    @Produces(ExcelReportService.EXCEL_CONTENT_TYPE)
+    public Response getAllergyAndPreferencesReport() {
+
+        // Create the workbook to return
+        final Workbook workbook = excelReportService.createWorkbook(getActiveMembership());
+        final String fileName = "allergyReport_" + TimeFormat.COMPACT_LOCALDATETIME.print(LocalDateTime.now()) + ".xls";
+
+        // Convert the workbook to a byte[]
+        final Response.ResponseBuilder builder = Response
+                .ok(excelReportService.convertToByteArray(workbook));
+        builder.header("Content-Disposition", "attachment; filename=" + fileName);
+
+        // All Done.
+        return builder.build();
     }
 }
