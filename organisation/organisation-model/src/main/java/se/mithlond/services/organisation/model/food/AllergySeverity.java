@@ -32,6 +32,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -55,6 +57,10 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
+@NamedQueries({
+        @NamedQuery(name = AllergySeverity.NAMEDQ_GET_ALL,
+                query = "select a from AllergySeverity a order by a.severitySortOrder")
+})
 @Entity
 @Access(value = AccessType.FIELD)
 @Table(name = "allergy_severity",
@@ -65,6 +71,11 @@ import javax.xml.bind.annotation.XmlType;
         propOrder = {"severitySortOrder", "shortDescription", "fullDescription"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AllergySeverity extends NazgulEntity implements Comparable<AllergySeverity> {
+
+    /**
+     * {@link NamedQuery} which retrieves all persisted AllergySeverity objects.
+     */
+    public static final String NAMEDQ_GET_ALL = "AllergySeverity.getAll";
 
     /**
      * The sort order of the severity, with less severe allergies having lower severitySortOrder values.

@@ -19,26 +19,23 @@
   ],
   "allergyList": [
     {
-      "jpaId": 42,
-      "xmlId": "user_42_Mr_Häxxmästaren_1968_09_17",
       "foodJpaID": 215,
+      "userID": 42,
       "description": "Födoämnet kan förekomma i mat och du kan själv unvika att äta det. Exempel: Morötter på din tallrik.",
       "foodName": "Rödbeta",
       "severity": "Obehag eller Preferens",
       "note": "Minor Note"
     },
     {
-      "jpaId": 42,
-      "xmlId": "user_42_Mr_Häxxmästaren_1968_09_17",
       "foodJpaID": 36,
+      "userID": 42,
       "description": "Födoämnet får inte förekomma i din mat. Du kan behöva medicinering för att hantera effekterna av substansen.",
       "foodName": "Morot",
       "severity": "Får inte inmundigas"
     },
     {
-      "jpaId": 43,
-      "xmlId": "user_43_Das_Erion_1922_02_05",
       "foodJpaID": 24,
+      "userID": 43,
       "description": "Födoämnet kan förekomma i mat och du kan själv unvika att äta det. Exempel: Morötter på din tallrik.",
       "foodName": "Blomkål",
       "severity": "Obehag eller Preferens"

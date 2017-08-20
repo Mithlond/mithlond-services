@@ -21,18 +21,18 @@
  */
 package se.mithlond.services.organisation.model.transport.food;
 
-import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.jguru.nazgul.tools.validation.api.Validatable;
+import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.food.Allergy;
 import se.mithlond.services.organisation.model.localization.Localizable;
-import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -42,14 +42,16 @@ import java.util.Objects;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
-        propOrder = {"description", "foodName", "severity", "foodJpaID", "note"})
+        propOrder = {"description", "foodName", "severity", "foodJpaID", "note", "userID"})
 @XmlAccessorType(XmlAccessType.FIELD)
-public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolder {
+public class AllergyVO implements Serializable, Validatable, Comparable<AllergyVO> {
 
     /**
      * The (localized) Allergy description of this AllergyVO.
+     * Should be passed from the server (on fetch), but not
+     * necessarily from the client (on update).
      */
-    @XmlElement(required = true)
+    @XmlElement
     private String description;
 
     /**
@@ -66,8 +68,10 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
 
     /**
      * The Food name of this AllergyVO.
+     * Should be passed from the server (on fetch), but not
+     * necessarily from the client (on update)
      */
-    @XmlElement(required = true)
+    @XmlElement
     private String foodName;
 
     /**
@@ -75,6 +79,12 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
      */
     @XmlAttribute(required = true)
     private long foodJpaID;
+
+    /**
+     * The JPA ID of the user having this AllergyVO.
+     */
+    @XmlAttribute(required = true)
+    private long userID;
 
     /**
      * JAXB-friendly constructor.
@@ -91,7 +101,6 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
      * @param note        An optional note of this AllergyVO.
      * @param foodJpaID   The JPA ID of the food.
      * @param userJpaID   The JPA ID of the User(VO) having this Allergy.
-     * @param userXmlId   The XML ID of the User having this Allergy.
      */
     public AllergyVO(
             final String description,
@@ -99,11 +108,7 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
             final String foodName,
             final String note,
             final Long foodJpaID,
-            final Long userJpaID,
-            final String userXmlId) {
-
-        // Delegate
-        super(userJpaID, userXmlId);
+            final Long userJpaID) {
 
         // Assign internal state
         this.description = description;
@@ -111,6 +116,7 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
         this.foodName = foodName;
         this.note = note;
         this.foodJpaID = foodJpaID;
+        this.userID = userJpaID;
     }
 
     /**
@@ -122,17 +128,14 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
      */
     public AllergyVO(final Allergy allergy, final Locale locale) {
 
-        // Delegate
-        super(allergy.getUser().getId(), allergy.getUser().getXmlId());
-        Validate.notNull(locale, "locale");
-
-        // Assign internal state
-        final String classifier = Localizable.DEFAULT_CLASSIFIER;
-        this.description = allergy.getSeverity().getFullDescription().getText(locale, classifier);
-        this.severity = allergy.getSeverity().getShortDescription().getText(locale, classifier);
-        this.foodName = allergy.getFood().getLocalizedFoodName().getText(locale, classifier);
-        this.note = allergy.getNote();
-        this.foodJpaID = allergy.getFood().getId();
+        this(
+                allergy.getSeverity().getFullDescription().getText(locale, Localizable.DEFAULT_CLASSIFIER),
+                allergy.getSeverity().getShortDescription().getText(locale, Localizable.DEFAULT_CLASSIFIER),
+                allergy.getFood().getLocalizedFoodName().getText(locale, Localizable.DEFAULT_CLASSIFIER),
+                allergy.getNote(),
+                allergy.getFood().getId(),
+                allergy.getUser().getId()
+        );
     }
 
     /**
@@ -164,10 +167,25 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
     }
 
     /**
+     * @return The JPA ID of the User having this AllergyVO.
+     */
+    public long getUserID() {
+        return userID;
+    }
+
+    /**
      * @return An optional/nullable note of this AllergyVO - written by the user, typically.
      */
     public String getNote() {
         return note;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDescription(), getSeverity(), getNote(), getFoodName(), getFoodJpaID(), userID);
     }
 
     /**
@@ -184,60 +202,60 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
         if (!super.equals(o)) {
             return false;
         }
+
         final AllergyVO allergyVO = (AllergyVO) o;
-        return Objects.equals(getDescription(), allergyVO.getDescription())
-                && Objects.equals(getSeverity(), allergyVO.getSeverity())
+        return Objects.equals(getSeverity(), allergyVO.getSeverity())
                 && Objects.equals(getFoodName(), allergyVO.getFoodName())
                 && Objects.equals(getFoodJpaID(), allergyVO.getFoodJpaID())
                 && Objects.equals(getNote(), allergyVO.getNote())
-                && Objects.equals(getJpaID(), allergyVO.getJpaID());
+                && Objects.equals(getUserID(), allergyVO.getUserID());
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getDescription(), getNote(), getSeverity(), getFoodName(), getJpaID());
-    }
+    public int compareTo(final AllergyVO that) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(final AbstractSimpleTransportable cmp) {
-
-        if (cmp instanceof AllergyVO) {
-
-            final AllergyVO that = (AllergyVO) cmp;
-
-            // Check sanity
-            if (that == this) {
-                return 0;
-            }
-
-            // Delegate to internal state
-            final String thisDesc = this.getDescription() == null ? "" : this.getDescription();
-            final String thatDesc = that.getDescription() == null ? "" : that.getDescription();
-            int toReturn = thisDesc.compareTo(thatDesc);
-
-            if (toReturn == 0) {
-
-                final String thisSeverity = this.getSeverity() == null ? "" : this.getSeverity();
-                final String thatSeverity = that.getSeverity() == null ? "" : that.getSeverity();
-                toReturn = thisSeverity.compareTo(thatSeverity);
-            }
-
-            if (toReturn == 0) {
-                toReturn = this.getFoodName().compareTo(that.getFoodName());
-            }
-
-            // All Done.
-            return toReturn;
+        // Check sanity
+        if (that == this) {
+            return 0;
+        } else if (that == null) {
+            return -1;
         }
 
-        // Delegate
-        return -1;
+        // Delegate to internal state
+        int toReturn = (int) (this.getFoodJpaID() - that.getFoodJpaID());
+
+        if (toReturn == 0) {
+            toReturn = (int) (getUserID() - that.getUserID());
+        }
+
+        if (toReturn == 0) {
+
+            final String thisSeverity = this.getSeverity() == null ? "" : this.getSeverity();
+            final String thatSeverity = that.getSeverity() == null ? "" : that.getSeverity();
+            toReturn = thisSeverity.compareTo(thatSeverity);
+        }
+
+        if (toReturn == 0) {
+            final String thisNote = this.getNote() == null ? "" : this.getNote();
+            final String thatNote = that.getNote() == null ? "" : that.getNote();
+            toReturn = thisNote.compareTo(thatNote);
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void validateInternalState() throws InternalStateValidationException {
+
+        InternalStateValidationException.create()
+                .notNullOrEmpty(severity, "severity")
+                .endExpressionAndValidate();
     }
 
     /**
@@ -251,7 +269,7 @@ public class AllergyVO extends AbstractSimpleTransportable implements XmlIdHolde
                 + ", note='" + note + '\''
                 + ", foodName='" + foodName + '\''
                 + ", foodJpaID='" + foodJpaID + '\''
-                + ", userJpaID=" + getJpaID()
+                + ", userID=" + userID
                 + '}';
     }
 }

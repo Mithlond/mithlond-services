@@ -246,7 +246,7 @@ public class AllergiesTest extends AbstractEntityTest {
 
         // Act
         final String result = marshalToJSon(detailedTransportWrapper);
-        System.out.println("Got: " + result);
+        // System.out.println("Got: " + result);
 
         // Assert
         JSONAssert.assertEquals(expected, result, true);

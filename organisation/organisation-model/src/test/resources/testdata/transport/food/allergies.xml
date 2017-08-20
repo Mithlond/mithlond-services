@@ -20,7 +20,6 @@
   limitations under the License.
   #L%
   -->
-
 <organisation_transport:allergies xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:organisation_transport="http://xmlns.mithlond.se/xml/ns/organisation/transport" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation">
     <locale>sv-SE</locale>
     <users>
@@ -36,18 +35,18 @@
         </user>
     </users>
     <allergyList>
-        <allergy jpaId="42" xmlId="user_42_Mr_Häxxmästaren_1968_09_17" foodJpaID="215">
+        <allergy foodJpaID="215" userID="42">
             <description>Födoämnet kan förekomma i mat och du kan själv unvika att äta det. Exempel: Morötter på din tallrik.</description>
             <foodName>Rödbeta</foodName>
             <severity>Obehag eller Preferens</severity>
             <note>Minor Note</note>
         </allergy>
-        <allergy jpaId="42" xmlId="user_42_Mr_Häxxmästaren_1968_09_17" foodJpaID="36">
+        <allergy foodJpaID="36" userID="42">
             <description>Födoämnet får inte förekomma i din mat. Du kan behöva medicinering för att hantera effekterna av substansen.</description>
             <foodName>Morot</foodName>
             <severity>Får inte inmundigas</severity>
         </allergy>
-        <allergy jpaId="43" xmlId="user_43_Das_Erion_1922_02_05" foodJpaID="24">
+        <allergy foodJpaID="24" userID="43">
             <description>Födoämnet kan förekomma i mat och du kan själv unvika att äta det. Exempel: Morötter på din tallrik.</description>
             <foodName>Blomkål</foodName>
             <severity>Obehag eller Preferens</severity>

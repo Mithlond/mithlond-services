@@ -200,8 +200,28 @@ public class ActiveUserResource extends AbstractResource {
     }
 
     /**
+     * Updates the allergies for the activeUser.
+     *
+     * @param submittedBodyData The Allergies containing the expected/desired target state.
+     * @return The Allergies containing the resulting (server-side) state.
+     */
+    @Path("/allergies/update")
+    @POST
+    public Allergies updateAllergies(final Allergies submittedBodyData) {
+
+        // Check sanity
+        if (log.isDebugEnabled()) {
+            log.debug("Got submitted Allergies: " + submittedBodyData.toString());
+        }
+
+        // All Done.
+        return foodAndAllergyService.updateAllergies(getActiveMembership(), submittedBodyData);
+    }
+
+    /**
      * Updates the GuildMemberships of the active user.
      *
+     * @param submittedBodyData The List of MembershipVOs considered the expected/desired target state.
      * @return The MembershipListVO containing the updated Membership.
      */
     @Path("/guildMemberships/update")

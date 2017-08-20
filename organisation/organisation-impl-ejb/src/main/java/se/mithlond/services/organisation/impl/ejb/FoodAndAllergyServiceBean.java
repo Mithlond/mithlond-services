@@ -34,10 +34,13 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.AllergySeverity;
 import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.convenience.food.SlimFoodPreferencesVO;
+import se.mithlond.services.organisation.model.transport.food.Allergies;
+import se.mithlond.services.organisation.model.transport.food.AllergyVO;
 import se.mithlond.services.organisation.model.transport.food.FoodPreferenceVO;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
@@ -47,6 +50,7 @@ import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -249,6 +253,9 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
     public SlimFoodPreferencesVO updateFoodPreferences(final Membership activeMembership,
                                                        final SlimFoodPreferencesVO receivedData) {
 
+        // Check sanity
+        Validate.notNull(activeMembership, "activeMembership");
+
         // Create the return wrapper
         final SlimFoodPreferencesVO toReturn = new SlimFoodPreferencesVO();
 
@@ -393,9 +400,139 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         return toReturn;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("all")
+    public Allergies updateAllergies(final Membership activeMembership, final Allergies receivedData) {
+
+        // Check sanity
+        Validate.notNull(activeMembership, "activeMembership");
+
+        // Create the return wrapper
+        final Organisation activeOrganisation = activeMembership.getOrganisation();
+        final Allergies toReturn = new Allergies(activeOrganisation.getLocale());
+
+        // Fail fast
+        if (receivedData == null || receivedData.getFoodPreferences() == null) {
+            return toReturn;
+        }
+
+        // Business rules:
+        //
+        // 1. Non-administrators can update their own Allergies only.
+        // 2. Administrators can update Allergies for people within their own Organisation.
+        //
+        final boolean isAdmin = organisationServiceBean.isAdministratorFor(activeMembership, activeOrganisation);
+        final long ownUserID = activeMembership.getUser().getId();
+        final Locale organisationLocale = activeOrganisation.getLocale();
+
+        final List<AllergySeverity> severities = entityManager.createNamedQuery(
+                AllergySeverity.NAMEDQ_GET_ALL, AllergySeverity.class)
+                .getResultList();
+
+        if (!isAdmin) {
+
+            // Only affect own Allergies
+            final Set<AllergyVO> targetState = receivedData
+                    .getAllergyList()
+                    .stream()
+                    .filter(aVO -> aVO.getUserID() == ownUserID)
+                    .collect(Collectors.toSet());
+
+            if (targetState != null) {
+
+                // Find Allergies to add.
+                this.persistAllergiesFor(activeMembership.getUser(), targetState, severities, organisationLocale);
+
+            } else {
+                
+                log.warn("Found null targetState, after filtering. Ignoring inbound Allergies "
+                        + "for non-admin Membership (" + activeMembership.getAlias() + " in "
+                        + activeOrganisation.getOrganisationName() + ")");
+            }
+
+        } else {
+
+            // TODO: Implement this.
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
     //
     // Private helpers
     //
+
+    private void persistAllergiesFor(final User user,
+                                     final Set<AllergyVO> targetState,
+                                     final List<AllergySeverity> severities,
+                                     final Locale locale) {
+
+        final String userLogMsg = "[" + user.getId() + " (" + user.getFirstName()
+                + " " + user.getLastName() + ")]";
+
+        final List<Allergy> existingAllergies = entityManager.createNamedQuery(
+                Allergy.NAMEDQ_GET_BY_USERID, Allergy.class)
+                .setParameter(OrganisationPatterns.PARAM_USER_ID, user.getId())
+                .getResultList();
+
+        final Map<String, AllergySeverity> localizedSeverityMap = severities.stream()
+                .collect(Collectors.toMap(as -> as.getShortDescription().getText(locale, "Default"), as -> as));
+        final Map<String, Allergy> existingAllergyMap = existingAllergies.stream()
+                .collect(Collectors.toMap(a -> "" + a.getUser().getId() + "_" + a.getFood().getId(), a -> a));
+        final Map<String, AllergyVO> targetVoMap = targetState.stream()
+                .collect(Collectors.toMap(a -> "" + a.getUserID() + "_" + a.getFoodJpaID(), a -> a));
+
+        // Collect all existing Allergies which should be removed from the database,
+        // and the received AllergyVOs which should be converted to Allergy objects and persisted.
+        final Set<Allergy> toRemove = new TreeSet<>();
+        final Set<Allergy> toAdd = new TreeSet<>();
+        final Set<Allergy> toUpdate = new TreeSet<>();
+
+        final Map<Long, Food> id2FoodMap = getAllFoods()
+                .stream()
+                .collect(Collectors.toMap(NazgulEntity::getId, f -> f));
+
+        targetVoMap.entrySet().stream()
+                .filter(e -> !existingAllergyMap.containsKey(e.getKey()))
+                .map(e -> {
+
+                    final AllergyVO currentVO = e.getValue();
+
+                    // All Done.
+                    return new Allergy(id2FoodMap.get(currentVO.getFoodJpaID()),
+                            user,
+                            localizedSeverityMap.get(currentVO.getSeverity()),
+                            currentVO.getNote());
+
+                }).forEach(toAdd::add);
+
+        existingAllergyMap.entrySet().stream()
+                .filter(a -> !targetVoMap.containsKey(a.getKey()))
+                .map(Map.Entry::getValue)
+                .forEach(toRemove::add);
+
+        existingAllergyMap.entrySet().stream()
+                .filter(a -> targetVoMap.containsKey(a.getKey()))
+                .map(Map.Entry::getValue)
+                .forEach(toUpdate::add);
+
+        // Update the database state
+        toAdd.forEach(a -> entityManager.persist(a));
+        toRemove.forEach(a -> entityManager.remove(a));
+        toUpdate.forEach(a -> {
+
+            final String key = "" + a.getUser().getId() + "_" + a.getFood().getId();
+            final AllergyVO desiredState = targetVoMap.get(key);
+
+            // Update all applicable properties
+            a.setSeverity(localizedSeverityMap.get(desiredState.getSeverity()));
+            a.setNote(desiredState.getNote());
+        });
+    }
 
     private void persistFoodPreferencesFor(final User user,
                                            final Set<FoodPreferenceVO> targetState,
@@ -430,7 +567,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 .forEach(toRemove::add);
 
         if (log.isDebugEnabled()) {
-            
+
             log.debug("About to update FoodPreferences in Database for " + userLogMsg
 
                     + ".\nTo Remove: " + toRemove.stream()
@@ -441,7 +578,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
 
                     + "\nTo Add: " + toAdd
                     + "\nTargetState: " + targetState
-                    
+
                     + "\nExisting: " + existingFoodPrefs.stream()
                     .map(fp -> fp.getCategory().getCategoryID())
                     .sorted()

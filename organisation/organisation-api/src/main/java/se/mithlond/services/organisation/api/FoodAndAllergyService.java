@@ -28,6 +28,7 @@ import se.mithlond.services.organisation.model.food.Food;
 import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.convenience.food.SlimFoodPreferencesVO;
+import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.shared.spi.jpa.JpaCudService;
 
 import javax.ejb.Local;
@@ -113,4 +114,16 @@ public interface FoodAndAllergyService extends JpaCudService {
      */
     SlimFoodPreferencesVO updateFoodPreferences(final Membership activeMembership,
                                                 final SlimFoodPreferencesVO receivedData);
+
+    /**
+     * Updates the Allergies with the supplied data.
+     *
+     * @param activeMembership The Membership performing this call. If the Membership is considered an Administrator,
+     *                         the Allergies are updated even for other Memberships. Otherwise, only the
+     *                         activeMemberships own Allergies are updated.
+     * @param receivedData     The expected/desired state of Allergies.
+     * @return The resulting Allergies.
+     */
+    Allergies updateAllergies(final Membership activeMembership,
+                              final Allergies receivedData);
 }
