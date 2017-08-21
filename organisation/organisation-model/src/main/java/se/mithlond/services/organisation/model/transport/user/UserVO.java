@@ -25,7 +25,6 @@ import se.jguru.nazgul.tools.validation.api.Validatable;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.user.User;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.xml.bind.annotation.XmlAccessType;

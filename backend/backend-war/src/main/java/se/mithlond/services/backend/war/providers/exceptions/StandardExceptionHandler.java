@@ -34,6 +34,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,8 +93,8 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
             final String origin = req.getHeader(DynamicOriginCORSFilter.ORIGIN_KEY);
             responseBuilder.header(DynamicOriginCORSFilter.ACCESS_CONTROL_ORIGIN_HTTP_HEADER, origin);
 
-            log.debug("Added CORS header [" + DynamicOriginCORSFilter.ACCESS_CONTROL_ORIGIN_HTTP_HEADER + "] with the" +
-                    " value [" + origin + "] to the response.");
+            log.debug("Added CORS header [" + DynamicOriginCORSFilter.ACCESS_CONTROL_ORIGIN_HTTP_HEADER
+                    + "] with the value [" + origin + "] to the response.");
             
         } else {
 
@@ -100,9 +102,14 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
                     .ACCESS_CONTROL_ORIGIN_HTTP_HEADER + "] header.");
         }
 
+        final StringWriter errorWriter = new StringWriter();
+        exception.printStackTrace(new PrintWriter(errorWriter));
+        errorWriter.flush();
+        
         // All Done.
         return responseBuilder
                 .type(MediaType.TEXT_PLAIN)
+                .entity(errorWriter.toString())
                 .build();
     }
 

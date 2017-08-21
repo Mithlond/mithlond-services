@@ -415,7 +415,9 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         final Allergies toReturn = new Allergies(activeOrganisation.getLocale());
 
         // Fail fast
-        if (receivedData == null || receivedData.getFoodPreferences() == null) {
+        if (receivedData == null || receivedData.getAllergyList() == null) {
+
+            log.warn("Received no/null allergy list. Aborting.");
             return toReturn;
         }
 
@@ -432,6 +434,13 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 AllergySeverity.NAMEDQ_GET_ALL, AllergySeverity.class)
                 .getResultList();
 
+        if (log.isDebugEnabled()) {
+            log.debug("Found all AllergySeverities: " + severities.stream()
+                    .map(s -> s.getShortDescription().getText())
+                    .reduce((l, r) -> l + ", " + r)
+                    .orElse("none (Null)"));
+        }
+
         if (!isAdmin) {
 
             // Only affect own Allergies
@@ -447,7 +456,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 this.persistAllergiesFor(activeMembership.getUser(), targetState, severities, organisationLocale);
 
             } else {
-                
+
                 log.warn("Found null targetState, after filtering. Ignoring inbound Allergies "
                         + "for non-admin Membership (" + activeMembership.getAlias() + " in "
                         + activeOrganisation.getOrganisationName() + ")");
@@ -455,7 +464,99 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
 
         } else {
 
-            // TODO: Implement this.
+            // Affect Food preferences for users within own Organisation
+            final SortedMap<User, Set<AllergyVO>> user2AllergyMap = new TreeMap<>(ID_COMPARATOR);
+            final SortedMap<User, Membership> user2MembershipCache = new TreeMap<>(ID_COMPARATOR);
+
+            for (AllergyVO current : receivedData.getAllergyList()) {
+
+                if(log.isDebugEnabled()) {
+                    log.debug("Matching " + current.toString());
+                }
+
+                final User currentUser = user2AllergyMap.keySet().stream()
+                        .filter(aUser -> aUser.getId() == current.getUserID())
+                        .findFirst()
+                        .orElseGet(() -> entityManager.find(User.class, current.getUserID()));
+
+                if (currentUser == null) {
+                    log.warn("Could not find User for JPA ID [" + current.getUserID() + "]");
+                } else if (log.isDebugEnabled()) {
+                    log.debug("User [" + currentUser.getId() + " (" + currentUser.getFirstName() + " "
+                            + currentUser.getLastName() + ") is an admin for [" + activeOrganisation
+                            .getOrganisationName() + "]");
+                }
+
+                if (currentUser != null) {
+
+                    // Find the single Membership of the currentUser within the active organisation.
+                    try {
+
+                        final Membership validMembership = user2MembershipCache.getOrDefault(currentUser,
+                                entityManager.createNamedQuery(
+                                        Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED_AND_USERID,
+                                        Membership.class)
+                                        .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, activeOrganisation.getId())
+                                        .setParameter(OrganisationPatterns.PARAM_USER_ID, current.getUserID())
+                                        .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
+                                        .getSingleResult());
+
+                        if (log.isInfoEnabled()) {
+                            log.info("Found Membership with alias [" + validMembership.getAlias() + "] for "
+                                    + "[" + currentUser.getId() + " (" + currentUser.getFirstName() + " "
+                                    + currentUser.getLastName() + ")]");
+                        }
+
+                        if (validMembership != null) {
+
+                            // Inscribe into the tmp cache.
+                            if (!user2MembershipCache.containsKey(currentUser)) {
+                                user2MembershipCache.put(currentUser, validMembership);
+                            }
+
+                            // Add the current food preference to the target state
+                            Set<AllergyVO> targetState = user2AllergyMap.get(currentUser);
+                            if (targetState == null) {
+
+                                targetState = new TreeSet<>();
+                                user2AllergyMap.put(currentUser, targetState);
+                            }
+                            targetState.add(current);
+
+                        } else {
+
+                            log.warn("Found no Membership within organisation ["
+                                    + activeOrganisation.getOrganisationName() + "] for user [" + currentUser.getId()
+                                    + " (" + currentUser.getFirstName() + " " + currentUser.getLastName()
+                                    + ")]. Ignoring Allergy [" + current.getFoodName() + " :: " + current.getSeverity()
+                                    + "] for that User.");
+                        }
+
+                    } catch (Exception e) {
+
+                        // Could not find the Membership for user with the currentID.
+                        log.warn("Found no Membership within organisation ["
+                                + activeOrganisation.getOrganisationName() + "] for user [" + currentUser.getId()
+                                + " (" + currentUser.getFirstName() + " " + currentUser.getLastName()
+                                + ")]. Not updating Allergies for that User.", e);
+                    }
+                } else {
+
+                    if (log.isWarnEnabled()) {
+                        log.warn("Found no user for userID [" + current.getUserID() + "]. Ignoring allergies for ["
+                                + current.getFoodName() + " :: " + current.getSeverity() + "]");
+                    }
+                }
+            }
+
+            // Update the state for each user within the database.
+            user2AllergyMap.forEach(
+                    (user, target) -> this.persistAllergiesFor(user, target, severities, organisationLocale));
+
+            // Populate the return value
+            user2AllergyMap.forEach((user, targetState) -> {
+                toReturn.getAllergyList().addAll(targetState);
+            });
         }
 
         // All Done.
@@ -519,6 +620,30 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 .filter(a -> targetVoMap.containsKey(a.getKey()))
                 .map(Map.Entry::getValue)
                 .forEach(toUpdate::add);
+
+        if (log.isDebugEnabled()) {
+
+            log.debug(userLogMsg + " about to REMOVE [" + toRemove.size() + "] Allergies: " + toRemove
+                    .stream()
+                    .map(a -> "[" + a.getFood().getLocalizedFoodName().getText() + " :: "
+                            + a.getSeverity().getShortDescription().getText() + "]")
+                    .sorted()
+                    .reduce((l, r) -> l + "\n " + r).orElse("<none>"));
+
+            log.debug(userLogMsg + " about to ADD [" + toAdd.size() + "] Allergies: " + toAdd
+                    .stream()
+                    .map(a -> "[" + a.getFood().getLocalizedFoodName().getText() + " :: "
+                            + a.getSeverity().getShortDescription().getText() + "]")
+                    .sorted()
+                    .reduce((l, r) -> l + "\n " + r).orElse("<none>"));
+
+            log.debug(userLogMsg + " about to UPDATE [" + toUpdate.size() + "] Allergies: " + toUpdate
+                    .stream()
+                    .map(a -> "[" + a.getFood().getLocalizedFoodName().getText() + " :: "
+                            + a.getSeverity().getShortDescription().getText() + "]")
+                    .sorted()
+                    .reduce((l, r) -> l + "\n " + r).orElse("<none>"));
+        }
 
         // Update the database state
         toAdd.forEach(a -> entityManager.persist(a));

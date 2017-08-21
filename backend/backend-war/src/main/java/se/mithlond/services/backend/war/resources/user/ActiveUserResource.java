@@ -138,7 +138,9 @@ public class ActiveUserResource extends AbstractResource {
         foodAndAllergyService.getPreferencesFor(getActiveMembership()).forEach(toReturn::add);
 
         // Log somewhat.
-        log.info("Returning: " + toReturn.toString());
+        if (log.isDebugEnabled()) {
+            log.info("getActiveMembershipAllergiesAndFoodPrefs returning: " + toReturn.toString());
+        }
 
         // All Done.
         return toReturn;
@@ -205,17 +207,24 @@ public class ActiveUserResource extends AbstractResource {
      * @param submittedBodyData The Allergies containing the expected/desired target state.
      * @return The Allergies containing the resulting (server-side) state.
      */
-    @Path("/allergies/update")
+    @Path("/update/allergies")
     @POST
     public Allergies updateAllergies(final Allergies submittedBodyData) {
 
         // Check sanity
-        if (log.isDebugEnabled()) {
-            log.debug("Got submitted Allergies: " + submittedBodyData.toString());
+        if (log.isInfoEnabled()) {
+            log.info("Got submitted Allergies: " + submittedBodyData.toString());
         }
 
         // All Done.
-        return foodAndAllergyService.updateAllergies(getActiveMembership(), submittedBodyData);
+        final Allergies toReturn = foodAndAllergyService.updateAllergies(getActiveMembership(), submittedBodyData);
+
+        if (log.isInfoEnabled()) {
+            log.info("Done. Returning: " + toReturn);
+        }
+
+        // All Done.
+        return toReturn;
     }
 
     /**
@@ -304,7 +313,7 @@ public class ActiveUserResource extends AbstractResource {
         // a properly formed CharacterizedDescription.
         //
         final CharacterizedDescription toReturn;
-        
+
         try {
             toReturn = userFeedbackService.submitUserFeedback(
                     getActiveMembership(),
@@ -319,7 +328,6 @@ public class ActiveUserResource extends AbstractResource {
         }
         return toReturn;
     }
-
 
 
     //
