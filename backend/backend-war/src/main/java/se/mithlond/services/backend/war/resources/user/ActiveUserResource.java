@@ -216,9 +216,12 @@ public class ActiveUserResource extends AbstractResource {
             log.info("Got submitted Allergies: " + submittedBodyData.toString());
         }
 
-        // All Done.
-        final Allergies toReturn = foodAndAllergyService.updateAllergies(getActiveMembership(), submittedBodyData);
+        // Update the Allergies
+        foodAndAllergyService.updateAllergies(getActiveMembership(), submittedBodyData);
 
+        // Return the new database state
+        final Allergies toReturn = getActiveMembershipAllergiesAndFoodPrefs();
+        
         if (log.isInfoEnabled()) {
             log.info("Done. Returning: " + toReturn);
         }
