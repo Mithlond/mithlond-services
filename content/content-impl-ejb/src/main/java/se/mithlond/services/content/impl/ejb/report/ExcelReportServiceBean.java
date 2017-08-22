@@ -179,6 +179,19 @@ public class ExcelReportServiceBean implements ExcelReportService {
                 toReturn.setBottomBorderColor(GREY_25_PERCENT);
                 break;
 
+            case NON_WRAPPING:
+                toReturn.setAlignment(HorizontalAlignment.LEFT);
+                toReturn.setWrapText(false);
+                toReturn.setBorderRight(BORDER_THIN);
+                toReturn.setRightBorderColor(GREY_25_PERCENT);
+                toReturn.setBorderLeft(BORDER_THIN);
+                toReturn.setLeftBorderColor(GREY_25_PERCENT);
+                toReturn.setBorderTop(BORDER_THIN);
+                toReturn.setTopBorderColor(GREY_25_PERCENT);
+                toReturn.setBorderBottom(BORDER_THIN);
+                toReturn.setBottomBorderColor(GREY_25_PERCENT);
+                break;
+
             case FORMULA:
                 toReturn.setAlignment(HorizontalAlignment.CENTER);
                 toReturn.setVerticalAlignment(VerticalAlignment.CENTER);

@@ -21,11 +21,14 @@
  */
 package se.mithlond.services.content.api.report;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.membership.Membership;
 
 import javax.ejb.Local;
@@ -72,6 +75,11 @@ public interface ExcelReportService extends Serializable {
         CELL,
 
         /**
+         * Like CELL, but no text wrapping occurs.
+         */
+        NON_WRAPPING,
+
+        /**
          * Formula / money cell definition.
          */
         FORMULA,
@@ -114,6 +122,37 @@ public interface ExcelReportService extends Serializable {
                                    @NotNull final String sheetTitle,
                                    @NotNull final List<String> columnTitles);
 
+    /**
+     * Adds a Cell at the supplied index within the given Row, using the supplied text and CellStyle.
+     *
+     * @param index The index where to add the given Cell. Must be 0 or greater.
+     * @param aRow  The Row in which to add the Cell.
+     * @param text  The text which should go into the Cell.
+     * @param style The CellStyle to apply to the Cell.
+     */
+    default void addCell(final int index,
+                         @NotNull final Row aRow,
+                         @NotNull final String text,
+                         @NotNull final CellStyle style) {
+
+        // Check sanity
+        Validate.notNull(aRow, "aRow");
+        Validate.notNull(text, "text");
+        Validate.notNull(style, "style");
+        Validate.isTrue(index >= 0, "index >= 0");
+
+        // Create the cell
+        final Cell cell = aRow.createCell(index);
+        cell.setCellStyle(style);
+        cell.setCellValue(text);
+    }
+
+    /**
+     * Default streaming method, which converts the supplied Workbook to a byte[] suitable for downloading.
+     *
+     * @param toConvert The Workbook to convert
+     * @return a byte[] stream of the Workbook.
+     */
     default byte[] convertToByteArray(@NotNull final Workbook toConvert) {
 
         // Create an Excel resource from the Workbook

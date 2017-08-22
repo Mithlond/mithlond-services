@@ -21,11 +21,18 @@
  */
 package se.mithlond.services.backend.war.resources.food;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.content.api.report.ExcelReportService;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
+import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
+import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.Food;
+import se.mithlond.services.organisation.model.food.FoodPreference;
 import se.mithlond.services.organisation.model.transport.food.Foods;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -37,11 +44,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 /**
  * Service getting and emitting information about Food, Allergies etc.
- * 
+ *
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Path("/food")
@@ -89,6 +102,96 @@ public class FoodResource extends AbstractResource {
         // Create the workbook to return
         final Workbook workbook = excelReportService.createWorkbook(getActiveMembership());
         final String fileName = "allergyReport_" + TimeFormat.COMPACT_LOCALDATETIME.print(LocalDateTime.now()) + ".xls";
+
+        final List<String> allergyColumns = Arrays.asList("Alias",
+                "Allergigrad",
+                "Allerginivå",
+                "Födoämne",
+                "Grupp",
+                "Undergrupp");
+        final Sheet allergySheet = excelReportService.createStandardExcelSheet(
+                workbook,
+                "Allergier",
+                "Allergier",
+                allergyColumns);
+
+        // #1) Find the allergies and food prefs per membership alias.
+        final SortedMap<String, SortedSet<Allergy>> alias2AllergiesMap = new TreeMap<>();
+        final SortedMap<String, SortedSet<FoodPreference>> alias2PreferencesMap = new TreeMap<>();
+
+        final FoodAndAllergySearchParameters searchParameters = FoodAndAllergySearchParameters.builder()
+                .withOrganisationIDs(getActiveMembership().getOrganisation().getId())
+                .build();
+        foodAndAllergyService.getAllergiesFor(searchParameters).forEach((k, v) -> {
+            alias2AllergiesMap.put(k.getAlias(), v);
+        });
+        foodAndAllergyService.getPreferencesFor(searchParameters).forEach((k, v) -> {
+            alias2PreferencesMap.put(k.getAlias(), v);
+        });
+
+        // #2) Create an Excel Sheet holding the Allergies.
+        int currentRowIndex = 2;
+        final CellStyle standardCellStyle = excelReportService.getCellStyle(
+                ExcelReportService.ExcelElement.NON_WRAPPING,
+                workbook);
+
+        for (Map.Entry<String, SortedSet<Allergy>> current : alias2AllergiesMap.entrySet()) {
+
+            final SortedSet<Allergy> allergies = current.getValue();
+
+            if (allergies.size() > 0) {
+
+                for (Allergy currentAllergy : allergies) {
+
+                    final Row currentRow = allergySheet.createRow(currentRowIndex++);
+
+                    final Food currentFood = currentAllergy.getFood();
+                    final String categoryID = currentFood.getCategory().getCategoryID();
+                    final String subcategoryID = currentFood.getSubCategory().getCategoryID();
+                    final String foodName = currentFood.getLocalizedFoodName().getText();
+                    final String allergySeverityDesc = currentAllergy.getSeverity().getShortDescription().getText();
+                    final String allergySortOrder = "" + currentAllergy.getSeverity().getSeveritySortOrder();
+
+                    // Populate the row with Cells.
+                    excelReportService.addCell(0, currentRow, current.getKey(), standardCellStyle);
+                    excelReportService.addCell(1, currentRow, allergySeverityDesc, standardCellStyle);
+                    excelReportService.addCell(2, currentRow, allergySortOrder, standardCellStyle);
+                    excelReportService.addCell(3, currentRow, foodName, standardCellStyle);
+                    excelReportService.addCell(4, currentRow, categoryID, standardCellStyle);
+                    excelReportService.addCell(5, currentRow, subcategoryID, standardCellStyle);
+                }
+            }
+        }
+
+        // #3) Create an Excel Sheet holding the Food preferences.
+        currentRowIndex = 2;
+        final List<String> preferenceColumnNames = Arrays.asList("Alias", "Preferens", "Beskrivning");
+        final Sheet preferenceSheet = excelReportService.createStandardExcelSheet(workbook,
+                "Preferenser",
+                "Matpreferenser",
+                preferenceColumnNames);
+
+        // Insert relevant data into the Excel Sheet.
+        currentRowIndex = 2;
+        for (Map.Entry<String, SortedSet<FoodPreference>> current : alias2PreferencesMap.entrySet()) {
+
+            final SortedSet<FoodPreference> preferences = current.getValue();
+
+            if (preferences.size() > 0) {
+
+                for (FoodPreference currentPreference : preferences) {
+
+                    final Row currentRow = preferenceSheet.createRow(currentRowIndex++);
+                    final String categoryID = currentPreference.getCategory().getCategoryID();
+                    final String desc = currentPreference.getCategory().getDescription();
+
+                    // Populate the row with Cells.
+                    excelReportService.addCell(0, currentRow, current.getKey(), standardCellStyle);
+                    excelReportService.addCell(1, currentRow, categoryID, standardCellStyle);
+                    excelReportService.addCell(2, currentRow, desc, standardCellStyle);
+                }
+            }
+        }
 
         // Convert the workbook to a byte[]
         final Response.ResponseBuilder builder = Response

@@ -48,6 +48,7 @@ import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
+import javax.validation.constraints.NotNull;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -117,6 +118,28 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         // TODO: IMPLEMENT THIS!
         if (log.isWarnEnabled()) {
             log.warn("'getAllergiesFor' is not yet implemented");
+        }
+
+        // All Done.
+        return toReturn;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SortedMap<Membership, SortedSet<FoodPreference>> getPreferencesFor(
+            @NotNull final FoodAndAllergySearchParameters searchParameters) {
+
+        // Check sanity
+        Validate.notNull(searchParameters, "searchParameters");
+
+        // Create the return value
+        final SortedMap<Membership, SortedSet<FoodPreference>> toReturn = new TreeMap<>();
+
+        // TODO: IMPLEMENT THIS!
+        if (log.isWarnEnabled()) {
+            log.warn("'getPreferencesFor' is not yet implemented");
         }
 
         // All Done.
@@ -470,7 +493,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
 
             for (AllergyVO current : receivedData.getAllergyList()) {
 
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug("Matching " + current.toString());
                 }
 
