@@ -97,11 +97,13 @@ public class FoodResource extends AbstractResource {
     @GET
     @Path("/get")
     @Produces(ExcelReportService.EXCEL_CONTENT_TYPE)
-    public Response getAllergyAndPreferencesReport() {
+    public Response getAllergyAndPreferencesReport(
+            @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED) final Boolean includeLoginNotPermitted) {
 
         // Create the workbook to return
         final Workbook workbook = excelReportService.createWorkbook(getActiveMembership());
         final String fileName = "allergyReport_" + TimeFormat.COMPACT_LOCALDATETIME.print(LocalDateTime.now()) + ".xls";
+        final boolean withLoginOnly = includeLoginNotPermitted != null && !includeLoginNotPermitted;
 
         final List<String> allergyColumns = Arrays.asList("Alias",
                 "Allergigrad",
@@ -121,6 +123,7 @@ public class FoodResource extends AbstractResource {
 
         final FoodAndAllergySearchParameters searchParameters = FoodAndAllergySearchParameters.builder()
                 .withOrganisationIDs(getActiveMembership().getOrganisation().getId())
+                .withLoginOnly(withLoginOnly)
                 .build();
         foodAndAllergyService.getAllergiesFor(searchParameters).forEach((k, v) -> {
             alias2AllergiesMap.put(k.getAlias(), v);

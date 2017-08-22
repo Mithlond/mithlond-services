@@ -121,7 +121,7 @@ public class ExcelReportServiceBean implements ExcelReportService {
             headerCell = headerRow.createCell(i);
             headerCell.setCellValue(columnTitles.get(i));
             headerCell.setCellStyle(getCellStyle(ExcelElement.HEADER, workbook));
-            toReturn.setDefaultColumnStyle(i, getPlainCellStyle(workbook));
+            toReturn.setDefaultColumnStyle(i, getCellStyle(ExcelElement.NON_WRAPPING, workbook));
             toReturn.autoSizeColumn(i);
         }
 
@@ -215,21 +215,6 @@ public class ExcelReportServiceBean implements ExcelReportService {
 
         // All done.
         toReturn.setFont(theFont);
-        return toReturn;
-    }
-
-    //
-    // Private helpers
-    //
-
-    private CellStyle getPlainCellStyle(final Workbook wb) {
-
-        // Get the CellStyle for plain text cells.
-        final CellStyle toReturn = getCellStyle(ExcelElement.CELL, wb);
-        toReturn.setWrapText(false);
-        toReturn.setAlignment(HorizontalAlignment.LEFT);
-
-        // All done.
         return toReturn;
     }
 }

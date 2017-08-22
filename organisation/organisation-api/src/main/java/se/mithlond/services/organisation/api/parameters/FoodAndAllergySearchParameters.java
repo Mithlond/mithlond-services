@@ -26,6 +26,7 @@ import se.mithlond.services.organisation.model.OrganisationPatterns;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
@@ -74,6 +75,12 @@ public class FoodAndAllergySearchParameters
     private List<Long> membershipIDs;
 
     /**
+     * If true, only Memberships with the loginPermitted flag will be retrieved.
+     */
+    @XmlAttribute
+    private boolean onlyLoginPermitted;
+
+    /**
      * JAXB-friendly constructor.
      */
     public FoodAndAllergySearchParameters() {
@@ -83,20 +90,23 @@ public class FoodAndAllergySearchParameters
         this.organisationIDs = new ArrayList<>();
         this.activityIDs = new ArrayList<>();
         this.membershipIDs = new ArrayList<>();
+        onlyLoginPermitted = true;
     }
 
     /**
      * Compound constructor creating
      *
-     * @param groupIDs        An optional List of JPA IDs for Groups.
-     * @param organisationIDs An optional List of JPA IDs for Organisations.
-     * @param activityIDs     An optional List of JPA IDs for Activities.
-     * @param membershipIDs   An optional List of JPA IDs for Memberships.
+     * @param groupIDs           An optional List of JPA IDs for Groups.
+     * @param organisationIDs    An optional List of JPA IDs for Organisations.
+     * @param activityIDs        An optional List of JPA IDs for Activities.
+     * @param membershipIDs      An optional List of JPA IDs for Memberships.
+     * @param onlyLoginPermitted If {@code true}, only retrieve Memberships who are permitted login.
      */
     private FoodAndAllergySearchParameters(final List<Long> groupIDs,
                                            final List<Long> organisationIDs,
                                            final List<Long> activityIDs,
-                                           final List<Long> membershipIDs) {
+                                           final List<Long> membershipIDs,
+                                           final boolean onlyLoginPermitted) {
 
         // Delegate
         this();
@@ -106,6 +116,7 @@ public class FoodAndAllergySearchParameters
         this.organisationIDs.addAll(organisationIDs);
         this.activityIDs.addAll(activityIDs);
         this.membershipIDs.addAll(membershipIDs);
+        this.onlyLoginPermitted = onlyLoginPermitted;
     }
 
     /**
@@ -141,6 +152,13 @@ public class FoodAndAllergySearchParameters
     }
 
     /**
+     * @return If {@code true}, only retrieve Memberships who are permitted login.
+     */
+    public boolean isOnlyLoginPermitted() {
+        return onlyLoginPermitted;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -171,6 +189,7 @@ public class FoodAndAllergySearchParameters
         private List<Long> organisationIDs = new ArrayList<>();
         private List<Long> activityIDs = new ArrayList<>();
         private List<Long> membershipIDs = new ArrayList<>();
+        private boolean onlyLoginPermitted = true;
 
         /**
          * Adds the provided group IDs parameter to be used by the FoodAndAllergySearchParametersBuilder instance.
@@ -225,6 +244,19 @@ public class FoodAndAllergySearchParameters
         }
 
         /**
+         * Adds the provided loginOnly parameter to be used by the FoodAndAllergySearchParametersBuilder instance.
+         *
+         * @param loginOnly the login parameter to be used by the FoodAndAllergySearchParameters instance.
+         * @return This FoodAndAllergySearchParametersBuilder instance.
+         */
+        public FoodAndAllergySearchParametersBuilder withLoginOnly(@NotNull final boolean loginOnly) {
+
+            // Add the program to the programs List.
+            this.onlyLoginPermitted = loginOnly;
+            return this;
+        }
+
+        /**
          * {@inheritDoc}
          */
         @Override
@@ -233,7 +265,8 @@ public class FoodAndAllergySearchParameters
                     this.groupIDs,
                     this.organisationIDs,
                     this.activityIDs,
-                    this.membershipIDs);
+                    this.membershipIDs,
+                    this.onlyLoginPermitted);
         }
     }
 }
