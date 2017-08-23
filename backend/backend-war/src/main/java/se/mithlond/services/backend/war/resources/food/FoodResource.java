@@ -25,6 +25,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.content.api.report.ExcelReportService;
@@ -37,11 +39,13 @@ import se.mithlond.services.organisation.model.transport.food.Foods;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import javax.ejb.EJB;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -59,6 +63,9 @@ import java.util.TreeMap;
  */
 @Path("/food")
 public class FoodResource extends AbstractResource {
+
+    // Our Logger
+    private static final Logger log = LoggerFactory.getLogger(FoodResource.class);
 
     @EJB
     private FoodAndAllergyService foodAndAllergyService;
@@ -95,7 +102,8 @@ public class FoodResource extends AbstractResource {
      * @return The Allergies and Preferences food report.
      */
     @GET
-    @Path("/get")
+    @Path("/report/excel")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces(ExcelReportService.EXCEL_CONTENT_TYPE)
     public Response getAllergyAndPreferencesReport(
             @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED) final Boolean includeLoginNotPermitted) {
@@ -116,6 +124,10 @@ public class FoodResource extends AbstractResource {
                 "Allergier",
                 "Allergier",
                 allergyColumns);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Got non-null Workbook: " + (workbook != null));
+        }
 
         // #1) Find the allergies and food prefs per membership alias.
         final SortedMap<String, SortedSet<Allergy>> alias2AllergiesMap = new TreeMap<>();

@@ -49,6 +49,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -102,6 +103,47 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         return toReturn;
     }
 
+    abstract class MembershipAndSomething<T> implements Serializable {
+
+        private Membership membership;
+        private T something;
+
+        MembershipAndSomething(final Membership membership, final T something) {
+            this.membership = membership;
+            this.something = something;
+        }
+
+        public Membership getMembership() {
+            return membership;
+        }
+
+        protected T getSomething() {
+            return something;
+        }
+    }
+
+    class MembershipAndAllergy extends MembershipAndSomething<Allergy> {
+
+        public MembershipAndAllergy(final Membership membership, final Allergy something) {
+            super(membership, something);
+        }
+
+        public Allergy getAllergy() {
+            return this.getSomething();
+        }
+    }
+
+    class MembershipAndFoodPreference extends MembershipAndSomething<FoodPreference> {
+
+        public MembershipAndFoodPreference(final Membership membership, final FoodPreference something) {
+            super(membership, something);
+        }
+
+        public FoodPreference getFoodPreference() {
+            return this.getSomething();
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -111,14 +153,43 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
 
         // Check sanity
         Validate.notNull(searchParameters, "searchParameters");
+        final int numOrganisations = padAndGetSize(searchParameters.getOrganisationIDs(), 0L);
 
         // Create the return value
         final SortedMap<Membership, SortedSet<Allergy>> toReturn = new TreeMap<>();
 
-        // TODO: IMPLEMENT THIS!
-        if (log.isWarnEnabled()) {
-            log.warn("'getAllergiesFor' is not yet implemented");
-        }
+        final List resultList = entityManager.createQuery("select m, a "
+                + "from Membership m "
+                + "join Allergy a on a.user.id = m.user.id "
+                + "where m.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
+                + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS
+                + " or m.organisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
+                + " order by m.organisation.id, m.alias")
+                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, searchParameters.isOnlyLoginPermitted())
+                .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, numOrganisations)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, searchParameters.getOrganisationIDs())
+                .getResultList();
+
+        log.info("Got resultList containing [" + resultList.size() + "] elements.");
+        log.info("Elements: " + resultList.stream()
+                .map(e -> e.getClass().getName())
+                .reduce((l, r) -> l + ", " + r)
+                .orElse("<none>"));
+
+        resultList.forEach(e -> {
+            if (e instanceof MembershipAndAllergy) {
+
+                final MembershipAndAllergy current = (MembershipAndAllergy) e;
+
+                // Get or create the AllergySet.
+                final SortedSet<Allergy> allergySet = toReturn.computeIfAbsent(
+                        current.getMembership(),
+                        theMembership -> new TreeSet<>());
+
+                // Add the current Allergy
+                allergySet.add(current.getAllergy());
+            }
+        });
 
         // All Done.
         return toReturn;
@@ -137,7 +208,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         // Create the return value
         final SortedMap<Membership, SortedSet<FoodPreference>> toReturn = new TreeMap<>();
 
-        // TODO: IMPLEMENT THIS!
+
         if (log.isWarnEnabled()) {
             log.warn("'getPreferencesFor' is not yet implemented");
         }

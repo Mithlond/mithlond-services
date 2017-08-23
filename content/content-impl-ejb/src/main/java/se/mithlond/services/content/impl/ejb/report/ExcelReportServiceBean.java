@@ -65,14 +65,19 @@ public class ExcelReportServiceBean implements ExcelReportService {
     @Override
     public Workbook createWorkbook(@NotNull final Membership activeMembership) {
 
+        // Check sanity
+        Validate.notNull(activeMembership, "activeMembership");
+
         final HSSFWorkbook toReturn = new HSSFWorkbook();
+        toReturn.createInformationProperties();
 
         // Add some comments.
         final SummaryInformation summaryInformation = toReturn.getSummaryInformation();
         summaryInformation.setCreateDateTime(new Date());
         summaryInformation.setApplicationName("Nazgûl Services Excel Report Generator");
         summaryInformation.setAuthor("" + activeMembership.getAlias());
-
+        summaryInformation.setRevNumber("1");
+        
         // All Done.
         return toReturn;
     }
@@ -114,7 +119,11 @@ public class ExcelReportServiceBean implements ExcelReportService {
 
         // Create a header Row with the column names defined above.
         final Row headerRow = toReturn.createRow(1);
-        headerRow.setHeightInPoints(40);
+
+        // headerRow.setHeightInPoints(40);
+        // This *could* adjust the header row to fit its internal height.
+        titleRow.setHeight((short) -1);
+        
         Cell headerCell;
 
         for (int i = 0; i < columnTitles.size(); i++) {
@@ -133,6 +142,7 @@ public class ExcelReportServiceBean implements ExcelReportService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("all")
     public CellStyle getCellStyle(final ExcelElement el, final Workbook workbook) {
 
         // Check sanity
