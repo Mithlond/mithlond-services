@@ -158,7 +158,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         // Create the return value
         final SortedMap<Membership, SortedSet<Allergy>> toReturn = new TreeMap<>();
 
-        final List resultList = entityManager.createQuery("select m, a "
+        final List<Object[]> resultList = entityManager.createQuery("select distinct m, a "
                 + "from Membership m "
                 + "join Allergy a on a.user.id = m.user.id "
                 + "where m.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
@@ -170,25 +170,15 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, searchParameters.getOrganisationIDs())
                 .getResultList();
 
-        log.info("Got resultList containing [" + resultList.size() + "] elements.");
-        log.info("Elements: " + resultList.stream()
-                .map(e -> e.getClass().getName())
-                .reduce((l, r) -> l + ", " + r)
-                .orElse("<none>"));
+        log.info("Got Allergy resultList containing [" + resultList.size() + "] elements.");
+        resultList.forEach(arr -> {
 
-        resultList.forEach(e -> {
-            if (e instanceof MembershipAndAllergy) {
+            // Extract the parts of the element
+            final Membership mem = (Membership) arr[0];
+            final Allergy allergy = (Allergy) arr[1];
 
-                final MembershipAndAllergy current = (MembershipAndAllergy) e;
-
-                // Get or create the AllergySet.
-                final SortedSet<Allergy> allergySet = toReturn.computeIfAbsent(
-                        current.getMembership(),
-                        theMembership -> new TreeSet<>());
-
-                // Add the current Allergy
-                allergySet.add(current.getAllergy());
-            }
+            final SortedSet<Allergy> allergies = toReturn.computeIfAbsent(mem, k -> new TreeSet<>());
+            allergies.add(allergy);
         });
 
         // All Done.
@@ -204,14 +194,34 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
 
         // Check sanity
         Validate.notNull(searchParameters, "searchParameters");
+        final int numOrganisations = padAndGetSize(searchParameters.getOrganisationIDs(), 0L);
 
         // Create the return value
         final SortedMap<Membership, SortedSet<FoodPreference>> toReturn = new TreeMap<>();
 
+        final List<Object[]> resultList = entityManager.createQuery("select distinct m, fp "
+                + "from Membership m "
+                + "join FoodPreference fp on fp.user.id = m.user.id "
+                + "where m.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
+                + " and ( 0 = :" + OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS
+                + " or m.organisation.id in :" + OrganisationPatterns.PARAM_ORGANISATION_IDS + " ) "
+                + " order by m.organisation.id, m.alias")
+                .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, searchParameters.isOnlyLoginPermitted())
+                .setParameter(OrganisationPatterns.PARAM_NUM_ORGANISATIONIDS, numOrganisations)
+                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, searchParameters.getOrganisationIDs())
+                .getResultList();
 
-        if (log.isWarnEnabled()) {
-            log.warn("'getPreferencesFor' is not yet implemented");
-        }
+
+        log.info("Got Food Preference resultList containing [" + resultList.size() + "] elements.");
+        resultList.forEach(arr -> {
+
+            // Extract the parts of the element
+            final Membership mem = (Membership) arr[0];
+            final FoodPreference pref = (FoodPreference) arr[1];
+
+            final SortedSet<FoodPreference> prefs = toReturn.computeIfAbsent(mem, k -> new TreeSet<>());
+            prefs.add(pref);
+        });
 
         // All Done.
         return toReturn;

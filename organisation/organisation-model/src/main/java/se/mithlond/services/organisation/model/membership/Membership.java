@@ -678,7 +678,7 @@ public class Membership extends NazgulEntity implements Comparable<Membership>, 
         final String organisationString = getOrganisation() == null
                 ? "<Organisation Not Yet Set>"
                 : getOrganisation().getOrganisationName();
-        return "Membership [" + this.getAlias() + " -> " + organisationString + " (" + userIdAndName + " ... " + ")]";
+        return "Membership [" + this.getAlias() + " -> " + organisationString + " (" + userIdAndName + ")]";
     }
 
     /**
