@@ -30,6 +30,12 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
+import se.mithlond.services.organisation.model.food.Allergy;
+import se.mithlond.services.organisation.model.food.AllergySeverity;
+import se.mithlond.services.organisation.model.food.Food;
+import se.mithlond.services.organisation.model.localization.LocaleDefinition;
+import se.mithlond.services.organisation.model.localization.LocalizedText;
+import se.mithlond.services.organisation.model.localization.LocalizedTexts;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.membership.guild.Guild;
@@ -43,6 +49,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -319,5 +326,73 @@ public final class PersistenceHelper {
                 "Development");
         persist(stagingCalendar);
         entityManager.flush();
+
+        // Create and persist food categories
+        final Category fruit = persist(new Category("Frukt & Bär",
+                Food.FOOD_CATEGORY_CLASSIFICATION,
+                "Frukter och Bär"));
+        entityManager.flush();
+
+        final Category vegetables = persist(new Category("Grönsaker",
+                Food.FOOD_CATEGORY_CLASSIFICATION,
+                "Grönsaker och Rotfrukter"));
+        entityManager.flush();
+
+        // Create and persist some food subcategories
+        final Category subSten = persist(new Category("Stenfrukt",
+                Food.FOOD_SUBCATEGORY_CLASSIFICATION,
+                "Stenfrukt; frukt med kärnor"));
+        entityManager.flush();
+
+        final Category subCitrus = persist(new Category("Citrusfrukter",
+                Food.FOOD_SUBCATEGORY_CLASSIFICATION,
+                "Frukt med askorbinsyra"));
+        entityManager.flush();
+
+        final Category subRoots = persist(new Category("Rotfrukter och Betor",
+                Food.FOOD_SUBCATEGORY_CLASSIFICATION,
+                "Rotfrukter; växer under jord"));
+        entityManager.flush();
+
+        final Category subOnion = persist(new Category("Lök",
+                Food.FOOD_SUBCATEGORY_CLASSIFICATION,
+                "Alla sorters lök"));
+        entityManager.flush();
+
+        // Create some LocaleDefinitions
+        /*
+        final LocaleDefinition swedish = persist(new LocaleDefinition(TimeFormat.SWEDISH_LOCALE));
+        entityManager.flush();
+
+        final LocaleDefinition english = persist(new LocaleDefinition(Locale.ENGLISH));
+        entityManager.flush();
+        */
+
+        /*
+        // Create some localized Texts
+        final String defaultClassifier = "Default";
+        final LocalizedTexts noAllegyTexts = new LocalizedTexts("No Allergy",
+                swedish,
+                defaultClassifier,
+                "Ingen allergi");
+        noAllegyTexts.getTexts().forEach(PersistenceHelper::persist);
+        persist(noAllegyTexts);
+        entityManager.flush();
+        */
+
+        /*
+        // Create and persist some Foods
+        final Food carrot = persist(new Food("Morot", "Carrot", vegetables, subRoots));
+        entityManager.flush();
+
+        final Food onion = persist(new Food("Gul Lök", "Onion", vegetables, subOnion));
+        entityManager.flush();
+
+        final Food apple = persist(new Food("Äpple", "Apple", fruit, subSten));
+        entityManager.flush();
+
+        final Food orange = persist(new Food("Apelsin", "Orange", fruit, subCitrus));
+        entityManager.flush();
+        */
     }
 }

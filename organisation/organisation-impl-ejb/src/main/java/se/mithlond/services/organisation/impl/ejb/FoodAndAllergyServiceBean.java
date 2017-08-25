@@ -49,7 +49,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -103,47 +102,6 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         return toReturn;
     }
 
-    abstract class MembershipAndSomething<T> implements Serializable {
-
-        private Membership membership;
-        private T something;
-
-        MembershipAndSomething(final Membership membership, final T something) {
-            this.membership = membership;
-            this.something = something;
-        }
-
-        public Membership getMembership() {
-            return membership;
-        }
-
-        protected T getSomething() {
-            return something;
-        }
-    }
-
-    class MembershipAndAllergy extends MembershipAndSomething<Allergy> {
-
-        public MembershipAndAllergy(final Membership membership, final Allergy something) {
-            super(membership, something);
-        }
-
-        public Allergy getAllergy() {
-            return this.getSomething();
-        }
-    }
-
-    class MembershipAndFoodPreference extends MembershipAndSomething<FoodPreference> {
-
-        public MembershipAndFoodPreference(final Membership membership, final FoodPreference something) {
-            super(membership, something);
-        }
-
-        public FoodPreference getFoodPreference() {
-            return this.getSomething();
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -170,7 +128,10 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 .setParameter(OrganisationPatterns.PARAM_ORGANISATION_IDS, searchParameters.getOrganisationIDs())
                 .getResultList();
 
-        log.info("Got Allergy resultList containing [" + resultList.size() + "] elements.");
+        if (log.isDebugEnabled()) {
+            log.debug("Got Allergy resultList containing [" + resultList.size() + "] elements.");
+        }
+
         resultList.forEach(arr -> {
 
             // Extract the parts of the element
@@ -199,7 +160,7 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
         // Create the return value
         final SortedMap<Membership, SortedSet<FoodPreference>> toReturn = new TreeMap<>();
 
-        final List<Object[]> resultList = entityManager.createQuery("select distinct m, fp "
+        final List<Object[]> resultList = entityManager.createQuery("select m, fp "
                 + "from Membership m "
                 + "join FoodPreference fp on fp.user.id = m.user.id "
                 + "where m.loginPermitted = :" + OrganisationPatterns.PARAM_LOGIN_PERMITTED
@@ -212,7 +173,10 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                 .getResultList();
 
 
-        log.info("Got Food Preference resultList containing [" + resultList.size() + "] elements.");
+        if (log.isDebugEnabled()) {
+            log.debug("Got FoodPreference resultList containing [" + resultList.size() + "] elements.");
+        }
+
         resultList.forEach(arr -> {
 
             // Extract the parts of the element

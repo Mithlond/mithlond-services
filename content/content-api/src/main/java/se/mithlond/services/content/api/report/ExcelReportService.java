@@ -50,6 +50,11 @@ public interface ExcelReportService extends Serializable {
     Logger log = LoggerFactory.getLogger(ExcelReportService.class);
 
     /**
+     * The name of the custom HTTP header carrying the suggested filename for downloaded excel reports.
+     */
+    String SUGGESTED_FILENAME_HEADER = "X-Suggested-Filename";
+
+    /**
      * The content type produced by Excel. Use for a @Produces annotation.
      */
     String EXCEL_CONTENT_TYPE = "application/vnd.ms-excel";

@@ -208,11 +208,12 @@ public class FoodResource extends AbstractResource {
             }
         }
 
-        // Convert the workbook to a byte[]
-        final Response.ResponseBuilder builder = Response
-                .ok(excelReportService.convertToByteArray(workbook));
+        // Convert the workbook to a byte[], and send it back to the client.
+        final Response.ResponseBuilder builder = Response.ok(
+                excelReportService.convertToByteArray(workbook), ExcelReportService.EXCEL_CONTENT_TYPE)
+                .header(ExcelReportService.SUGGESTED_FILENAME_HEADER, fileName);
         builder.header("Content-Disposition", "attachment; filename=" + fileName);
-
+        
         // All Done.
         return builder.build();
     }
