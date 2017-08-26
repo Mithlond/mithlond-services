@@ -29,13 +29,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
-import se.mithlond.services.organisation.model.membership.Membership;
 
 import javax.ejb.Local;
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -44,15 +42,10 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Local
-public interface ExcelReportService extends Serializable {
+public interface ExcelReportService extends ReportService<Workbook> {
 
     // Our Logger
     Logger log = LoggerFactory.getLogger(ExcelReportService.class);
-
-    /**
-     * The name of the custom HTTP header carrying the suggested filename for downloaded excel reports.
-     */
-    String SUGGESTED_FILENAME_HEADER = "X-Suggested-Filename";
 
     /**
      * The content type produced by Excel. Use for a @Produces annotation.
@@ -94,15 +87,6 @@ public interface ExcelReportService extends Serializable {
          */
         ALT_FORMULA
     }
-
-    /**
-     * Creates a new and empty Excel Workbook, which is the basis of
-     * performing anything Excel-ish.
-     *
-     * @param activeMembership The active Membership.
-     * @return a new and empty Excel Workbook.
-     */
-    Workbook createWorkbook(@NotNull final Membership activeMembership);
 
     /**
      * Acquires the given CellStyle for the provided Workbook.

@@ -21,8 +21,9 @@
  */
 package se.mithlond.services.content.api.report;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+
 import javax.ejb.Local;
-import java.io.Serializable;
 
 /**
  * Report service assisting in creating PDF reports.
@@ -30,5 +31,20 @@ import java.io.Serializable;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @Local
-public interface PdfReportService extends Serializable {
+public interface PdfReportService extends ReportService<PDDocument> {
+
+    /**
+     * The content type produced by Excel. Use for a @Produces annotation.
+     */
+    String PDF_CONTENT_TYPE = "application/vnd.ms-excel";
+
+    /*
+     * Creates a new and empty Document, which is the basis of
+     * performing anything PDF-ish.
+     *
+     * @param activeMembership The active Membership.
+     * @param title            The document title.
+     * @return a new and empty Document.
+     */
+    // PDDocument createDocument(@NotNull Membership activeMembership, @NotNull String title);
 }

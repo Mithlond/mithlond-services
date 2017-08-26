@@ -72,6 +72,18 @@ public class DynamicOriginCORSFilter implements ContainerRequestFilter, Containe
     public static final String ORIGIN_KEY = "Origin";
 
     /**
+     * The Http header property key for the {@value} header.
+     * This should be set by (reverse) web proxies.
+     */
+    public static final String X_FORWARDED_FOR_KEY = "X-Forwarded-For";
+
+    /**
+     * The Http header property key for the {@value} header.
+     * This could be set by (reverse) web proxies.
+     */
+    public static final String X_REAL_IP_KEY = "X-Real-IP";
+
+    /**
      * The value of the getMethod for HTTP OPTIONS calls.
      */
     public static final String OPTIONS_METHOD = "OPTIONS";
@@ -89,11 +101,18 @@ public class DynamicOriginCORSFilter implements ContainerRequestFilter, Containe
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
 
-        // TODO: If we get no "Origin" header, calculate it from the URI supplied.
-        final String dynamicOrigin = requestContext.getHeaderString(ORIGIN_KEY);
+        // Find the origin by querying the properties in order of preference.
+        String dynamicOrigin = requestContext.getHeaderString(X_FORWARDED_FOR_KEY);
+        if (dynamicOrigin == null || dynamicOrigin.isEmpty()) {
+            dynamicOrigin = requestContext.getHeaderString(X_REAL_IP_KEY);
+        }
+        if (dynamicOrigin == null || dynamicOrigin.isEmpty()) {
+            dynamicOrigin = requestContext.getHeaderString(ORIGIN_KEY);
+        }
 
-        // If this is an OPTIONS call (i.e. pre-flight CORS call), we
-        // should simply append the dynamic origin header and return.
+        // If this is an OPTIONS call (i.e. pre-flight CORS
+        // call), we should simply append the dynamic origin
+        // header and return.
         if (OPTIONS_METHOD.equalsIgnoreCase(requestContext.getMethod())) {
 
             requestContext.abortWith(Response

@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.content.impl.ejb.report;
 
+import org.apache.poi.hpsf.DocumentSummaryInformation;
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -63,7 +64,7 @@ public class ExcelReportServiceBean implements ExcelReportService {
      * {@inheritDoc}
      */
     @Override
-    public Workbook createWorkbook(@NotNull final Membership activeMembership) {
+    public Workbook createDocument(@NotNull final Membership activeMembership, @NotNull final String title) {
 
         // Check sanity
         Validate.notNull(activeMembership, "activeMembership");
@@ -74,10 +75,17 @@ public class ExcelReportServiceBean implements ExcelReportService {
         // Add some comments.
         final SummaryInformation summaryInformation = toReturn.getSummaryInformation();
         summaryInformation.setCreateDateTime(new Date());
-        summaryInformation.setApplicationName("Nazgûl Services Excel Report Generator");
-        summaryInformation.setAuthor("" + activeMembership.getAlias());
+        summaryInformation.setTitle(title);
+        summaryInformation.setAuthor("Nazgûl Services Excel Report Generator");
+        summaryInformation.setSubject("Requested by: " + activeMembership.getAlias());
         summaryInformation.setRevNumber("1");
-        
+
+        // Add some Document summary information as well.
+        final DocumentSummaryInformation documentSummaryInformation = toReturn.getDocumentSummaryInformation();
+        final String orgName = activeMembership.getOrganisation().getOrganisationName();
+        documentSummaryInformation.setCompany(activeMembership.getOrganisation().getOrganisationName());
+        documentSummaryInformation.setManager(orgName + " is Da Boss of you!");
+
         // All Done.
         return toReturn;
     }
@@ -123,7 +131,7 @@ public class ExcelReportServiceBean implements ExcelReportService {
         // headerRow.setHeightInPoints(40);
         // This *could* adjust the header row to fit its internal height.
         titleRow.setHeight((short) -1);
-        
+
         Cell headerCell;
 
         for (int i = 0; i < columnTitles.size(); i++) {

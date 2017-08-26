@@ -31,137 +31,36 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import se.mithlond.services.content.api.report.ExcelReportService;
-import se.mithlond.services.organisation.model.Category;
-import se.mithlond.services.organisation.model.Organisation;
-import se.mithlond.services.organisation.model.address.Address;
-import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
-import se.mithlond.services.organisation.model.membership.Membership;
-import se.mithlond.services.organisation.model.user.User;
-import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.test.entity.JpaIdMutator;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class ExcelReportServiceBeanTest {
+public class ExcelReportServiceBeanTest extends AbstractReportTest {
 
     // Shared state
-    private Organisation organisation;
-    private User haxx, erion;
-    private Membership memHaxx, memErion;
     private ExcelReportServiceBean unitUnderTest;
-    private File targetDir;
 
     @Before
     public void setupSharedState() {
 
-        final Category addressCategory = new Category("Visiting address", "visiting_address",
-                "Address for visiting the organisation");
-        final Address location = new Address(null, null, "Foo Street",
-                "5",
-                "Göteborg",
-                "253 54",
-                "Sverige",
-                "Visiting address");
-
-        organisation = new Organisation("The Organisation",
-                "The Tolkien Society of Kinnekulle",
-                null,
-                "0123-234211",
-                "02515-2325232-2323",
-                new Address(null, null, "Kinnekullegatan", "54 C", "Kinnekulle", "142 41", "Sverige",
-                        "Visiting address"),
-                "kinnekulle.tolkien.se",
-                TimeFormat.SWEDISH_TIMEZONE,
-                TimeFormat.SWEDISH_LOCALE,
-                WellKnownCurrency.SEK);
-        JpaIdMutator.setId(organisation, 1);
-
-        // Create some users
-        haxx = new User(
-                "Mr",
-                "Häxxmästaren",
-                LocalDate.of(1968, Month.SEPTEMBER, 17),
-                (short) 1235,
-                new Address(null,
-                        null,
-                        "Testgatan",
-                        "45 E",
-                        "Grååååbo",
-                        "234 54",
-                        "Sverige",
-                        "Hemma hos Mr Häxx"),
-                null,
-                null,
-                "dasToken");
-        JpaIdMutator.setId(haxx, 42);
-
-        erion = new User(
-                "Das",
-                "Erion",
-                LocalDate.of(1922, Month.FEBRUARY, 5),
-                (short) 2345,
-                new Address(null,
-                        null,
-                        "Yttertestgatan",
-                        "25",
-                        "Göteborg",
-                        "411 11",
-                        "Sverige",
-                        "Hemma hos Das Erion"),
-                null,
-                null,
-                "dasErionToken");
-        JpaIdMutator.setId(erion, 43);
-
-        memHaxx = new Membership("Häxx",
-                "Das Filuro",
-                "haxx",
-                true,
-                haxx,
-                organisation);
-        memErion = new Membership("Erion",
-                null,
-                "erion",
-                true,
-                erion,
-                organisation);
-        JpaIdMutator.setId(memHaxx, 101);
-        JpaIdMutator.setId(memErion, 102);
-
+        createStandardSharedState("generatedExcelFiles");
         unitUnderTest = new ExcelReportServiceBean();
-
-        final String path = getClass().getClassLoader()
-                .getResource("testdata")
-                .getPath();
-        File targetParentDir = new File(path);
-        Assert.assertTrue(targetParentDir.exists());
-        Assert.assertTrue(targetParentDir.isDirectory());
-
-        this.targetDir = new File(targetParentDir, "generatedExcelFiles");
-        if(!targetDir.exists()) {
-            targetDir.mkdirs();
-        }
-
-        Assert.assertTrue(targetDir.exists());
-        Assert.assertTrue(targetDir.isDirectory());
     }
 
     @Test
     public void validateCreatingWorkbook() {
 
         // Assemble
-        final ExcelReportServiceBean unitUnderTest = new ExcelReportServiceBean();
+        final String theTitle = "Da Titul";
+        final String author = "Nazgûl Services Excel Report Generator";
 
         // Act
-        final Workbook result = unitUnderTest.createWorkbook(memHaxx);
+        final Workbook result = unitUnderTest.createDocument(memHaxx, theTitle);
 
         // Assert
         Assert.assertNotNull(result);
@@ -171,16 +70,17 @@ public class ExcelReportServiceBeanTest {
 
         final SummaryInformation sInfo = castResult.getSummaryInformation();
         Assert.assertNotNull(sInfo);
-        Assert.assertEquals(memHaxx.getAlias(), sInfo.getAuthor());
+        Assert.assertEquals(author, sInfo.getAuthor());
         Assert.assertNotNull(sInfo.getCreateDateTime());
+        Assert.assertEquals(theTitle, sInfo.getTitle());
     }
 
     @Test
     public void validateCreatingSheetAndContent() throws Exception {
 
         // Assemble
-        final File targetFile = getTargetExcelFile();
-        final Workbook workbook = unitUnderTest.createWorkbook(memHaxx);
+        final File targetFile = getTargetFile("ExcelFile", "xls");
+        final Workbook workbook = unitUnderTest.createDocument(memHaxx, "SomeDocument");
         final List<String> columnTitles = Arrays.asList("Column_1", "Column_2");
 
         // Act
@@ -190,7 +90,7 @@ public class ExcelReportServiceBeanTest {
                 columnTitles);
 
         final CellStyle cellStyle = unitUnderTest.getCellStyle(ExcelReportService.ExcelElement.CELL, workbook);
-        for(int index = 2; index < 4; index++) {
+        for (int index = 2; index < 4; index++) {
 
             final Row theRow = firstSheet.createRow(index);
 
@@ -204,21 +104,5 @@ public class ExcelReportServiceBeanTest {
         // Assert
         //
         // Read the document, and verify that cell values match ... ?
-    }
-
-    //
-    // Private helpers
-    //
-
-    private File getTargetExcelFile() {
-
-        File toReturn = null;
-        
-        for(int i = 0; true; i++) {
-            toReturn = new File(targetDir, "ExcelFile_" + i + ".xls");
-            if(!toReturn.exists()) {
-                return toReturn;
-            }
-        }
     }
 }

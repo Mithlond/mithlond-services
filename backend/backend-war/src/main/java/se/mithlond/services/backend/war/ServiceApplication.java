@@ -66,22 +66,36 @@ public class ServiceApplication extends Application {
         this.jaxRsSingletons = new HashSet<>();
     }
 
+    /**
+     * Logs the created state of this application.
+     */
     @PostConstruct
     public void logState() {
 
+        /*
+         * Due to the change of the java color management module towards
+         * "LittleCMS", users can experience slow performance in color operations (in PDF synthesis and rendering).
+         * A solution is to disable LittleCMS in favor of the old KCMS (Kodak Color Management System) by
+         * setting the property "sun.java2d.cmm" as done below.
+         *
+         * https://bugs.openjdk.java.net/browse/JDK-8041125
+         */
+        System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
         log.info("ServiceApplication launched.");
 
-        final Set<Class<?>> classes = getClasses();
-        log.info("Got [" + classes.size() + "] Classes");
-        classes.forEach(current -> log.info("Class [" + current.getCanonicalName() + "]"));
+        if (log.isDebugEnabled()) {
 
-        final Set<Object> singletons = getSingletons();
-        log.info("Got [" + singletons.size() + "] Singletons");
-        singletons.forEach(current -> log.info("Singleton [" + current.getClass().getCanonicalName() + "]"));
+            final SortedMap<String, Object> props = new TreeMap<>();
+            System.getProperties().forEach((k, v) -> props.put("" + k, v));
 
-        final SortedMap<String, Object> props = new TreeMap<>(getProperties());
-        log.info("Got [" + props.size() + "] properties");
-        props.forEach((key, value) -> log.info("Property [" + key + "]: " + value));
+            final StringBuilder builder = new StringBuilder();
+            props.entrySet()
+                    .stream()
+                    .map(e -> "[" + e.getKey() + "]: " + e.getValue() + "\n")
+                    .forEach(builder::append);
+
+            log.debug("System properties:\n" + builder.toString());
+        }
     }
 
     /**

@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import se.mithlond.services.backend.war.resources.AbstractResource;
 import se.mithlond.services.backend.war.resources.RestfulParameters;
 import se.mithlond.services.content.api.report.ExcelReportService;
+import se.mithlond.services.content.api.report.ReportService;
 import se.mithlond.services.organisation.api.FoodAndAllergyService;
 import se.mithlond.services.organisation.api.parameters.FoodAndAllergySearchParameters;
 import se.mithlond.services.organisation.model.food.Allergy;
@@ -109,7 +110,8 @@ public class FoodResource extends AbstractResource {
             @QueryParam(RestfulParameters.INCLUDE_LOGIN_NOT_PERMITTED) final Boolean includeLoginNotPermitted) {
 
         // Create the workbook to return
-        final Workbook workbook = excelReportService.createWorkbook(getActiveMembership());
+        final Workbook workbook = excelReportService.createDocument(getActiveMembership(),
+                "Allergier och Matpreferenser");
         final String fileName = "allergyReport_" + TimeFormat.COMPACT_LOCALDATETIME.print(LocalDateTime.now()) + ".xls";
         final boolean withLoginOnly = includeLoginNotPermitted != null && !includeLoginNotPermitted;
 
@@ -211,9 +213,9 @@ public class FoodResource extends AbstractResource {
         // Convert the workbook to a byte[], and send it back to the client.
         final Response.ResponseBuilder builder = Response.ok(
                 excelReportService.convertToByteArray(workbook), ExcelReportService.EXCEL_CONTENT_TYPE)
-                .header(ExcelReportService.SUGGESTED_FILENAME_HEADER, fileName);
+                .header(ReportService.SUGGESTED_FILENAME_HEADER, fileName);
         builder.header("Content-Disposition", "attachment; filename=" + fileName);
-        
+
         // All Done.
         return builder.build();
     }
