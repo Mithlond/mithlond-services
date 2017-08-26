@@ -37,14 +37,4 @@ public interface PdfReportService extends ReportService<PDDocument> {
      * The content type produced by Excel. Use for a @Produces annotation.
      */
     String PDF_CONTENT_TYPE = "application/vnd.ms-excel";
-
-    /*
-     * Creates a new and empty Document, which is the basis of
-     * performing anything PDF-ish.
-     *
-     * @param activeMembership The active Membership.
-     * @param title            The document title.
-     * @return a new and empty Document.
-     */
-    // PDDocument createDocument(@NotNull Membership activeMembership, @NotNull String title);
 }

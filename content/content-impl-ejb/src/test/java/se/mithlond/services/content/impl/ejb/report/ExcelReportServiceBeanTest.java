@@ -93,9 +93,10 @@ public class ExcelReportServiceBeanTest extends AbstractReportTest {
         for (int index = 2; index < 4; index++) {
 
             final Row theRow = firstSheet.createRow(index);
+            theRow.setRowStyle(cellStyle);
 
-            unitUnderTest.addCell(0, theRow, "Row_" + index + "_Cell0", cellStyle);
-            unitUnderTest.addCell(1, theRow, "Row_" + index + "_Cell1", cellStyle);
+            unitUnderTest.addCell(0, theRow, "Row_" + index + "_Cell0\n... and a Newline", cellStyle);
+            unitUnderTest.addCell(1, theRow, "Row_" + index + "_Cell1\n... and a Newline", cellStyle);
         }
 
         final FileOutputStream outputStream = new FileOutputStream(targetFile);

@@ -151,6 +151,8 @@ public class FoodResource extends AbstractResource {
         final CellStyle standardCellStyle = excelReportService.getCellStyle(
                 ExcelReportService.ExcelElement.NON_WRAPPING,
                 workbook);
+        final CellStyle rowCellStyle = excelReportService.getCellStyle(ExcelReportService.ExcelElement.CELL,
+                workbook);
 
         for (Map.Entry<String, SortedSet<Allergy>> current : alias2AllergiesMap.entrySet()) {
 
@@ -161,6 +163,7 @@ public class FoodResource extends AbstractResource {
                 for (Allergy currentAllergy : allergies) {
 
                     final Row currentRow = allergySheet.createRow(currentRowIndex++);
+                    currentRow.setRowStyle(rowCellStyle);
 
                     final Food currentFood = currentAllergy.getFood();
                     final String categoryID = currentFood.getCategory().getCategoryID();
