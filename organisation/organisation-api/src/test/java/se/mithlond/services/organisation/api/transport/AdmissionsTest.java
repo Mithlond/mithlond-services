@@ -30,6 +30,8 @@ import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.shared.test.entity.AbstractPlainJaxbTest;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 /**
@@ -45,9 +47,19 @@ public class AdmissionsTest extends AbstractPlainJaxbTest {
 
         admissions = new Admissions();
 
+        final LocalDateTime timestamp = LocalDateTime.of(2017, Month.APRIL, 3, 15, 42);
+
         final List<AdmissionVO> details = admissions.getDetails();
         for (int i = 0; i < 5; i++) {
-            details.add(new AdmissionVO((long) (20 + i), "alias_" + i, "organisation_" + i, "note_" + i, i % 3 == 0));
+            details.add(new AdmissionVO(
+                    (long) (20 + i),
+                    (long) (42 + i),
+                    "alias_" + i,
+                    "organisation_" + i,
+                    timestamp.plusDays(1L),
+                    timestamp.plusDays(2L),
+                    "note_" + i,
+                    i % 3 == 0));
         }
 
         jaxb.add(Admissions.class);

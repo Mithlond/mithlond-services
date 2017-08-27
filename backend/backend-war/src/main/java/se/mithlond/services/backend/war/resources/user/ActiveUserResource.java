@@ -139,7 +139,7 @@ public class ActiveUserResource extends AbstractResource {
 
         // Log somewhat.
         if (log.isDebugEnabled()) {
-            log.info("getActiveMembershipAllergiesAndFoodPrefs returning: " + toReturn.toString());
+            log.debug("getActiveMembershipAllergiesAndFoodPrefs returning: " + toReturn.toString());
         }
 
         // All Done.
@@ -212,18 +212,19 @@ public class ActiveUserResource extends AbstractResource {
     public Allergies updateAllergies(final Allergies submittedBodyData) {
 
         // Check sanity
-        if (log.isInfoEnabled()) {
-            log.info("Got submitted Allergies: " + submittedBodyData.toString());
+        if (log.isDebugEnabled()) {
+            log.debug("Got submitted Allergies: " + submittedBodyData.toString());
         }
 
         // Update the Allergies
-        foodAndAllergyService.updateAllergies(getActiveMembership(), submittedBodyData);
+        final Membership activeMembership = getActiveMembership();
+        foodAndAllergyService.updateAllergies(activeMembership, submittedBodyData);
 
         // Return the new database state
         final Allergies toReturn = getActiveMembershipAllergiesAndFoodPrefs();
         
         if (log.isInfoEnabled()) {
-            log.info("Done. Returning: " + toReturn);
+            log.info("Done updating Allergies for " + activeMembership.toString() + ". Returning: " + toReturn);
         }
 
         // All Done.

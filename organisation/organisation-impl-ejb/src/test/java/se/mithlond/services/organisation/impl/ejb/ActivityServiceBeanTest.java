@@ -52,6 +52,7 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
     // Shared state
     private ActivityServiceBean unitUnderTest;
     private MembershipServiceBean membershipServiceBean;
+    private LocalDateTime aTimestamp;
 
     /**
      * {@inheritDoc}
@@ -69,6 +70,8 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
         // Inject the EntityManager connected to the in-memory DB.
         injectEntityManager(unitUnderTest);
         injectEntityManager(membershipServiceBean);
+
+        aTimestamp = LocalDateTime.of(2016, Month.JUNE, 20, 17, 0);
     }
 
     @Test
@@ -180,24 +183,40 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
                 true);
 
         mifflondActivityVO.getAdmissions().add(new AdmissionVO(
+                AdmissionVO.UNINITIALIZED,
+                bilbo.getId(),
                 bilbo.getAlias(),
                 bilbo.getOrganisation().getOrganisationName(),
+                aTimestamp.plusDays(1),
+                null,
                 "Skapade Aktiviteten",
                 true));
         mifflondActivityVO.getAdmissions().add(new AdmissionVO(
+                AdmissionVO.UNINITIALIZED,
+                dildo.getId(),
                 dildo.getAlias(),
                 dildo.getOrganisation().getOrganisationName(),
+                aTimestamp.plusDays(1),
+                aTimestamp.plusDays(1),
                 null,
                 false));
 
         fjodjimActivityVO.getAdmissions().add(new AdmissionVO(
+                AdmissionVO.UNINITIALIZED,
+                zap.getId(),
                 zap.getAlias(),
                 zap.getOrganisation().getOrganisationName(),
+                aTimestamp.plusDays(2),
+                aTimestamp.plusDays(3),
                 "Skapade Aktiviteten",
                 true));
         fjodjimActivityVO.getAdmissions().add(new AdmissionVO(
+                AdmissionVO.UNINITIALIZED,
+                dildo.getId(),
                 dildo.getAlias(),
                 dildo.getOrganisation().getOrganisationName(),
+                aTimestamp.plusDays(2),
+                aTimestamp.plusDays(4),
                 null,
                 false));
 

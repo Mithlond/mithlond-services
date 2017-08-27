@@ -1,36 +1,48 @@
 {
   "details": [
     {
+      "jpaId": 20,
+      "membershipID": 42,
       "responsible": true,
-      "activityID": 20,
+      "admissionTime": "2017-04-04T15:42:00",
+      "lastModification": "2017-04-05T15:42:00",
       "alias": "alias_0",
       "organisation": "organisation_0",
       "note": "note_0"
     },
     {
-      "responsible": false,
-      "activityID": 21,
+      "jpaId": 21,
+      "membershipID": 43,
+      "admissionTime": "2017-04-04T15:42:00",
+      "lastModification": "2017-04-05T15:42:00",
       "alias": "alias_1",
       "organisation": "organisation_1",
       "note": "note_1"
     },
     {
-      "responsible": false,
-      "activityID": 22,
+      "jpaId": 22,
+      "membershipID": 44,
+      "admissionTime": "2017-04-04T15:42:00",
+      "lastModification": "2017-04-05T15:42:00",
       "alias": "alias_2",
       "organisation": "organisation_2",
       "note": "note_2"
     },
     {
+      "jpaId": 23,
+      "membershipID": 45,
       "responsible": true,
-      "activityID": 23,
+      "admissionTime": "2017-04-04T15:42:00",
+      "lastModification": "2017-04-05T15:42:00",
       "alias": "alias_3",
       "organisation": "organisation_3",
       "note": "note_3"
     },
     {
-      "responsible": false,
-      "activityID": 24,
+      "jpaId": 24,
+      "membershipID": 46,
+      "admissionTime": "2017-04-04T15:42:00",
+      "lastModification": "2017-04-05T15:42:00",
       "alias": "alias_4",
       "organisation": "organisation_4",
       "note": "note_4"

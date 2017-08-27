@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -282,7 +283,7 @@ public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHold
         this.admissions = new TreeSet<>();
         this.admissions.addAll(activity.getAdmissions()
                 .stream()
-                .filter(c -> c != null)
+                .filter(Objects::nonNull)
                 .map(AdmissionVO::new)
                 .collect(Collectors.toList()));
     }

@@ -2,7 +2,7 @@
  * #%L
  * Nazgul Project: mithlond-services-organisation-model
  * %%
- * Copyright (C) 2010 - 2013 jGuru Europe AB
+ * Copyright (C) 2010 - 2017 jGuru Europe AB
  * %%
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
@@ -21,19 +21,19 @@
  */
 package se.mithlond.services.organisation.model.transport.activity;
 
-import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -43,22 +43,23 @@ import java.util.Optional;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
-        propOrder = {"alias", "organisation", "note", "responsible", "activityID"})
+        propOrder = {"alias", "membershipID", "organisation", "note",
+                "responsible", "admissionTime", "lastModification"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
     /**
-     * Default ActivityID value, indicating that this {@link AdmissionVO} instance is not yet
+     * Default JPA ID value, indicating that this {@link AdmissionVO} instance is not yet
      * associated with an {@link se.mithlond.services.organisation.model.activity.Activity} in terms of database
      * persistence.
      */
     public static final Long UNINITIALIZED = -1L;
 
     /**
-     * The JPA ID of an Activity to which this AdmissionDetails pertains.
+     * The JPA ID of the admitted Membership.
      */
-    @XmlAttribute
-    private Long activityID;
+    @XmlAttribute(required = true)
+    private Long membershipID;
 
     /**
      * The Alias of the Member to admit to an Activity.
@@ -74,6 +75,18 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
     private String organisation;
 
     /**
+     * The admission timestamp
+     */
+    @XmlAttribute
+    private LocalDateTime admissionTime;
+
+    /**
+     * The admission modification timestamp.
+     */
+    @XmlAttribute
+    private LocalDateTime lastModification;
+
+    /**
      * An optional admission note from the admitted Alias to the organizers of the Activity.
      */
     @XmlElement
@@ -83,58 +96,13 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
      * A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
      */
     @XmlAttribute
-    private boolean responsible;
+    private Boolean responsible;
 
     /**
      * JAXB-friendly constructor.
      */
     public AdmissionVO() {
-        activityID = UNINITIALIZED;
-    }
-
-    /**
-     * Convenience constructor creating a new AdmissionDetails instance with an {@link #UNINITIALIZED} activityID.
-     *
-     * @param alias        The alias to admit.
-     * @param organisation The organisation where the alias exists; must not necessarily be
-     *                     identical to the organisation of the Activity to which this ProtoAdmission is tied.
-     * @param note         An optional admission note from teh Alias to the organizer(s) of the Activity.
-     * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
-     */
-    public AdmissionVO(final String alias,
-                       final String organisation,
-                       final String note,
-                       final boolean responsible) {
-
-        this(UNINITIALIZED, alias, organisation, note, responsible);
-    }
-
-    /**
-     * Creates a new ProtoAdmission instance, wrapping the supplied data.
-     *
-     * @param activityID   The JPA ID of the Activity for which these AdmissionDetails pertain.
-     * @param alias        The alias to admit.
-     * @param organisation The organisation where the alias exists; must not necessarily be
-     *                     identical to the organisation of the Activity to which this ProtoAdmission is tied.
-     * @param note         An optional admission note from teh Alias to the organizer(s) of the Activity.
-     * @param responsible  A boolean flag indicating if the Alias defines a Membership or Guild organizing the Activity.
-     */
-    public AdmissionVO(final Long activityID,
-                       @NotNull @Size(min = 1) final String alias,
-                       @NotNull @Size(min = 1) final String organisation,
-                       final String note,
-                       final boolean responsible) {
-
-        // Check sanity
-        Validate.notEmpty(alias, "alias");
-        Validate.notEmpty(organisation, "organisation");
-
-        // Assign internal state
-        this.activityID = activityID;
-        this.alias = alias;
-        this.organisation = organisation;
-        this.note = note;
-        this.responsible = responsible;
+        membershipID = UNINITIALIZED;
     }
 
     /**
@@ -144,15 +112,49 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
      */
     public AdmissionVO(@NotNull final Admission admission) {
 
-        // Check sanity
-        Validate.notNull(admission, "admission");
+        // Delegate
+        this(admission.getActivity().getId(),
+                admission.getAdmitted().getId(),
+                admission.getAdmitted().getAlias(),
+                admission.getActivity().getOwningOrganisation().getOrganisationName(),
+                admission.getAdmissionTimestamp(),
+                admission.getLastModifiedAt(),
+                admission.getAdmissionNote(),
+                admission.isResponsible());
+    }
+
+    /**
+     * Compound constructor creating an AdmissionVO wrapping the supplied data.
+     *
+     * @param activityID       The JPA ID of the Activity.
+     * @param membershipID     The JPA ID of the Membership.
+     * @param alias            The Membership alias.
+     * @param organisation     The Organisation name.
+     * @param admissionTime    The admission timestamp.
+     * @param lastModification The latest modification timestamp.
+     * @param note             The optional note for the Admission.
+     * @param responsible      The flag indicating if this AdmissionVO contains the responsible Membership.
+     */
+    public AdmissionVO(final Long activityID,
+                       final Long membershipID,
+                       final String alias,
+                       final String organisation,
+                       final LocalDateTime admissionTime,
+                       final LocalDateTime lastModification,
+                       final String note,
+                       final boolean responsible) {
+
+        // Delegate
+        super(activityID);
 
         // Assign internal state
-        this.activityID = admission.getActivity().getId();
-        this.alias = admission.getAdmitted().getAlias();
-        this.organisation = admission.getActivity().getOwningOrganisation().getOrganisationName();
-        this.note = admission.getAdmissionNote();
-        this.responsible = admission.isResponsible();
+        this.membershipID = membershipID;
+        this.alias = alias;
+        this.organisation = organisation;
+        this.admissionTime = admissionTime;
+        this.lastModification = lastModification;
+        this.note = note;
+        this.responsible = responsible;
     }
 
     /**
@@ -160,7 +162,7 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
      * Can be {@code null} only if the Activity is not known (i.e. not created yet).
      */
     public Long getActivityID() {
-        return activityID;
+        return super.getJpaID();
     }
 
     /**
@@ -186,33 +188,62 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
     }
 
     /**
-     * @return {@code true} if this ProtoAdmission alias is responsible for the activity to which it will be tied.
+     * @return {@code true} if the Membership of this AdmissionVO is responsible for the activity
+     * to which it is tied.
      */
     public boolean isResponsible() {
-        return responsible;
+        return responsible == null ? false : responsible;
+    }
+
+    /**
+     * The JPA ID of the Membership of this AdmissionVO.
+     *
+     * @return the JPA ID of the Membership of this AdmissionVO.
+     */
+    public Long getMembershipID() {
+        return membershipID;
+    }
+
+    /**
+     * @return The admission timestamp of this AdmissionVO.
+     */
+    public LocalDateTime getAdmissionTime() {
+        return admissionTime;
+    }
+
+    /**
+     * @return The last modification timestamp of this AdmissionVO.
+     */
+    public LocalDateTime getLastModification() {
+        return lastModification;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(final Object that) {
+    public boolean equals(final Object o) {
 
-        // Fail fast
-        if (this == that) {
+        // Fail fast.
+        if (this == o) {
             return true;
         }
-        if (!(that instanceof AdmissionVO)) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
 
         // Delegate to internal state
-        final AdmissionVO details = (AdmissionVO) that;
-        return responsible == details.responsible
-                && Objects.equals(activityID, details.activityID)
-                && Objects.equals(alias, details.alias)
-                && Objects.equals(organisation, details.organisation)
-                && Objects.equals(note, details.note);
+        final AdmissionVO that = (AdmissionVO) o;
+        return Objects.equals(getMembershipID(), that.getMembershipID())
+                && Objects.equals(getAlias(), that.getAlias())
+                && Objects.equals(getOrganisation(), that.getOrganisation())
+                && Objects.equals(getAdmissionTime(), that.getAdmissionTime())
+                && Objects.equals(getLastModification(), that.getLastModification())
+                && Objects.equals(getNote(), that.getNote())
+                && Objects.equals(isResponsible(), that.isResponsible());
     }
 
     /**
@@ -220,7 +251,16 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
      */
     @Override
     public int hashCode() {
-        return Objects.hash(activityID, alias, organisation, note, responsible);
+
+        return Objects.hash(
+                super.hashCode(),
+                getMembershipID(),
+                getAlias(),
+                getOrganisation(),
+                getAdmissionTime(),
+                getLastModification(),
+                getNote(),
+                isResponsible());
     }
 
     /**
@@ -240,6 +280,9 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
 
             // Delegate to normal value
             int toReturn = getAlias().compareTo(that.getAlias());
+            if (toReturn == 0) {
+                toReturn = (int) (getMembershipID() - that.getMembershipID());
+            }
             if (toReturn == 0) {
                 toReturn = getOrganisation().compareTo(that.getOrganisation());
             }
@@ -263,5 +306,24 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
 
         // Delegate.
         return super.compareTo(cmp);
+    }
+
+    /**
+     * Standard JAXB class-wide listener method, automagically invoked
+     * immediately before this object is Marshalled.
+     *
+     * @param marshaller The active Marshaller.
+     */
+    @SuppressWarnings("all")
+    private void beforeMarshal(final Marshaller marshaller) {
+
+        // Only send the non-required properties if they are non-null.
+        //
+        if (responsible != null && !responsible) {
+            responsible = null;
+        }
+        if (note != null && note.trim().isEmpty()) {
+            note = null;
+        }
     }
 }
