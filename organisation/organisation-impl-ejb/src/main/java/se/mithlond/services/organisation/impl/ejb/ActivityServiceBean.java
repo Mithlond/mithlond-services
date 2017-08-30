@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.mithlond.services.organisation.api.ActivityService;
+import se.mithlond.services.organisation.api.OrganisationService;
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
@@ -45,6 +46,7 @@ import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospect
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -57,6 +59,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -77,6 +80,24 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * The category name of Home addresses.
      */
     public static final String HOMEADRESS_CATEGORY = "Hemadress";
+
+    @EJB
+    private OrganisationService organisationServiceBean;
+
+    /**
+     * Default constructor.
+     */
+    public ActivityServiceBean() {
+    }
+
+    /**
+     * Injectable, test-friendly, constructor.
+     *
+     * @param organisationService An OrganisatinoService to inject.
+     */
+    public ActivityServiceBean(final OrganisationService organisationService) {
+        this.organisationServiceBean = organisationService;
+    }
 
     /**
      * {@inheritDoc}
@@ -101,6 +122,25 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         final List<Long> organisationIDs = parameters.getOrganisationIDs();
         final List<Long> activityIDs = parameters.getActivityIDs();
         // final List<Long> membershipIDs = parameters.getMembershipIDs();
+        final SortedMap<Organisation, Boolean> adminMap = new TreeMap<>();
+
+        organisationIDs.stream().sorted().forEach(orgID -> {
+
+            final Organisation org = entityManager.find(Organisation.class, orgID);
+            if (!adminMap.containsKey(org)) {
+                adminMap.put(org, organisationServiceBean.isAdministratorFor(activeMembership, org));
+            }
+        });
+
+        if (log.isDebugEnabled()) {
+
+            final String preamble = "Caller [" + activeMembership.getAlias() + " @ "
+                    + activeMembership.getOrganisation().getOrganisationName() + "] is Admin within ...\n";
+
+            final StringBuilder builder = new StringBuilder(preamble);
+            adminMap.forEach((k, v) -> builder.append(" [" + k.getOrganisationName() + "]: " + v + "\n"));
+            log.debug(builder.toString());
+        }
 
         final TypedQuery<Activity> query = entityManager.createNamedQuery(
                 Activity.NAMEDQ_GET_BY_SEARCH_PARAMETERS, Activity.class)
@@ -133,12 +173,21 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         if (parameters.isDetailedResponsePreferred()) {
 
             toReturn.getActivities().addAll(activities);
+
+            if (log.isDebugEnabled()) {
+                log.debug("Added [" + toReturn.getActivities().size() + "] Activity objects to result.");
+            }
+
         } else {
 
             toReturn.getActivityVOs().addAll(activities
                     .stream()
                     .map(ActivityVO::new)
                     .collect(Collectors.toList()));
+
+            if (log.isDebugEnabled()) {
+                log.debug("Added [" + toReturn.getActivityVOs().size() + "] ActivityVO objects to result.");
+            }
         }
 
         // All Done.

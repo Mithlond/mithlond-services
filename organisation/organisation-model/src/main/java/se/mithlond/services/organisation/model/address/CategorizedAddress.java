@@ -21,13 +21,13 @@
  */
 package se.mithlond.services.organisation.model.address;
 
+import se.jguru.nazgul.core.algorithms.api.Validate;
 import se.jguru.nazgul.tools.validation.api.exception.InternalStateValidationException;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.CategoryProducer;
 import se.mithlond.services.organisation.model.Listable;
 import se.mithlond.services.organisation.model.Organisation;
 import se.mithlond.services.organisation.model.OrganisationPatterns;
-import se.jguru.nazgul.core.algorithms.api.Validate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;

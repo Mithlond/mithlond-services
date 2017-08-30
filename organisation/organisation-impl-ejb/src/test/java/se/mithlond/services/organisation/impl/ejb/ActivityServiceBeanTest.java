@@ -52,6 +52,7 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
     // Shared state
     private ActivityServiceBean unitUnderTest;
     private MembershipServiceBean membershipServiceBean;
+    private OrganisationServiceBean organisationServiceBean;
     private LocalDateTime aTimestamp;
 
     /**
@@ -64,12 +65,14 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
         super.doCustomSetup();
 
         // Create the test unit
-        unitUnderTest = new ActivityServiceBean();
+        organisationServiceBean = new OrganisationServiceBean();
         membershipServiceBean = new MembershipServiceBean();
+        unitUnderTest = new ActivityServiceBean(organisationServiceBean);
 
         // Inject the EntityManager connected to the in-memory DB.
         injectEntityManager(unitUnderTest);
         injectEntityManager(membershipServiceBean);
+        injectEntityManager(organisationServiceBean);
 
         aTimestamp = LocalDateTime.of(2016, Month.JUNE, 20, 17, 0);
     }
