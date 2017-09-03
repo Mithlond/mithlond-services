@@ -32,6 +32,7 @@ import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters
 import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
+import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
@@ -204,5 +205,40 @@ public class ActivityResource extends AbstractResource {
 
         // All Done.
         return new Activities(new ActivityVO(modifiedActivity));
+    }
+
+    /**
+     * Updates the Admissions for the active Membership into the supplied state.
+     *
+     * @param targetState The target Admissions state.
+     * @return The updated Admissions for the active membership.
+     */
+    @POST
+    @Path("/admissions/update")
+    public Admissions modifyAdmissions(final Admissions targetState) {
+
+        if (log.isInfoEnabled()) {
+            log.info("Received targetState Admissions: " + targetState.getDetails()
+                    .stream()
+                    .map(adm -> "[activityJpaID: " + adm.getActivityID()
+                            + ", membershipID: " + adm.getMembershipID()
+                            + ", Note: " + adm.getNote().orElse("<none>") + "]")
+                    .reduce((l, r) -> l + "\n" + r).orElse("<nothing>"));
+        }
+
+        // Delegate to the service
+        final Admissions newState = activityService.updateAdmissions(getActiveMembership(), targetState);
+
+        if(log.isDebugEnabled()) {
+            log.debug("Returning " + targetState.getDetails()
+                    .stream()
+                    .map(adm -> "[activityJpaID: " + adm.getActivityID()
+                            + ", membershipID: " + adm.getMembershipID()
+                            + ", Note: " + adm.getNote().orElse("<none>") + "]")
+                    .reduce((l, r) -> l + "\n" + r).orElse("<nothing>"));
+        }
+
+        // All Done
+        return newState;
     }
 }

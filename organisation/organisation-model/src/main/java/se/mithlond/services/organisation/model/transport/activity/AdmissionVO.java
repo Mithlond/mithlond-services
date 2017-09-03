@@ -26,6 +26,7 @@ import se.mithlond.services.organisation.model.XmlIdHolder;
 import se.mithlond.services.organisation.model.activity.Admission;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransportable;
 
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -44,7 +45,7 @@ import java.util.Optional;
  */
 @XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
         propOrder = {"alias", "membershipID", "organisation", "note",
-                "responsible", "admissionTime", "lastModification"})
+                "responsible", "admissionTime", "lastModification", "admitted"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHolder {
 
@@ -64,7 +65,7 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
     /**
      * The Alias of the Member to admit to an Activity.
      */
-    @XmlElement(required = true)
+    @XmlElement
     private String alias;
 
     /**
@@ -97,6 +98,15 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
      */
     @XmlAttribute
     private Boolean responsible;
+
+    /**
+     * A boolean flag indicating if this AdmissionVO indicates an admission or
+     * the desire to revoke the admission corresponding to this AdmissionVO.
+     */
+    @XmlAttribute
+    @Transient
+    @SuppressWarnings("all")
+    private Boolean admitted;
 
     /**
      * JAXB-friendly constructor.
@@ -219,6 +229,14 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
     }
 
     /**
+     * @return A boolean flag indicating if this AdmissionVO indicates an admission or the desire to
+     * revoke the admission corresponding to this AdmissionVO.
+     */
+    public Boolean getAdmitted() {
+        return admitted == null ? true : admitted;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -279,9 +297,11 @@ public class AdmissionVO extends AbstractSimpleTransportable implements XmlIdHol
             }
 
             // Delegate to normal value
-            int toReturn = getAlias().compareTo(that.getAlias());
+            int toReturn = (int) (getMembershipID() - that.getMembershipID());
             if (toReturn == 0) {
-                toReturn = (int) (getMembershipID() - that.getMembershipID());
+                final String thisAlias = this.getAlias() == null ? "" : this.getAlias();
+                final String thatAlias = that.getAlias() == null ? "" : that.getAlias();
+                toReturn = thisAlias.compareTo(thatAlias);
             }
             if (toReturn == 0) {
                 toReturn = getOrganisation().compareTo(that.getOrganisation());

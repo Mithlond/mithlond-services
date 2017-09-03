@@ -51,7 +51,6 @@ import java.util.concurrent.atomic.AtomicInteger;
         propOrder = {"fullAlias", "emailAlias", "firstName", "lastName", "birthday",
                 "homeAddress", "contactInfo", "groups", "guilds"})
 @XmlAccessorType(XmlAccessType.FIELD)
-// @XmlSeeAlso({SlimContactInfoVO.class, SlimGroupMembershipVO.class, SlimGuildMembershipVO.class})
 public class SlimMemberVO extends AbstractSimpleTransportable {
 
     /**

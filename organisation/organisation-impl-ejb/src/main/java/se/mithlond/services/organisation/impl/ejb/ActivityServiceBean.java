@@ -39,6 +39,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
@@ -395,6 +396,14 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * {@inheritDoc}
      */
     @Override
+    public Admissions updateAdmissions(final Membership activeMembership, final Admissions admissions) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean modifyAdmission(final ChangeType changeType,
                                    final Membership actingMembership,
                                    final AdmissionVO... admissionDetails) throws IllegalStateException {
@@ -412,12 +421,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 .forEach(c -> {
 
                     final Long activityID = c.getActivityID();
-
-                    Set<AdmissionVO> voSet = admissionVOs.get(activityID);
-                    if (voSet == null) {
-                        voSet = new TreeSet<>();
-                        admissionVOs.put(activityID, voSet);
-                    }
+                    final Set<AdmissionVO> voSet = admissionVOs.computeIfAbsent(activityID, k -> new TreeSet<>());
 
                     // More than 1 admission? Complain.
                     if (!voSet.add(c)) {
@@ -489,7 +493,7 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
                         return modifiedAdmissions.containsKey(current);
                     })
-                    .filter(c -> c != null)
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
 
             toModify.getAdmissions().removeAll(toBeRemoved);
@@ -539,10 +543,9 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 .filter(c -> currentAdmissionMap.get(c.getKey()) == null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        newAdmissionVOs.entrySet().forEach(c -> {
+        newAdmissionVOs.forEach((key, admissionData) -> {
 
             // Extract the admission VO
-            final AdmissionVO admissionData = c.getValue();
 
             // Find the Membership to be admitted.
             final Membership admitted = CommonPersistenceTasks.getSingleMembership(entityManager,

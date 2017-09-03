@@ -27,6 +27,7 @@ import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
+import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
 
@@ -95,8 +96,20 @@ public interface ActivityService {
     @SuppressWarnings("all")
     @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
     Activity updateActivity(final ActivityVO activityVO,
-            final boolean onlyUpdateNonNullProperties,
-            final Membership activeMembership);
+                            final boolean onlyUpdateNonNullProperties,
+                            final Membership activeMembership);
+
+
+    /**
+     * Updates the admissions with the supplied data.
+     *
+     * @param activeMembership The Membership performing this call. If the Membership is considered an Administrator,
+     *                         the Admissions are updated even for other Memberships within the same Organisation.
+     *                         Otherwise, only the activeMemberships own Admissions are updated.
+     * @param admissions       The target state admissions.
+     * @return The Admissions, post the update.
+     */
+    Admissions updateAdmissions(final Membership activeMembership, final Admissions admissions);
 
     /**
      * Modifies the Admissions to a particular Activity, as indicated by the supplied
