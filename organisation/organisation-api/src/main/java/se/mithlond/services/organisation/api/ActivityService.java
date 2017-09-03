@@ -26,7 +26,6 @@ import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
-import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
 import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
@@ -110,23 +109,6 @@ public interface ActivityService {
      * @return The Admissions, post the update.
      */
     Admissions updateAdmissions(final Membership activeMembership, final Admissions admissions);
-
-    /**
-     * Modifies the Admissions to a particular Activity, as indicated by the supplied
-     * arguments to this method.
-     *
-     * @param changeType       The type of change to perform.
-     * @param actingMembership The acting Membership performing the change.
-     * @param admissionDetails The non-null AdmissionDetails instances containing the desired state for an admission.
-     * @return {@code true} if the admission was changed as requested, and false otherwise.
-     * @throws RuntimeException if the supplied {@link AdmissionVO} did not contain sufficient information
-     *                          to modify an Admission.
-     */
-    @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
-    boolean modifyAdmission(
-            final ChangeType changeType,
-            final Membership actingMembership,
-            final AdmissionVO... admissionDetails) throws RuntimeException;
 
     /**
      * Retrieves a Map relating Category to CategorizedAddress for all Location addresses

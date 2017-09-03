@@ -46,6 +46,7 @@ import javax.ws.rs.QueryParam;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Resource facade to Activities and Activity management.
@@ -218,23 +219,26 @@ public class ActivityResource extends AbstractResource {
     public Admissions modifyAdmissions(final Admissions targetState) {
 
         if (log.isInfoEnabled()) {
-            log.info("Received targetState Admissions: " + targetState.getDetails()
+            final AtomicInteger index = new AtomicInteger();
+            log.info("Received targetState Admissions:\n" + targetState.getDetails()
                     .stream()
-                    .map(adm -> "[activityJpaID: " + adm.getActivityID()
+                    .map(adm -> index.getAndIncrement() + ": [activityJpaID: " + adm.getActivityID()
                             + ", membershipID: " + adm.getMembershipID()
-                            + ", Note: " + adm.getNote().orElse("<none>") + "]")
+                            + ", admitted: " + adm.getAdmitted()
+                            + ", note: " + adm.getNote().orElse("<none>") + "]")
                     .reduce((l, r) -> l + "\n" + r).orElse("<nothing>"));
         }
 
         // Delegate to the service
         final Admissions newState = activityService.updateAdmissions(getActiveMembership(), targetState);
 
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug("Returning " + targetState.getDetails()
                     .stream()
                     .map(adm -> "[activityJpaID: " + adm.getActivityID()
                             + ", membershipID: " + adm.getMembershipID()
-                            + ", Note: " + adm.getNote().orElse("<none>") + "]")
+                            + ", admitted: " + adm.getAdmitted()
+                            + ", note: " + adm.getNote().orElse("<none>") + "]")
                     .reduce((l, r) -> l + "\n" + r).orElse("<nothing>"));
         }
 
