@@ -321,78 +321,10 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         return toUpdate;
     }
 
-    private class AliasAndOrganisationName implements Comparable<AliasAndOrganisationName> {
-
-        public String alias;
-        public String organisationName;
-
-        public AliasAndOrganisationName(final String alias, final String organisationName) {
-            this.alias = alias;
-            this.organisationName = organisationName;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            final AliasAndOrganisationName that = (AliasAndOrganisationName) o;
-            return Objects.equals(alias, that.alias)
-                    && Objects.equals(organisationName, that.organisationName);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode() {
-            return Objects.hash(alias, organisationName);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int compareTo(final AliasAndOrganisationName that) {
-
-            if (that == null) {
-                return -1;
-            } else if (that == this) {
-                return 0;
-            }
-
-            final String thisAlias = this.alias == null ? "" : this.alias;
-            final String thatAlias = that.alias == null ? "" : that.alias;
-
-            int toReturn = thisAlias.compareTo(thatAlias);
-            if (toReturn == 0) {
-
-                final String thisOrganisation = this.organisationName == null ? "" : this.organisationName;
-                final String thatOrganisation = that.organisationName == null ? "" : that.organisationName;
-                toReturn = thisOrganisation.compareTo(thatOrganisation);
-            }
-
-            return toReturn;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String toString() {
-            return "Alias: " + alias + " (Organisation: " + organisationName + ")";
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("all")
     @Override
     public Admissions updateAdmissions(final Membership activeMembership, final Admissions admissions) {
 
