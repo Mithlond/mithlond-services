@@ -47,64 +47,64 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AdmissionId implements Serializable {
 
-	private static final long serialVersionUID = 8829991L;
+    private static final long serialVersionUID = 8829991L;
 
-	// Shared state
-	@Column(name = "activity_id")
-	public long activityId;
+    // Shared state
+    @Column(name = "activity_id")
+    public long activityId;
 
-	@Column(name = "admitted_id")
-	public long membershipId;
+    @Column(name = "admitted_id")
+    public long membershipId;
 
-	/**
-	 * JAXB/JPA-friendly constructor.
-	 */
-	public AdmissionId() {
-	}
+    /**
+     * JAXB/JPA-friendly constructor.
+     */
+    public AdmissionId() {
+    }
 
-	/**
-	 * Compound constructor, wrapping the supplied objects.
-	 *
-	 * @param activityId   The id of the Activity to admit a Membership to.
-	 * @param membershipId The id of the Membership to admit to the Activity given.
-	 */
-	public AdmissionId(final long activityId,
-					   final long membershipId) {
+    /**
+     * Compound constructor, wrapping the supplied objects.
+     *
+     * @param activityId   The id of the Activity to admit a Membership to.
+     * @param membershipId The id of the Membership to admit to the Activity given.
+     */
+    public AdmissionId(final long activityId,
+                       final long membershipId) {
 
-		// Assign internal state
-		this.activityId = activityId;
-		this.membershipId = membershipId;
-	}
+        // Assign internal state
+        this.activityId = activityId;
+        this.membershipId = membershipId;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean equals(final Object obj) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
 
-		if (obj instanceof AdmissionId) {
+        if (obj instanceof AdmissionId) {
 
-			final AdmissionId that = (AdmissionId) obj;
-			return activityId == that.activityId && membershipId == that.membershipId;
-		}
+            final AdmissionId that = (AdmissionId) obj;
+            return activityId == that.activityId && membershipId == that.membershipId;
+        }
 
-		// All done.
-		return false;
-	}
+        // All done.
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		return (int) (activityId + membershipId) % Integer.MAX_VALUE;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return (int) (activityId + membershipId) % Integer.MAX_VALUE;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return "AdmissionId [Activity: " + activityId + ", Membership: " + membershipId + "]";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "AdmissionId [Activity: " + activityId + ", Membership: " + membershipId + "]";
+    }
 }

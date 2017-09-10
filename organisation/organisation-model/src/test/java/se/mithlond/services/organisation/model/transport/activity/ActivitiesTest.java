@@ -1,42 +1,16 @@
-/*
- * #%L
- * Nazgul Project: mithlond-services-organisation-model
- * %%
- * Copyright (C) 2010 - 2013 jGuru Europe AB
- * %%
- * Licensed under the jGuru Europe AB license (the "License"), based
- * on Apache License, Version 2.0; you may not use this file except
- * in compliance with the License.
- * 
- * You may obtain a copy of the License at
- * 
- *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * #L%
- */
-/*
- * Copyright (c) jGuru Europe AB
- * All rights reserved.
- */
-package se.mithlond.services.organisation.model.activity;
+package se.mithlond.services.organisation.model.transport.activity;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.AbstractEntityTest;
 import se.mithlond.services.organisation.model.Category;
 import se.mithlond.services.organisation.model.Organisation;
+import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.finance.Amount;
 import se.mithlond.services.organisation.model.finance.WellKnownCurrency;
-import se.mithlond.services.organisation.model.transport.activity.Activities;
-import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 
 import java.math.BigDecimal;
@@ -47,7 +21,7 @@ import java.time.Month;
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
-public class ActivityTest extends AbstractEntityTest {
+public class ActivitiesTest extends AbstractEntityTest {
 
     // Shared state
     private Activities activities;
@@ -83,7 +57,7 @@ public class ActivityTest extends AbstractEntityTest {
                 "Sverige",
                 "Visiting address");
 
-        organisation = new Organisation("The Organisation",
+        organisation = new Organisation("AnOrganisation",
                 "The Tolkien Society of Kinnekulle",
                 null,
                 "0123-234211",
@@ -119,39 +93,17 @@ public class ActivityTest extends AbstractEntityTest {
     }
 
     @Test
-    public void validateMarshallingToXml() throws Exception {
+    public void validateMarshallingToJSon() throws Exception {
 
         // Assemble
-        final String expected = XmlTestUtils.readFully("testdata/activities.xml");
-        activities.getActivities().add(activity);
+        final String expected = XmlTestUtils.readFully("testdata/transport/activity/activities.json");
         activities.addActivityVOs(activityVO);
 
         // Act
-        final String result = marshalToXML(activities);
+        final String result = marshalToJSon(activities);
         // System.out.println("Got: " + result);
 
         // Assert
-        validateIdenticalContent(expected, result);
-    }
-
-    @Test
-    public void validateUnmarshalling() throws Exception {
-
-        // Assemble
-        final String data = XmlTestUtils.readFully("testdata/activities.xml");
-
-        // Act
-        final Activities unmarshalled = unmarshalFromXML(Activities.class, data);
-
-        // Assert
-        Assert.assertNotNull(unmarshalled);
-        Assert.assertEquals(1, unmarshalled.getActivities().size());
-        Assert.assertEquals(1, unmarshalled.getActivityVOs().size());
-
-        final Activity fullActivity = unmarshalled.getActivities().get(0);
-        final ActivityVO activityVO = unmarshalled.getActivityVOs().get(0);
-
-        Assert.assertEquals(activity, fullActivity);
-        Assert.assertEquals(this.activityVO, activityVO);
+        JSONAssert.assertEquals(expected, result, true);
     }
 }

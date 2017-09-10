@@ -39,7 +39,6 @@ import se.mithlond.services.shared.spi.algorithms.TimeFormat;
 import javax.ejb.EJB;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -150,20 +149,26 @@ public class ActivityResource extends AbstractResource {
      * @return An {@link Activities} container with an {@link ActivityVO} containing the data of the
      * newly created {@link Activity}.
      */
-    @PUT
+    @POST
     @Path("/create")
     public Activities createActivity(final ActivityVO activityVO) {
 
         // Debug some.
         if (log.isDebugEnabled()) {
-            log.debug("Entered createActivity method. ActivityVO: " + activityVO);
+            log.debug("About to create a new Activity from: " + activityVO);
         }
 
         // Check sanity
         Validate.notNull(activityVO, "Cannot handle null 'activityVO' argument.");
 
         // Create the activity
-        final Activity created = activityService.createActivity(activityVO, getActiveMembership());
+        final Activity created;
+        try {
+            created = activityService.createActivity(activityVO, getActiveMembership());
+        } catch (RuntimeException e) {
+            log.error("Cannot create activity from ActivityVO " + activityVO.toString(), e);
+            return new Activities();
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("Created " + created);

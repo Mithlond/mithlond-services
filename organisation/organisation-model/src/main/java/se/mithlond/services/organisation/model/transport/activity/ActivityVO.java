@@ -414,4 +414,30 @@ public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHold
     public boolean isOpenToGeneralPublic() {
         return isOpenToGeneralPublic;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "ActivityVO{"
+                + "organisation=" + (organisation != null ? organisation.getOrganisationName() : "<none>")
+                + ", shortDesc='" + shortDesc + '\''
+                + ", fullDesc='" + fullDesc + '\''
+                + ", startTime=" + startTime
+                + ", endTime=" + endTime
+                + ", cost=" + cost
+                + ", lateAdmissionCost=" + lateAdmissionCost
+                + ", lateAdmissionDate=" + lateAdmissionDate
+                + ", lastAdmissionDate=" + lastAdmissionDate
+                + ", cancelled=" + cancelled
+                + ", dressCode='" + dressCode + '\''
+                + ", addressCategory='" + addressCategory + '\''
+                + ", location=" + location
+                + ", addressShortDescription='" + addressShortDescription + '\''
+                + ", responsibleGroupName='" + responsibleGroupName + '\''
+                + ", admissions=" + admissions
+                + ", isOpenToGeneralPublic=" + isOpenToGeneralPublic
+                + '}';
+    }
 }

@@ -179,10 +179,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         } else {
 
-            toReturn.getActivityVOs().addAll(activities
-                    .stream()
-                    .map(ActivityVO::new)
-                    .collect(Collectors.toList()));
+            final List<ActivityVO> activityVOs = activities.stream().map(ActivityVO::new).collect(Collectors.toList());
+            activityVOs.forEach(toReturn::addActivityVOs);
 
             if (log.isDebugEnabled()) {
                 log.debug("Added [" + toReturn.getActivityVOs().size() + "] ActivityVO objects to result.");
@@ -203,8 +201,8 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         // Check sanity
         Validate.notNull(activeMembership, "activeMembership");
         Validate.notNull(activityVO, "activityVO");
-
         Validate.notNull(activityVO.getOrganisation(), "activityVO.getOrganisation()");
+        
         final String organisationName = Validate.notNull(activityVO.getOrganisation().getOrganisationName(),
                 "organisationName");
         final String shortDesc = Validate.notEmpty(activityVO.getShortDesc(), "shortDesc");
@@ -324,7 +322,6 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("all")
     @Override
     public Admissions updateAdmissions(final Membership activeMembership, final Admissions admissions) {
 

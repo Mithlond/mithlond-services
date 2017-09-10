@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.model.transport.activity;
 
 import se.mithlond.services.organisation.model.OrganisationPatterns;
 import se.mithlond.services.organisation.model.activity.Activity;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.shared.spi.jaxb.AbstractSimpleTransporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,7 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Transport model for {@link ActivityVO}s, which are relevant for shallow listings, without the full
@@ -42,9 +45,17 @@ import java.util.List;
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlRootElement(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE)
-@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE, propOrder = {"activities", "activityVOs"})
+@XmlType(namespace = OrganisationPatterns.TRANSPORT_NAMESPACE,
+        propOrder = {"activities", "organisationVOs", "activityVOs"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Activities extends AbstractSimpleTransporter {
+
+    /**
+     * The organisationVOs referenced by the ActivityVOs transported.
+     */
+    @XmlElementWrapper
+    @XmlElement(name = "organisationVO")
+    private List<OrganisationVO> organisationVOs;
 
     /**
      * A List of ActivityVO instances providing a shallow representation of the Activities.
@@ -67,6 +78,7 @@ public class Activities extends AbstractSimpleTransporter {
      */
     public Activities() {
         activityVOs = new ArrayList<>();
+        organisationVOs = new ArrayList<>();
         activities = new ArrayList<>();
     }
 
@@ -89,10 +101,34 @@ public class Activities extends AbstractSimpleTransporter {
      * @param activityVOs The activities to wrap.
      */
     public Activities(final ActivityVO... activityVOs) {
+
         this();
 
-        if (activityVOs != null) {
-            this.activityVOs.addAll(Arrays.asList(activityVOs));
+        // Assign internal state
+        addActivityVOs(activityVOs);
+    }
+
+    /**
+     * Helper method to add ActivityVOs to this Activities instance.
+     *
+     * @param theVOs The ActivityVOs to add.
+     */
+    public final void addActivityVOs(final ActivityVO ... theVOs) {
+
+        if (theVOs != null) {
+
+            Arrays.stream(theVOs)
+                    .filter(Objects::nonNull)
+                    .forEach(aVO -> {
+
+                        final OrganisationVO orgVO = aVO.getOrganisation();
+
+                        if (!this.organisationVOs.contains(orgVO)) {
+                            this.organisationVOs.add(orgVO);
+                        }
+
+                        this.activityVOs.add(aVO);
+                    });
         }
     }
 
@@ -102,7 +138,7 @@ public class Activities extends AbstractSimpleTransporter {
      * @return The List of {@link ActivityVO} objects transported by this {@link Activities}.
      */
     public List<ActivityVO> getActivityVOs() {
-        return activityVOs;
+        return Collections.unmodifiableList(activityVOs);
     }
 
     /**

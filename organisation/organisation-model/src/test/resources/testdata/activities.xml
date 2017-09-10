@@ -51,6 +51,11 @@
             <dressCode>activityDressCode</dressCode>
         </activity>
     </activities>
+    <organisationVOs>
+        <organisationVO jpaId="0" organisationName="The Organisation">
+            <description>The Tolkien Society of Kinnekulle</description>
+        </organisationVO>
+    </organisationVOs>
     <activityVOs>
         <activityVO jpaId="0" startTime="2016-06-20T17:00:00" endTime="2016-06-20T22:15:00" isOpenToGeneralPublic="true" addressCategory="Visiting address" cancelled="false">
             <organisation>The Organisation</organisation>

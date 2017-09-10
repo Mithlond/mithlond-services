@@ -1,0 +1,45 @@
+{
+  "xsi.type": "organisation_transport.activities",
+  "activities": [],
+  "organisationVOs": [
+    {
+      "jpaId": 0,
+      "organisationName": "AnOrganisation",
+      "description": "The Tolkien Society of Kinnekulle"
+    }
+  ],
+  "activityVOs": [
+    {
+      "jpaId": 0,
+      "startTime": "2016-06-20T17:00:00",
+      "endTime": "2016-06-20T22:15:00",
+      "isOpenToGeneralPublic": true,
+      "addressCategory": "Visiting address",
+      "cancelled": false,
+      "organisation": "AnOrganisation",
+      "shortDesc": "activityShortDesc",
+      "fullDesc": "activityFullDesc",
+      "addressShortDescription": "addressShortDescription",
+      "location": {
+        "street": "Foo Street",
+        "number": "5",
+        "city": "Göteborg",
+        "zipCode": "253 54",
+        "country": "Sverige",
+        "description": "Visiting address"
+      },
+      "cost": {
+        "value": 50,
+        "currency": "SEK"
+      },
+      "lateAdmissionCost": {
+        "value": 75,
+        "currency": "SEK"
+      },
+      "lateAdmissionDate": "2016-06-15",
+      "lastAdmissionDate": "2016-06-19",
+      "dressCode": "activityDressCode",
+      "admissions": []
+    }
+  ]
+}
