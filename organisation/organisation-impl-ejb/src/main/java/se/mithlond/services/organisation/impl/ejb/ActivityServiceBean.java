@@ -44,6 +44,7 @@ import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
+import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
@@ -445,28 +446,103 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                                        final boolean onlyUpdateNonNullProperties,
                                        final Membership activeMembership) {
 
-        // Check sanity
-        Validate.notNull(targetState, "targetState");
+        // #0) Check sanity
+        //
         Validate.notNull(activeMembership, "activeMembership");
-        // Validate.isTrue(0 < targetState.getJpaID(), "0 < targetState.getJpaID()");
+        Validate.notNull(targetState, "targetState");
 
-        // final Activities toReturn = new Activities();
+        final List<ActivityVO> activityVOs = targetState.getActivityVOs();
+        Validate.notNull(activityVOs, "activityVOs");
 
-        /*
-        final Activity toUpdate = entityManager.find(Activity.class, targetState.getJpaID());
-        if (toUpdate == null) {
-            return null;
+        // #1) Create the return wrapper
+        //
+        final Organisation activeOrganisation = activeMembership.getOrganisation();
+        final Activities toReturn = new Activities();
+
+        // #2) Find the current timestamp, as interpreted within the TimeZone where the Activity takes place.
+        //
+        // Business rules:
+        //
+        // 1. Non-administrators can only update Activities for which they are responsible.
+        // 2. Administrators can update Activities within their own organisation.
+        //
+        final boolean isAdmin = organisationServiceBean.isAdministratorFor(
+                activeMembership,
+                activeMembership.getOrganisation());
+
+        final List<ActivityVO> acceptedVOs = new ArrayList<>();
+        if (isAdmin) {
+
+            activityVOs
+                    .stream()
+                    .filter(act -> activeOrganisation.getOrganisationName().equalsIgnoreCase(
+                            act.getOrganisation().getOrganisationName()))
+                    .filter(act -> {
+
+                        // Only handle properly formatted Activities.
+                        final Set<AdmissionVO> adms = act.getAdmissions();
+                        return adms != null && adms.size() > 0;
+                    })
+                    .forEach(acceptedVOs::add);
+
+        } else {
+
+            acceptedVOs
+                    .stream()
+                    .filter(act -> activeOrganisation.getOrganisationName().equalsIgnoreCase(
+                            act.getOrganisation().getOrganisationName()))
+                    .filter(act -> {
+
+                        boolean isActiveMembershipResponsible = false;
+                        final Set<AdmissionVO> admissions = act.getAdmissions();
+
+                        if (admissions != null && !admissions.isEmpty()) {
+
+                            final Set<AdmissionVO> responsibleAdmissions = admissions.stream()
+                                    .filter(Objects::nonNull)
+                                    .filter(adm -> adm.getMembershipID() != null)
+                                    .filter(AdmissionVO::isResponsible)
+                                    .collect(Collectors.toSet());
+
+                            // Accept this ActivityVO for creation only if...
+                            //
+                            // 1) At least 1 responsible Admission exists, and
+                            // 2) One of the responsible Admissions imply the activeMembership (which also
+                            //    belongs to the activeOrganisation).
+                            //
+                            isActiveMembershipResponsible = (responsibleAdmissions.size() >= 1)
+                                    && responsibleAdmissions.stream()
+                                    .anyMatch(adm -> adm.getMembershipID() == activeMembership.getId()
+                                            && adm.getOrganisation().equalsIgnoreCase(
+                                            activeMembership.getOrganisation().getOrganisationName()));
+                        }
+
+                        // All Done
+                        return isActiveMembershipResponsible;
+                    })
+                    .forEach(acceptedVOs::add);
+
         }
 
-        // Update all sensible things to update
-        SimpleIntrospector.copyJavaBeanProperties(targetState, toUpdate);
+        acceptedVOs.forEach(theVO -> {
 
-        // Flush the entity manager.
-        entityManager.flush();
-        */
+            // Find the corresponding Activity
+            final Activity toUpdate = entityManager.find(Activity.class, theVO.getJpaID());
+            if (toUpdate != null) {
 
+                SimpleIntrospector.copyJavaBeanProperties(targetState, toUpdate);
+                entityManager.flush();
+
+                // Populate the returning structure.
+                toReturn.addActivityVOs(new ActivityVO(toUpdate));
+
+            } else {
+                log.warn("Found no existing Activity with JpaID [" + theVO.getJpaID() + "] to update.");
+            }
+        });
+        
         // All Done.
-        return new Activities();
+        return toReturn;
     }
 
     /**
