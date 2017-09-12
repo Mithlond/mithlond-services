@@ -172,6 +172,7 @@ public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHold
      * JAXB-friendly constructor
      */
     public ActivityVO() {
+        admissions = new TreeSet<>();
     }
 
     /**
@@ -204,22 +205,22 @@ public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHold
      *                                (as opposed to being available to members of the supplied organisation only).
      */
     public ActivityVO(final Long jpaID,
-            final OrganisationVO organisation,
-            final String shortDesc,
-            final String fullDesc,
-            final LocalDateTime startTime,
-            final LocalDateTime endTime,
-            final Amount cost,
-            final Amount lateAdmissionCost,
-            final LocalDate lateAdmissionDate,
-            final LocalDate lastAdmissionDate,
-            final boolean cancelled,
-            final String dressCode,
-            final String addressCategory,
-            final Address location,
-            final String addressShortDescription,
-            final String responsibleGroupName,
-            final boolean isOpenToGeneralPublic) {
+                      final OrganisationVO organisation,
+                      final String shortDesc,
+                      final String fullDesc,
+                      final LocalDateTime startTime,
+                      final LocalDateTime endTime,
+                      final Amount cost,
+                      final Amount lateAdmissionCost,
+                      final LocalDate lateAdmissionDate,
+                      final LocalDate lastAdmissionDate,
+                      final boolean cancelled,
+                      final String dressCode,
+                      final String addressCategory,
+                      final Address location,
+                      final String addressShortDescription,
+                      final String responsibleGroupName,
+                      final boolean isOpenToGeneralPublic) {
 
         super(jpaID);
 
@@ -420,6 +421,17 @@ public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHold
      */
     @Override
     public String toString() {
+
+        String admissionsText = "<none>";
+        if (admissions != null) {
+            admissionsText = admissions.stream().map(adm -> "[activityID: " + adm.getActivityID()
+                    + ", admittedID: " + adm.getMembershipID()
+                    + (adm.getAlias() != null ? ", admittedAlias: " + adm.getAlias() : "")
+                    + ", organisation: " + adm.getOrganisation() + "]\n")
+                    .reduce((l, r) -> l + " " + r)
+                    .orElse("<none>");
+        }
+
         return "ActivityVO{"
                 + "organisation=" + (organisation != null ? organisation.getOrganisationName() : "<none>")
                 + ", shortDesc='" + shortDesc + '\''
@@ -436,7 +448,7 @@ public class ActivityVO extends AbstractSimpleTransportable implements XmlIdHold
                 + ", location=" + location
                 + ", addressShortDescription='" + addressShortDescription + '\''
                 + ", responsibleGroupName='" + responsibleGroupName + '\''
-                + ", admissions=" + admissions
+                + ", admissions=" + admissionsText
                 + ", isOpenToGeneralPublic=" + isOpenToGeneralPublic
                 + '}';
     }

@@ -22,10 +22,8 @@
 package se.mithlond.services.organisation.api;
 
 import se.mithlond.services.organisation.api.parameters.ActivitySearchParameters;
-import se.mithlond.services.organisation.model.activity.Activity;
 import se.mithlond.services.organisation.model.membership.Membership;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
-import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.shared.authorization.api.RequireAuthorization;
@@ -68,35 +66,43 @@ public interface ActivityService {
     Activities getActivities(final ActivitySearchParameters parameters, final Membership activeMembership);
 
     /**
-     * Adds the given Activity to the database/calendar shared by the organisation.
+     * Adds the given Activities to the database/calendar shared by the organisation.
      *
-     * @param activityVO       An ActivityVO containing all data for creating an Activity. (Null jpaID required).
-     * @param activeMembership The Membership executing this call.
-     * @return The created Activity
-     * @throws RuntimeException if the Activity could not be created due to the activityVO not containing
+     * @param activities       An Activities transport wrapper containing all data for creating some Activities.
+     *                         This implies only the OrganisationVOs and ActivityVOs should be populated.
+     * @param activeMembership The Membership executing this call. If the Membership is considered an Administrator,
+     *                         the Activity can be created with other Memberships as responsible (than the
+     *                         activeMembership) within the same Organisation.
+     *                         Otherwise, only the activeMemberships can be designated as responsible for the newly
+     *                         created Activities.
+     * @return The created Activities
+     * @throws RuntimeException if the Activities could not be created due to the activityVO not containing
      *                          enough data or the activeMembership being null.
      */
     @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
-    Activity createActivity(final ActivityVO activityVO, final Membership activeMembership)
+    Activities createActivities(final Activities activities, final Membership activeMembership)
             throws RuntimeException;
 
     /**
      * Updates the given Activity to the database/calendar shared by the organisation.
      *
-     * @param activityVO                  An ActivityVO containing all data for updating an existing Activity.
-     *                                    (non-null JpaID required).
+     * @param targetState                 An Activities object containing all data for updating existing Activity
+     *                                    objects. (Non-null JpaIDs required).
      * @param onlyUpdateNonNullProperties Instructs the update to ignore updating any properties within the Activity
      *                                    for which the ActivityVO contains a null value.
-     * @param activeMembership            The Membership executing this call.
+     * @param activeMembership            The Membership executing this call. The Membership executing this call. If
+     *                                    the Membership is considered an Administrator, any Activity data within the
+     *                                    same Organisation can be updated. Otherwise, only the
+     *                                    Activities for which the activeMembership is responsible can be updated.
      * @return The updated Activity
      * @throws RuntimeException if any required parameter is {@code null} or the activityId did not correspond
      *                          to an existing Activity.
      */
     @SuppressWarnings("all")
     @RequireAuthorization(authorizationPatterns = "//Inbyggare/")
-    Activity updateActivity(final ActivityVO activityVO,
-                            final boolean onlyUpdateNonNullProperties,
-                            final Membership activeMembership);
+    Activities updateActivities(final Activities targetState,
+                                final boolean onlyUpdateNonNullProperties,
+                                final Membership activeMembership);
 
 
     /**

@@ -143,39 +143,38 @@ public class ActivityResource extends AbstractResource {
     }
 
     /**
-     * Creates a new Activity in the system, based on the information within the supplied ActivityVO.
+     * Creates new Activity objects in the system, based on the information within the supplied Activities.
      *
-     * @param activityVO A non-null {@link ActivityVO} instance to used as a template to create a new Activity.
-     * @return An {@link Activities} container with an {@link ActivityVO} containing the data of the
-     * newly created {@link Activity}.
+     * @param activities A non-null {@link Activities} wrapper containing at least one {@link ActivityVO}
+     *                   holding the information used to create a new Activity.
+     * @return An {@link Activities} container with at least one populated {@link ActivityVO} information holder.
      */
     @POST
     @Path("/create")
-    public Activities createActivity(final ActivityVO activityVO) {
+    public Activities createActivities(final Activities activities) {
 
         // Debug some.
         if (log.isDebugEnabled()) {
-            log.debug("About to create a new Activity from: " + activityVO);
+            log.debug("About to create new Activities from: " + activities);
         }
 
         // Check sanity
-        Validate.notNull(activityVO, "Cannot handle null 'activityVO' argument.");
+        Validate.notNull(activities, "Cannot handle null 'activities' argument.");
 
         // Create the activity
-        final Activity created;
+        Activities toReturn = new Activities();
         try {
-            created = activityService.createActivity(activityVO, getActiveMembership());
+            toReturn = activityService.createActivities(activities, getActiveMembership());
         } catch (RuntimeException e) {
-            log.error("Cannot create activity from ActivityVO " + activityVO.toString(), e);
-            return new Activities();
+            log.error("Cannot create activity state from received " + activities.toString(), e);
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("Created " + created);
+            log.debug("Created " + toReturn);
         }
 
         // All Done.
-        return new Activities(new ActivityVO(created));
+        return toReturn;
     }
 
     /**
@@ -197,20 +196,20 @@ public class ActivityResource extends AbstractResource {
                 .build();
 
         final Activities activities = activityService.getActivities(params, getActiveMembership());
-        final List<Activity> activityList = activities.getActivities();
+        final List<ActivityVO> receivedActivityVOs = activities.getActivityVOs();
 
-        // There should really only be one activity here
-        if (activityList.size() != 1) {
-            throw new IllegalArgumentException("Could not get exactly 1 activity for search params " + params);
+        Activities toReturn = new Activities();
+        if (receivedActivityVOs != null && !receivedActivityVOs.isEmpty()) {
+
+            // Let the service update the database state.
+            toReturn = activityService.updateActivities(
+                    activities,
+                    false,
+                    getActiveMembership());
         }
 
-        final Activity modifiedActivity = activityService.updateActivity(
-                activityVO,
-                false,
-                getActiveMembership());
-
         // All Done.
-        return new Activities(new ActivityVO(modifiedActivity));
+        return toReturn;
     }
 
     /**

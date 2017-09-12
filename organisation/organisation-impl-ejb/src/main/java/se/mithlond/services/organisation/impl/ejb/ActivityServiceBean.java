@@ -36,6 +36,7 @@ import se.mithlond.services.organisation.model.address.Address;
 import se.mithlond.services.organisation.model.address.CategorizedAddress;
 import se.mithlond.services.organisation.model.membership.Group;
 import se.mithlond.services.organisation.model.membership.Membership;
+import se.mithlond.services.organisation.model.transport.OrganisationVO;
 import se.mithlond.services.organisation.model.transport.activity.Activities;
 import se.mithlond.services.organisation.model.transport.activity.ActivityVO;
 import se.mithlond.services.organisation.model.transport.activity.AdmissionVO;
@@ -43,7 +44,6 @@ import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
@@ -55,6 +55,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -74,6 +75,15 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(ActivityServiceBean.class);
+
+    private static final SortedMap<String, String> AUTO_ADMITTED_PHRASE = new TreeMap<>();
+
+    static {
+        AUTO_ADMITTED_PHRASE.put(Locale.ENGLISH.getLanguage(), "Automatically admitted by service at");
+        AUTO_ADMITTED_PHRASE.put(TimeFormat.SWEDISH_LOCALE.getLanguage(), "Automatiskt anmäld av tjänsten");
+        AUTO_ADMITTED_PHRASE.put(TimeFormat.DANISH_LOCALE.getLanguage(), "Automatisk anmeldt av tjenesten");
+        AUTO_ADMITTED_PHRASE.put(TimeFormat.NORWEGIAN_LOCALE.getLanguage(), "Automatisk meldt av tjenesten");
+    }
 
     /**
      * The category name of Home addresses.
@@ -95,6 +105,11 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * @param organisationService An OrganisatinoService to inject.
      */
     public ActivityServiceBean(final OrganisationService organisationService) {
+
+        // Delegate
+        this();
+
+        // Assign internal state.
         this.organisationServiceBean = organisationService;
     }
 
@@ -195,99 +210,230 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * {@inheritDoc}
      */
     @Override
-    public Activity createActivity(final ActivityVO activityVO, final Membership activeMembership)
+    public Activities createActivities(final Activities activities, final Membership activeMembership)
             throws RuntimeException {
 
-        // Check sanity
+        // #0) Check sanity
+        //
         Validate.notNull(activeMembership, "activeMembership");
-        Validate.notNull(activityVO, "activityVO");
-        Validate.notNull(activityVO.getOrganisation(), "activityVO.getOrganisation()");
-        
-        final String organisationName = Validate.notNull(activityVO.getOrganisation().getOrganisationName(),
-                "organisationName");
-        final String shortDesc = Validate.notEmpty(activityVO.getShortDesc(), "shortDesc");
-        final String fullDesc = Validate.notEmpty(activityVO.getFullDesc(), "fullDesc");
+        Validate.notNull(activities, "activities");
 
-        final String addressCategory = Validate.notEmpty(activityVO.getAddressCategory(), "addressCategory");
-        final Address location = Validate.notNull(activityVO.getLocation(), "location");
+        final List<ActivityVO> activityVOs = activities.getActivityVOs();
+        Validate.notNull(activityVOs, "activityVOs");
 
-        // Are the startTime and endTime properly situated?
-        final LocalDateTime startTime = Validate.notNull(activityVO.getStartTime(), "activityVO.getStartTime()");
-        final LocalDateTime endTime = Validate.notNull(activityVO.getEndTime(), "activityVO.getEndTime()");
-        validateStartAndEndTimes(activityVO);
+        // #1) Create the return wrapper
+        //
+        final Organisation activeOrganisation = activeMembership.getOrganisation();
+        final Activities toReturn = new Activities();
 
-        // Are the late and last admission dates correctly submitted?
-        final LocalDate lateAdmissionDate = activityVO.getLateAdmissionDate();
-        final LocalDate lastAdmissionDate = Validate.notNull(activityVO.getLastAdmissionDate(), "lastAdmissionDate");
-        validateAdmissionDates(lateAdmissionDate, lastAdmissionDate);
-
-        // Get the required relations from the Database.
-        final Organisation organisation = CommonPersistenceTasks.getOrganisation(entityManager, organisationName);
-        final Category category = CommonPersistenceTasks.getAddressCategory(entityManager, addressCategory);
-
-        // Is a Group responsible for the Activity?
-        final Optional<Group> responsibleGroup =
-                validateActivityHasResponsibleAndRetrieveGroup(entityManager, activityVO);
-
-        // Create a new Activity using the supplied data.
-        final Activity toReturn = new Activity(shortDesc,
-                fullDesc,
-                startTime,
-                endTime,
-                activityVO.getCost(),
-                activityVO.getLateAdmissionCost(),
-                lateAdmissionDate,
-                lastAdmissionDate,
-                activityVO.isCancelled(),
-                activityVO.getDressCode(),
-                category,
-                location,
-                activityVO.getAddressShortDescription(),
-                organisation,
-                responsibleGroup.orElse(null),
-                activityVO.isOpenToGeneralPublic());
-
-        // Find the current timestamp, as interpreted within the TimeZone where the Activity takes place.
-        final TimeZone activityTimeZone = organisation.getTimeZone();
+        // #2) Find the current timestamp, as interpreted within the TimeZone where the Activity takes place.
+        //
+        final TimeZone activityTimeZone = activeOrganisation.getTimeZone();
         final LocalDateTime now = LocalDateTime.now(activityTimeZone.toZoneId());
 
-        // Convert all AdmissionVOs to Admissions, and add to the admissions of the Activity to return.
-        activityVO.getAdmissions().stream().map(c -> {
+        // Business rules:
+        //
+        // 1. Non-administrators can only create Activities where (only) they are responsible.
+        // 2. Administrators can create Activities where other Memberships within their own
+        //    Organisation are responsible.
+        //
+        final boolean isAdmin = organisationServiceBean.isAdministratorFor(
+                activeMembership,
+                activeMembership.getOrganisation());
 
-            // Convert the AdmissionVO to an Admission
-            final Membership admitted = CommonPersistenceTasks.getSingleMembership(
-                    entityManager,
-                    c.getAlias(),
-                    c.getOrganisation());
+        final List<ActivityVO> acceptedVOs = new ArrayList<>();
+        if (isAdmin) {
 
-            // Compile the admission note, which should be on the following format:
-            //
-            // a) If an admission note is supplied, insert it.
-            // b) If the admitted Membership is not the active Membership (i.e. someone is admitting someone
-            //    else), note who admitted whom.
-            //
-            final String admittedBySomeoneElse = " Anmäld av " + activeMembership.getAlias()
-                    + " (" + activeMembership.getOrganisation().getOrganisationName() + ")";
-            final String admissionNote = c.getNote().orElse("") // Use the note, if provided.
-                    + (!admitted.equals(activeMembership) ? admittedBySomeoneElse : "");
+            activityVOs
+                    .stream()
+                    .filter(act -> activeOrganisation.getOrganisationName().equalsIgnoreCase(
+                            act.getOrganisation().getOrganisationName()))
+                    .filter(act -> {
 
-            // All Done.
-            return new Admission(
-                    toReturn,
-                    admitted,
-                    now,
-                    now,
-                    admissionNote,
-                    c.isResponsible(),
-                    activeMembership);
+                        boolean responsibleMembershipsBelongsToActiveOrganisation = false;
+                        final Set<AdmissionVO> admissions = act.getAdmissions();
 
-        }).forEach(toReturn.getAdmissions()::add);
+                        if (admissions != null) {
 
-        // Persist & Flush.
-        entityManager.persist(toReturn);
+                            if (!admissions.isEmpty()) {
+
+                                final Set<AdmissionVO> responsibleAdmissions = admissions.stream()
+                                        .filter(Objects::nonNull)
+                                        .filter(adm -> adm.getMembershipID() != null)
+                                        .filter(AdmissionVO::isResponsible)
+                                        .collect(Collectors.toSet());
+
+                                // Accept this ActivityVO for creation only if...
+                                //
+                                // 1) At least 1 responsible Admission exists, and
+                                // 2) All Admissions for responsible imply Memberships which belong
+                                //    to the activeOrganisation.
+                                //
+                                responsibleMembershipsBelongsToActiveOrganisation = responsibleAdmissions.size() > 0
+                                        && responsibleAdmissions.stream()
+                                        .allMatch(adm -> activeOrganisation.getOrganisationName()
+                                                .equalsIgnoreCase(adm.getOrganisation()));
+                            } else {
+
+                                // Add the activeMembership as responsible for this Activity.
+                                admissions.add(createResponsibleAdmissionVoFor(activeMembership, act));
+                            }
+                        }
+
+                        // All Done.
+                        return responsibleMembershipsBelongsToActiveOrganisation;
+                    })
+                    .forEach(acceptedVOs::add);
+
+        } else {
+
+            activityVOs
+                    .stream()
+                    .filter(act -> activeOrganisation.getOrganisationName().equalsIgnoreCase(
+                            act.getOrganisation().getOrganisationName()))
+                    .filter(act -> {
+
+                        boolean isOnlyActiveMembershipResponsible = false;
+                        final Set<AdmissionVO> admissions = act.getAdmissions();
+
+                        if (admissions != null) {
+
+                            if (!admissions.isEmpty()) {
+
+                                final Set<AdmissionVO> responsibleAdmissions = admissions.stream()
+                                        .filter(Objects::nonNull)
+                                        .filter(adm -> adm.getMembershipID() != null)
+                                        .filter(AdmissionVO::isResponsible)
+                                        .collect(Collectors.toSet());
+
+                                // Accept this ActivityVO for creation only if...
+                                //
+                                // 1) Exactly 1 responsible Admission exists, and
+                                // 2) That Admission imply the activeMembership, which belongs
+                                //    to the activeOrganisation.
+                                //
+                                isOnlyActiveMembershipResponsible = responsibleAdmissions.size() == 1
+                                        && responsibleAdmissions.stream().allMatch(adm ->
+                                        adm.getMembershipID() == activeMembership.getId()
+                                                && adm.getOrganisation().equalsIgnoreCase(
+                                                activeMembership.getOrganisation().getOrganisationName()));
+                            } else {
+
+                                // Add the activeMembership as responsible for this Activity.
+                                admissions.add(createResponsibleAdmissionVoFor(activeMembership, act));
+                            }
+                        }
+
+                        // All Done
+                        return isOnlyActiveMembershipResponsible;
+                    })
+                    .forEach(acceptedVOs::add);
+        }
+
+        // #3) Check more sanity
+        //
+        final List<Activity> persistedActivities = new ArrayList<>();
+        if (!acceptedVOs.isEmpty()) {
+
+            acceptedVOs.forEach(theVO -> {
+
+                // #3.1) Validate that the data given are sane.
+                //
+                final OrganisationVO organisationVO = Validate.notNull(
+                        theVO.getOrganisation(), "getOrganisation()");
+                final String shortDesc = Validate.notEmpty(theVO.getShortDesc(), "getShortDesc()");
+                final String fullDesc = Validate.notEmpty(theVO.getFullDesc(), "getFullDesc()");
+
+                final String addressCategory = Validate.notEmpty(theVO.getAddressCategory(), "getAddressCategory()");
+                final Address location = Validate.notNull(theVO.getLocation(), "getLocation()");
+
+                // #3.2) Validate that all dates and timestamps are correctly given, in relationship to each other.
+                //
+                final LocalDateTime startTime = Validate.notNull(theVO.getStartTime(), "getStartTime()");
+                final LocalDateTime endTime = Validate.notNull(theVO.getEndTime(), "getEndTime()");
+                validateStartAndEndTimes(theVO);
+
+                // Are the late and last admission dates correctly submitted?
+                final LocalDate lateAdmissionDate = theVO.getLateAdmissionDate();
+                final LocalDate lastAdmissionDate = Validate.notNull(
+                        theVO.getLastAdmissionDate(), "getLastAdmissionDate()");
+                validateAdmissionDates(lateAdmissionDate, lastAdmissionDate);
+
+                // #3.3) Get the managed objects from the Database.
+                //
+                final Organisation organisation = CommonPersistenceTasks.getOrganisation(entityManager,
+                        organisationVO.getOrganisationName());
+                final Category category = CommonPersistenceTasks.getAddressCategory(entityManager, addressCategory);
+
+                // Is a Group responsible for the Activity?
+                final Optional<Group> responsibleGroup =
+                        validateActivityHasResponsibleAndRetrieveGroup(entityManager, theVO);
+
+                // #3.4) Create the Activity object to persist.
+                //
+                final Activity toPersist = new Activity(shortDesc,
+                        fullDesc,
+                        startTime,
+                        endTime,
+                        theVO.getCost(),
+                        theVO.getLateAdmissionCost(),
+                        lateAdmissionDate,
+                        lastAdmissionDate,
+                        theVO.isCancelled(),
+                        theVO.getDressCode(),
+                        category,
+                        location,
+                        theVO.getAddressShortDescription(),
+                        organisation,
+                        responsibleGroup.orElse(null),
+                        theVO.isOpenToGeneralPublic());
+
+                // #3.5) Convert all supplied AdmissionVOs to Admission objects.
+                //
+                theVO.getAdmissions().stream().map(c -> {
+
+                    // Convert the AdmissionVO to an Admission
+                    final Membership admitted = CommonPersistenceTasks.getSingleMembership(
+                            entityManager,
+                            c.getAlias(),
+                            c.getOrganisation());
+
+                    // Compile the admission note, which should be on the following format:
+                    //
+                    // a) If an admission note is supplied, insert it.
+                    // b) If the admitted Membership is not the active Membership (i.e. someone is admitting someone
+                    //    else), note who admitted whom.
+                    //
+                    final String admittedBySomeoneElse = " Anmäld av " + activeMembership.getAlias()
+                            + " (" + activeMembership.getOrganisation().getOrganisationName() + ")";
+                    final String admissionNote = c.getNote().orElse("") // Use the note, if provided.
+                            + (!admitted.equals(activeMembership) ? admittedBySomeoneElse : "");
+
+                    // All Done.
+                    return new Admission(
+                            toPersist,
+                            admitted,
+                            now,
+                            now,
+                            admissionNote,
+                            c.isResponsible(),
+                            activeMembership);
+
+                }).forEach(toPersist.getAdmissions()::add);
+
+                // Persist the Object
+                entityManager.persist(toPersist);
+
+                // Add the just persisted object to the
+                persistedActivities.add(toPersist);
+            });
+        }
+
+        // Flush the EntityManager.
         entityManager.flush();
 
         // All Done.
+        persistedActivities.forEach(act -> toReturn.addActivityVOs(new ActivityVO(act)));
         return toReturn;
     }
 
@@ -295,28 +441,32 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
      * {@inheritDoc}
      */
     @Override
-    public Activity updateActivity(final ActivityVO activityVO,
-                                   final boolean onlyUpdateNonNullProperties,
-                                   final Membership activeMembership) {
+    public Activities updateActivities(final Activities targetState,
+                                       final boolean onlyUpdateNonNullProperties,
+                                       final Membership activeMembership) {
 
         // Check sanity
-        Validate.notNull(activityVO, "activityVO");
+        Validate.notNull(targetState, "targetState");
         Validate.notNull(activeMembership, "activeMembership");
-        Validate.isTrue(0 < activityVO.getJpaID(), "0 < activityVO.getJpaID()");
+        // Validate.isTrue(0 < targetState.getJpaID(), "0 < targetState.getJpaID()");
 
-        final Activity toUpdate = entityManager.find(Activity.class, activityVO.getJpaID());
+        // final Activities toReturn = new Activities();
+
+        /*
+        final Activity toUpdate = entityManager.find(Activity.class, targetState.getJpaID());
         if (toUpdate == null) {
             return null;
         }
 
         // Update all sensible things to update
-        SimpleIntrospector.copyJavaBeanProperties(activityVO, toUpdate);
+        SimpleIntrospector.copyJavaBeanProperties(targetState, toUpdate);
 
         // Flush the entity manager.
         entityManager.flush();
+        */
 
         // All Done.
-        return toUpdate;
+        return new Activities();
     }
 
     /**
@@ -638,6 +788,23 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
     //
     // Private helpers
     //
+
+    private static AdmissionVO createResponsibleAdmissionVoFor(final Membership activeMembership,
+                                                               final ActivityVO activity) {
+
+        final String note = AUTO_ADMITTED_PHRASE.getOrDefault(
+                activeMembership.getOrganisation().getLocale().getLanguage(),
+                AUTO_ADMITTED_PHRASE.get(Locale.ENGLISH.getLanguage()));
+
+        return new AdmissionVO(activity.getJpaID(),
+                activeMembership.getId(),
+                activeMembership.getAlias(),
+                activeMembership.getOrganisation().getOrganisationName(),
+                LocalDateTime.now(),
+                LocalDateTime.now(),
+                note + TimeFormat.YEAR_MONTH_DATE_HOURS_MINUTES.print(LocalDateTime.now()),
+                true);
+    }
 
     private static void validateAdmissionDates(final LocalDate lateAdmissionDate, final LocalDate lastAdmissionDate)
             throws IllegalArgumentException {

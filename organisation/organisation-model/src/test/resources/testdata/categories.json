@@ -1,0 +1,52 @@
+{
+  "categories": [
+    {
+      "jpaId": 3,
+      "version": 0,
+      "xmlID": "category_activity_locale_Affär",
+      "classification": "activity_locale",
+      "categoryID": "Affär",
+      "description": "Affär / Butik"
+    },
+    {
+      "jpaId": 1,
+      "version": 0,
+      "xmlID": "category_activity_locale_Café",
+      "classification": "activity_locale",
+      "categoryID": "Café",
+      "description": "Café eller konditori"
+    },
+    {
+      "jpaId": 8,
+      "version": 0,
+      "xmlID": "category_activity_locale_Hemadress",
+      "classification": "activity_locale",
+      "categoryID": "Hemadress",
+      "description": "Hemma hos Inbyggare"
+    },
+    {
+      "jpaId": 2,
+      "version": 0,
+      "xmlID": "category_activity_locale_Pub_/_Restaurang",
+      "classification": "activity_locale",
+      "categoryID": "Pub / Restaurang",
+      "description": "Pub eller Restaurang"
+    },
+    {
+      "jpaId": 4,
+      "version": 0,
+      "xmlID": "category_activity_locale_Samlingslokal",
+      "classification": "activity_locale",
+      "categoryID": "Samlingslokal",
+      "description": "Lokal för gillesmöten eller fest"
+    },
+    {
+      "jpaId": 44,
+      "version": 0,
+      "xmlID": "category_activity_locale_Utomhus",
+      "classification": "activity_locale",
+      "categoryID": "Utomhus",
+      "description": "Utomhus eller friluftsliv"
+    }
+  ]
+}

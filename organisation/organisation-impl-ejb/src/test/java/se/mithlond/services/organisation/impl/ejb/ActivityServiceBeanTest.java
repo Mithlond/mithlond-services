@@ -224,8 +224,8 @@ public class ActivityServiceBeanTest extends AbstractOrganisationIntegrationTest
                 false));
 
         // Act
-        final Activity mifflondActivity = unitUnderTest.createActivity(mifflondActivityVO, bilbo);
-        final Activity fjodjimActivity = unitUnderTest.createActivity(fjodjimActivityVO, zap);
+        final Activities mifflondActivities = unitUnderTest.createActivities(new Activities(mifflondActivityVO), bilbo);
+        final Activities fjodjimActivities = unitUnderTest.createActivities(new Activities(fjodjimActivityVO), zap);
 
         final Activities shallowFjodjimActivities = unitUnderTest.getActivities(
                 ActivitySearchParameters.builder()

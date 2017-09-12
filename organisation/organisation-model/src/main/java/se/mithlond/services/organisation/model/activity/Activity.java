@@ -328,12 +328,12 @@ public class Activity extends Listable {
     }
 
     /**
-     * @return The optional cost of the activity. Never negative or null.
+     * @return The cost of the activity. Never negative or null.
      */
     public Amount getCost() {
-        if (cost == null) {
-        }
-        return new Amount(cost, WellKnownCurrency.valueOf(currency));
+
+        final BigDecimal amount = cost == null ? BigDecimal.ZERO : cost;
+        return new Amount(amount, WellKnownCurrency.valueOf(currency));
     }
 
     /**

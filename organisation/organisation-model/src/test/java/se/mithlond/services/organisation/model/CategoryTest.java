@@ -24,11 +24,16 @@ package se.mithlond.services.organisation.model;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 import se.jguru.nazgul.test.xmlbinding.XmlTestUtils;
 import se.mithlond.services.organisation.model.helpers.Categories;
+import se.mithlond.services.shared.test.entity.JpaIdMutator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
@@ -36,22 +41,36 @@ import java.util.List;
 public class CategoryTest extends AbstractEntityTest {
 
     // Shared state
-    private List<Category> categories;
+    private SortedSet<Category> categories;
     private Category[] categoryArray;
 
     @Before
     public void setupSharedState() {
-        categories = new ArrayList<>();
 
-        for(int i = 0; i < 10; i++) {
-            categories.add(new Category("categoryID_" + i, "classification_" + i, "description_" + i));
-        }
+        final String[][] data = {{"1", "Café", "Café eller konditori"},
+                {"2", "Pub / Restaurang", "Pub eller Restaurang"},
+                {"3", "Affär", "Affär / Butik"},
+                {"4", "Samlingslokal", "Lokal för gillesmöten eller fest"},
+                {"8", "Hemadress", "Hemma hos Inbyggare"},
+                {"44", "Utomhus", "Utomhus eller friluftsliv"}};
+
+        categories = Stream.of(data)
+                .map(theArray -> {
+
+                    // Create the Category.
+                    final Category toReturn = new Category(theArray[1], "activity_locale", theArray[2]);
+                    JpaIdMutator.setId(toReturn, Long.parseLong(theArray[0]));
+
+                    // All Done.
+                    return toReturn;
+                })
+                .collect(Collectors.toCollection(TreeSet::new));
 
         categoryArray = categories.toArray(new Category[categories.size()]);
     }
 
     @Test
-    public void validateMarshalling() throws Exception {
+    public void validateMarshallingToXML() throws Exception {
 
         // Assemble
         final String expected = XmlTestUtils.readFully("testdata/categories.xml");
@@ -62,6 +81,20 @@ public class CategoryTest extends AbstractEntityTest {
         // Assert
         // System.out.println("Got: " + result);
         validateIdenticalContent(expected, result);
+    }
+
+    @Test
+    public void validateMarshallingToJSON() throws Exception {
+
+        // Assemble
+        final String expected = XmlTestUtils.readFully("testdata/categories.json");
+
+        // Act
+        final String result = marshalToJSon(new Categories(categoryArray));
+
+        // Assert
+        // System.out.println("Got: " + result);
+        JSONAssert.assertEquals(expected, result, true);
     }
 
     @Test
@@ -80,9 +113,9 @@ public class CategoryTest extends AbstractEntityTest {
         final List<Category> resurrected = result.getCategories();
         Assert.assertEquals(categories.size(), resurrected.size());
 
-        for(int i = 0; i < categories.size(); i++) {
+        for (int i = 0; i < categories.size(); i++) {
 
-            final Category expected = categories.get(i);
+            final Category expected = categoryArray[i];
             final Category actual = resurrected.get(i);
 
             Assert.assertNotSame(expected, actual);
