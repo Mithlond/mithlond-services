@@ -261,10 +261,9 @@ public class Address implements Validatable, Comparable<Address>, Serializable {
         }
 
         // Delegate to internal state
-        int toReturn = 0;
-
-        final String thisCoL = getCareOfLine() == null ? "" : getCareOfLine();
-        toReturn = thisCoL.compareTo(that.getCareOfLine());
+        final String thisCoL = this.getCareOfLine() == null ? "" : this.getCareOfLine();
+        final String thatCoL = that.getCareOfLine() == null ? "" : that.getCareOfLine();
+        int toReturn = thisCoL.compareTo(thatCoL);
 
         if (toReturn == 0) {
             toReturn = compareStrings(getStreet(), that.getStreet());

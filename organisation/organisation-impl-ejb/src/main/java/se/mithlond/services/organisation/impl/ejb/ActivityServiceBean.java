@@ -44,7 +44,6 @@ import se.mithlond.services.organisation.model.transport.activity.Admissions;
 import se.mithlond.services.organisation.model.transport.address.CategoriesAndAddresses;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.algorithms.TimeFormat;
-import se.mithlond.services.shared.spi.algorithms.introspection.SimpleIntrospector;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 import se.mithlond.services.shared.spi.jpa.JpaUtilities;
 
@@ -64,6 +63,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TimeZone;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -136,13 +136,14 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
         // Acquire the padded lists.
         final List<Long> organisationIDs = parameters.getOrganisationIDs();
         final List<Long> activityIDs = parameters.getActivityIDs();
-        // final List<Long> membershipIDs = parameters.getMembershipIDs();
         final SortedMap<Organisation, Boolean> adminMap = new TreeMap<>();
 
         organisationIDs.stream().sorted().forEach(orgID -> {
 
             final Organisation org = entityManager.find(Organisation.class, orgID);
-            if (!adminMap.containsKey(org)) {
+            if (org == null) {
+                log.error("Found no Organisation for orgID [" + orgID + "]. This should not happen.");
+            } else if (!adminMap.containsKey(org)) {
                 adminMap.put(org, organisationServiceBean.isAdministratorFor(activeMembership, org));
             }
         });
@@ -524,13 +525,84 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
 
         }
 
+        if (log.isDebugEnabled()) {
+            log.debug("Updating [" + acceptedVOs.size() + "] activityVOs.");
+        }
+
         acceptedVOs.forEach(theVO -> {
 
             // Find the corresponding Activity
             final Activity toUpdate = entityManager.find(Activity.class, theVO.getJpaID());
+
+            if (log.isDebugEnabled()) {
+                log.debug("Updating Activity: " + toUpdate.toString() + ". Target state: " + theVO.toString());
+            }
+
             if (toUpdate != null) {
 
-                SimpleIntrospector.copyJavaBeanProperties(targetState, toUpdate);
+                // #1) Update trivial properties
+                //
+                // #1.1) Descriptions and trivial metadata
+                //
+                update(theVO.getShortDesc(), toUpdate.getShortDesc(), toUpdate::setShortDesc);
+                update(theVO.getFullDesc(), toUpdate.getFullDesc(), toUpdate::setFullDesc);
+                update(theVO.getAddressShortDescription(),
+                        toUpdate.getAddressShortDescription(),
+                        toUpdate::setAddressShortDescription);
+                toUpdate.setCancelled(theVO.isCancelled());
+                update(theVO.getDressCode(), toUpdate.getDressCode(), toUpdate::setDressCode);
+
+                // #1.2) Costs
+                //
+                update(theVO.getCost(), toUpdate.getCost(), toUpdate::setCost);
+                update(theVO.getLateAdmissionCost(), toUpdate.getLateAdmissionCost(), toUpdate::setLateAdmissionCost);
+
+                // #1.3) Dates & Times
+                //
+                update(theVO.getLateAdmissionDate(), toUpdate.getLateAdmissionDate(),
+                        c -> toUpdate.setLateAdmissionDate((LocalDate) c));
+                update(theVO.getLastAdmissionDate(), toUpdate.getLastAdmissionDate(),
+                        c -> toUpdate.setLastAdmissionDate((LocalDate) c));
+                update(theVO.getStartTime(), toUpdate.getStartTime(),
+                        c -> toUpdate.setStartTime((LocalDateTime) c));
+                update(theVO.getEndTime(), toUpdate.getEndTime(),
+                        c -> toUpdate.setEndTime((LocalDateTime) c));
+
+                // #2) Update JPA relations
+                //
+                // #2.1) Activity location: Category
+                final String targetAddressCategory = theVO.getAddressCategory();
+                if (targetAddressCategory != null) {
+
+                    // Same as the existing Category?
+                    final Category addressCategory = toUpdate.getAddressCategory();
+                    if (!addressCategory.getCategoryID().equalsIgnoreCase(theVO.getAddressCategory())) {
+
+                        // Find the managed Category to replace the
+                        // + " where lower(a.categoryID) like lower(:" + OrganisationPatterns.PARAM_CATEGORY_ID
+                        // + ") and a.classification like :" + OrganisationPatterns.PARAM_CLASSIFICATION
+                        final Category newCategory = entityManager.createNamedQuery(
+                                Category.NAMEDQ_GET_BY_ID_CLASSIFICATION, Category.class)
+                                .setParameter(OrganisationPatterns.PARAM_CATEGORY_ID,
+                                        targetAddressCategory)
+                                .setParameter(OrganisationPatterns.PARAM_CLASSIFICATION,
+                                        CategorizedAddress.ACTIVITY_CLASSIFICATION)
+                                .getSingleResult();
+
+                        update(newCategory, addressCategory, toUpdate::setAddressCategory);
+                    }
+                }
+
+                // #2.2) Location
+                //
+                update(theVO.getLocation(), toUpdate.getLocation(), toUpdate::setLocation);
+
+                // #3) Admissions
+                final Admissions tmpWrapper = new Admissions();
+                tmpWrapper.getDetails().addAll(theVO.getAdmissions());
+                updateAdmissions(activeMembership, tmpWrapper);
+
+                // Now flush before returning the updated object.
                 entityManager.flush();
 
                 // Populate the returning structure.
@@ -540,9 +612,25 @@ public class ActivityServiceBean extends AbstractJpaService implements ActivityS
                 log.warn("Found no existing Activity with JpaID [" + theVO.getJpaID() + "] to update.");
             }
         });
-        
+
+        // Flush the EntityManager, and re-select the now updated Activity.
+
         // All Done.
         return toReturn;
+    }
+
+    private <T extends Comparable<T>> void update(final T targetValue,
+                                                  final T existingValue,
+                                                  final Consumer<T> setter) {
+
+        // Dont update with nulls.
+        if (targetValue == null) {
+            return;
+        }
+
+        if (existingValue != null && existingValue.compareTo(targetValue) != 0) {
+            setter.accept(targetValue);
+        }
     }
 
     /**

@@ -178,38 +178,17 @@ public class ActivityResource extends AbstractResource {
     }
 
     /**
-     * Modifies the admissions of the supplied ActivityVO.
+     * Updates the supplied Activities with the activity data supplied.
      *
-     * @param activityVO A populated - and non-null - {@link ActivityVO}.
-     * @return An Activities wrapper containing the ActivityVO of the modified Activity.
+     * @param activities An Activities transport wrapper containing the ActivityVOs to update.
+     * @return An Activities wrapper containing activities to update.
      */
     @POST
-    @Path("/modify")
-    public Activities modifyActivity(final ActivityVO activityVO) {
+    @Path("/update")
+    public Activities updateActivities(final Activities activities) {
 
-        // Check sanity
-        Validate.notNull(activityVO, "Cannot handle null 'activityVO' argument.");
-
-        final ActivitySearchParameters params = ActivitySearchParameters.builder()
-                .withActivityIDs()
-                .withOrganisationIDs()
-                .build();
-
-        final Activities activities = activityService.getActivities(params, getActiveMembership());
-        final List<ActivityVO> receivedActivityVOs = activities.getActivityVOs();
-
-        Activities toReturn = new Activities();
-        if (receivedActivityVOs != null && !receivedActivityVOs.isEmpty()) {
-
-            // Let the service update the database state.
-            toReturn = activityService.updateActivities(
-                    activities,
-                    false,
-                    getActiveMembership());
-        }
-
-        // All Done.
-        return toReturn;
+        // Simply delegate to the service.
+        return activityService.updateActivities(activities, true, getActiveMembership());
     }
 
     /**
