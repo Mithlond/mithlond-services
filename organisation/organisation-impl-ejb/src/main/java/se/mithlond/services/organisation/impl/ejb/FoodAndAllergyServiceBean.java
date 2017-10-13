@@ -42,6 +42,7 @@ import se.mithlond.services.organisation.model.transport.convenience.food.SlimFo
 import se.mithlond.services.organisation.model.transport.food.Allergies;
 import se.mithlond.services.organisation.model.transport.food.AllergyVO;
 import se.mithlond.services.organisation.model.transport.food.FoodPreferenceVO;
+import se.mithlond.services.organisation.model.transport.user.UserVO;
 import se.mithlond.services.organisation.model.user.User;
 import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
@@ -507,6 +508,9 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
                     .map(s -> s.getShortDescription().getText())
                     .reduce((l, r) -> l + ", " + r)
                     .orElse("none (Null)"));
+
+            log.debug("Membership [" + activeMembership.getAlias() + "] is admin on ["
+                    + activeOrganisation.getOrganisationName() + "]: " + isAdmin);
         }
 
         if (!isAdmin) {
@@ -536,95 +540,118 @@ public class FoodAndAllergyServiceBean extends AbstractJpaService implements Foo
             final SortedMap<User, Set<AllergyVO>> user2AllergyMap = new TreeMap<>(ID_COMPARATOR);
             final SortedMap<User, Membership> user2MembershipCache = new TreeMap<>(ID_COMPARATOR);
 
-            for (AllergyVO current : receivedData.getAllergyList()) {
+            // If the last allergy was removed, receivedData.getAllergyList() will be empty.
+            // Hence - iterate over the Users instead. We cannot handle null/empty Users.
+            for (UserVO userVO : receivedData.getUsers()) {
 
-                if (log.isDebugEnabled()) {
-                    log.debug("Matching " + current.toString());
+                // Assume we have a JpaID in the inbound UserVO.
+                final Long userJpaID = userVO.getJpaID();
+                final boolean hasJpaID = userJpaID != null && userVO.getJpaID() != 0L;
+
+                if (!hasJpaID) {
+                    log.warn("Skipping processing allergies for UserVO [" + userVO.getXmlId()
+                            + "]: No JPA ID present.");
+                    continue;
                 }
 
-                final User currentUser = user2AllergyMap.keySet().stream()
-                        .filter(aUser -> aUser.getId() == current.getUserID())
+                // #1) Log some.
+                if (log.isDebugEnabled()) {
+
+                    final boolean hasXmlID = userVO.getXmlId() != null && !userVO.getXmlId().isEmpty();
+
+                    final String theUserVOid = "JpaID: " + userVO.getJpaID()
+                            + (hasXmlID ? ", XmlID: " + userVO.getXmlId() : "");
+                    log.debug("Processing allergies for UserVO [" + theUserVOid + "]: "
+                            + userVO.getFirstName() + " " + userVO.getLastName());
+                }
+
+                // #2) Find the User and Membership within the activeOrganisation for the current UserVO.
+                final User currentUser = user2MembershipCache.keySet().stream()
+                        .filter(aUser -> aUser.getId() == userJpaID)
                         .findFirst()
-                        .orElseGet(() -> entityManager.find(User.class, current.getUserID()));
+                        .orElseGet(() -> entityManager.find(User.class, userJpaID));
 
                 if (currentUser == null) {
-                    log.warn("Could not find User for JPA ID [" + current.getUserID() + "]");
+
+                    log.warn("Could not find User for JPA ID [" + userJpaID
+                            + "]. Skipping processing allergies for this User.");
+                    continue;
+
                 } else if (log.isDebugEnabled()) {
                     log.debug("User [" + currentUser.getId() + " (" + currentUser.getFirstName() + " "
                             + currentUser.getLastName() + ") is an admin for [" + activeOrganisation
                             .getOrganisationName() + "]");
                 }
 
-                if (currentUser != null) {
+                // Find the single Membership of the currentUser within the active organisation.
+                try {
 
-                    // Find the single Membership of the currentUser within the active organisation.
-                    try {
+                    final Membership validMembership = user2MembershipCache.getOrDefault(currentUser,
+                            entityManager.createNamedQuery(
+                                    Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED_AND_USERID,
+                                    Membership.class)
+                                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, activeOrganisation.getId())
+                                    .setParameter(OrganisationPatterns.PARAM_USER_ID, userJpaID)
+                                    .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
+                                    .getSingleResult());
 
-                        final Membership validMembership = user2MembershipCache.getOrDefault(currentUser,
-                                entityManager.createNamedQuery(
-                                        Membership.NAMEDQ_GET_BY_ORGANISATION_ID_LOGINPERMITTED_AND_USERID,
-                                        Membership.class)
-                                        .setParameter(OrganisationPatterns.PARAM_ORGANISATION_ID, activeOrganisation.getId())
-                                        .setParameter(OrganisationPatterns.PARAM_USER_ID, current.getUserID())
-                                        .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
-                                        .getSingleResult());
+                    if (log.isInfoEnabled()) {
+                        log.info("Found Membership with alias [" + validMembership.getAlias() + "] for "
+                                + "[" + currentUser.getId() + " (" + currentUser.getFirstName() + " "
+                                + currentUser.getLastName() + ")]");
+                    }
 
-                        if (log.isInfoEnabled()) {
-                            log.info("Found Membership with alias [" + validMembership.getAlias() + "] for "
-                                    + "[" + currentUser.getId() + " (" + currentUser.getFirstName() + " "
-                                    + currentUser.getLastName() + ")]");
+                    if (validMembership != null) {
+
+                        // Inscribe into the tmp cache.
+                        if (!user2MembershipCache.containsKey(currentUser)) {
+                            user2MembershipCache.put(currentUser, validMembership);
                         }
 
-                        if (validMembership != null) {
+                        // Add the current food preference to the target state
+                        Set<AllergyVO> targetState = user2AllergyMap.get(currentUser);
+                        if (targetState == null) {
 
-                            // Inscribe into the tmp cache.
-                            if (!user2MembershipCache.containsKey(currentUser)) {
-                                user2MembershipCache.put(currentUser, validMembership);
+                            targetState = new TreeSet<>();
+
+                            // Find the target state allergies for the current User.
+                            final Set<AllergyVO> filteredAllergies = receivedData.getAllergyList()
+                                    .stream()
+                                    .filter(aVO -> aVO.getUserID() == userJpaID)
+                                    .collect(Collectors.toSet());
+                            if (filteredAllergies != null) {
+                                targetState.addAll(filteredAllergies);
                             }
 
-                            // Add the current food preference to the target state
-                            Set<AllergyVO> targetState = user2AllergyMap.get(currentUser);
-                            if (targetState == null) {
-
-                                targetState = new TreeSet<>();
-                                user2AllergyMap.put(currentUser, targetState);
-                            }
-                            targetState.add(current);
-
-                        } else {
-
-                            log.warn("Found no Membership within organisation ["
-                                    + activeOrganisation.getOrganisationName() + "] for user [" + currentUser.getId()
-                                    + " (" + currentUser.getFirstName() + " " + currentUser.getLastName()
-                                    + ")]. Ignoring Allergy [" + current.getFoodName() + " :: " + current.getSeverity()
-                                    + "] for that User.");
+                            user2AllergyMap.put(currentUser, targetState);
                         }
 
-                    } catch (Exception e) {
+                    } else {
 
-                        // Could not find the Membership for user with the currentID.
                         log.warn("Found no Membership within organisation ["
-                                + activeOrganisation.getOrganisationName() + "] for user [" + currentUser.getId()
+                                + activeOrganisation.getOrganisationName() + "] for user [" + userJpaID
                                 + " (" + currentUser.getFirstName() + " " + currentUser.getLastName()
-                                + ")]. Not updating Allergies for that User.", e);
+                                + ")]. Skipping allergy processing for that user.");
                     }
-                } else {
 
-                    if (log.isWarnEnabled()) {
-                        log.warn("Found no user for userID [" + current.getUserID() + "]. Ignoring allergies for ["
-                                + current.getFoodName() + " :: " + current.getSeverity() + "]");
-                    }
+                } catch (Exception e) {
+
+                    // Could not find the Membership for user with the currentID.
+                    log.warn("Found no Membership within organisation ["
+                            + activeOrganisation.getOrganisationName() + "] for user [" + currentUser.getId()
+                            + " (" + currentUser.getFirstName() + " " + currentUser.getLastName()
+                            + ")]. Not updating Allergies for that User.", e);
                 }
+
+                // Update the state for each user within the database.
+                user2AllergyMap.forEach(
+                        (user, target) -> this.persistAllergiesFor(user, target, severities, organisationLocale));
+
+                // Populate the return value
+                user2AllergyMap.forEach((user, targetState) -> {
+                    toReturn.getAllergyList().addAll(targetState);
+                });
             }
-
-            // Update the state for each user within the database.
-            user2AllergyMap.forEach(
-                    (user, target) -> this.persistAllergiesFor(user, target, severities, organisationLocale));
-
-            // Populate the return value
-            user2AllergyMap.forEach((user, targetState) -> {
-                toReturn.getAllergyList().addAll(targetState);
-            });
         }
 
         // All Done.
