@@ -15,7 +15,7 @@
 
     <groupId>se.mithlond.services.shared.spi.jpa</groupId>
     <artifactId>mithlond-services-shared-spi-jpa</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>Mithlond Service: Shared Persistence (SPI, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
@@ -48,7 +48,7 @@
         <dependency>
             <groupId>se.mithlond.services.shared.spi.algorithms</groupId>
             <artifactId>mithlond-services-shared-spi-algorithms</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <!--
             External dependencies.
@@ -128,6 +128,6 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>backend-services-1.11.0</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>

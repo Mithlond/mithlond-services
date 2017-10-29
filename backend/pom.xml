@@ -8,12 +8,12 @@
     <parent>
         <groupId>se.mithlond.services</groupId>
         <artifactId>mithlond-services-reactor</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <groupId>se.mithlond.services.backend</groupId>
     <artifactId>mithlond-services-backend-reactor</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>Mithlond Service: Backend Reactor (version ${project.version})</description>
     <packaging>pom</packaging>
@@ -53,6 +53,6 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>backend-services-1.11.0</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
