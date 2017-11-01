@@ -3,7 +3,7 @@
   #%L
   Nazgul Project: mithlond-services-organisation-model
   %%
-  Copyright (C) 2015 Mithlond
+  Copyright (C) 2015 - 2017 Mithlond
   %%
   Licensed under the jGuru Europe AB license (the "License"), based
   on Apache License, Version 2.0; you may not use this file except
@@ -20,6 +20,7 @@
   limitations under the License.
   #L%
   -->
+
 <organisation:wellKnownAddressTypes xmlns:core="http://www.jguru.se/nazgul/core" xmlns:organisation="http://xmlns.mithlond.se/xml/ns/organisation" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <addressTypes>
         <addressType>HOME</addressType>

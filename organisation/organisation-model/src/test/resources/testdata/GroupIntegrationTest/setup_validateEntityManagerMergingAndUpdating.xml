@@ -3,7 +3,7 @@
   #%L
   Nazgul Project: mithlond-services-organisation-model
   %%
-  Copyright (C) 2015 Mithlond
+  Copyright (C) 2015 - 2017 Mithlond
   %%
   Licensed under the jGuru Europe AB license (the "License"), based
   on Apache License, Version 2.0; you may not use this file except
@@ -20,6 +20,7 @@
   limitations under the License.
   #L%
   -->
+
 <dataset>
   <ORGANISATION ID="1" BANKACCOUNTINFO="bankAccountInfo_0" LOCALE_COUNTRY="SE" EMAILSUFFIX="emailSuffix_0" LANGUAGE="sv" ORGANISATIONNAME="name_0" PHONE="phone_0" POSTACCOUNTINFO="postAccountInfo_0" STANDARD_CURRENCY="SEK" SUFFIX="suffix_0" TIMEZONEID="Europe/Stockholm" VERSION="1" CAREOFLINE="careOfLine_0" CITY="city_0" COUNTRY="country_0" DEPARTMENTNAME="departmentName_0" DESCRIPTION="description_0" NUMBER="number_0" STREET="street_0" ZIPCODE="zipCode_0"/>
   <ORGANISATION ID="2" BANKACCOUNTINFO="bankAccountInfo_1" LOCALE_COUNTRY="SE" EMAILSUFFIX="emailSuffix_1" LANGUAGE="sv" ORGANISATIONNAME="name_1" PHONE="phone_1" POSTACCOUNTINFO="postAccountInfo_1" STANDARD_CURRENCY="SEK" SUFFIX="suffix_1" TIMEZONEID="Europe/Stockholm" VERSION="1" CAREOFLINE="careOfLine_1" CITY="city_1" COUNTRY="country_1" DEPARTMENTNAME="departmentName_1" DESCRIPTION="description_1" NUMBER="number_1" STREET="street_1" ZIPCODE="zipCode_1"/>

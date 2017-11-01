@@ -3,7 +3,7 @@
   #%L
   Nazgul Project: mithlond-services-shared-spi-jaxb
   %%
-  Copyright (C) 2015 - 2016 Mithlond
+  Copyright (C) 2015 - 2017 Mithlond
   %%
   Licensed under the jGuru Europe AB license (the "License"), based
   on Apache License, Version 2.0; you may not use this file except
@@ -20,6 +20,7 @@
   limitations under the License.
   #L%
   -->
+
 
 <shared:dateExampleVO xmlns:shared="http://xmlns.mithlond.se/xml/ns/shared/jaxb" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:core="http://www.jguru.se/nazgul/core" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" lastAdmissionDate="2016-02-05" admissionTime="2015-02-02T19:43:00+01:00[Europe/Stockholm]">
     <eventStartTime>2016-03-04T18:15:00</eventStartTime>
