@@ -20,8 +20,6 @@
   limitations under the License.
   #L%
   -->
-
-
 <configuration>
 
     <appender name="Stdout" class="ch.qos.logback.core.ConsoleAppender">

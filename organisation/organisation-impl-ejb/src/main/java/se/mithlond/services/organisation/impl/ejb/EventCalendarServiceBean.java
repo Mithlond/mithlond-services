@@ -110,10 +110,10 @@ public class EventCalendarServiceBean extends AbstractJpaService implements Even
     @Override
     @Asynchronous
     public void pushActivities(final String calendarIdentifier,
-            final String owningOrganisationName,
-            final LocalDate startTime,
-            final LocalDate endTime,
-            final Membership activeMembership) {
+                               final String owningOrganisationName,
+                               final LocalDate startTime,
+                               final LocalDate endTime,
+                               final Membership activeMembership) {
 
         // Check sanity
         Validate.notEmpty(calendarIdentifier, "calendarIdentifier");
