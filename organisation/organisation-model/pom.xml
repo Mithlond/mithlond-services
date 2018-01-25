@@ -9,7 +9,7 @@
     <parent>
         <groupId>se.mithlond.codestyle.poms</groupId>
         <artifactId>mithlond-codestyle-model-parent</artifactId>
-        <version>1.11.0</version>
+        <version>1.11.1-SNAPSHOT</version>
         <relativePath />
     </parent>
 
@@ -41,6 +41,7 @@
     <!-- +=============================================== -->
     <!-- | Section 2:  Dependency (management) settings   -->
     <!-- +=============================================== -->
+
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>
@@ -98,16 +99,6 @@
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <!--
-            TODO: Remove this when updating the parent pom
-        -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.1.1</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

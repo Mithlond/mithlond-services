@@ -8,7 +8,7 @@
     <parent>
         <groupId>se.mithlond.codestyle</groupId>
         <artifactId>mithlond-codestyle-reactor</artifactId>
-        <version>1.11.0</version>
+        <version>1.11.1-SNAPSHOT</version>
     </parent>
 
     <groupId>se.mithlond.services</groupId>
