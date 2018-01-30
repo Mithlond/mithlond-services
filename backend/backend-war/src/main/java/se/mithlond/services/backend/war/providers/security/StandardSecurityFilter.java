@@ -7,11 +7,11 @@
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
  * in compliance with the License.
- * 
+ *
  * You may obtain a copy of the License at
- * 
+ *
  *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ package se.mithlond.services.backend.war.providers.security;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.jguru.nazgul.core.algorithms.api.Validate;
+import se.mithlond.services.backend.war.providers.exceptions.StandardExceptionHandler;
 import se.mithlond.services.backend.war.providers.security.access.MembershipAndMethodFinderProducer;
 import se.mithlond.services.backend.war.providers.security.access.MembershipFinder;
 import se.mithlond.services.organisation.api.MembershipService;
@@ -39,6 +40,7 @@ import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -181,6 +183,17 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
                     }
 
                 } catch (Exception e) {
+
+                    // Do we have a ConstraintViolationException as the Cause?
+                    for (Throwable current = e; current != null; current = current.getCause()) {
+                        if (current instanceof ConstraintViolationException) {
+                            final ConstraintViolationException cve = (ConstraintViolationException) current;
+                            log.error("\n\n"
+                                    + StandardExceptionHandler.extractContraintViolationExceptionStacktrace(cve)
+                                    + "\n\n");
+                        }
+                    }
+
                     log.error("Could not acquire activeMembership", e);
                 }
 
@@ -191,7 +204,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
 
             if (activeMembership == null) {
 
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.info("Found no activeMembership. Aborting with unauthorized.");
                 }
 
@@ -225,7 +238,7 @@ public class StandardSecurityFilter implements ContainerRequestFilter {
 
             if (getAuthorizer().isAuthorized(requiredAuthPatterns, authorizationPaths)) {
 
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug("" + activeMembership.toString() + ": authorized on [" + targetMethod
                             + "]. Continuing process.");
                 }

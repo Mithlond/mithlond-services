@@ -7,11 +7,11 @@
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
  * in compliance with the License.
- * 
+ *
  * You may obtain a copy of the License at
- * 
+ *
  *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
 import java.util.Collection;
 
 /**
@@ -199,6 +200,35 @@ public abstract class AbstractJpaService implements JpaCudService {
 
         // Surround the parameter value with %'s if required.
         return "%" + originalParameter.trim() + "%";
+    }
+
+    /**
+     * Retrieves a message detailing the Constraints which were violated.
+     *
+     * @param ex The ConstraintViolationException wrapping the constraint problems.
+     * @return A formatted string containing the error message(s).
+     */
+    protected String getConstraintViolationErrorMessage(final ConstraintViolationException ex) {
+
+        final StringBuilder builder = new StringBuilder();
+
+        ex.getConstraintViolations()
+                .stream()
+                .map(cv -> {
+
+                    // Synthesize a message
+                    final String className = cv.getRootBeanClass().getSimpleName();
+                    final String property = cv.getPropertyPath().toString();
+                    final String message = cv.getMessage();
+                    //Object invalidValue = violation.getInvalidValue();
+
+                    return String.format("%s.%s %s", className, property, message);
+
+                })
+                .forEach(error -> builder.append(error).append("\n"));
+
+        // All Done.
+        return builder.toString();
     }
 
     //

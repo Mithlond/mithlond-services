@@ -7,11 +7,11 @@
  * Licensed under the jGuru Europe AB license (the "License"), based
  * on Apache License, Version 2.0; you may not use this file except
  * in compliance with the License.
- * 
+ *
  * You may obtain a copy of the License at
- * 
+ *
  *       http://www.jguru.se/licenses/jguruCorporateSourceLicense-2.0.txt
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,6 +29,7 @@ import se.mithlond.services.backend.war.resources.RestfulParameters;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.validation.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -95,7 +96,7 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
 
             log.debug("Added CORS header [" + DynamicOriginCORSFilter.ACCESS_CONTROL_ORIGIN_HTTP_HEADER
                     + "] with the value [" + origin + "] to the response.");
-            
+
         } else {
 
             log.warn("HttpServletRequest not injected. Not adding [" + DynamicOriginCORSFilter
@@ -105,7 +106,7 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
         final StringWriter errorWriter = new StringWriter();
         exception.printStackTrace(new PrintWriter(errorWriter));
         errorWriter.flush();
-        
+
         // All Done.
         return responseBuilder
                 .type(MediaType.TEXT_PLAIN)
@@ -141,14 +142,31 @@ public class StandardExceptionHandler implements ExceptionMapper<Exception> {
         return builder.toString();
     }
 
-    private String extractContraintViolationExceptionStacktrace(final ConstraintViolationException ex) {
+    /**
+     * Extracts a string containing a {@link ConstraintViolationException}'s error representation.
+     *
+     * @param ex The {@link ConstraintViolationException} from which to extract the error representation.
+     * @return The error string.
+     */
+    public static String extractContraintViolationExceptionStacktrace(final ConstraintViolationException ex) {
 
         final StringBuilder toReturn = new StringBuilder();
         final int numViolations = ex.getConstraintViolations().size();
         int index = 0;
 
         for (ConstraintViolation<?> current : ex.getConstraintViolations()) {
-            final String msg = "  Constraint [" + index++ + "/" + numViolations + "]: " + current.getMessage() + "\n";
+
+            final StringBuilder pathAndValue = new StringBuilder("[Path: ");
+            for(Path.Node theNode : current.getPropertyPath()) {
+                pathAndValue.append(theNode.getName()).append(".");
+            }
+            pathAndValue.replace(pathAndValue.length() - 1, pathAndValue.length(), "]: ");
+            current.getInvalidValue();
+
+            current.getPropertyPath();
+            final String msg = "  Constraint [" + index++ + "/" + numViolations + " in ("
+                    + current.getRootBeanClass().getName() + ")]: " + current.getMessage() + " - "
+                    + pathAndValue.toString() + "\n";
             toReturn.append(msg);
         }
 

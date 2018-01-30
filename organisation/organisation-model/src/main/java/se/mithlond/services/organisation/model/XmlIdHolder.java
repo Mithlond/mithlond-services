@@ -21,8 +21,8 @@
  */
 package se.mithlond.services.organisation.model;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Specification for how to extract the XmlID from this {@link XmlIdHolder}.
@@ -38,6 +38,6 @@ public interface XmlIdHolder {
      * @return the XmlID from this XmlIdHolder.
      */
     @NotNull
-    @Min(1)
+    @Size(min=1)
     String getXmlId();
 }

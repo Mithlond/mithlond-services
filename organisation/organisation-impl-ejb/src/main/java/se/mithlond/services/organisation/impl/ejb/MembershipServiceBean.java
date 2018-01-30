@@ -45,6 +45,7 @@ import se.mithlond.services.shared.spi.jpa.AbstractJpaService;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.validation.ConstraintViolationException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -132,13 +133,24 @@ public class MembershipServiceBean extends AbstractJpaService implements Members
 
         final List<Membership> toReturn = new ArrayList<>();
 
-        final List<Membership> allMemberships = entityManager.createNamedQuery(
-                Membership.NAMEDQ_GET_BY_NAME_ORGANISATION, Membership.class)
-                .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
-                .setParameter(OrganisationPatterns.PARAM_FIRSTNAME, firstName)
-                .setParameter(OrganisationPatterns.PARAM_LASTNAME, lastName)
-                // .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
-                .getResultList();
+        final List<Membership> allMemberships;
+        try {
+            allMemberships = entityManager.createNamedQuery(
+                    Membership.NAMEDQ_GET_BY_NAME_ORGANISATION, Membership.class)
+                    .setParameter(OrganisationPatterns.PARAM_ORGANISATION_NAME, organisationName)
+                    .setParameter(OrganisationPatterns.PARAM_FIRSTNAME, firstName)
+                    .setParameter(OrganisationPatterns.PARAM_LASTNAME, lastName)
+                    // .setParameter(OrganisationPatterns.PARAM_LOGIN_PERMITTED, true)
+                    .getResultList();
+
+        } catch (ConstraintViolationException e) {
+
+            final String exceptionMessage = getConstraintViolationErrorMessage(e);
+            log.error(exceptionMessage);
+
+            // Re-throw
+            throw e;
+        }
 
         if (allMemberships != null && !allMemberships.isEmpty()) {
             allMemberships.stream().filter(Membership::isLoginPermitted).forEach(toReturn::add);
