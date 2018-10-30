@@ -41,9 +41,6 @@ public interface ContentService {
      * Retrieves Articles from the named owner, and identified by the content selection path.
      *
      * @param owningOrganisationID The JPA ID of the organisation owning the Articles to be retrieved.
-     * @param contentPath          A (resource) path defining which Articles should be retrieved.
-     *                             Articles are typically organized in a tree-like resource structure, as if placed
-     *                             within a normal file system.
      * @param caller               The SemanticAuthorizationPathProducer of the caller, used to determine which
      *                             Articles should be retrieved.
      * @param endDate              The LocalDate marking the end of the interval for creation time
@@ -56,11 +53,11 @@ public interface ContentService {
      * selectionPath and authentication paths.
      */
     Articles getArticles(final Long owningOrganisationID,
-            final SemanticAuthorizationPathProducer caller,
-            final LocalDate endDate,
-            final Period period,
-            final Long maxResults,
-            final Long startAtIndex);
+                         final SemanticAuthorizationPathProducer caller,
+                         final LocalDate endDate,
+                         final Period period,
+                         final Long maxResults,
+                         final Long startAtIndex);
 
     /**
      * Retrieves all articles matching the given ContentPaths for the supplied caller and with modification dates
@@ -74,9 +71,9 @@ public interface ContentService {
      * @return The Articles matching the supplied parameters.
      */
     Articles getArticles(final ContentPaths contentPaths,
-            final SemanticAuthorizationPathProducer caller,
-            final Long maxResults,
-            final Long startAtIndex);
+                         final SemanticAuthorizationPathProducer caller,
+                         final Long maxResults,
+                         final Long startAtIndex);
 
     /**
      * Finds the ContentPaths for articles available within the supplied organisation and viewable/accessable
@@ -95,9 +92,9 @@ public interface ContentService {
      * @return A ContentPaths transport wrapper containing the requested ContentPaths.
      */
     ContentPaths getContentPaths(final Long owningOrganisationID,
-            final SemanticAuthorizationPathProducer caller,
-            final LocalDate endDate,
-            final Period period,
-            final Long maxResults,
-            final Long startAtIndex);
+                                 final SemanticAuthorizationPathProducer caller,
+                                 final LocalDate endDate,
+                                 final Period period,
+                                 final Long maxResults,
+                                 final Long startAtIndex);
 }

@@ -63,7 +63,7 @@ public class OrganisationServiceBean extends AbstractJpaService implements Organ
     // Our Logger
     private static final Logger log = LoggerFactory.getLogger(OrganisationServiceBean.class);
 
-    private static final String[] STD_ADMINISTRATOR_GROUPNAMES = {"Administratörer", "Administrators" };
+    private static final String[] STD_ADMINISTRATOR_GROUPNAMES = {"Administratörer", "Administrators"};
 
     /**
      * {@inheritDoc}

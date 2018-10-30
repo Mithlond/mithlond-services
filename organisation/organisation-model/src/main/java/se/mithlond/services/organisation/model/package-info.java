@@ -46,7 +46,6 @@
 @XmlAccessorType(XmlAccessType.FIELD)
 package se.mithlond.services.organisation.model;
 
-import se.jguru.nazgul.core.xmlbinding.api.WellKnownNamespace;
 import se.mithlond.services.shared.spi.jaxb.SharedJaxbPatterns;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateAdapter;
 import se.mithlond.services.shared.spi.jaxb.adapter.LocalDateTimeAdapter;

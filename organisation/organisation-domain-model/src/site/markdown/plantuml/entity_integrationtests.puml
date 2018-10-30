@@ -1,0 +1,53 @@
+@startuml
+actor "Integration Test" as it
+boundary EntityManager as em
+boundary DbUnit as dbUnit
+database "In-memory DB" as db
+entity "An Entiy" as ent
+
+[-> it : setup()
+activate it
+    it -> db : Create DB
+    it -> em : Create schema from\n<i>persistence.xml</i>
+    em -> db : Create schema from <i>persistence.xml</i>
+    it -> dbUnit : Insert DB data from\nsetup_<i>methodName</i>
+    dbUnit -> db : Insert DB data
+    it -> it : onSetup()
+    activate it #FFBBBB
+    deactivate it
+deactivate it
+[<- it
+
+[-> it : validate<i>Something</i>()
+activate it
+    it -> em : startNewTransaction()
+
+    activate em #FFBBBB
+        it -> em  : perform JPA operations
+        it -> em  : commitAndStartNewTransaction();
+
+        activate em #FFBBBB
+            em -> ent : <i>Example: persist</i>
+            ent --> db : persisting
+            em <-- db
+        deactivate em
+    deactivate em
+
+    it -> dbUnit : verify DB state after JTA commit
+    activate dbUnit #FFBBBB
+        dbUnit --> db : verifying
+    deactivate dbUnit
+deactivate it
+[<- it
+
+[-> it : tearDown()
+activate it
+    it -> it : <i>cleanupTestSchema()</i>
+
+    activate it #FFBBBB
+        it -> dbUnit : dropAllDbObjectsInPublicSchema()
+    deactivate it
+deactivate it
+[<- it
+
+@enduml

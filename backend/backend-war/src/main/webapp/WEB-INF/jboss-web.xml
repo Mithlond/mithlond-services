@@ -20,8 +20,6 @@
   limitations under the License.
   #L%
   -->
-
-
 <jboss-web>
     <context-root>backend</context-root>
     <!-- security-domain>nazgul-intranet-realm</security-domain -->

@@ -23,8 +23,8 @@ package se.mithlond.services.content.api;
 
 import se.mithlond.services.content.model.navigation.integration.MenuStructure;
 import se.mithlond.services.shared.authorization.api.GlobAuthorizationPattern;
-import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 import se.mithlond.services.shared.authorization.api.UnauthorizedException;
+import se.mithlond.services.shared.authorization.model.SemanticAuthorizationPathProducer;
 
 import javax.ejb.Local;
 import java.util.List;
@@ -63,7 +63,7 @@ public interface NavigationService {
      * @throws UnknownOrganisationException if the menuOwner was not the name of an existing organisation.
      */
     MenuStructure getMenuStructure(final String realm,
-            final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+                                   final List<SemanticAuthorizationPathProducer> callersAuthPaths)
             throws UnknownOrganisationException;
 
     /**
@@ -79,7 +79,7 @@ public interface NavigationService {
      *                               to update the supplied MenuStructure.
      */
     MenuStructure createOrUpdate(final MenuStructure menuStructure,
-            final List<SemanticAuthorizationPathProducer> callersAuthPaths)
+                                 final List<SemanticAuthorizationPathProducer> callersAuthPaths)
             throws UnauthorizedException;
 
 }
