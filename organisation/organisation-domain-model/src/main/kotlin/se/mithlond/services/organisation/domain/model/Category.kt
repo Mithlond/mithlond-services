@@ -60,15 +60,15 @@ data class Category @JvmOverloads constructor(
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 128)
-        val name: String,
+        override var name: String,
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 128)
-        val classification: String,
+        var classification: String,
 
         @field:Basic(optional = false)
         @field:Column(nullable = false)
-        val description: String) : Serializable, Comparable<Category> {
+        override var description: String) : NamedDescription, Serializable, Comparable<Category> {
 
     override fun compareTo(other: Category): Int {
 

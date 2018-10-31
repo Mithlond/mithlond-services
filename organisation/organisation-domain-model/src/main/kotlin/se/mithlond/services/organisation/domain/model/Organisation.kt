@@ -23,6 +23,7 @@ package se.mithlond.services.organisation.domain.model
 
 import se.mithlond.services.organisation.domain.model.address.Address
 import java.io.Serializable
+import java.util.Currency
 import javax.persistence.Access
 import javax.persistence.AccessType
 import javax.persistence.Basic
@@ -108,7 +109,7 @@ data class Organisation @JvmOverloads constructor(
 
         @field:Basic(optional = false)
         @field:Column(length = 5, nullable = false, name = "standard_currency")
-        val standardCurrency: String,
+        val standardCurrency: Currency,
 
         @field:Basic(optional = true)
         @field:Column(nullable = true)

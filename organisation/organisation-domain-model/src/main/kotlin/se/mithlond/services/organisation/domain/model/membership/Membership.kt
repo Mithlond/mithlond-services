@@ -24,6 +24,8 @@ package se.mithlond.services.organisation.domain.model.membership
 import se.mithlond.services.organisation.domain.model.InternalUser
 import se.mithlond.services.organisation.domain.model.Organisation
 import java.io.Serializable
+import java.util.SortedSet
+import java.util.TreeSet
 import javax.persistence.Access
 import javax.persistence.AccessType
 import javax.persistence.Basic
@@ -35,6 +37,8 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
+import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
@@ -42,7 +46,7 @@ import javax.persistence.UniqueConstraint
 
 /**
  * Realization of a Membership, associating a Member with an Organisation.
- * 
+ *
  * @param alias The alias of this Membership. Never null/empty, and unique within the Organisation.
  * @param subAlias An optional (i.e. nullable) sub-alias for the Membership within the Organisation.
  * @param emailAlias An optional (i.e. nullable) email for the Membership within the Organisation.
@@ -50,6 +54,7 @@ import javax.persistence.UniqueConstraint
  * @param loginPermitted Set to <code>true</code> to indicate that login is permitted, and false otherwise.
  * @param user           The user of this Membership.
  * @param organisation   The organisation of this Membership, i.e. where the user belongs.
+ * @param yearlyMemberships The organisation of this Membership, i.e. where the user belongs.
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
@@ -97,11 +102,30 @@ data class Membership(
                 name = "organisation_id",
                 nullable = false,
                 foreignKey = ForeignKey(name = "fk_membership_organisation"))
-        var organisation: Organisation
+        var organisation: Organisation,
+
+        @field:ManyToMany(cascade = [CascadeType.MERGE, CascadeType.DETACH])
+        @field:JoinTable(schema = "organisations",
+                name = "yearly_membership",
+                joinColumns = [JoinColumn(
+                        name = "membership_id",
+                        foreignKey = ForeignKey(name = "fk_yearlymembership_membership"))],
+                inverseJoinColumns = [JoinColumn(
+                        name = "membershipyear_id",
+                        foreignKey = ForeignKey(name = "fk_yearlymembership_template"))])
+        var yearlyMemberships: SortedSet<MembershipYear> = TreeSet()
 
 ) : Serializable, Comparable<Membership> {
 
     override fun compareTo(other: Membership): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        var toReturn = this.organisation.compareTo(other.organisation)
+
+        if (toReturn == 0) {
+            toReturn = this.alias.compareTo(other.alias)
+        }
+
+        // All Done.
+        return toReturn
     }
 }

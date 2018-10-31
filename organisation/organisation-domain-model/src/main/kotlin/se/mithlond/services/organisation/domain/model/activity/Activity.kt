@@ -22,8 +22,9 @@
 package se.mithlond.services.organisation.domain.model.activity
 
 import se.mithlond.services.organisation.domain.model.Category
-import se.mithlond.services.organisation.domain.model.Listable
+import se.mithlond.services.organisation.domain.model.NamedDescription
 import se.mithlond.services.organisation.domain.model.Organisation
+import se.mithlond.services.organisation.domain.model.Organisational
 import se.mithlond.services.organisation.domain.model.address.Address
 import se.mithlond.services.organisation.domain.model.address.CategorizedAddress
 import java.io.Serializable
@@ -48,13 +49,14 @@ import javax.persistence.Table
 import javax.persistence.UniqueConstraint
 
 /**
+ * Entity implementation for an Activity within an Organisation.
  *
  * @param id The JPA ID of this Domain Entity.
  * @param shortDesc The mandatory and non-empty short description of this Listable entity.
  * Typically used within short info boxes and pop-ups.
  * @param fullDesc The full description of this Listable entity, visible in detailed listings.
  * May not be null or empty. Typically used within longer info boxes or modal description displays.
- * @param owningOrganisation The [Organisation] owning this [CategorizedAddress].
+ * @param organisation The [Organisation] owning this [CategorizedAddress].
  * @param dressCode The optional dress code of the activity, if applicable.
  * @param startTime The start time of the Activity. Never null.
  * @param endTime The end time of the Activity. Must not be null, and must also be after startTime.
@@ -79,18 +81,18 @@ data class Activity @JvmOverloads constructor(
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 254)
-        override var shortDesc: String,
+        override var name: String,
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 2048)
-        override var fullDesc: String,
+        override var description: String,
 
         @field:ManyToOne(optional = false)
         @field:JoinColumn(
                 name = "organisation_id",
                 nullable = false,
                 foreignKey = ForeignKey(name = "fk_activity_organisation"))
-        override var owningOrganisation: Organisation,
+        override var organisation: Organisation,
 
         var dressCode: Dresscode? = null,
 
@@ -153,9 +155,21 @@ data class Activity @JvmOverloads constructor(
 
         // TODO: Add the rest of the properties.
 
-) : Listable, Serializable, Comparable<Activity> {
+) : NamedDescription, Organisational, Serializable, Comparable<Activity> {
 
     override fun compareTo(other: Activity): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        var toReturn = this.organisation.compareTo(other.organisation)
+
+        if (toReturn == 0) {
+            toReturn = startTime.compareTo(other.startTime)
+        }
+
+        if (toReturn == 0) {
+            toReturn = name.compareTo(other.name)
+        }
+
+        // All Done
+        return toReturn
     }
 }

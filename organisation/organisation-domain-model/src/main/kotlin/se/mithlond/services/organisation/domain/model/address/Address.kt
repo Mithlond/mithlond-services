@@ -22,6 +22,8 @@
 package se.mithlond.services.organisation.domain.model.address
 
 import java.io.Serializable
+import javax.persistence.Access
+import javax.persistence.AccessType
 import javax.persistence.Basic
 import javax.persistence.Column
 import javax.persistence.Embeddable
@@ -43,6 +45,7 @@ import javax.persistence.Embeddable
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
 @Embeddable
+@Access(AccessType.FIELD)
 data class Address @JvmOverloads constructor(
 
         @field:Basic(optional = true)

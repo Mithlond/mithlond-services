@@ -24,8 +24,11 @@ package se.mithlond.services.organisation.domain.model.finance
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.Currency
+import javax.persistence.Access
+import javax.persistence.AccessType
 import javax.persistence.Basic
 import javax.persistence.Column
+import javax.persistence.Embeddable
 
 /**
  * Amount definition, containing the amount value as well as a currency in which this Amount is given.
@@ -35,14 +38,16 @@ import javax.persistence.Column
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
+@Embeddable
+@Access(AccessType.FIELD)
 data class Amount(
 
-        @Basic(optional = false)
-        @Column(nullable = false, precision = 10, scale = 2)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false, precision = 10, scale = 2)
         val value: BigDecimal,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         val currency: Currency
 
 ) : Serializable, Comparable<Amount> {
