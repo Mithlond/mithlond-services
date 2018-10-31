@@ -25,10 +25,14 @@ import se.mithlond.services.organisation.domain.model.membership.GroupMembership
 import se.mithlond.services.organisation.domain.model.membership.GroupMembershipKey
 import se.mithlond.services.organisation.domain.model.membership.Membership
 import java.time.LocalDateTime
+import javax.persistence.Access
+import javax.persistence.AccessType
 import javax.persistence.CascadeType
+import javax.persistence.Entity
 import javax.persistence.ForeignKey
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.Table
 
 /**
  * Definition for a membership within a Guild.
@@ -36,9 +40,13 @@ import javax.persistence.ManyToOne
  * @param guild      The Guild to which this GroupMembership indicates inclusion.
  * @param membership The Membership included in the supplied Group.
  * @param joinedTimestamp The timestamp when this GroupMembership was generated.
+ * @param id The JPA ID of this Entity.
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
+@Entity
+@Access(AccessType.FIELD)
+@Table(schema = "organisations")
 open class GuildMembership(
 
         id: GroupMembershipKey,

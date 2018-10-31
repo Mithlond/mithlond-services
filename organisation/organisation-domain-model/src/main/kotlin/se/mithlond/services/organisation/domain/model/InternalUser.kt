@@ -78,30 +78,30 @@ data class InternalUser(
         @field:Column(name = "id", updatable = false, nullable = false)
         var id: Long? = null,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var userIdentifierToken: String,
 
-        @Basic(optional = false)
-        @Column(nullable = false, length = 64)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false, length = 64)
         var firstName: String,
 
-        @Basic(optional = false)
-        @Column(nullable = false, length = 64)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false, length = 64)
         val lastName: String,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var birthday: LocalDate? = null,
 
-        @Basic
-        @Column(length = 4)
+        @field:Basic
+        @field:Column(length = 4)
         var personalNumberLast4Digits: Short = 0,
 
-        @Embedded
+        @field:Embedded
         var homeAddress: Address,
 
-        @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+        @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
         var memberships: MutableList<Membership>,
 
         //
@@ -133,14 +133,14 @@ data class InternalUser(
         // targetClass property of @ElementCollection to
         // define value type.
         //
-        @CollectionTable(
+        @field:CollectionTable(
                 name = "user_contactdetails",
                 uniqueConstraints = [UniqueConstraint(
                         name = "unq_user_contact_type",
                         columnNames = arrayOf("user_id", "contact_type"))])
-        @Column(name = "address_or_number")
-        @MapKeyColumn(name = "contact_type")
-        @ElementCollection(fetch = FetchType.EAGER)
+        @field:Column(name = "address_or_number")
+        @field:MapKeyColumn(name = "contact_type")
+        @field:ElementCollection(fetch = FetchType.EAGER)
         var contactDetails: MutableMap<String, String> = mutableMapOf()
 
 ) : Serializable, Comparable<InternalUser> {

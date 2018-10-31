@@ -37,6 +37,7 @@ import javax.persistence.UniqueConstraint
 /**
  * Entity definition of a Category with a Classification and a trivial Description.
  *
+ * @param id The JPA ID of this Domain Entity.
  * @param name The name/short description, typically a single word. Cannot be null or empty.
  * @param classification A classification of this name, such as "Restaurant". This is intended to simplify
  * separating a type of Categories from others.

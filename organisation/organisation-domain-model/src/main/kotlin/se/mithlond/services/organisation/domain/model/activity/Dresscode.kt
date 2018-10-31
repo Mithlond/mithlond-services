@@ -21,8 +21,9 @@
  */
 package se.mithlond.services.organisation.domain.model.activity
 
-import se.mithlond.services.organisation.domain.model.Listable
+import se.mithlond.services.organisation.domain.model.NamedDescription
 import se.mithlond.services.organisation.domain.model.Organisation
+import se.mithlond.services.organisation.domain.model.Organisational
 import se.mithlond.services.organisation.domain.model.address.CategorizedAddress
 import javax.persistence.Access
 import javax.persistence.AccessType
@@ -69,29 +70,29 @@ data class Dresscode(
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 254)
-        override var shortDesc: String,
+        override var name: String,
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 2048)
-        override var fullDesc: String,
+        override var description: String,
 
         @field:ManyToOne(optional = false)
         @field:JoinColumn(
                 name = "organisation_id",
                 nullable = false,
                 foreignKey = ForeignKey(name = "fk_dresscode_organisation"))
-        override var owningOrganisation: Organisation,
+        override var organisation: Organisation,
 
         @Basic(optional = false)
         @Column(length = 64, nullable = false)
         private val dressCode: String
-) : Listable, Comparable<Dresscode> {
+) : NamedDescription, Organisational, Comparable<Dresscode> {
 
     override fun compareTo(other: Dresscode): Int {
 
-        var toReturn = this.owningOrganisation.compareTo(other.owningOrganisation)
+        var toReturn = this.organisation.compareTo(other.organisation)
 
-        if(toReturn == 0) {
+        if (toReturn == 0) {
             toReturn = this.dressCode.compareTo(other.dressCode)
         }
 

@@ -23,7 +23,9 @@ package se.mithlond.services.organisation.domain.model.address
 
 import se.mithlond.services.organisation.domain.model.Category
 import se.mithlond.services.organisation.domain.model.Listable
+import se.mithlond.services.organisation.domain.model.NamedDescription
 import se.mithlond.services.organisation.domain.model.Organisation
+import se.mithlond.services.organisation.domain.model.Organisational
 import java.io.Serializable
 import javax.persistence.Access
 import javax.persistence.AccessType
@@ -52,7 +54,7 @@ import javax.persistence.UniqueConstraint
  * Typically used within short info boxes and pop-ups.
  * @param fullDesc The full description of this Listable entity, visible in detailed listings.
  * May not be null or empty. Typically used within longer info boxes or modal description displays.
- * @param owningOrganisation The [Organisation] owning this [CategorizedAddress].
+ * @param organisation The [Organisation] owning this [CategorizedAddress].
  * @param category the [Category] of this [CategorizedAddress]
  * @param address the [Address] within this [CategorizedAddress]
  *
@@ -63,8 +65,8 @@ import javax.persistence.UniqueConstraint
 @Access(AccessType.FIELD)
 @Table(schema = "organisations", uniqueConstraints = [
     UniqueConstraint(
-            name = "unq_shortdesc_per_category_org",
-            columnNames = ["shortDesc", "category_id", "owningOrganisation_id"])
+            name = "unq_name_per_category_and_org",
+            columnNames = ["name", "category_id", "owningOrganisation_id"])
 ])
 data class CategorizedAddress(
 
@@ -77,18 +79,18 @@ data class CategorizedAddress(
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 254)
-        override var shortDesc: String,
+        override var name: String,
 
         @field:Basic(optional = false)
         @field:Column(nullable = false, length = 2048)
-        override var fullDesc: String,
+        override var description: String,
 
         @field:ManyToOne(optional = false)
         @field:JoinColumn(
                 name = "organisation_id",
                 nullable = false,
                 foreignKey = ForeignKey(name = "fk_cataddress_organisation"))
-        override var owningOrganisation: Organisation,
+        override var organisation: Organisation,
 
         @field:ManyToOne(optional = false, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
         @field:JoinColumn(
@@ -100,11 +102,11 @@ data class CategorizedAddress(
         @Embedded
         var address: Address
 
-) : Listable, Serializable, Comparable<CategorizedAddress> {
+) : NamedDescription, Organisational, Serializable, Comparable<CategorizedAddress> {
 
     override fun compareTo(other: CategorizedAddress): Int {
 
-        var toReturn = this.owningOrganisation.compareTo(other.owningOrganisation)
+        var toReturn = this.organisation.compareTo(other.organisation)
 
         if(toReturn == 0) {
             toReturn = this.category.compareTo(other.category)

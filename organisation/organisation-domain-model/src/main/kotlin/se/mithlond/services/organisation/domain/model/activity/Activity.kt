@@ -27,7 +27,7 @@ import se.mithlond.services.organisation.domain.model.Organisation
 import se.mithlond.services.organisation.domain.model.Organisational
 import se.mithlond.services.organisation.domain.model.address.Address
 import se.mithlond.services.organisation.domain.model.address.CategorizedAddress
-import java.io.Serializable
+import se.mithlond.services.organisation.domain.model.membership.Group
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -35,15 +35,18 @@ import java.util.Currency
 import javax.persistence.Access
 import javax.persistence.AccessType
 import javax.persistence.Basic
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Embedded
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.ForeignKey
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.UniqueConstraint
@@ -62,6 +65,19 @@ import javax.persistence.UniqueConstraint
  * @param endTime The end time of the Activity. Must not be null, and must also be after startTime.
  * @param cost The cost of the activity. Never negative, but may be "0".
  * @param currency The currency for the optional cost of the activity.
+ * @param lateAdmissionCost The cost if admission after the lateAdmissionDate. Never negative.
+ * Optional, but recommended to be higher than the (standard) cost.
+ * @param lateAdmissionDate The optional date before which the activity costs `cost`.
+ * After this date, the activity admission costs `lateAdmissionCost`.
+ * @param lastAdmissionDate The last date of admissions to the Activity.
+ * @param cancelled If 'true', the Activity is cancelled.
+ * @param addressCategory The Category of the location where this Activity takes place.
+ * @param addressShortDescription The short description of the location for this Activity, such as "Stadsbiblioteket".
+ * @param location The location of the Activity. May not be null.
+ * @param responsible The Guild organizing this Activity. Optional.
+ * @param admissions All current Admissions to this Activity. May be empty - but not null.
+ * @param openToGeneralPublic "true" to indicate that the supplied Activity is open to the general public.
+ * Otherwise this Activity is open only to Admissions from known Memberships.
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
@@ -94,68 +110,71 @@ data class Activity @JvmOverloads constructor(
                 foreignKey = ForeignKey(name = "fk_activity_organisation"))
         override var organisation: Organisation,
 
-        var dressCode: Dresscode? = null,
+        @field:ManyToOne(optional = false)
+        @field:JoinColumn(
+                name = "dresscode_id",
+                nullable = false,
+                foreignKey = ForeignKey(name = "fk_activity_dresscode"))
+        var dressCode: Dresscode,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var startTime: LocalDateTime,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var endTime: LocalDateTime,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var cost: BigDecimal = BigDecimal.ZERO,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var currency: Currency,
 
-        /**
-         * The cost if admission after the lateAdmissionDate. Never negative.
-         * Optional, but recommended to be higher than the (standard) cost.
-         */
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var lateAdmissionCost: BigDecimal = BigDecimal.ZERO,
 
-        /**
-         * The optional date before which the activity costs `cost`.
-         * After this date, the activity admission costs `lateAdmissionCost`.
-         */
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var lateAdmissionDate: LocalDate,
 
-        /**
-         * The last date of admissions to the Activity.
-         */
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var lastAdmissionDate: LocalDate,
 
-        /**
-         * If 'true', the Activity is cancelled.
-         */
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var cancelled: Boolean = false,
 
-        /**
-         * The Category of the location where this Activity takes place.
-         */
-        @ManyToOne(optional = false)
+        @field:ManyToOne(optional = false)
+        @field:JoinColumn(
+                name = "category_id",
+                nullable = false,
+                foreignKey = ForeignKey(name = "fk_activity_category"))
         var addressCategory: Category,
 
-        /**
-         * The short description of the location for this Activity, such as "Stadsbiblioteket".
-         */
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var addressShortDescription: String,
 
-        /**
-         * The location of the Activity. May not be null.
-         */
-        @Embedded
-        private var location: Address
+        @field:Embedded
+        var location: Address,
 
-        // TODO: Add the rest of the properties.
+        @field:ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.REFRESH, CascadeType.MERGE])
+        @field:JoinColumn(name = "group_id", foreignKey = ForeignKey(name = "fk_activity_arranging_group"))
+        var responsible: Group? = null,
 
-) : NamedDescription, Organisational, Serializable, Comparable<Activity> {
+        @field:OneToMany(cascade = [CascadeType.ALL], mappedBy = "activity")
+        val admissions: Set<Admission> = mutableSetOf(),
+
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
+        var openToGeneralPublic: Boolean = false
+
+) : NamedDescription, Organisational, Comparable<Activity> {
 
     override fun compareTo(other: Activity): Int {
 

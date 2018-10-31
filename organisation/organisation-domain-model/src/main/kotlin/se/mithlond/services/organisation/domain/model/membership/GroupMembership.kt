@@ -30,11 +30,13 @@ import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
+import javax.persistence.Entity
 import javax.persistence.ForeignKey
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.MapsId
 import javax.persistence.PrePersist
+import javax.persistence.Table
 
 /**
  * Compound [GroupMembership] key definition.
@@ -56,12 +58,16 @@ data class GroupMembershipKey(
 /**
  * Definition for a membership within a Group.
  *
+ * @param id The Compound JPA ID of this Entity.
  * @param group      The Group to which this GroupMembership indicates inclusion.
  * @param membership The Membership included in the supplied Group.
  * @param joinedTimestamp The timestamp when this GroupMembership was generated.
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
+@Entity
+@Access(AccessType.FIELD)
+@Table(schema = "organisations")
 open class GroupMembership(
 
         @field:EmbeddedId
@@ -116,11 +122,11 @@ open class GroupMembership(
 
         var toReturn = this.group.compareTo(other.group)
 
-        if(toReturn == 0) {
+        if (toReturn == 0) {
             toReturn = this.membership.compareTo(other.membership)
         }
 
-        if(toReturn == 0) {
+        if (toReturn == 0) {
             toReturn = this.joinedTimestamp.compareTo(other.joinedTimestamp)
         }
 
