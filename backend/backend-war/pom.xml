@@ -35,7 +35,7 @@
         <webapp.dir>${project.build.directory}/exploded/webapp-rest.war</webapp.dir>
         <swagger.dir>${webapp.dir}/swagger</swagger.dir>
         <swagger.version>1.5.10</swagger.version>
-        <keycloak.version>3.0.0.Final</keycloak.version>
+        <keycloak.version>3.4.3.Final</keycloak.version>
     </properties>
 
     <!-- +=============================================== -->
