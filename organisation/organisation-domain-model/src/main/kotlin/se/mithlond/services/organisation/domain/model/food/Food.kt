@@ -22,40 +22,196 @@
 package se.mithlond.services.organisation.domain.model.food
 
 import se.mithlond.services.organisation.domain.model.Category
+import se.mithlond.services.organisation.domain.model.localization.DEFAULT_CLASSIFIER
+import se.mithlond.services.organisation.domain.model.localization.TextSuite
 import java.io.Serializable
+import java.util.Comparator
+import java.util.Locale
+import java.util.SortedSet
+import java.util.TreeSet
 import javax.persistence.CascadeType
+import javax.persistence.ForeignKey
+import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
 
 /**
+ * A Locale-aware classification of Foods.
+ *
+ * @param foodNames The [TextSuite] containing localized texts for the name of this food.
+ * @param category The top-level Categorisation of this Food.
+ * @param subCategory The sub-level Categorisation of this Food.
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
 data class Food(
 
-        /**
-         * The top-level Categorisation of this Food.
-         */
-        @ManyToOne(optional = false, cascade = arrayOf(CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH))
-        var category: Category,
+        @field:OneToOne(optional = false)
+        @field:JoinColumn(
+                name = "foodnames_id",
+                nullable = false,
+                foreignKey = ForeignKey(name = "fk_food_foodnames"))
+        var foodNames: TextSuite,
+
+        @field:ManyToOne(optional = false, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+        @field:JoinColumn(
+                name = "category_id",
+                nullable = false,
+                foreignKey = ForeignKey(name = "fk_food_category_textsuite"))
+        var category: TextSuite,
+
+        @field:ManyToOne(optional = false, cascade = [CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH])
+        @field:JoinColumn(
+                name = "sub_category_id",
+                nullable = false,
+                foreignKey = ForeignKey(name = "fk_food_subcategory_textsuite"))
+        var subCategory: TextSuite
+
+) : Serializable {
+
+    /**
+     * Validates that this Food object contains all required localisations for the supplied Locale.
+     *
+     * @param theLocale The Locale for which the internal state of this Food obejct should be validated.
+     */
+    fun validateInternalStateFor(theLocale: Locale) {
+
+        // Ensure that all required texts are available
+        getCategoryName(theLocale)
+        getCategoryDescription(theLocale)
+        getSubCategoryName(theLocale)
+        getSubCategoryDescription(theLocale)
+        getFoodName(theLocale)
+        getFoodDescription(theLocale)
+    }
+
+    /**
+     * Retrieves a synthetic Category for this Food.
+     *
+     * @param locale The Locale used to synthesize the category.
+     */
+    fun getCategory(locale: Locale) = Category(null,
+            getCategoryName(locale),
+            "category",
+            getCategoryDescription(locale))
+
+    /**
+     * Retrieves a synthetic SubCategory for this Food.
+     *
+     * @param locale The Locale used to synthesize the sub-category.
+     */
+    fun getSubCategory(locale: Locale) = Category(null,
+            getSubCategoryName(locale),
+            "subCategory",
+            getSubCategoryDescription(locale))
+
+    /**
+     * Retrieves the Category name of this Food within the supplied [Locale].
+     *
+     * @param locale The Locale to find the Category name.
+     */
+    fun getCategoryName(locale: Locale = Locale.getDefault()): String =
+            getRequiredTextSuiteValue(category, "category", locale, NAME_CLASSIFICATION)
+
+    /**
+     * Retrieves the Category description of this Food within the supplied [Locale].
+     *
+     * @param locale The Locale to find the Category description.
+     */
+    fun getCategoryDescription(locale: Locale = Locale.getDefault()): String =
+            getRequiredTextSuiteValue(category, "category", locale, DESCRIPTION_CLASSIFICATION)
+
+    /**
+     * Retrieves the SubCategory name of this Food within the supplied [Locale].
+     *
+     * @param locale The Locale to find the SubCategory name.
+     */
+    fun getSubCategoryName(locale: Locale = Locale.getDefault()): String =
+            getRequiredTextSuiteValue(subCategory, "subCategory", locale, NAME_CLASSIFICATION)
+
+    /**
+     * Retrieves the SubCategory description of this Food within the supplied [Locale].
+     *
+     * @param locale The Locale to find the SubCategory description.
+     */
+    fun getSubCategoryDescription(locale: Locale = Locale.getDefault()): String =
+            getRequiredTextSuiteValue(subCategory, "subCategory", locale, DESCRIPTION_CLASSIFICATION)
+
+    /**
+     * Retrieves the Food name within the supplied [Locale].
+     *
+     * @param locale The Locale to find the Food name.
+     */
+    fun getFoodName(locale: Locale = Locale.getDefault()): String =
+            getRequiredTextSuiteValue(foodNames, "foodNames", locale, NAME_CLASSIFICATION)
+
+    /**
+     * Retrieves the Food description within the supplied [Locale].
+     *
+     * @param locale The Locale to find the Food description.
+     */
+    fun getFoodDescription(locale: Locale = Locale.getDefault()): String =
+            getRequiredTextSuiteValue(foodNames, "foodNames", locale, DESCRIPTION_CLASSIFICATION)
+
+
+    @Throws(IllegalStateException::class)
+    private fun getRequiredTextSuiteValue(textSuite: TextSuite,
+                                          suiteName: String,
+                                          locale: Locale,
+                                          classifier: String): String {
+
+        // Retrieve the value ... which should be non-null
+        val expectedText = textSuite.getText(locale, classifier)
+
+        return when (expectedText != null) {
+            true -> expectedText!!
+            false -> throw IllegalStateException("TextSuite [$suiteName] lacks " +
+                    "classification [$NAME_CLASSIFICATION] for locale [${locale.toLanguageTag()}]. " +
+                    "This implies a data/database error.")
+        }
+    }
+
+    companion object {
 
         /**
-         * The sub-level Categorisation of this Food.
+         * The ClassifiedLocalizedText classification for the Name of food/category/subCategory.
          */
-        @ManyToOne(optional = false, cascade = arrayOf(CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH))
-        var subCategory: Category
+        @JvmStatic
+        val NAME_CLASSIFICATION = DEFAULT_CLASSIFIER
 
-) : Serializable, Comparable<Food> {
-    override fun compareTo(other: Food): Int {
+        /**
+         * The ClassifiedLocalizedText classification for the Description of food/category/subCategory.
+         */
+        @JvmStatic
+        val DESCRIPTION_CLASSIFICATION = "Description"
 
-        var toReturn = this.category.compareTo(other.category)
+        /**
+         * Retrieves a Comparator performing a locale-aware comparison of Category/SubCategory/Foodname.
+         *
+         * @return A [Comparator] for a locale-sensitive Food comparison.
+         */
+        @JvmStatic
+        fun getFoodComparator(locale: Locale): Comparator<Food> = kotlin.Comparator { l, r ->
 
-        if (toReturn == 0) {
-            toReturn = this.subCategory.compareTo(other.subCategory)
+            // Get required data
+            var toReturn = l.getCategoryName(locale).compareTo(r.getCategoryName(locale))
+
+            if (toReturn == 0) {
+                toReturn = l.getSubCategoryName(locale).compareTo(r.getSubCategoryName(locale))
+            }
+
+            if (toReturn == 0) {
+                toReturn = l.getFoodName(locale).compareTo(r.getFoodName(locale))
+            }
+
+            // All Done.
+            toReturn
         }
 
-        // TODO: Add the locale
-
-        // All Done.
-        return toReturn
+        /**
+         * @return a SortedSet using the [getFoodComparator] as Comparator for the supplied Locale.
+         */
+        @JvmStatic
+        fun mutableSortedSetOf(locale: Locale): SortedSet<Food> = TreeSet<Food>(getFoodComparator(locale))
     }
 }

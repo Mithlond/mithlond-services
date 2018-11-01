@@ -29,6 +29,7 @@ import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
+import javax.persistence.ForeignKey
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -38,7 +39,6 @@ import javax.persistence.OneToMany
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.UniqueConstraint
-import javax.xml.bind.annotation.XmlTransient
 
 /**
  * A text (snippet) which can be translated to several languages.
@@ -65,16 +65,21 @@ data class TextSuite(
         @field:Column(name = "id", updatable = false, nullable = false)
         var id: Long? = null,
 
-        @Basic(optional = false)
-        @Column(nullable = false)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false)
         var suiteIdentifier: String,
 
-        @ManyToOne(cascade = [CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST])
-        @JoinColumn(name = "default_localization_id")
+        @field:ManyToOne(optional = false,
+                cascade = [CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST])
+        @field:JoinColumn(
+                name = "default_localization_id",
+                nullable = false,
+                foreignKey = ForeignKey(name = "fk_textsuite_std_locale"))
         var standardLocale: LocaleDefinition,
 
-        @OneToMany(mappedBy = "textSuite", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
-        @XmlTransient
+        @field:OneToMany(mappedBy = "textSuite",
+                fetch = FetchType.EAGER,
+                cascade = [CascadeType.ALL])
         val texts: MutableList<ClassifiedLocalizedText> = mutableListOf()
 
 ) : Localizable {
