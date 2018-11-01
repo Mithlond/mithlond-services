@@ -21,6 +21,7 @@
  */
 package se.mithlond.services.organisation.domain.model
 
+import se.mithlond.services.organisation.domain.model.localization.DEFAULT_CLASSIFIER
 import java.io.Serializable
 
 /**
@@ -59,6 +60,16 @@ val STANDARD_NAMED_ORGANISATIONAL_DESCRIPTION_COMPARATOR = Comparator<NamedDescr
     // All Done
     toReturn
 }
+
+/**
+ * The ClassifiedLocalizedText classification for the Name.
+ */
+const val NAME_CLASSIFICATION = DEFAULT_CLASSIFIER
+
+/**
+ * The ClassifiedLocalizedText classification for the Description of food/category/subCategory.
+ */
+const val DESCRIPTION_CLASSIFICATION = "Description"
 
 /**
  * Specification for entities with a name and description.

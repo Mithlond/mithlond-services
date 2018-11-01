@@ -29,11 +29,21 @@ import java.util.Comparator
 import java.util.Locale
 import java.util.SortedSet
 import java.util.TreeSet
+import javax.persistence.Access
+import javax.persistence.AccessType
 import javax.persistence.CascadeType
+import javax.persistence.Column
+import javax.persistence.Entity
 import javax.persistence.ForeignKey
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.OneToOne
+import javax.persistence.SequenceGenerator
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 
 /**
  * A Locale-aware classification of Foods.
@@ -44,7 +54,17 @@ import javax.persistence.OneToOne
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
+@Entity
+@Access(AccessType.FIELD)
+@Table(schema = "organisations")
 data class Food(
+
+        @field:Id
+        @field:GeneratedValue(strategy = GenerationType.IDENTITY, generator = "seq_Food")
+        @field:SequenceGenerator(schema = "organisations", name = "seq_Food",
+                sequenceName = "seq_Food", allocationSize = 1)
+        @field:Column(name = "id", updatable = false, nullable = false)
+        var id: Long? = null,
 
         @field:OneToOne(optional = false)
         @field:JoinColumn(

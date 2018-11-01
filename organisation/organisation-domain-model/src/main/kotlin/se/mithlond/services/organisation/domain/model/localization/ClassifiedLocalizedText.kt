@@ -109,8 +109,8 @@ data class ClassifiedLocalizedText(
                 foreignKey = ForeignKey(name = "fk_classified_text_suite"))
         var textSuite: TextSuite,
 
-        @Basic(optional = false)
-        @Column(nullable = false, length = 2048)
+        @field:Basic(optional = false)
+        @field:Column(nullable = false, length = 2048)
         var text: String
 
 ) : Serializable {
