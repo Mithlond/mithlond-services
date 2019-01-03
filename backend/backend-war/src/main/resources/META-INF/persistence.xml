@@ -137,7 +137,8 @@
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
-            <property name="eclipselink.ddl-generation.output-mode" value="both"/>
+            <!-- property name="eclipselink.ddl-generation.output-mode" value="both"/ -->
+            <property name="eclipselink.ddl-generation.output-mode" value="database"/>
             <property name="eclipselink.create-ddl-jdbc-file-name" value="create_mithlond_database.jdbc"/>
             <!--
                 Eclipselink ignores the javax.persistence configuration properties for creating SQL files

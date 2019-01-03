@@ -30,7 +30,7 @@
     <!-- | Section 2:  Module definitions                 -->
     <!-- +=============================================== -->
     <modules>
-        <module>organisation-domain-model</module>
+        <!-- module>organisation-domain-model</module -->
         <module>organisation-model</module>
         <module>organisation-api</module>
         <module>organisation-impl-ejb</module>
