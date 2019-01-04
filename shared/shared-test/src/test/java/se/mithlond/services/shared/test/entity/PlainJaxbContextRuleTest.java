@@ -76,9 +76,9 @@ public class PlainJaxbContextRuleTest {
 
         // Act
         unitUnderTest.add(BarRound.class, Beverage.class, Customer.class);
-        unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "barRound");
+        unitUnderTest.mapXmlNamespacePrefix("mithlond:shared:test:event", "testEvent");
         final String result = unitUnderTest.marshal(getClass().getClassLoader(), false, barRound);
-
+        
         // Assert
         /*
         final Diff diff = XmlTestUtils.compareXmlIgnoringWhitespace(expected, result);

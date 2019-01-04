@@ -25,7 +25,17 @@
  * @author <a href="mailto:lj@jguru.se">Lennart J&ouml;relid</a>, jGuru Europe AB
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSchema(
+    xmlns = {
+        @XmlNs(prefix = "ecosystem", namespaceURI = "mithlond:shared:test:ecosystem"),
+        @XmlNs(prefix = "xs", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
+        @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
+        @XmlNs(prefix = "vc", namespaceURI = "http://www.w3.org/2007/XMLSchema-versioning")
+    }
+)
 package se.mithlond.services.shared.test.entity.helpers;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlNs;
+import javax.xml.bind.annotation.XmlSchema;
