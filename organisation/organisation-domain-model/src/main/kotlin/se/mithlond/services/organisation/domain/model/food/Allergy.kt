@@ -30,12 +30,15 @@ import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.EmbeddedId
+import javax.persistence.Entity
 import javax.persistence.ForeignKey
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.MapsId
 import javax.persistence.OneToOne
 import javax.persistence.PrePersist
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 
 /**
  * Compound [Allergy] key definition.
@@ -54,7 +57,7 @@ data class AllergyId(
 
 /**
  * Entity specification of an Allergy.
- * 
+ *
  * @param id The JPA ID of this Entity.
  * @param food The Food of this Allergy
  * @param user The [InternalUser] having this Allergy
@@ -63,6 +66,11 @@ data class AllergyId(
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
+@Entity
+@Access(AccessType.FIELD)
+@Table(schema = "organisations", uniqueConstraints = [
+    UniqueConstraint(name = "unq_severity_per_food_user", columnNames = ["food_id", "user_id", "severity_id"])
+])
 data class Allergy(
 
         @field:EmbeddedId

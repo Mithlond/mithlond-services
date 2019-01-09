@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.domain.model.food
 
-import se.mithlond.services.organisation.domain.model.Category
+import se.mithlond.services.organisation.domain.model.localization.Category
 import se.mithlond.services.organisation.domain.model.localization.DEFAULT_CLASSIFIER
 import se.mithlond.services.organisation.domain.model.localization.TextSuite
 import java.io.Serializable
@@ -43,7 +43,6 @@ import javax.persistence.ManyToOne
 import javax.persistence.OneToOne
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
-import javax.persistence.UniqueConstraint
 
 /**
  * A Locale-aware classification of Foods.
@@ -186,7 +185,7 @@ data class Food(
         return when (expectedText != null) {
             true -> expectedText!!
             false -> throw IllegalStateException("TextSuite [$suiteName] lacks " +
-                    "classification [$NAME_CLASSIFICATION] for locale [${locale.toLanguageTag()}]. " +
+                    "classification [$classifier] for locale [${locale.toLanguageTag()}]. " +
                     "This implies a data/database error.")
         }
     }

@@ -54,7 +54,19 @@ data class AdmissionId(
         @field:Column(name = "admitted_id")
         var membershipId: Long
 
-) : Serializable
+) : Serializable, Comparable<AdmissionId> {
+
+    override fun compareTo(other: AdmissionId): Int {
+
+        var toReturn = (this.activityId - other.activityId).toInt()
+
+        if(toReturn == 0) {
+            toReturn = (this.membershipId - other.membershipId).toInt()
+        }
+
+        return toReturn
+    }
+}
 
 /**
  * Entity implementation for an Admission to an Activity.
@@ -154,7 +166,5 @@ data class Admission @JvmOverloads constructor(
         this.id.activityId = this.activity.id!!
     }
 
-    override fun compareTo(other: Admission): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun compareTo(other: Admission): Int = this.id.compareTo(other.id)
 }

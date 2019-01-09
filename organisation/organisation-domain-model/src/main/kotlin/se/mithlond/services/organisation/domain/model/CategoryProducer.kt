@@ -21,8 +21,8 @@
  */
 package se.mithlond.services.organisation.domain.model
 
+import se.mithlond.services.organisation.domain.model.localization.Category
 import java.io.Serializable
-
 
 /**
  * Specification for a suite of types which may contain (and, hence, produce) a Category.

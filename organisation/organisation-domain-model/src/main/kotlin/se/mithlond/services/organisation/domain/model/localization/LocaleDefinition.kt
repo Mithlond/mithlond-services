@@ -99,4 +99,8 @@ data class LocaleDefinition @JvmOverloads constructor(
         // All Done
         return toReturn
     }
+
+    override fun toString(): String {
+        return "[LocaleDefinition ($id): Language: $language, Country: $country, Variant: $variant]"
+    }
 }

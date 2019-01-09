@@ -106,4 +106,34 @@ data class TextSuite(
         // All Done.
         return texts.firstOrNull { it.classifier == theClassifier && it.localeDefinition == localization }
     }
+
+    companion object {
+
+        /**
+         * Retrieves a text with the given [classifier] from the supplied [TextSuite]
+         * and [suiteName] in the [locale] given.
+         *
+         * @param textSuite The [TextSuite] from which to retrieve the text.
+         * @param suiteName The [TextSuite.suiteIdentifier] to use
+         * @param locale The non-null locale used to retrieve the data.
+         * @param classifier The classifier of the text to retrieve.
+         */
+        @JvmStatic
+        @Throws(IllegalStateException::class)
+        fun getRequiredTextSuiteValue(textSuite: TextSuite,
+                                      suiteName: String,
+                                      classifier: String,
+                                      locale: Locale = Locale.getDefault()): String {
+
+            // Retrieve the value ... which should be non-null
+            val expectedText = textSuite.getText(locale, classifier)
+
+            return when (expectedText != null) {
+                true -> expectedText!!
+                false -> throw IllegalStateException("TextSuite [$suiteName] lacks " +
+                        "classification [$classifier] for locale [${locale.toLanguageTag()}]. " +
+                        "This implies a data/database error.")
+            }
+        }
+    }
 }

@@ -44,6 +44,14 @@ interface Localizable : Serializable {
     fun getText(): String? = getText(null, DEFAULT_CLASSIFIER)
 
     /**
+     * Retrieves the default text of this AbstractAuthorizedNavItem.
+     *
+     * @param classifier The classifier of the text to retrieve.
+     * @return The default text of this AbstractAuthorizedNavItem.
+     */
+    fun getText(classifier: String?): String? = getText(null, classifier)
+
+    /**
      * The text in the supplied locale and for the given classifier.
      *
      * @param classifier The classifier of the text to retrieve.

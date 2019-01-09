@@ -21,7 +21,7 @@
  */
 package se.mithlond.services.organisation.domain.model.address
 
-import se.mithlond.services.organisation.domain.model.Category
+import se.mithlond.services.organisation.domain.model.localization.Category
 import se.mithlond.services.organisation.domain.model.CategoryProducer
 import java.io.Serializable
 

@@ -23,7 +23,6 @@ package se.mithlond.services.organisation.domain.model.food
 
 import se.mithlond.services.organisation.domain.model.DESCRIPTION_CLASSIFICATION
 import se.mithlond.services.organisation.domain.model.NAME_CLASSIFICATION
-import se.mithlond.services.organisation.domain.model.NamedDescription
 import se.mithlond.services.organisation.domain.model.localization.TextSuite
 import java.io.Serializable
 import java.util.Locale
@@ -42,6 +41,7 @@ import javax.persistence.Table
 import javax.persistence.UniqueConstraint
 
 /**
+ * Defines the severity levels Allergies.
  *
  * @author [Lennart J&ouml;relid](mailto:lj@jguru.se), jGuru Europe AB
  */
@@ -62,31 +62,56 @@ data class AllergySeverity(
         /**
          * The sort order of the severity, with less severe allergies having lower severitySortOrder values.
          */
-        @Basic(optional = false)
-        @Column(nullable = false, name = "severity_sort_order")
+        @field:Basic(optional = false)
+        @field:Column(nullable = false, name = "severity_sort_order")
         var severitySortOrder: Int,
 
         /**
          * A localized texts instance containing the short description of this AllergySeverity.
          */
-        @OneToOne(optional = false)
-        @JoinColumn(name = "short_description_id")
+        @field:OneToOne(optional = false)
+        @field:JoinColumn(name = "short_description_id")
         var names: TextSuite,
 
         /**
          * A localized texts instance containing the full description of this AllergySeverity.
          */
-        @OneToOne(optional = false)
-        @JoinColumn(name = "full_description_id")
+        @field:OneToOne(optional = false)
+        @field:JoinColumn(name = "full_description_id")
         var descriptions: TextSuite
 
 ) : Serializable, Comparable<AllergySeverity> {
 
+    /**
+     * Validates that this AllergySeverity object contains all required localisations for the supplied Locale.
+     *
+     * @param theLocale The Locale for which the internal state of this AllergySeverity object should be validated.
+     */
+    fun validateInternalStateFor(theLocale: Locale) {
+
+        // Ensure that all required texts are available
+        getName(theLocale)
+        getDescription(theLocale)
+    }
+
     override fun compareTo(other: AllergySeverity): Int = this.severitySortOrder - other.severitySortOrder
 
-    fun getName(locale: Locale) : String = getRequiredTextSuiteValue(names, "names", locale, NAME_CLASSIFICATION)
+    /**
+     * Retrieves the name of this AllergySeverity within the supplied Locale.
+     *
+     * @return The name of this AllergySeverity in the given Locale.
+     * @throws IllegalArgumentException if the name was not provided within the supplied Locale.
+     */
+    @Throws(IllegalArgumentException::class)
+    fun getName(locale: Locale): String = getRequiredTextSuiteValue(names, "names", locale, NAME_CLASSIFICATION)
 
-    fun getDescription(locale: Locale) : String = getRequiredTextSuiteValue(descriptions,
+    /**
+     * Retrieves the description of this AllergySeverity within the supplied Locale.
+     *
+     * @return The description of this AllergySeverity in the given Locale.
+     * @throws IllegalArgumentException if the description was not provided within the supplied Locale.
+     */
+    fun getDescription(locale: Locale): String = getRequiredTextSuiteValue(descriptions,
             "descriptions",
             locale,
             DESCRIPTION_CLASSIFICATION)

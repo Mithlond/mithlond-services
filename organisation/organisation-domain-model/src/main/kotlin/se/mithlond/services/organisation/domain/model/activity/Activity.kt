@@ -21,12 +21,12 @@
  */
 package se.mithlond.services.organisation.domain.model.activity
 
-import se.mithlond.services.organisation.domain.model.Category
 import se.mithlond.services.organisation.domain.model.NamedDescription
 import se.mithlond.services.organisation.domain.model.Organisation
 import se.mithlond.services.organisation.domain.model.Organisational
 import se.mithlond.services.organisation.domain.model.address.Address
 import se.mithlond.services.organisation.domain.model.address.CategorizedAddress
+import se.mithlond.services.organisation.domain.model.localization.Category
 import se.mithlond.services.organisation.domain.model.membership.Group
 import java.math.BigDecimal
 import java.time.LocalDate
