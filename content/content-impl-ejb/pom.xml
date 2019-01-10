@@ -15,7 +15,7 @@
 
     <groupId>se.mithlond.services.content.impl.ejb</groupId>
     <artifactId>mithlond-services-content-impl-ejb</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>${project.artifactId}</name>
     <description>Mithlond Service: Content (EJB Implementation, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
@@ -41,17 +41,17 @@
         <dependency>
             <groupId>se.mithlond.services.content.api</groupId>
             <artifactId>mithlond-services-content-api</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.organisation.api</groupId>
             <artifactId>mithlond-services-organisation-api</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.shared.test.entity</groupId>
             <artifactId>mithlond-services-shared-entity-test</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -130,6 +130,6 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>HEAD</tag>
+        <tag>backend-services-1.1.1</tag>
     </scm>
 </project>

@@ -15,7 +15,7 @@
 
     <groupId>se.mithlond.services.shared.spi.jaxb</groupId>
     <artifactId>mithlond-services-shared-spi-jaxb</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>${project.artifactId}</name>
     <description>Mithlond Service: Shared Transport (SPI, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
@@ -47,7 +47,7 @@
         <dependency>
             <groupId>se.mithlond.services.shared.spi.algorithms</groupId>
             <artifactId>mithlond-services-shared-spi-algorithms</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1.0</version>
         </dependency>
         <!--
             External dependencies.
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>se.mithlond.services.shared.test.entity</groupId>
             <artifactId>mithlond-services-shared-entity-test</artifactId>
-            <version>1.0.2-SNAPSHOT</version>
+            <version>1.1.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -166,6 +166,6 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>HEAD</tag>
+        <tag>backend-services-1.1.1</tag>
     </scm>
 </project>

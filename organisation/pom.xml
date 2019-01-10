@@ -8,7 +8,7 @@
     <parent>
         <groupId>se.mithlond.services</groupId>
         <artifactId>mithlond-services-reactor</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.1.0</version>
     </parent>
 
     <groupId>se.mithlond.services.organisation</groupId>
@@ -55,6 +55,6 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>HEAD</tag>
+        <tag>backend-services-1.1.1</tag>
     </scm>
 </project>
