@@ -15,7 +15,7 @@
 
     <groupId>se.mithlond.services.organisation.api</groupId>
     <artifactId>mithlond-services-organisation-api</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>Mithlond Service: Organisation (API, version ${project.version})</description>
     <url>${site.top.url}/${path.in.reactor}</url>
@@ -45,17 +45,17 @@
         <dependency>
             <groupId>se.mithlond.services.organisation.model</groupId>
             <artifactId>mithlond-services-organisation-model</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.shared.spi.jaxb</groupId>
             <artifactId>mithlond-services-shared-spi-jaxb</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.shared.test.entity</groupId>
             <artifactId>mithlond-services-shared-entity-test</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -108,7 +108,7 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>backend-services-1.1.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
 </project>

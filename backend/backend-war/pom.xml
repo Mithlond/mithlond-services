@@ -15,7 +15,7 @@
 
     <groupId>se.mithlond.services.backend.war</groupId>
     <artifactId>mithlond-services-backend-war</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
     <description>Mithlond Service: Backend (WAR, version ${project.version})</description>
@@ -55,22 +55,22 @@
         <dependency>
             <groupId>se.mithlond.services.content.impl.ejb</groupId>
             <artifactId>mithlond-services-content-impl-ejb</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.organisation.impl.ejb</groupId>
             <artifactId>mithlond-services-organisation-impl-ejb</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.shared.authorization.api</groupId>
             <artifactId>mithlond-services-shared-authorization-api</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>se.mithlond.services.shared.test.entity</groupId>
             <artifactId>mithlond-services-shared-entity-test</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -338,6 +338,6 @@
         <connection>${scm.connection.url}</connection>
         <developerConnection>${scm.devConnection.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>backend-services-1.1.1</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
